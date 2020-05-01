@@ -201,6 +201,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   private boolean useSeasonImages = true;
 
+  private AdvancedRegionShapeCellRenderer arr;
+
   /**
    * Creates a new Mapper object.
    */
@@ -1273,7 +1275,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     deferPainting(!isDeferringPainting());
 
     this.scaleFactor = scaleFactor;
-    cellGeometry.setScaleFactor(scaleFactor);
+    cellGeometry.setValidScaleFactor(scaleFactor);
+    this.scaleFactor = cellGeometry.getScaleFactor();
 
     mapToScreenBounds = getMapToScreenBounds();
 
@@ -1294,7 +1297,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       MapCellRenderer renderer = plane.getRenderer();
 
       if (renderer != null) {
-        renderer.scale(scaleFactor);
+        renderer.scale(this.scaleFactor);
       }
     }
   }
@@ -1461,7 +1464,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a preferences panel allowing to configure this component.
    */
   public PreferencesAdapter getPreferencesAdapter() {
-    return new MapperPreferences(this);
+    return new MapperPreferences(this, true);
   }
 
   /**
@@ -1614,7 +1617,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Collection<MapCellRenderer> renderers = new LinkedList<MapCellRenderer>();
     renderers.add(new RegionImageCellRenderer(geo, context));
     renderers.add(new RegionShapeCellRenderer(geo, context));
-    renderers.add(new AdvancedRegionShapeCellRenderer(geo, context));
+    renderers.add(arr = new AdvancedRegionShapeCellRenderer(geo, context));
     renderers.add(new BorderCellRenderer(geo, context));
     renderers.add(new BuildingCellRenderer(geo, context));
     renderers.add(new ShipCellRenderer(geo, context));
@@ -1906,10 +1909,17 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   /**
-   * Returns the currend ATR.
+   * Returns the current ATR.
    */
   public AdvancedTextCellRenderer getATR() {
     return atr;
+  }
+
+  /**
+   * Returns the current ARR.
+   */
+  public AdvancedRegionShapeCellRenderer getARR() {
+    return arr;
   }
 
   /**

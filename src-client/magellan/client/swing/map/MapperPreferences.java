@@ -78,7 +78,6 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   private Mapper source = null;
 
   // GUI elements
-  // private JCheckBox chkDeferPainting = null;
   private JCheckBox showTooltips;
 
   private JTabbedPane planes;
@@ -98,36 +97,35 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
   /**
    * Creates a new MapperPreferences object.
    */
-  public MapperPreferences(Mapper m) {
+  public MapperPreferences(Mapper m, boolean showTips) {
     source = m;
-    init();
+    init(showTips);
   }
 
-  private void init() {
-    // chkDeferPainting =
-    // new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"), source
-    // .isDeferringPainting());
-    showTooltips =
-        new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source
-            .isShowingTooltip());
-
-    JButton configureTooltips =
-        new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
-    configureTooltips.addActionListener(this);
-
-    JPanel helpPanel = addPanel(null, new GridBagLayout());
-
+  private void init(boolean showTips) {
     GridBagConstraints gbc =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
             GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
-    // helpPanel.add(chkDeferPainting, gbc);
-    gbc.gridy++;
-    gbc.gridwidth = 1;
-    gbc.weightx = 0;
-    helpPanel.add(showTooltips, gbc);
-    gbc.gridx++;
-    gbc.fill = GridBagConstraints.NONE;
-    helpPanel.add(configureTooltips, gbc);
+
+    if (showTips) {
+      showTooltips =
+          new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source
+              .isShowingTooltip());
+
+      JButton configureTooltips =
+          new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
+      configureTooltips.addActionListener(this);
+
+      JPanel helpPanel = addPanel(null, new GridBagLayout());
+
+      gbc.gridy++;
+      gbc.gridwidth = 1;
+      gbc.weightx = 0;
+      helpPanel.add(showTooltips, gbc);
+      gbc.gridx++;
+      gbc.fill = GridBagConstraints.NONE;
+      helpPanel.add(configureTooltips, gbc);
+    }
 
     JPanel rendererPanel =
         addPanel(Resources.get("map.mapperpreferences.border.rendereroptions"), new BorderLayout());
@@ -243,8 +241,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    // source.deferPainting(chkDeferPainting.isSelected());
-    source.setShowTooltip(showTooltips.isSelected());
+    if (showTooltips != null) {
+      source.setShowTooltip(showTooltips.isSelected());
+    }
 
     if (dialogShown) {
       String tDefinition = ttsDialog.getSelectedToolTip();
@@ -1325,7 +1324,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       } else if (e.getSource() == add) {
         new AddTooltipDialog(this, Resources
             .get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null, null, -1)
-            .setVisible(true);
+                .setVisible(true);
         recreate();
       } else if (e.getSource() == mask) {
         if (maskDialog == null) {
@@ -1359,7 +1358,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
           AddTooltipDialog dialog =
               new AddTooltipDialog(this, Resources
                   .get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"), tooltipList
-                  .getSelectedValue().toString(), tooltips.get(index), index * 2);
+                      .getSelectedValue().toString(), tooltips.get(index), index * 2);
           dialog.setVisible(true);
           recreate();
         }
@@ -1371,17 +1370,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
           source.setAllTooltipDefinitions(src);
           recreate();
         } catch (Exception exc) {
+          //
         }
       } else if (e.getSource() == info) {
-        if (infoDialog == null) {
-          infoDialog =
-              new ToolTipReplacersInfo(this, Resources
-                  .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
-        }
-
-        if (!infoDialog.isVisible()) {
-          infoDialog.showDialog();
-        }
+        ToolTipReplacersInfo.showInfoDialog(this, Resources.get(
+            "map.mapperpreferences.tooltipdialog.help"));
       } else {
         setVisible(false);
 
@@ -1421,4 +1414,5 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       return null;
     }
   }
+
 }

@@ -267,8 +267,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     E3CommandParser.ADD_NOT_THERE_INFO = true;
     Warning warning = new Warning(true);
     Unit unitV = builder.addUnit(data, "v", "Other", unit.getFaction(), unit.getRegion());
-    Unit unitF = builder.addUnit(data, "f", "Foreign", builder.addFaction(data, "f2", "F2", "Mensch", 1), unit
-        .getRegion());
+    Unit unitF = builder.addUnit(data, "f", "Foreign", builder.addFaction(data, "f2", "F2",
+        "Mensch", 1), unit.getRegion());
     parser.setCurrentUnit(unit);
     assertTrue("warning for exisiting unit", parser.testUnit("v", unitV, warning));
     assertFalse("no warning for missing unit", parser.testUnit("v", null, warning));
@@ -1136,6 +1136,19 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("; braucht 801000 mehr Silber, Unit_1 (1) needs 0/1000000 Silber (100)", unit, 2);
     assertEquals(2, unit2.getOrders2().size());
     assertOrder("GIB 1 199000 Silber", unit2, 1);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.setShip(sh);
+    sh.setOwner(unit);
+    unit.addOrder("// $cript Kapazitaet SCHIFF - 1000");
+    unit2.addOrder("// $cript BenoetigeFremd 1 0 1000000 Silber Menge");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertMessage("; braucht 802000 mehr Silber", unit, 2);
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 198000 Silber", unit2, 1);
   }
 
   /**
@@ -2159,7 +2172,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(6, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertWarning("braucht 8 mehr Plattenpanzer, Soldat (s) needs 10/10 Plattenpanzer (100)", unit2, 5);
+    assertWarning("braucht 8 mehr Plattenpanzer, Soldat (s) needs 10/10 Plattenpanzer (100)", unit2,
+        5);
     assertOrder("RESERVIERE 2 Plattenpanzer", unit2, 3);
     assertOrder("RESERVIERE 5 Schwert", unit2, 4);
 
@@ -2188,12 +2202,14 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 10 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertOrder("; braucht 10 mehr Plattenpanzer, Soldat (s) needs 0/10 Plattenpanzer (100)", unit2, 4);
+    assertOrder("; braucht 10 mehr Plattenpanzer, Soldat (s) needs 0/10 Plattenpanzer (100)", unit2,
+        4);
     assertOrder("RESERVIERE JE 1 Schild", unit2, 3);
     assertEquals(6, unit3.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit3, 2);
     assertOrder("; braucht 10 mehr Schwert, Soldat 2 (s2) needs 0/10 Schwert (100)", unit3, 4);
-    assertOrder("; braucht 10 mehr Kettenhemd, Soldat 2 (s2) needs 0/10 Kettenhemd (100)", unit3, 5);
+    assertOrder("; braucht 10 mehr Kettenhemd, Soldat 2 (s2) needs 0/10 Kettenhemd (100)", unit3,
+        5);
     assertOrder("RESERVIERE JE 1 Schild", unit3, 3);
   }
 
@@ -2521,6 +2537,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     unit.clearOrders();
     unit2.clearOrders();
+    unit3.clearOrders();
     unit.addOrder("// $cript Handel x3 x2 ALLES");
     unit.addOrder("// $cript BenoetigeFremd v LUXUS 99 Menge");
     unit2.addOrder("// $cript Benoetige PFERD Pferd");
@@ -2535,9 +2552,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("RESERVIERE 10 Myrrhe", unit, 7);
     assertOrder("GIB v 1000 Balsam", unit, 8);
     assertOrder("GIB v 980 Myrrhe", unit, 9);
-    assertEquals(2, unit2.getOrders2().size());
-    assertOrder("GIB 1 10 Öl", unit2, 0);
+    assertEquals(3, unit2.getOrders2().size());
     assertOrder("GIB 1 10 Öl", unit2, 1);
+    assertOrder("GIB 1 10 Öl", unit2, 2);
     assertEquals(2, unit3.getOrders2().size());
   }
 
@@ -2968,6 +2985,12 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(4, unit.getOrders2().size());
     assertOrder("UNTERHALTE ", unit, 2);
     assertWarning("unterbeschäftigt", unit, 3);
+  }
+
+  @Test
+  public final void testJam() {
+    int n = 5;
+    int x[][] = new int[n][n];
   }
 
   /**

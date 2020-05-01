@@ -2,7 +2,7 @@ VERSION 66
 "ISO-8859-1";charset
 "de";locale
 1;noskillpoints
-1580585368;date
+1581155227;date
 "Eressea";Spiel
 "Java-Tools";Konfiguration
 "Hex";Koordinaten

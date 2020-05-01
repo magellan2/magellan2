@@ -42,6 +42,7 @@ import magellan.client.swing.CenterLayout;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A dialog allowing the user to set preferences or similar data.
@@ -55,7 +56,8 @@ import magellan.library.utils.Resources;
  * <li>Make all preferences of your actual UI component (a subclass of DataPanel or something
  * similar, e.g. the EMapDetailsPanel) publicly accessible (usually via get/set methods).</li>
  * <li>Write a container that makes these preferences editable (nice checkboxes and so on).</li>
- * <li>That container must, upon creation, reflect the current preferences of your UI component.</li>
+ * <li>That container must, upon creation, reflect the current preferences of your UI
+ * component.</li>
  * <li>That container also has to provide a means of applying the changes made by the user to your
  * UI component.</li>
  * <li>Create a class implementing the PreferencesAdapter interface, which holds a reference to the
@@ -110,7 +112,11 @@ public class PreferencesDialog extends InternationalizedDialog {
     this(owner, modal, settings);
 
     for (PreferencesFactory factory : prefAdapters) {
-      addTab(factory.createPreferencesAdapter());
+      try {
+        addTab(factory.createPreferencesAdapter());
+      } catch (Exception e) {
+        Logger.getInstance(this.getClass()).error("preferences dialog error", e);
+      }
     }
   }
 
@@ -131,7 +137,11 @@ public class PreferencesDialog extends InternationalizedDialog {
   @Override
   public void setVisible(boolean isVisible) {
     if (isVisible) {
-      initPreferences();
+      try {
+        initPreferences();
+      } catch (Exception e) {
+        Logger.getInstance(this.getClass()).error("preferences dialog error", e);
+      }
       dialogtree.showFirst();
     }
     super.setVisible(isVisible);

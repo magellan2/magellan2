@@ -32,7 +32,8 @@ import java.awt.LayoutManager;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 /**
  * This class is a helper class for creating PreferencesAdapters or ExtendedPreferencesAdapters. It
@@ -93,20 +94,21 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
    * @return The panel that was created
    */
   public JPanel addPanel(String title) {
-    if (!initialized) {
-      initLayout();
-    }
-    currentPanel = new JPanel();
-    initCurrentPanel(title);
-
-    return currentPanel;
+    return addPanel(title, null);
   }
 
+  /**
+   * Adds a panel to the PreferencesAdapter. If title is not <code>null</code> it is displayed.
+   *
+   * @param title The title of the panel
+   * @param layout This layout is used for the panel
+   * @return The panel that was created
+   */
   public JPanel addPanel(String title, LayoutManager layout) {
     if (!initialized) {
       initLayout();
     }
-    currentPanel = new JPanel(layout);
+    currentPanel = layout == null ? new JPanel() : new JPanel(layout);
     initCurrentPanel(title);
 
     return currentPanel;
@@ -114,9 +116,21 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
 
   protected void initCurrentPanel(String title) {
     if (title != null) {
-      currentPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), title));
+      currentPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+          title));
     } else {
+      // we adjust the border by a margin to vertically align etched borders with and without titles
+      currentPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+          "A"));
+      Insets tInsets = currentPanel.getBorder().getBorderInsets(currentPanel);
+
       currentPanel.setBorder(BorderFactory.createEtchedBorder());
+      Insets emptyInsets = currentPanel.getBorder().getBorderInsets(currentPanel);
+
+      Border border = currentPanel.getBorder();
+      Border margin = new EmptyBorder(0, tInsets.left - emptyInsets.left * 2, 0, tInsets.right
+          - emptyInsets.right * 2);
+      currentPanel.setBorder(BorderFactory.createCompoundBorder(margin, border));
     }
     content.add(currentPanel, gridBagConstraints);
     gridBagConstraints.gridy++;

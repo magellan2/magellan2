@@ -1,15 +1,19 @@
 package magellan.client.swing.map;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -19,6 +23,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerFactory;
@@ -30,19 +35,24 @@ import magellan.library.utils.replacers.ReplacerFactory;
  */
 class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSelectionListener,
     ActionListener {
-  protected JList list;
+  private static Map<Component, ToolTipReplacersInfo> instances =
+      new HashMap<Component, ToolTipReplacersInfo>();
+  protected JList<String> list;
   protected JTextArea text;
   protected List<String> rList;
   protected ReplacerFactory replacerMap;
+  private String info;
 
   /**
    * Creates a new ToolTipReplacersInfo object without owner.
    * 
    * @param title
+   * @param info
    */
-  public ToolTipReplacersInfo(String title) {
+  public ToolTipReplacersInfo(String title, String info) {
     super();
     setTitle(title);
+    setInfo(info);
     init();
   }
 
@@ -51,9 +61,11 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
    * 
    * @param parent The non-<code>null</code> dialog owner.
    * @param title
+   * @param info
    */
-  public ToolTipReplacersInfo(Dialog parent, String title) {
+  public ToolTipReplacersInfo(Dialog parent, String title, String info) {
     super(parent, title);
+    setInfo(info);
     init();
   }
 
@@ -68,15 +80,21 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
   /**
    * @param parent The non-<code>null</code> dialog owner.
    * @param title
+   * @param info
    */
-  public ToolTipReplacersInfo(Frame parent, String title) {
+  public ToolTipReplacersInfo(Frame parent, String title, String info) {
     super(parent, title);
+    setInfo(info);
     init();
+  }
+
+  private void setInfo(String info) {
+    this.info = info;
   }
 
   protected void init() {
 
-    list = new JList();
+    list = new JList<String>();
     list.setFixedCellWidth(150);
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     list.addListSelectionListener(this);
@@ -120,7 +138,8 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
     rList.addAll(replacerMap.getReplacers());
     Collections.sort(rList);
 
-    list.setListData(rList.toArray());
+    list.setListData(rList.toArray(new String[] {}));
+    text.setText(info);
 
     super.setVisible(true);
   }
@@ -137,14 +156,55 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
    */
   public void valueChanged(javax.swing.event.ListSelectionEvent lse) {
     if (list.getSelectedIndex() >= 0) {
-      magellan.library.utils.replacers.Replacer rep =
-          (replacerMap.createReplacer(rList.get(list.getSelectedIndex())));
-
+      String label = rList.get(list.getSelectedIndex());
+      magellan.library.utils.replacers.Replacer rep = (replacerMap.createReplacer(label));
       if (rep == null) {
         text.setText("Internal error - please report.");
       } else {
-        text.setText(rep.getDescription()); // Debug: +"\n\n--\n"+rep.getClass().getName());
+        text.setText(rep.getDescription());
       }
+    }
+  }
+
+  public static void showInfoDialog(Component source, String info) {
+    Dialog parent = null;
+
+    ToolTipReplacersInfo infoDialog = instances.get(source);
+    if (infoDialog == null) {
+      Frame frame = null;
+      if (source instanceof Dialog) {
+        parent = (Dialog) source;
+      } else {
+        if (source instanceof Frame) {
+          frame = (Frame) source;
+        }
+        if (frame == null) {
+          Window window = SwingUtilities.getWindowAncestor(source);
+          if (window instanceof Frame) {
+            frame = (Frame) window;
+          }
+          if (window instanceof Dialog) {
+            parent = (Dialog) window;
+          }
+        }
+      }
+      if (parent != null) {
+        infoDialog =
+            new ToolTipReplacersInfo(parent, Resources
+                .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"), info);
+      } else if (frame != null) {
+        infoDialog =
+            new ToolTipReplacersInfo(frame, Resources
+                .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"), info);
+      } else {
+        infoDialog =
+            new ToolTipReplacersInfo(Resources
+                .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"), info);
+      }
+      instances.put(source, infoDialog);
+    }
+    if (!infoDialog.isVisible()) {
+      infoDialog.showDialog();
     }
   }
 }

@@ -558,6 +558,7 @@ class E3CommandParser {
   private int progress = -1;
   private long supplySerial = 0;
   private int showStats = 1;
+  private String cachedScriptCommand;
 
   public int getShowStats() {
     return showStats;
@@ -1012,16 +1013,17 @@ class E3CommandParser {
    * -- add give order (if possible)<br />
    * <code>// $cript Benoetige minAmount [maxAmount] item [priority]</code><br />
    * <code>// $cript Benoetige JE amount item [priority]</code><br />
-   * <code>// $cript Benoetige ALLES [item] [priority]</code> -- acquire things from other units<br />
+   * <code>// $cript Benoetige ALLES [item] [priority]</code> -- acquire things from other
+   * units<br />
    * <code>// $cript BenoetigeFremd unit [JE] minAmount [maxAmount] item [priority] [warning]</code><br
    * />
    * <code>// $cript Versorge [[item]...] priority</code> -- set supply priority.<br />
-   * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code> Collects all free items in the region,
-   * Versorge 100, calls Ueberwache<br />
+   * <code>// $cript BerufDepotVerwalter [Zusatzbetrag]</code> Collects all free items in the
+   * region, Versorge 100, calls Ueberwache<br />
    * <code>// $cript Soldat [Talent [Waffe [Schild [Rüstung]]]] [nie|Talent|Waffe|Schild|Rüstung]</code>
    * -- learn skill and reserve equipment<br />
-   * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code> -- learn skills in given ratio
-   * <br />
+   * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code> -- learn skills in given
+   * ratio <br />
    * <code>// $cript BerufBotschafter [minimum money] [Talent]</code> -- earn money if necessary,
    * otherwise learn skill<br />
    * <code>// $cript Ueberwache</code> -- look out for unknown units<br />
@@ -1063,7 +1065,8 @@ class E3CommandParser {
           currentOrder = null;
         } else {
           // as of Java 7 the first character of an integer may be a '+' sign
-          if (!tokens[0].startsWith("+")) {
+          boolean repeat = true;
+          while (tokens != null && !tokens[0].startsWith("+") && repeat) {
             try {
               Integer.parseInt(tokens[0]);
               String[] nextOrders = commandRepeat(tokens);
@@ -1082,6 +1085,7 @@ class E3CommandParser {
                 }
               }
             } catch (NumberFormatException e) {
+              repeat = false;
               // not a repeating order
             }
           }
@@ -1242,11 +1246,11 @@ class E3CommandParser {
    * <code>// $cript [rest [period [length]]] text</code><br />
    * Adds text (or commands) to the orders after rest rounds. If <code>rest==1</code>, text is added
    * to the unit's orders after the current order. If text is a script order itself, it will be
-   * executed. If period is set, rest will be reset to period and the modified order added instead of
-   * the current order. If <code>rest>1</code>, it is decreased and the modified order added instead
-   * of the current one. If length is given, the whole order will be removed after length rounds.
-   * <code>text</code> may contain '\n". If this is the case it is split into lines and the lines
-   * are executed or inserted after the current command. For example the line<br />
+   * executed. If period is set, rest will be reset to period and the modified order added instead
+   * of the current order. If <code>rest>1</code>, it is decreased and the modified order added
+   * instead of the current one. If length is given, the whole order will be removed after length
+   * rounds. <code>text</code> may contain '\n". If this is the case it is split into lines and the
+   * lines are executed or inserted after the current command. For example the line<br />
    * "// $cript 1 10 MACHE TEMP a\nLERNE Hiebwaffen\n// $cript 2 GIB a 1 Silber\nENDE"<br />
    * will be replaced with<br />
    * "// $cript 10 10 MACHE TEMP a\nLERNE Hiebwaffen\n// $cript 2 GIB a 1 Silber\nENDE",<br />
@@ -1316,8 +1320,7 @@ class E3CommandParser {
       }
       if ((rest > 1 || period > 0) && length > 0) {
         StringBuilder newOrder = new StringBuilder();
-        newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker);
-        newOrder.append(" ").append(rest - 1);
+        newOrder.append(createScriptCommand()).append(rest - 1);
         if (period > 0) {
           newOrder.append(" ").append(period);
         }
@@ -1340,8 +1343,8 @@ class E3CommandParser {
   /**
    * <code>// $cript auto [NICHT]|[length [period]]</code><br />
    * Autoconfirms a unit (or prevents autoconfirmation if NICHT). If length is given, the unit is
-   * autoconfirmed for length rounds (length is decreased each round). If period is given, the unit is
-   * <em>not</em> confirmed every period rounds, otherwise confirmed.
+   * autoconfirmed for length rounds (length is decreased each round). If period is given, the unit
+   * is <em>not</em> confirmed every period rounds, otherwise confirmed.
    *
    * @param tokens
    */
@@ -1372,8 +1375,7 @@ class E3CommandParser {
           }
         }
         StringBuilder newOrder = new StringBuilder();
-        newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker).append(" ").append(
-            tokens[0]);
+        newOrder.append(createScriptCommand()).append(tokens[0]);
         newOrder.append(" ").append(length - 1);
         if (period > 0) {
           newOrder.append(" ").append(period);
@@ -1385,6 +1387,13 @@ class E3CommandParser {
         return;
       }
     }
+  }
+
+  private String createScriptCommand() {
+    if (cachedScriptCommand == null) {
+      cachedScriptCommand = PCOMMENTOrder + " " + scriptMarker + " ";
+    }
+    return cachedScriptCommand;
   }
 
   /**
@@ -1539,11 +1548,11 @@ class E3CommandParser {
    * <code>// $cript Benoetige FUSS|PFERD Pferd [priority]</code><br />
    * <code>// $cript Benoetige ALLES [item] [priority]</code><br />
    * Tries to transfer the maxAmount of item from other units to this unit. Issues warning if
-   * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve amount of item for every
-   * person in the unit. Fractional amounts are possible and rounded up.
+   * minAmount cannot be supplied. <code>Benoetige JE</code> tries to reserve amount of item for
+   * every person in the unit. Fractional amounts are possible and rounded up.
    * <code>Benoetige ALLES item</code> is equivalent to <code>Benoetige 0 infinity item</code>,
-   * <code>Benoetige ALLES</code> is equivalent to <code>Benoetige ALLES</code> for every itemtype in
-   * the region.<br/>
+   * <code>Benoetige ALLES</code> is equivalent to <code>Benoetige ALLES</code> for every itemtype
+   * in the region.<br/>
    * <code>Benoetige KRAUT</code> is the same for every herb type in the region.<br/>
    * <code>BenoetigeFremd unit (JE amount)|(minAmount [maxAmount]) item [priority] [warning...]</code>
    * <br />
@@ -1696,16 +1705,17 @@ class E3CommandParser {
         addNewError("Zahl erwartet");
       }
     }
-    addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz1 + zusatz2, DEPOT_SILVER_PRIORITY);
+    addNeed("Silber", currentUnit, costs + zusatz1, costs + zusatz1 + zusatz2,
+        DEPOT_SILVER_PRIORITY);
 
     commandNeed(new String[] { "Benoetige ", ALLOrder, String.valueOf(DEPOT_PRIORITY) });
     commandSupply(new String[] { "Versorge", "100" });
   }
 
   /**
-   * <code>Versorge [[item1]...] priority</code> -- set supply priority. Units with negative priority
-   * only deliver for minimum needs. Needs are satisfied in descending order of priority. If no items
-   * are given, the priority is adjusted for alle the unit's items.
+   * <code>Versorge [[item1]...] priority</code> -- set supply priority. Units with negative
+   * priority only deliver for minimum needs. Needs are satisfied in descending order of priority.
+   * If no items are given, the priority is adjusted for alle the unit's items.
    */
   protected void commandSupply(String[] tokens) {
     int priority = 0;
@@ -1764,15 +1774,25 @@ class E3CommandParser {
   }
 
   /**
-   * <code>Kapazitaet FUSS|PFERD|SCHIFF|amount</code> -- ensure that a unit's capacity is not exceeded
+   * <code>Kapazitaet FUSS|PFERD|SCHIFF|amount</code> -- ensure that a unit's capacity is not
+   * exceeded
    */
   protected void commandCapacity(String[] tokens) {
     int capacity = 0;
+    int slack = 0;
     if (tokens.length < 2) {
       addNewError("zu wenig Argumente");
       return;
     } else if (tokens.length > 2) {
-      addNewError("zu viele Argumente");
+      if (tokens.length == 4 && "-".equals(tokens[2])) {
+        try {
+          slack = Integer.parseInt(tokens[3]);
+        } catch (NumberFormatException e) {
+          addNewError("Zahl erwartet");
+        }
+      } else {
+        addNewError("zu viele Argumente");
+      }
     }
     MovementEvaluator movement = world.getGameSpecificStuff().getMovementEvaluator();
     int load = movement.getModifiedLoad(currentUnit);
@@ -1800,12 +1820,14 @@ class E3CommandParser {
         capacity = load;
       }
     }
+
     // int load = movement.getModifiedLoad(currentUnit);
-    capacities.put(currentUnit, capacity - load);
+    capacities.put(currentUnit, capacity - slack - load);
   }
 
   private boolean isCapacityError(int capacity) {
-    return capacity == MovementEvaluator.CAP_NO_HORSES || capacity == MovementEvaluator.CAP_UNSKILLED;
+    return capacity == MovementEvaluator.CAP_NO_HORSES
+        || capacity == MovementEvaluator.CAP_UNSKILLED;
   }
 
   /**
@@ -1828,8 +1850,7 @@ class E3CommandParser {
       addNewWarning(warning.toString(), false);
     }
     if (delay != 1) {
-      StringBuilder newCommand =
-          new StringBuilder(PCOMMENTOrder).append(" ").append(scriptMarker).append(" +");
+      StringBuilder newCommand = new StringBuilder(createScriptCommand()).append("+");
       newCommand.append(Math.max(0, delay - 1));
       for (int i = 1; i < tokens.length; ++i) { // skip "+x"
         newCommand.append(" ").append(tokens[i]);
@@ -1874,13 +1895,13 @@ class E3CommandParser {
   /**
    * <code>Soldat [Talent [Waffe [Schild [Rüstung]]]] [nie|Talent|Waffe|Schild|Rüstung]</code><br />
    * Tries to learn best skill and acquire equipment. If no skill is given, best weapon skill is
-   * selected. If no weapon is given, best matching weapon is acquired and so on. Preference is always
-   * for RESERVEing stuff the unit already has. Waffe, Schild, Rüstung can be "null" if nothing should
-   * be reserved or "best" (the default behaviour).<br />
+   * selected. If no weapon is given, best matching weapon is acquired and so on. Preference is
+   * always for RESERVEing stuff the unit already has. Waffe, Schild, Rüstung can be "null" if
+   * nothing should be reserved or "best" (the default behaviour).<br />
    * Warning can be:<br />
-   * nie: issues no warnings at all, Talent: only warns if no skill is given and no best skill exists,
-   * Waffe: additionally warn if no weapon can be acquired, Schild: additionally warn if no shield,
-   * Rüstung: additionally warn if no armor. Default warning level is "Waffe".
+   * nie: issues no warnings at all, Talent: only warns if no skill is given and no best skill
+   * exists, Waffe: additionally warn if no weapon can be acquired, Schild: additionally warn if no
+   * shield, Rüstung: additionally warn if no armor. Default warning level is "Waffe".
    */
   protected void commandSoldier(String[] tokens) {
     String warning = tokens[tokens.length - 1];
@@ -1976,7 +1997,7 @@ class E3CommandParser {
       }
     } else if (skill == null) {
       // other order
-      StringBuilder order = new StringBuilder();
+      StringBuilder order = new StringBuilder(createScriptCommand()).append("1 ");
       if (tokens.length > actionToken) {
         order.append(tokens[actionToken]);
       }
@@ -2268,8 +2289,9 @@ class E3CommandParser {
           goodAmount = maxAmount - totalVolume;
         }
 
-        addNeed(luxury, currentUnit, ALLOrder.equals(tokens[2 + reserveToken]) ? goodAmount : volume, volume
-            * reserveMultiplier,
+        addNeed(luxury, currentUnit, ALLOrder.equals(tokens[2 + reserveToken]) ? goodAmount
+            : volume, volume
+                * reserveMultiplier,
             TRADE_PRIORITY, warning);
         if (goodAmount > 0) {
 
@@ -2332,8 +2354,8 @@ class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Quartiermeister [[Menge1 Gut 1]...]</code>: learn perception, allow listed amount
-   * of goods. If other goods are detected, do not confirm orders.
+   * <code>// $cript Quartiermeister [[Menge1 Gut 1]...]</code>: learn perception, allow listed
+   * amount of goods. If other goods are detected, do not confirm orders.
    */
   protected void commandQuartermaster(String[] tokens) {
     learn(currentUnit, Collections.singleton(new Skill(world.getRules().getSkillType(
@@ -2362,8 +2384,8 @@ class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Sammler [frequenz]</code>: collect herbs if there are at least "viele", research
-   * herbs every frequenz rounds.
+   * <code>// $cript Sammler [frequenz]</code>: collect herbs if there are at least "viele",
+   * research herbs every frequenz rounds.
    */
   protected void commandCollector(String[] tokens) {
     if (tokens.length > 2) {
@@ -2388,7 +2410,8 @@ class E3CommandParser {
     if (modulo != Integer.MAX_VALUE
         && (world.getDate().getDate() % modulo == 0 || currentRegion.getHerbAmount() == null
             || (!currentRegion
-                .getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals("sehr viele")))) {
+                .getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals(
+                    "sehr viele")))) {
       addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KRÄUTER"), true);
@@ -2419,7 +2442,7 @@ class E3CommandParser {
     // no route order -- create new one
     removeOrdersLike(getResearchOrder() + ".*", true);
     StringBuilder newOrder = new StringBuilder();
-    newOrder.append(PCOMMENTOrder).append(" ").append(scriptMarker).append(" ").append(tokens[0]);
+    newOrder.append(createScriptCommand()).append(tokens[0]);
     StringBuilder moveOrder = new StringBuilder(ROUTEOrder);
     boolean pause = false;
     for (int i = 1; i < tokens.length; ++i) {
@@ -2706,7 +2729,8 @@ class E3CommandParser {
       // add messages for unsatisfied needs
       if (need.getMinAmount() <= 0 && need.getMaxAmount() > 0
           && need.getMaxAmount() != Integer.MAX_VALUE) {
-        addOrder(need.getUnit(), "; braucht " + need.getMaxAmount() + " mehr " + need.getItem() + ", "
+        addOrder(need.getUnit(), "; braucht " + need.getMaxAmount() + " mehr " + need.getItem()
+            + ", "
             + need.getMessage(),
             false);
       }
@@ -2783,7 +2807,8 @@ class E3CommandParser {
 
   }
 
-  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean min, boolean all,
+  private void addTransfer(Unit giver, Unit receiver, String item, int amount, boolean min,
+      boolean all,
       Need need) {
     transferList.add(new Transfer(giver, receiver, item, amount, min, all, need, ++supplySerial));
     increaseMulti(transfersMap, receiver, item, amount);
@@ -2907,10 +2932,12 @@ class E3CommandParser {
     if (amount > 0) {
       // adjustForTransfer(need, amount);
       for (Supply supply : supplyMapp.get(need.getItem())) {
-        if (supply.getUnit() != need.getUnit() && (min || supply.getPriority() > 0) && supply.hasPriority()) {
+        if (supply.getUnit() != need.getUnit() && (min || supply.getPriority() > 0) && supply
+            .hasPriority()) {
           int giveAmount = Math.min(amount, supply.getAmount());
           if (giveAmount > 0) {
-            addTransfer(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, min, false, need);
+            addTransfer(supply.getUnit(), need.getUnit(), need.getItem(), giveAmount, min, false,
+                need);
             transfer(supply.getUnit(), need, giveAmount);
             amount -= giveAmount;
           }
@@ -3018,8 +3045,8 @@ class E3CommandParser {
    *          used. If the unit knows no weapon skill, a warning is issued.
    * @param sWeapon The desired weapon that is reserved. If this is <code>null</code>, a weapon that
    *          matches the weaponSkill is reserved.
-   * @param sArmor The desired armor. If <code>null</code>, a suitable armor is reserved. If the unit
-   *          has no armor at all, <em>no</em> warning is issued.
+   * @param sArmor The desired armor. If <code>null</code>, a suitable armor is reserved. If the
+   *          unit has no armor at all, <em>no</em> warning is issued.
    * @param sShield The desired shield. If <code>null</code>, a suitable shield is reserved. If the
    *          unit has no shield at all, <em>no</em> warning is issued.
    * @param warnint Warnings for missing equipment are only issued if this is <code>true</code>.
@@ -3360,8 +3387,8 @@ class E3CommandParser {
   }
 
   /**
-   * If confirm is false, mark unit as not confirmable. If confirm is true, mark it as confirmable if
-   * it has not been marked as unconfirmable before (unconfirm always overrides confirm).
+   * If confirm is false, mark unit as not confirmable. If confirm is true, mark it as confirmable
+   * if it has not been marked as unconfirmable before (unconfirm always overrides confirm).
    *
    * @param u
    * @param confirm
@@ -3406,7 +3433,8 @@ class E3CommandParser {
    * Returns the ItemType in the rules matching <code>name</code>.
    *
    * @param name A item type name, like "Silber"
-   * @return The ItemType corresponding to name or <code>null</code> if this ItemType does not exist.
+   * @return The ItemType corresponding to name or <code>null</code> if this ItemType does not
+   *         exist.
    */
   public static ItemType getItemType(String name) {
     return world.getRules().getItemType(name);
@@ -3640,8 +3668,8 @@ class E3CommandParser {
   /**
    * Converts some Vorlage commands to $cript commands. Call from the script of your faction
    * with<br />
-   * <code>(new E3CommandParser(world, helper)).convertVorlage((Faction) container, null);</code> (all
-   * regions) or from a region with<br />
+   * <code>(new E3CommandParser(world, helper)).convertVorlage((Faction) container, null);</code>
+   * (all regions) or from a region with<br />
    * <code>(new E3CommandParser(world, helper)).convertVorlage(helper.getFaction("1wpy"),
    * (Region) container);</code>.
    *
@@ -3670,7 +3698,7 @@ class E3CommandParser {
     }
 
     // loop for all units of faction
-    final String scriptStart = PCOMMENTOrder + " " + scriptMarker + " ";
+    final String scriptStart = createScriptCommand();
     for (Unit u : region.units())
       if (faction.getID().equals(u.getFaction().getID())) {
         // comment out the following line if you don't have the newest nightly build of Magellan
@@ -3727,7 +3755,8 @@ class E3CommandParser {
                     number = Integer.MIN_VALUE;
                   }
                 }
-                addNewOrder(scriptStart + "BerufDepotVerwalter " + (number > 0 ? number : ""), true);
+                addNewOrder(scriptStart + "BerufDepotVerwalter " + (number > 0 ? number : ""),
+                    true);
               } else if (command.equals("BerufWahrnehmer")) {
                 addNewOrder(scriptStart
                     + "Lerne "
@@ -3816,7 +3845,8 @@ class E3CommandParser {
               }
             } else if (currentOrder.startsWith("// #forever { ")) {
               addNewOrder(COMMENTOrder + " " + currentOrder, true);
-              addNewOrder("@" + currentOrder.substring(14, currentOrder.lastIndexOf("}") - 1), true);
+              addNewOrder("@" + currentOrder.substring(14, currentOrder.lastIndexOf("}") - 1),
+                  true);
             } else if (currentOrder.startsWith("// #default")) {
               // ignore
               addNewOrder(COMMENTOrder + " " + currentOrder, true);
@@ -4052,7 +4082,8 @@ class E3CommandParser {
   }
 
   /**
-   * Private utility script written to handle unwanted orders. Not interesting for the general public.
+   * Private utility script written to handle unwanted orders. Not interesting for the general
+   * public.
    *
    * @param faction
    * @param region
@@ -4567,7 +4598,8 @@ class Need {
   }
 
   private String createMessage() {
-    return uip.unit + " needs " + minAmount + "/" + uip.amount + " " + uip.item + " (" + uip.priority + ")";
+    return uip.unit + " needs " + minAmount + "/" + uip.amount + " " + uip.item + " ("
+        + uip.priority + ")";
   }
 
   public String getMessage() {
@@ -4582,7 +4614,8 @@ class Transfer {
   private boolean min;
   private UnitItemPriority uip;
 
-  public Transfer(Unit unit, Unit target, String item, int amount, boolean min, boolean all, Need need,
+  public Transfer(Unit unit, Unit target, String item, int amount, boolean min, boolean all,
+      Need need,
       long serial) {
     uip = new UnitItemPriority(unit, item, amount, 0, serial);
     this.target = target;

@@ -255,10 +255,10 @@ public class GiveOrder extends UnitArgumentOrder {
                     .isLand()) {
                   setWarning(unit, line, Resources.get("order.give.warning.ship.lastship"));
                 }
-              } else if (zeroOrTarget == null || !zeroOrTarget.getFaction().equals(unit
+              } else if (!zeroOrTarget.getFaction().equals(unit
                   .getFaction())) {
                 setError(unit, line, Resources.get("order.give.warning.invalidunit", target));
-              } else if (zeroOrTarget != null && zeroOrTarget.getModifiedShip() == null) {
+              } else if (zeroOrTarget.getModifiedShip() == null) {
                 // target enters new ship
                 targetShip = ship.createTempShip();
                 eState.enter(zeroOrTarget, targetShip);

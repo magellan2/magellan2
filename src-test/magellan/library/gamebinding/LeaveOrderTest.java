@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +74,18 @@ public class LeaveOrderTest extends MagellanTestWithResources {
 
     assertEquals(null, unit.getModifiedBuilding());
     assertEquals(b1, unit.getBuilding());
+  }
+
+  @Test
+  public void testLeaveNone() {
+    unit.clearOrders();
+    unit.addOrder("VERLASSE");
+
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region0);
+
+    assertEquals(null, unit.getModifiedBuilding());
+    assertNotNull(unit.getOrders2().get(0).getProblem());
   }
 
   @Test

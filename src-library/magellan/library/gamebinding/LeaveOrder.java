@@ -66,9 +66,11 @@ public class LeaveOrder extends SimpleOrder {
         }
       }
       if (!entered) {
-        estate.leave(unit, ucLeft);
-        LeaveRelation rel = new LeaveRelation(unit, ucLeft, line);
-        rel.add();
+        if (ucLeft != null) {
+          estate.leave(unit, ucLeft);
+          LeaveRelation rel = new LeaveRelation(unit, ucLeft, line);
+          rel.add();
+        }
       } else {
         setWarning(unit, line, Resources.get("order.leave.warning.justentered", unit, ucLeft));
       }

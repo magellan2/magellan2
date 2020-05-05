@@ -2987,12 +2987,6 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertWarning("unterbeschäftigt", unit, 3);
   }
 
-  @Test
-  public final void testJam() {
-    int n = 5;
-    int x[][] = new int[n][n];
-  }
-
   /**
    * Test method for {@link E3CommandParser#commandMonitor(String[])},
    * {@link E3CommandParser#commandAllow(String[])}

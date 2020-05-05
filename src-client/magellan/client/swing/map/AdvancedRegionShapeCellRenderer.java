@@ -354,7 +354,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   protected JMenu contextMenu;
   protected ContextObserver obs = null;
   protected Mapper mapper = null;
-  protected String lastMapperDef = null;
 
   private Preferences preferences;
 
@@ -498,9 +497,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   protected void applySet(ARRSet set) {
-    lastMapperDef = getMapperTooltip();
     if (set.mapperTooltip != null) {
-      setMapperTooltip(set.mapperTooltip);
+      setMapperTooltip(null, set.mapperTooltip);
     }
 
     // load ocean and unknown color from geom. renderer
@@ -889,7 +887,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    */
   public String getMapperTooltip() {
     if (mapper != null)
-      return mapper.getTooltipDefinition();
+      return mapper.getTooltipDefinition()[1];
 
     return null;
   }
@@ -897,10 +895,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   /**
    * Changes the responsible mapper's tool tip definition
    */
-  public boolean setMapperTooltip(String tooltip) {
+  public boolean setMapperTooltip(String name, String tooltip) {
     if (mapper != null) {
       if (tooltip != null) {
-        mapper.setTooltipDefinition(tooltip);
+        mapper.setTooltipDefinition(name, tooltip);
       }
 
       return true;

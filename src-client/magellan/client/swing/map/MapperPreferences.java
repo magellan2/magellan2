@@ -246,10 +246,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     }
 
     if (dialogShown) {
-      String tDefinition = ttsDialog.getSelectedToolTip();
-
-      if (tDefinition != null) {
-        source.setTooltipDefinition(tDefinition);
+      String[] tip = ttsDialog.getSelectedToolTip();
+      if (tip != null) {
+        source.setTooltipDefinition(tip[0], tip[1]);
       }
 
       dialogShown = false;
@@ -1111,7 +1110,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       }
     }
 
-    protected JList tooltipList;
+    protected JList<String> tooltipList;
     protected List<String> tooltips;
     protected JButton add;
     protected JButton edit;
@@ -1281,7 +1280,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
       }
 
       if (tooltipList == null) {
-        tooltipList = new JList(v.toArray());
+        tooltipList = new JList<String>(v.toArray(new String[] {}));
         tooltipList.setBorder(BorderFactory.createEtchedBorder());
         tooltipList.addListSelectionListener(this);
         tooltipList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -1291,7 +1290,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
         listCont.add(jsp, BorderLayout.CENTER);
       } else {
         int oldIndex = tooltipList.getSelectedIndex();
-        tooltipList.setListData(v.toArray());
+        tooltipList.setListData(v.toArray(new String[] {}));
 
         if (oldIndex >= v.size()) {
           oldIndex = -1;
@@ -1403,12 +1402,12 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
     /**
      * Return the currently selected tooltip in the list (the first one if none are selected).
      */
-    public String getSelectedToolTip() {
+    public String[] getSelectedToolTip() {
       if (tooltipList != null) {
         int i = tooltipList.getSelectedIndex();
         i = Math.max(i, 0);
 
-        return tooltips.get(i);
+        return new String[] { tooltipList.getModel().getElementAt(i), tooltips.get(i) };
       }
 
       return null;

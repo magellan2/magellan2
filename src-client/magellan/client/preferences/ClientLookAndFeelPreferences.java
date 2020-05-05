@@ -129,8 +129,10 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     help.setSelectedTextColor(getForeground());
     help.setFont(l.getFont());
     help.setMinimumSize(new java.awt.Dimension(546, 20));
-    help.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
-    help.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
+    help.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
+        "Label.background"));
+    help.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
+        "Label.foreground"));
 
     con.gridx = 0;
     con.gridy = 1;
@@ -205,10 +207,8 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   /**
    * TODO: implement it
    * 
-   * @deprecated not implemented!
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
-  @Deprecated
   public void initPreferences() {
     // TODO: implement it
   }

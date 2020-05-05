@@ -180,7 +180,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   protected boolean showTooltip = false;
   protected ItemType silverItemType = null;
   protected ReplacerSystem tooltipDefinition;
-  protected String tooltipDefinitionString = null;
+  protected String[] tooltipDefinitionStrings = new String[2];
   protected static ReplacerFactory tooltipReplacers;
 
   // region sublist for rendering
@@ -218,7 +218,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         new MapContextMenu(context.getClient(), context.getEventDispatcher(), context
             .getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
+    reprocessTooltipDefinition();
 
     setShowTooltip(PropertiesHelper.getBoolean(settings, "Mapper.showTooltips", false));
 
@@ -462,7 +462,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    *
    */
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
+    // standard def is Name~Definition
+    String[] tip = settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP).split(
+        "~");
+    if (tip.length != 2) {
+      tip = settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP).split("~");
+    }
+    setTooltipDefinition(tip[0], tip[1]);
   }
 
   /**
@@ -1727,17 +1733,18 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Returns the tooltip definition
    */
-  public String getTooltipDefinition() {
-    return tooltipDefinitionString;
+  public String[] getTooltipDefinition() {
+    return tooltipDefinitionStrings;
   }
 
   /**
    * Sets the tooltip definition
    */
-  public void setTooltipDefinition(String tdef) {
-    tooltipDefinitionString = tdef;
+  public void setTooltipDefinition(String name, String tdef) {
+    tooltipDefinitionStrings[0] = name;
+    tooltipDefinitionStrings[1] = tdef;
     tooltipDefinition = ReplacerHelp.createReplacer(tdef);
-    settings.setProperty("Mapper.ToolTip.Definition", tdef);
+    settings.setProperty("Mapper.ToolTip.Definition", name + "~" + tdef);
   }
 
   /**

@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,6 +41,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -89,6 +91,7 @@ import magellan.library.HasRegion;
 import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -445,7 +448,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     });
 
     // initialize Shortcuts
-    // (stm) deactivated, too obfuscating for user
     tooltipShortcut = new TooltipShortcut();
 
     mapperShortcuts = new ArrayList<KeyStroke>(16);
@@ -1202,38 +1204,53 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Creates a popup menu for changing tooltips
    */
   private void changeTooltip() {
-    final List<?> list = mapper.getAllTooltipDefinitions();
-    if (list == null)
-      return;
-
-    JPopupMenu menu = new JPopupMenu("tooltips");
-    JMenuItem popupCaption =
-        new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
-    popupCaption.setEnabled(false);
-    menu.add(popupCaption);
-
-    for (int i = 0; i < 10; ++i) {
-      final int number = i;
-      JMenuItem item =
-          new JMenuItem(new AbstractAction(String.valueOf(number) + " "
-              + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
-
-            public void actionPerformed(ActionEvent e) {
-              if (list.size() > (2 * number)) {
-                mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
-              }
-            }
-          });
-      item.setMnemonic(Character.forDigit(i, 10));
-      menu.add(item);
-      if (list.size() > (2 * number)) {
-        item.setEnabled(true);
-      } else {
-        item.setEnabled(false);
-      }
+    final List<String> list = mapper.getAllTooltipDefinitions();
+    String[] current = mapper.getTooltipDefinition();
+    final Map<String, String> defs = CollectionFactory.createOrderedMap(list.size() / 2);
+    for (ListIterator<String> it = list.listIterator(); it.hasNext();) {
+      defs.put(it.next(), it.next());
     }
-    menu.show(this, getLocation().x, getLocation().y);
+
+    showDialog(new ArrayList<String>(defs.keySet()), Resources.get(
+        "mapperpanel.shortcuts.changetooltipmenu.caption"), null,
+        new Loader() {
+          public void load(String name) {
+            mapper.setTooltipDefinition(name, defs.get(name));
+            mapper.setShowTooltip(true);
+          }
+        }, current[0]);
   }
+  // if (list == null)
+  // return;
+  //
+  // JPopupMenu menu = new JPopupMenu("tooltips");
+  // JMenuItem popupCaption =
+  // new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
+  // popupCaption.setEnabled(false);
+  // menu.add(popupCaption);
+  //
+  // for (int i = 0; i < 10; ++i) {
+  // final int number = i;
+  // JMenuItem item =
+  // new JMenuItem(new AbstractAction(String.valueOf(number) + " "
+  // + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
+  //
+  // public void actionPerformed(ActionEvent e) {
+  // if (list.size() > (2 * number)) {
+  // mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
+  // }
+  // }
+  // });
+  // item.setMnemonic(Character.forDigit(i, 10));
+  // menu.add(item);
+  // if (list.size() > (2 * number)) {
+  // item.setEnabled(true);
+  // } else {
+  // item.setEnabled(false);
+  // }
+  // }
+  // menu.show(this, getLocation().x, getLocation().y);
+  // }
 
   /**
    * Creates a popup menu for changing tooltips.
@@ -1265,14 +1282,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     void load(String name);
   }
 
-  private void showDialog(final List<String> sets, String caption, final MapCellRenderer arr,
-      final Loader loader, String currentSet) {
+  private void showDialog(final List<String> sets, String caption,
+      final MapCellRenderer newRenderer, final Loader loader, String currentSet) {
     if (sets == null)
       return;
 
     JPopupMenu menu = new JPopupMenu("tooltips");
-    JMenuItem popupCaption =
-        new JMenuItem(caption);
+    JMenuItem popupCaption = new JMenuItem(caption);
     popupCaption.setEnabled(false);
     menu.add(popupCaption);
 
@@ -1284,7 +1300,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         public void actionPerformed(ActionEvent e) {
 
           if (sets.size() > number) {
-            mapper.setRenderer(arr);
+            if (newRenderer != null) {
+              mapper.setRenderer(newRenderer);
+            }
             loader.load(sets.get(number));
 
             Mapper.setRenderContextChanged(true);
@@ -1296,14 +1314,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         item.setMnemonic(Character.forDigit((number + 1) % 10, 10));
       }
       if (sets.get(number).equals(currentSet)) {
-        item.setSelected(true);
+        item.setFont(item.getFont().deriveFont(Font.BOLD));
       }
       menu.add(item);
-      if (sets.size() > number) {
-        item.setEnabled(true);
-      } else {
-        item.setEnabled(false);
-      }
     }
     menu.show(this, getLocation().x, getLocation().y);
   }
@@ -1472,7 +1485,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       java.util.List<String> list = mapper.getAllTooltipDefinitions();
 
       if ((list != null) && (list.size() > (2 * index))) {
-        mapper.setTooltipDefinition(list.get((2 * index) + 1));
+        mapper.setTooltipDefinition(list.get(2 * index), list.get((2 * index) + 1));
       }
     }
 

@@ -289,7 +289,6 @@ public class Units {
    * Returns the sailing skill value of the ship's owner
    */
   public static int getCaptainSkillLevel(Ship s) {
-    // FIXME shouldn't access getData() from here, maybe move to GameSpecific
     SkillType sailingSkillType = s.getData().getRules().getSkillType(EresseaConstants.S_SEGELN);
     Unit owner = s.getModifiedOwnerUnit();
     int captainSkillLevel = 0;
@@ -496,4 +495,10 @@ public class Units {
     return result;
   }
 
+  /**
+   * Returns the nominal size (max size * amount) of a ship.
+   */
+  public static int getNominalSize(Ship ship) {
+    return ship.getAmount() * ship.getShipType().getMaxSize();
+  }
 }

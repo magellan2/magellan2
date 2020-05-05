@@ -746,10 +746,10 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    *
    * @param uid the unit's id
    * @param i the amount
-   * @param persons Whether to add "PERSONEN" or not
+   * @param each Whether amount contained "JE"
    */
   /** Add completions for command GibUIDAmount. */
-  public void cmpltGibUIDAmount(UnitID uid, int i, boolean persons) {
+  public void cmpltGibUIDAmount(UnitID uid, int i, boolean each) {
     addUnitItems(i, "");
 
     if ((i != 0) && (uid != null)) {
@@ -791,7 +791,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       } catch (RulesException e) {
         tounit = "TEMP " + uid;
       }
-      if (persons && (unit.getPersons() >= i)) {
+      if (!each && (unit.getPersons() >= i)) {
         order = getOrderTranslation(EresseaConstants.OC_MEN);
       }
       for (final Item item : unit.getItems()) {
@@ -812,17 +812,17 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       }
     }
 
-    if (persons) {
+    if (!each) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MEN), (unit
           .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
     //
-    if (unit.getModifiedShip() != null) {
+    if (!each && unit.getModifiedShip() != null) {
       Ship s = unit.getModifiedShip();
       if (s.getModifiedOwnerUnit().equals(unit)) {
         // is the amount <= number of ships in the fleet?
-        if (i <= s.getAmount()) {
+        if (i <= s.getModifiedAmount()) {
           // valid targets are 0, or the captain of another ship or a unit on the same ship or a
           // unit without ship
           Unit target = getData().getUnit(uid);

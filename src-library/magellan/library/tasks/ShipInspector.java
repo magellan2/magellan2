@@ -104,7 +104,7 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
-    int nominalShipSize = s.getShipType().getMaxSize() * s.getAmount();
+    int nominalShipSize = Units.getNominalSize(s);
 
     if (s.getModifiedAmount() == 0)
       return problems;

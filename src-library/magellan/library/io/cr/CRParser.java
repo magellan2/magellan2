@@ -2515,6 +2515,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Prozent")
           && (ship.getType() != null)) {
+        // deprecated
         ship.setSize((ship.getShipType().getMaxSize() * Integer.parseInt(sc.argv[0])) / 100);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Schaden")) {

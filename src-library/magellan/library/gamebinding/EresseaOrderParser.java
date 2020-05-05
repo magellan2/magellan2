@@ -1425,7 +1425,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isNumeric(t.getText()) == true) {
         getOrder().type = EresseaConstants.OC_GIVE;
-        retVal = readGibUIDAmount(t, target, Integer.parseInt(t.getText()), true);
+        retVal = readGibUIDAmount(t, target, Integer.parseInt(t.getText()), false);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_EACH))) {
         getOrder().type = EresseaConstants.OC_GIVE;
         retVal = readGibJe(t, target);
@@ -1465,7 +1465,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isNumeric(t.getText()) == true) {
-        retVal = readGibUIDAmount(t, uid, Integer.parseInt(t.getText()), false); // GIB JE PERSONS
+        retVal = readGibUIDAmount(t, uid, Integer.parseInt(t.getText()), true); // GIB JE PERSONS
         // is illegal
       } else
       // // GIVE bla JE ALL ... does not make sense
@@ -1520,7 +1520,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
      * @param uid the unit's id
      * @param i the amount
      */
-    protected boolean readGibUIDAmount(OrderToken token, UnitID uid, int i, boolean persons) {
+    protected boolean readGibUIDAmount(OrderToken token, UnitID uid, int i, boolean each) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_NUMBER;
       getOrder().amount = Integer.parseInt(token.getText());
@@ -1534,7 +1534,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
         } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_MEN))) {
           getOrder().type = EresseaConstants.OC_MEN;
           retVal = true;
-        } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
+        } else if (!each && t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
           getOrder().type = EresseaConstants.OC_SHIP;
           retVal = true;
         } else {
@@ -1547,7 +1547,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltGibUIDAmount(uid, i, persons);
+        getCompleter().cmpltGibUIDAmount(uid, i, each);
       }
       return retVal;
     }

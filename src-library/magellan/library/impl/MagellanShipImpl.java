@@ -31,6 +31,7 @@ import magellan.library.relation.ShipTransferRelation;
 import magellan.library.rules.ShipType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -156,7 +157,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     if (capacity != -1)
       return capacity;
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
-        .getCapacity() * 100 * amount);
+        .getCapacity() * 100 * getAmount());
   }
 
   /**
@@ -280,7 +281,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * damage and remaing capacity are shown, too.
    *
    * @param printExtended Whether to return a more detailed description
-   * @return A strig representation of this ship
+   * @return A string representation of this ship
    */
   public String toString(boolean printExtended) {
     final StringBuffer sb = new StringBuffer();
@@ -304,7 +305,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
       }
       sb.append(getType());
 
-      final int nominalShipSize = getShipType().getMaxSize() * amount;
+      final int nominalShipSize = Units.getNominalSize(this);
       final int modifiedNominalShipSize = getShipType().getMaxSize() * getModifiedAmount();
 
       if (size != nominalShipSize) {

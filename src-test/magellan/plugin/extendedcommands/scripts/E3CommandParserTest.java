@@ -126,7 +126,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link E3CommandParser#setProperty(magellan.library.Unit, java.lang.String, java.lang.String)} .
+   * {@link E3CommandParser#setProperty(magellan.library.Unit, java.lang.String, java.lang.String)}.
    */
   @Test
   public final void testSetProperty() {
@@ -185,7 +185,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link E3CommandParser#addReserveOrder(magellan.library.Unit, java.lang.String, int, boolean)} .
+   * {@link E3CommandParser#addReserveOrder(magellan.library.Unit, java.lang.String, int, boolean)}.
    */
   @Test
   public final void testAddReserveOrder() {
@@ -430,6 +430,45 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript 1 1", unit, 1);
     assertOrder("", unit, 2);
+  }
+
+  /**
+   * Test method for the repeat command.
+   */
+  @Test
+  public final void testCommandRepeatMultiline() {
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 A\\nB");
+
+    parser.execute(unit.getFaction());
+
+    assertOrder("A", unit, 1);
+    assertOrder("B", unit, 2);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 A\\n// $cript +1 B\\nC");
+
+    parser.execute(unit.getFaction());
+
+    assertOrder("A", unit, 1);
+    assertOrder("; TODO: B", unit, 2);
+    assertOrder("C", unit, 3);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    String repeated =
+        "MACHE TEMP a\\nLERNE Hiebwaffen\\n// $cript 2 GIB a 1 Silber\\nENDE";
+    unit.addOrder("// $cript 1 10 " + repeated);
+
+    parser.execute(unit.getFaction());
+
+    assertOrder("// $cript 10 10 " + repeated, unit, 1);
+    assertOrder("MACHE TEMP a", unit, 2);
+    assertOrder("LERNE Hiebwaffen", unit, 3);
+    assertOrder("// $cript 1 GIB a 1 Silber", unit, 4);
+    assertOrder("ENDE", unit, 5);
   }
 
   /**

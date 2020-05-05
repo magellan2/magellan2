@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -877,107 +878,116 @@ public class E3CommandParser {
     clear = null;
 
     // NOTE: must not change currentUnit's orders directly! Always change newOrders!
+    Queue<String> queue = new LinkedList<String>();
     for (Order o : currentUnit.getOrders2()) {
       ++line;
-      currentOrder = o.getText();
-      String[] tokens = detectScriptCommand(currentOrder);
-      if (tokens == null) {
-        // add order if
-        if (shallClear(currentOrder)) {
-          addNewOrder(COMMENTOrder + " " + currentOrder, true);
-        } else {
-          addNewOrder(currentOrder, false);
-        }
-        currentOrder = null;
-      } else {
-        // as of Java 7 the first character of an integer may be a '+' sign
-        if (!tokens[0].startsWith("+")) {
-          try {
-            Integer.parseInt(tokens[0]);
-            currentOrder = commandRepeat(tokens);
-            if (currentOrder == null) {
-              tokens = null;
-            } else {
-              tokens = detectScriptCommand(currentOrder);
-              if (tokens == null) {
-                addNewOrder(currentOrder, true);
-                currentOrder = null;
-              }
-            }
-          } catch (NumberFormatException e) {
-            // not a repeating order
-          }
-        }
-        if (tokens != null) {
-          // System.out.println(o);
-          String command = tokens[0];
-          if (command.startsWith("+")) {
-            commandWarning(tokens);
-            setChangedOrders(true);
-          } else if (command.equals("KrautKontrolle")) {
-            commandControl(tokens);
-            setChangedOrders(true);
-          } else if (command.equals("auto")) {
-            commandAuto(tokens);
+      queue.add(o.getText());
+      while (!queue.isEmpty()) {
+        currentOrder = queue.poll();
+        String[] tokens = detectScriptCommand(currentOrder);
+        if (tokens == null) {
+          // add order if
+          if (shallClear(currentOrder)) {
+            addNewOrder(COMMENTOrder + " " + currentOrder, true);
           } else {
-            // order remains
             addNewOrder(currentOrder, false);
-
-            if (command.equals("Loeschen")) {
-              commandClear(tokens);
-            } else if (command.equals("GibWenn")) {
-              commandGiveIf(tokens);
-            } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
-              commandNeed(tokens);
-            } else if (command.equals("Versorge")) {
-              commandSupply(tokens);
-            } else if (command.equals("Kapazitaet")) {
-              commandCapacity(tokens);
-            } else if (command.equals("BerufDepotVerwalter")) {
-              commandDepot(tokens);
-            } else if (command.equals("Soldat")) {
-              commandSoldier(tokens);
-            } else if (command.equals("Lerne")) {
-              commandLearn(tokens);
-            } else if (command.equals("BerufBotschafter")) {
-              commandEmbassador(tokens);
-            } else if (command.equals("Ueberwache")) {
-              commandMonitor(tokens);
-            } else if (command.equals("Erlaube") || command.equals("Verlange")) {
-              commandAllow(tokens);
-            } else if (command.equals("Ernaehre")) {
-              commandEarn(tokens);
-            } else if (command.equals("Handel")) {
-              commandTrade(tokens);
-            } else if (command.equals("Steuermann")) {
-              if (tokens.length < 3) {
-                addNewError("zu wenige Argumente");
-              } else {
-                commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
-                    String.valueOf(DEFAULT_PRIORITY + 10) });
-                setConfirm(currentUnit, false);
-              }
-            } else if (command.equals("Mannschaft")) {
-              if (tokens.length < 3) {
-                addNewError("zu wenige Argumente");
-              } else {
-                commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
-                setConfirm(currentUnit, true);
-              }
-            } else if (command.equals("Quartiermeister")) {
-              commandQuartermaster(tokens);
-            } else if (command.equals("Sammler")) {
-              commandCollector(tokens);
-            } else if (command.equals("RekrutiereMax")) {
-              commandRecruit(tokens);
-            } else if (command.equals("Kommentar")) {
-              commandComment(tokens);
-            } else {
-              addNewError("unbekannter Befehl: " + command);
-            }
           }
           currentOrder = null;
+        } else {
+          // as of Java 7 the first character of an integer may be a '+' sign
+          if (!tokens[0].startsWith("+")) {
+            try {
+              Integer.parseInt(tokens[0]);
+              String nextOrders[] = commandRepeat(tokens);
+              if (nextOrders == null) {
+                currentOrder = null;
+                tokens = null;
+              } else {
+                currentOrder = nextOrders.length > 0 ? nextOrders[0] : "";
+                tokens = detectScriptCommand(currentOrder);
+                if (tokens == null) {
+                  addNewOrder(currentOrder, true);
+                  currentOrder = null;
+                }
+                for (int i = 1; i < nextOrders.length; ++i) {
+                  queue.add(nextOrders[i]);
+                }
+              }
+            } catch (NumberFormatException e) {
+              // not a repeating order
+            }
+          }
+          if (tokens != null) {
+            // System.out.println(o);
+            String command = tokens[0];
+            if (command.startsWith("+")) {
+              commandWarning(tokens);
+              setChangedOrders(true);
+            } else if (command.equals("KrautKontrolle")) {
+              commandControl(tokens);
+              setChangedOrders(true);
+            } else if (command.equals("auto")) {
+              commandAuto(tokens);
+            } else {
+              // order remains
+              addNewOrder(currentOrder, false);
 
+              if (command.equals("Loeschen")) {
+                commandClear(tokens);
+              } else if (command.equals("GibWenn")) {
+                commandGiveIf(tokens);
+              } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
+                commandNeed(tokens);
+              } else if (command.equals("Versorge")) {
+                commandSupply(tokens);
+              } else if (command.equals("Kapazitaet")) {
+                commandCapacity(tokens);
+              } else if (command.equals("BerufDepotVerwalter")) {
+                commandDepot(tokens);
+              } else if (command.equals("Soldat")) {
+                commandSoldier(tokens);
+              } else if (command.equals("Lerne")) {
+                commandLearn(tokens);
+              } else if (command.equals("BerufBotschafter")) {
+                commandEmbassador(tokens);
+              } else if (command.equals("Ueberwache")) {
+                commandMonitor(tokens);
+              } else if (command.equals("Erlaube") || command.equals("Verlange")) {
+                commandAllow(tokens);
+              } else if (command.equals("Ernaehre")) {
+                commandEarn(tokens);
+              } else if (command.equals("Handel")) {
+                commandTrade(tokens);
+              } else if (command.equals("Steuermann")) {
+                if (tokens.length < 3) {
+                  addNewError("zu wenige Argumente");
+                } else {
+                  commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
+                      String.valueOf(DEFAULT_PRIORITY + 10) });
+                  setConfirm(currentUnit, false);
+                }
+              } else if (command.equals("Mannschaft")) {
+                if (tokens.length < 3) {
+                  addNewError("zu wenige Argumente");
+                } else {
+                  commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
+                  setConfirm(currentUnit, true);
+                }
+              } else if (command.equals("Quartiermeister")) {
+                commandQuartermaster(tokens);
+              } else if (command.equals("Sammler")) {
+                commandCollector(tokens);
+              } else if (command.equals("RekrutiereMax")) {
+                commandRecruit(tokens);
+              } else if (command.equals("Kommentar")) {
+                commandComment(tokens);
+              } else {
+                addNewError("unbekannter Befehl: " + command);
+              }
+            }
+            currentOrder = null;
+
+          }
         }
       }
     }
@@ -1062,12 +1072,21 @@ public class E3CommandParser {
    * executed. If period is set, rest will be reset to period and the modified order added instead of
    * the current order. If <code>rest>1</code>, it is decreased and the modified order added instead
    * of the current one. If length is given, the whole order will be removed after length rounds.
+   * <code>text</code> may contain '\n". If this is the case it is split into lines and the lines
+   * are executed or inserted after the current command. For example the line<br />
+   * "// $cript 1 10 MACHE TEMP a\nLERNE Hiebwaffen\n// $cript 2 GIB a 1 Silber\nENDE"<br />
+   * will be replaced with<br />
+   * "// $cript 10 10 MACHE TEMP a\nLERNE Hiebwaffen\n// $cript 2 GIB a 1 Silber\nENDE",<br />
+   * "MACHE TEMP a",<br />
+   * "LERNE Hiebwaffen",<br />
+   * "// $cript 1 GIB a 1 Silber",<br />
+   * "ENDE".
    *
    * @param tokens
    * @return <code>text</code>, if <code>rest==1</code>, otherwise <code>null</code>
    */
-  protected String commandRepeat(String[] tokens) {
-    StringBuilder result = null;
+  protected String[] commandRepeat(String[] tokens) {
+    ArrayList<String> lines = null;
     try {
       int rest = Integer.parseInt(tokens[0]);
       int period = 0;
@@ -1094,22 +1113,33 @@ public class E3CommandParser {
         }
       }
       if (rest == 1) {
-        result = new StringBuilder();
+        lines = new ArrayList<String>(1);
+        StringBuilder result = new StringBuilder();
         if (period > 0) {
           rest = period + 1;
         }
         if (textIndex < tokens.length && tokens[textIndex].equals(scriptMarker)) {
           result.append(COMMENTOrder).append(" ");
         }
-        for (int i = textIndex; i < tokens.length; ++i) {
-          if (i > textIndex) {
+        for (int tokenIndex = textIndex; tokenIndex < tokens.length; ++tokenIndex) {
+          if (tokenIndex > textIndex) {
             result.append(" ");
           }
-          result.append(tokens[i]);
+          String[] subTokens = tokens[tokenIndex].split("\\\\n");
+          result.append(subTokens[0]);
+          for (int j = 1; j < subTokens.length; ++j) {
+            lines.add(result.toString());
+            result.setLength(0);
+            result.append(subTokens[j]);
+          }
+          if (tokenIndex + 1 >= tokens.length) {
+            lines.add(result.toString());
+          }
         }
       } else if (length == 0) {
         // return empty string to signal success
-        result = new StringBuilder();
+        lines = new ArrayList<String>(1);
+        lines.add("");
       }
       if ((rest > 1 || period > 0) && length > 0) {
         StringBuilder newOrder = new StringBuilder();
@@ -1129,10 +1159,9 @@ public class E3CommandParser {
     } catch (NumberFormatException e) {
       addNewOrder(currentOrder, false);
       addNewError("Zahl erwartet");
-      result = null;
     }
 
-    return result != null ? result.toString() : null;
+    return lines != null ? lines.toArray(new String[0]) : null;
   }
 
   /**

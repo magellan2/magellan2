@@ -104,6 +104,13 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     assertSame(62, localParser.getHandlers().size());
   }
 
+  @Test
+  public void testSpecialReader() {
+    checkOrder("\\", false);
+    checkOrder("LERNE Hiebwaffen");
+    checkOrder("LERNE \\\nHiebwaffen");
+  }
+
   /**
    *
    */

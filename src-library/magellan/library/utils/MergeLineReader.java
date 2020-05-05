@@ -27,7 +27,7 @@ public class MergeLineReader extends PushbackReader {
    * Creates a new MergeLineReader object.
    */
   public MergeLineReader(Reader in) {
-    super(in);
+    super(in, 2);
   }
 
   /**
@@ -60,7 +60,9 @@ public class MergeLineReader extends PushbackReader {
           break;
         }
       } else {
-        unread(c);
+        if (c != -1) {
+          unread(c);
+        }
         c = '\\';
 
         break;

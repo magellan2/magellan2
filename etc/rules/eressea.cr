@@ -2406,6 +2406,7 @@ SHIPTYPE "Drachenschiff"
 100;size
 2;level
 5;range
+"$range + max(0, log_3(($currentcaptainlevel / $captainlevel)))";rangeformula
 1000;capacity
 2;captainlevel
 50;sailorlevel

@@ -23,14 +23,11 @@
 // 
 package magellan.library.gamebinding.e3a;
 
-import java.math.BigDecimal;
-
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
-import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -171,45 +168,6 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
       return -1;
   }
 
-  @Override
-  public int getShipRange(Ship s) {
-    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit())
-      return s.getSpeed();
-
-    // Reichweite (bei Schaden aufrunden)
-    int rad = s.getShipType().getRange();
-
-    if (s.getModifiedOwnerUnit() != null) {
-      if (s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
-        rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
-      }
-
-      // add +1 to speed for every six levels over half (rounded up!) minimum captain speed
-      Skill sailing =
-          s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
-      if (sailing != null) {
-        rad +=
-            Math.max(0, (sailing.getLevel() - (1 + s.getShipType().getCaptainSkillLevel()) / 2) / 6);
-      }
-    }
-
-    // rad = rad*(100.0-damageRatio)/100.0
-    rad =
-        new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio())).divide(
-            new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
-
-    return rad;
-  }
-
-  /**
-   * @see magellan.library.gamebinding.EresseaGameSpecificRules#isToroidal()
-   *      // * @see magellan.library.gamebinding.GameSpecificRules#isToroidal()
-   */
-  @Override
-  public boolean isToroidal() {
-    return true;
-  }
-
   /**
    * Returns true. Material and silver pools are always active in E3.
    * 
@@ -243,7 +201,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules {
     return super.isAllied(faction, ally, aState)
         || ((aState | EresseaConstants.A_COMBAT) != 0 && faction.getAlliance() != null
             && faction.getAlliance().getFactions().contains(ally.getID()) && super.isAllied(
-            faction, ally, aState ^ EresseaConstants.A_COMBAT));
+                faction, ally, aState ^ EresseaConstants.A_COMBAT));
   }
 
   @Override

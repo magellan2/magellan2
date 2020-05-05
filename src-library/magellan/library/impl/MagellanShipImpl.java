@@ -613,6 +613,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   @Override
   public void clearRelations() {
     super.clearRelations();
+    if (ships != null) {
+      ships.clear();
+    }
     ships = null;
   }
 }

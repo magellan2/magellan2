@@ -220,6 +220,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     executor.processOrders(region0);
 
     assertEquals(1, data.getShips().size());
+    assertEquals(2, ship.getTempShips().size());
 
     Ship tempShip = ship.getTempShips().toArray(new Ship[] {})[1];
     assertNull(data.getShip(tempShip.getID()));

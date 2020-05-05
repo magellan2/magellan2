@@ -137,15 +137,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       curDef = pointFive;
     }
 
-    ARRSet(Properties settings, String set) {
-      if (set == null)
+    ARRSet(Properties localSettings, String name, String propKey) {
+      if (name == null)
         throw new NullPointerException("empty name");
-      name = set;
+      this.name = name;
       cTable = new ColorTable();
       vMapping = new ValueMapping();
+      String propKey2 = propKey + "." + name;
 
       StringTokenizer st =
-          new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          new StringTokenizer(localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, zero + ";0,0,0;" + one
                   + ";255,255,255"), ";");
       cTable.removeAll();
@@ -157,12 +158,12 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           float fl = Float.parseFloat(key);
           cTable.addEntry(fl, Colors.decode(value));
         } catch (RuntimeException exc) {
-          log.warn("error while reading set " + set);
+          log.warn("error while reading set " + name);
         }
       }
 
       st =
-          new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          new StringTokenizer(localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, zero + ";0.0;" + one + ";" + one),
               ";");
       vMapping.removeAll();
@@ -180,26 +181,28 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       minDef =
-          settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, zero);
       curDef =
-          settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, pointFive);
       maxDef =
-          settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, one);
 
       unknownString =
-          settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN, "?");
 
       mapperTooltip =
-          settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set
+          localSettings.getProperty(propKey2
               + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP);
 
     }
 
-    protected void save(Properties settings) {
+    protected void save(Properties localSettings, String propKey) {
+      String propKey2 = propKey + "." + name;
+
       Collection<Entry<Float, Color>> cEntries = cTable.getEntries();
       StringBuffer buf = new StringBuffer();
 
@@ -217,10 +220,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
         }
 
-        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.setProperty(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, buf.toString());
       } else {
-        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.remove(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
       }
 
@@ -241,44 +244,85 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
         }
 
-        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.setProperty(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, buf.toString());
       } else {
-        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.remove(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES);
       }
 
-      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+      localSettings.setProperty(propKey2
           + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, minDef);
-      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+      localSettings.setProperty(propKey2
           + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, maxDef);
-      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+      localSettings.setProperty(propKey2
           + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, curDef);
+      localSettings.setProperty(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN, unknownString);
 
       if (mapperTooltip == null) {
-        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.remove(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP);
       } else {
-        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name
+        localSettings.setProperty(propKey2
             + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP, mapperTooltip);
       }
 
       // look if this set is registered
-      StringTokenizer tokens =
-          new StringTokenizer(
-              settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
       boolean found = false;
-
-      while (!found && tokens.hasMoreTokens()) {
-        found = (name.equals(tokens.nextToken()));
+      for (String aName : getAllSetNames(localSettings, propKey)) {
+        if (name.equals(aName)) {
+          found = true;
+          break;
+        }
       }
 
       if (!found) {
-        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, settings.getProperty(
-            PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, "")
-            + "," + name);
+        localSettings.setProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS,
+            localSettings.getProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, "")
+                + "," + name);
       }
+    }
 
+    public static void deleteSet(String removedSet, Properties properties, String propKey) {
+      String propKey2 = propKey + "." + removedSet;
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP);
+      properties.remove(propKey2
+          + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN);
+
+      List<String> sets = getAllSetNames(properties, propKey);
+
+      if (sets.size() > 0) {
+        StringBuffer buf = new StringBuffer();
+        for (String token : sets) {
+
+          if (!removedSet.equals(token)) {
+            if (buf.length() > 0) {
+              buf.append(',');
+            }
+
+            buf.append(token);
+          }
+        }
+
+        if (buf.length() > 0) {
+          properties.setProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, buf
+              .toString());
+        } else {
+          properties.remove(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS);
+        }
+      }
     }
 
     /**
@@ -326,16 +370,23 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     @Override
     public ARRSet clone() throws CloneNotSupportedException {
-      ARRSet result = new ARRSet(getName());
-      result.cTable = cTable;
-      result.vMapping = vMapping;
-      result.minDef = minDef;
-      result.maxDef = maxDef;
-      result.unknownString = unknownString;
-      result.mapperTooltip = mapperTooltip;
+      Properties tempSettings = new Properties();
+      save(tempSettings, "fookey");
+      ARRSet result = new ARRSet(tempSettings, getName(), "fookey");
       return result;
     }
+
   }
+
+  // public static class ARRPreferences {
+  //
+  // private Properties localSettings;
+  //
+  // public ARRPreferences(Properties localSettings) {
+  // this.localSettings = localSettings;
+  // }
+  //
+  // }
 
   ARRSet currentSett;
 
@@ -357,6 +408,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
   private Preferences preferences;
 
+  private String propKey;
+
   /**
    * Creates new AdvancedRegionShapeCellRenderer
    */
@@ -367,19 +420,21 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     context.getEventDispatcher().addGameDataListener(this);
 
-    loadCurrentSet();
+    setKeys(null);
+
   }
 
   protected void loadCurrentSet() {
-    loadSet(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Standard"));
+    loadSet(settings.getProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_CURRENT_SET,
+        "Standard"));
   }
 
   public void loadSet(String set) {
-    currentSett = new ARRSet(settings, set);
+    currentSett = new ARRSet(settings, set, propKey);
     applySet(currentSett);
 
     // TODO (stm)
-    // if (!settings.containsKey(PropertiesHelper.ADVANCEDSHAPERENDERER + currentSet +
+    // if (!localSettings.containsKey(propKey + currentSet +
     // PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS)) {
     // saveSettings();
     // }
@@ -480,10 +535,15 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    * Returns a list of all set names.
    */
   public List<String> getAllSetNames() {
+    return getAllSetNames(settings, propKey);
+  }
+
+  protected static List<String> getAllSetNames(Properties localSettings, String propKey) {
     List<String> allSets = new LinkedList<String>();
     StringTokenizer s =
         new StringTokenizer(
-            settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
+            localSettings.getProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, ""),
+            ",");
 
     while (s.hasMoreTokens()) {
       allSets.add(s.nextToken());
@@ -821,7 +881,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
     AdvancedRegionShapeCellRenderer.log.debug("new pref " + currentSett);
-    preferences = new Preferences(currentSett);
+    preferences = new Preferences(this, currentSett);
     return preferences;
   }
 
@@ -829,19 +889,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     for (int i = 0; i < contextMenu.getItemCount(); ++i) {
       JMenuItem item = contextMenu.getItem(i);
       if (item != null) {
-        item.removeActionListener(this);
+        item.removeActionListener(AdvancedRegionShapeCellRenderer.this);
       }
     }
     contextMenu.removeAll();
 
-    StringTokenizer s =
-        new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""),
-            ",");
-
-    while (s.hasMoreTokens()) {
-      String str = s.nextToken();
+    for (String str : getAllSetNames()) {
       JMenuItem item = new JMenuItem(str);
-      item.addActionListener(this);
+      item.addActionListener(AdvancedRegionShapeCellRenderer.this);
 
       if (str.equals(currentSett.getName())) {
         item.setEnabled(false);
@@ -885,11 +940,15 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   /**
    * Returns the tool tip definition of the responsible mapper.
    */
-  public String getMapperTooltip() {
+  protected String getMapperTooltip() {
     if (mapper != null)
       return mapper.getTooltipDefinition()[1];
 
     return null;
+  }
+
+  protected List<String> getAllMapperTooltips() {
+    return mapper.getAllTooltipDefinitions();
   }
 
   /**
@@ -912,9 +971,36 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    */
   public void setMapper(Mapper mapper) {
     this.mapper = mapper;
+    setKeys(mapper);
   }
 
-  protected class Preferences extends JPanel implements PreferencesAdapter, ActionListener,
+  private void setKeys(Mapper mapper) {
+    if (mapper != null && mapper.getID() != null) {
+      propKey = PropertiesHelper.ADVANCEDSHAPERENDERER + "." + mapper.getID();
+      if (getAllSetNames(settings, propKey).isEmpty()) {
+        String baseKey = PropertiesHelper.ADVANCEDSHAPERENDERER;
+        for (String name : getAllSetNames(settings, baseKey)) {
+          ARRSet set = new ARRSet(settings, name, baseKey);
+          set.save(settings, propKey);
+        }
+        // transferSetting(PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, baseKey, propKey);
+        transferSetting(PropertiesHelper.ADVANCEDSHAPERENDERER_S_CURRENT_SET, baseKey, propKey);
+      }
+    } else {
+      propKey = PropertiesHelper.ADVANCEDSHAPERENDERER;
+    }
+    loadCurrentSet();
+  }
+
+  private void transferSetting(String subKey, String propKey1,
+      String propKey2) {
+    String old = settings.getProperty(propKey1 + subKey);
+    if (old != null) {
+      settings.setProperty(propKey2 + subKey, old);
+    }
+  }
+
+  protected static class Preferences extends JPanel implements PreferencesAdapter, ActionListener,
       ListSelectionListener {
     @SuppressWarnings("hiding")
     private final Logger log = Logger.getInstance(Preferences.class);
@@ -927,9 +1013,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     protected JTextArea curText;
     protected JTextField uText;
 
-    protected javax.swing.border.Border selBorder;
-    protected javax.swing.border.Border nonSelBorder;
-
     protected JList<String> setsList;
     protected DefaultListModel<String> model;
     protected AbstractButton addSet;
@@ -941,15 +1024,33 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     protected AbstractButton showInfo;
     protected JLabel tooltipLabel;
 
-    ARRSet prefSet;
-    String currentSelection;
+    protected ARRSet prefSet;
+    protected String currentSelection;
+
+    // FIXME
+    private Properties localSettings;
+    private Properties globalSettings;
+    private AdvancedRegionShapeCellRenderer arr;
+
+    private String tooltip;
+    private List<String> tooltips;
+
+    private String propKey;
 
     /**
      * Creates a new Preferences object.
      */
-    public Preferences(ARRSet currentSet) {
-      prefSet = currentSet;
+    public Preferences(AdvancedRegionShapeCellRenderer arr, ARRSet currentSet) {
+      try {
+        prefSet = currentSet.clone();
+      } catch (CloneNotSupportedException e) {
+        log.error("illegal state", e);
+      }
       currentSelection = currentSet.getName();
+      localSettings = new Properties();
+      this.arr = arr;
+      globalSettings = arr.settings;
+      propKey = arr.getPropertiesKey();
 
       JPanel defPanel = new JPanel(new GridBagLayout());
 
@@ -970,15 +1071,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       GridBagConstraints con =
           new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTH,
               GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0);
-
-      selBorder =
-          BorderFactory.createCompoundBorder(BorderFactory
-              .createBevelBorder(javax.swing.border.BevelBorder.LOWERED), BorderFactory
-                  .createEmptyBorder(2, 2, 2, 2));
-      nonSelBorder =
-          BorderFactory.createCompoundBorder(BorderFactory
-              .createBevelBorder(javax.swing.border.BevelBorder.RAISED), BorderFactory
-                  .createEmptyBorder(2, 2, 2, 2));
 
       con.gridx = 0;
       con.gridy = 0;
@@ -1045,7 +1137,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       showInfo =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.showinfo"));
-      showInfo.addActionListener(this);
+      showInfo.addActionListener(Preferences.this);
 
       JPanel lPanel = new JPanel();
       lPanel.setLayout(new GridBagLayout());
@@ -1099,16 +1191,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     /**
      * Add all known sets to list model.
      * 
-     * @param oldSet
+     * @param newSelection
      */
-    protected void reprocessSets(String oldSet) {
-      List<String> sets = getAllSetNames();
+    protected void reprocessSets(String newSelection) {
+      List<String> sets = getAllSetNames(localSettings, propKey);
 
       model.clear();
       model.addAll(sets);
 
-      if ((oldSet != null) && model.contains(oldSet)) {
-        setsList.setSelectedValue(oldSet, true);
+      if ((newSelection != null) && model.contains(newSelection)) {
+        setsList.setSelectedValue(newSelection, true);
       } else {
         log.debug("old set unknown");
       }
@@ -1116,22 +1208,22 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     protected Component createMenu() {
       addSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.add"));
-      addSet.addActionListener(this);
+      addSet.addActionListener(Preferences.this);
       removeSet =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.remove"));
-      removeSet.addActionListener(this);
+      removeSet.addActionListener(Preferences.this);
       renameSet =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.rename"));
-      renameSet.addActionListener(this);
+      renameSet.addActionListener(Preferences.this);
       importSet =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.import"));
-      importSet.addActionListener(this);
+      importSet.addActionListener(Preferences.this);
       exportSet =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.export"));
-      exportSet.addActionListener(this);
+      exportSet.addActionListener(Preferences.this);
       setTooltip =
           new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip"));
-      setTooltip.addActionListener(this);
+      setTooltip.addActionListener(Preferences.this);
       tooltipLabel = new JLabel();
       tooltipLabel.setHorizontalAlignment(SwingConstants.CENTER);
       updateTooltipLabel();
@@ -1221,7 +1313,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     public void initPreferences() {
-      //
+      tooltip = arr.getMapperTooltip();
+      tooltips = arr.getAllMapperTooltips();
+      localSettings = new Properties();
+      for (String name : arr.getAllSetNames()) {
+        new ARRSet(globalSettings, name, propKey).save(localSettings, propKey);
+      }
+      currentSelection = null;
+      prefSet = new ARRSet("dummy");
+      reprocessSets(arr.getCurrentSet());
+
     }
 
     /**
@@ -1230,19 +1331,29 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     public void applyPreferences() {
       apply(currentSelection);
 
-      loadGeomColors();
-      loadSet(currentSelection);
-      reprocessMenu();
+      for (String name : arr.getAllSetNames()) {
+        ARRSet.deleteSet(name, globalSettings, propKey);
+      }
+
+      for (String key : localSettings.stringPropertyNames()) {
+        globalSettings.setProperty(key, localSettings.getProperty(key));
+      }
+
+      arr.loadGeomColors();
+      arr.loadSet(currentSelection);
+      arr.reprocessMenu();
     }
 
     private void apply(String currentSelection) {
-      prefSet.setMinDef(minText.getText());
-      prefSet.setMaxDef(maxText.getText());
-      prefSet.setCurDef(curText.getText());
-      prefSet.setUnknown(uText.getText());
-      // currentSettt.setMapping(myMapping);
-      // currentSettt.setTable(myTable);
-      prefSet.save(settings);
+      if (currentSelection != null) {
+        prefSet.setMinDef(minText.getText());
+        prefSet.setMaxDef(maxText.getText());
+        prefSet.setCurDef(curText.getText());
+        prefSet.setUnknown(uText.getText());
+        // currentSettt.setMapping(myMapping);
+        // currentSettt.setTable(myTable);
+        prefSet.save(localSettings, propKey);
+      }
     }
 
     /**
@@ -1309,6 +1420,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         return;
       }
+
       ARRSet newSet = null;
       try {
         newSet = prefSet.clone();
@@ -1324,17 +1436,15 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       apply(currentSelection);
       currentSelection = newSet.name;
       prefSet = newSet;
-      prefSet.save(settings);
+      prefSet.save(localSettings, propKey);
+      updateTables();
+      updateTooltipLabel();
       reprocessSets(newSet.name);
     }
 
     protected boolean checkName(String name) {
-      StringTokenizer s =
-          new StringTokenizer(
-              settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
-
-      while (s.hasMoreTokens()) {
-        if (name.equals(s.nextToken()))
+      for (String aName : getAllSetNames(localSettings, propKey)) {
+        if (name.equals(aName))
           return false;
       }
 
@@ -1342,61 +1452,24 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected void removeSet(String removedSet) {
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES);
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM);
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM);
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT);
-      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet
-          + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN);
+      ARRSet.deleteSet(removedSet, localSettings, propKey);
 
-      String set = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS);
+      List<String> sets = getAllSetNames(localSettings, propKey);
 
-      if (set != null) {
-        StringBuffer buf = new StringBuffer();
-        StringTokenizer s = new StringTokenizer(set, ",");
-
-        while (s.hasMoreTokens()) {
-          String token = s.nextToken();
-
-          if (!removedSet.equals(token)) {
-            if (buf.length() > 0) {
-              buf.append(',');
-            }
-
-            buf.append(token);
-          }
-        }
-
-        if (buf.length() > 0) {
-          settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, buf.toString());
-        } else {
-          settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS);
-        }
-      }
-
-      StringTokenizer s =
-          new StringTokenizer(
-              settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
-
-      if (s.hasMoreTokens()) {
-        currentSelection = s.nextToken();
-        prefSet = new ARRSet(settings, currentSelection);
+      if (sets.size() > 0) {
+        currentSelection = sets.get(0);
+        prefSet = new ARRSet(localSettings, currentSelection, propKey);
       } else {
-        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET);
-        // TODO !!!
-        // loadDefaultSet();
+        localSettings.remove(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_CURRENT_SET);
       }
+
+      // TODO !!!
+      // loadDefaultSet();
 
       updateTables();
+      updateTooltipLabel();
       setsList.setSelectedIndex(-1);
       reprocessSets(currentSelection);
-
     }
 
     protected void renameSet() {
@@ -1417,12 +1490,12 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           removeSet(currentSelection);
           oldSet.setName(newName);
           addSet(oldSet);
-          // oldSet.save(settings);
+          // oldSet.save(localSettings);
           // reprocessSets(newName);
           // currentSelection = newName;
           // prefSet = oldSet;
           // prefSet.setName(newName);
-          // prefSet.save(settings);
+          // prefSet.save(localSettings);
         }
       }
     }
@@ -1452,7 +1525,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         FileInputStream in = new FileInputStream(file);
         prop.load(in);
         in.close();
-        ARRSet newSet = new ARRSet(prop, prop.getProperty("Set.Name"));
+        ARRSet newSet = new ARRSet(prop, prop.getProperty("Set.Name"),
+            PropertiesHelper.ADVANCEDSHAPERENDERER);
         addSet(newSet);
       } catch (Exception ioe) {
         showIOError(ioe);
@@ -1472,7 +1546,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
 
           Properties prop = new Properties();
-          prefSet.save(prop);
+          prefSet.save(prop, PropertiesHelper.ADVANCEDSHAPERENDERER);
           prop.setProperty("Set.Name", prefSet.getName());
 
           FileOutputStream out = new FileOutputStream(file);
@@ -1507,22 +1581,21 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       list.add(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.manual"));
 
       // add all mapper tool tips
-      if (mapper != null) {
-        List<String> l = mapper.getAllTooltipDefinitions();
-        Iterator<String> it = l.iterator();
-        int i = 3;
+      List<String> l = getMapperTooltipDefinitions();
 
-        while (it.hasNext()) {
-          String name = it.next();
-          String tip = it.next();
+      Iterator<String> it = l.iterator();
+      int i = 3;
 
-          if ((prefSet.mapperTooltip != null) && tip.equals(prefSet.mapperTooltip)) {
-            selIndex = i;
-          }
+      while (it.hasNext()) {
+        String name = it.next();
+        String tip = it.next();
 
-          list.add(new StringPair(name, tip));
-          i++;
+        if ((prefSet.mapperTooltip != null) && tip.equals(prefSet.mapperTooltip)) {
+          selIndex = i;
         }
+
+        list.add(new StringPair(name, tip));
+        i++;
       }
 
       Object o[] = list.toArray();
@@ -1554,6 +1627,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
         updateTooltipLabel();
       }
+    }
+
+    protected String getMapperTooltip() {
+      return tooltip;
+    }
+
+    protected List<String> getMapperTooltipDefinitions() {
+      return tooltips;
     }
 
     protected void showIOError(Exception ioe) {
@@ -1594,7 +1675,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      */
     public void valueChanged(javax.swing.event.ListSelectionEvent listSelectionEvent) {
       if (setsList.getSelectedValue() != null) {
-        if (setsList.getSelectedValue() != currentSelection) {
+        if (!setsList.getSelectedValue().equals(currentSelection)) {
           apply(currentSelection);
           setSet(setsList.getSelectedValue(), false);
         }
@@ -1607,7 +1688,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     private void setSet(String newSet, boolean setList) {
       currentSelection = newSet;
-      prefSet = new ARRSet(settings, currentSelection);
+      prefSet = new ARRSet(localSettings, currentSelection, propKey);
       updateTables();
       updateTooltipLabel();
       if (setList) {
@@ -1719,6 +1800,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         mapPainter.setPreferredSize(new Dimension(200, 30));
         mapPainter.addMouseListener(this);
         mapPainter.addMouseMotionListener(this);
+        myShow.addMouseListener(this);
 
         JPanel help = new JPanel(new BorderLayout());
         help.add(myShow, BorderLayout.CENTER);
@@ -1752,25 +1834,32 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         addItem =
             new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.add"));
-        addItem.addActionListener(this);
+        addItem.addActionListener(ColorPanel.this);
         removeItem =
             new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.remove"));
-        removeItem.addActionListener(this);
+        removeItem.addActionListener(ColorPanel.this);
         modifyItem =
             new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.modify"));
-        modifyItem.addActionListener(this);
+        modifyItem.addActionListener(ColorPanel.this);
+        JMenuItem removeAllItem = new JMenuItem(Resources.get(
+            "map.advancedregionshapecellrenderer.prefs.popup.removeall"));
+        removeAllItem.setActionCommand("removeall");
+        removeAllItem.addActionListener(ColorPanel.this);
+        popup.add(removeAllItem);
       }
 
       protected void fillPopup(int type) {
-        popup.removeAll();
+        popup.remove(addItem);
+        popup.remove(modifyItem);
+        popup.remove(removeItem);
 
         if (type == -1) {
-          popup.add(addItem);
+          popup.add(addItem, 0);
         } else {
-          popup.add(modifyItem);
+          popup.add(modifyItem, 0);
 
           if ((type != 0) && (type != (value.size() - 1))) {
-            popup.add(removeItem);
+            popup.add(removeItem, 1);
           }
         }
       }
@@ -1920,8 +2009,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
           return;
         }
-
-        searchMoving(mouseEvent);
+        if (mouseEvent.getSource() == mapPainter) {
+          searchMoving(mouseEvent);
+        }
       }
 
       /**
@@ -1976,6 +2066,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           return;
         } else if (actionEvent.getSource() == textValue) {
           textChange();
+
+          return;
+        } else if (actionEvent.getActionCommand().equals("removeall")) {
+          if (JOptionPane.showConfirmDialog(this, Resources
+              .get("map.advancedregionshapecellrenderer.prefs.removeall.confirm"), null,
+              JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            removeAllColors();
+          }
 
           return;
         }
@@ -2044,6 +2142,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         setText(-1);
         value.remove(addX);
         mapping.remove(addX);
+        save();
+        dataChanged();
+      }
+
+      protected void removeAllColors() {
+        setText(-1);
+        while (value.size() > 2) {
+          value.remove(1);
+          mapping.remove(1);
+        }
         save();
         dataChanged();
       }
@@ -2229,10 +2337,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         addItem =
             new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup2.add"));
-        addItem.addActionListener(this);
+        addItem.addActionListener(MappingPanel.this);
         removeItem =
             new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup2.remove"));
-        removeItem.addActionListener(this);
+        removeItem.addActionListener(MappingPanel.this);
       }
 
       protected void fillPopup(int type) {
@@ -2573,5 +2681,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   @Override
   public String getName() {
     return Resources.get("map.advancedregionshapecellrenderer.name");
+  }
+
+  public String getPropertiesKey() {
+    return propKey;
   }
 }

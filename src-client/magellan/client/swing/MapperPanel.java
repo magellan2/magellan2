@@ -504,7 +504,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Creates the Minimap Panel.
    */
   protected void initMinimap() {
-    minimap = new Minimapper(context);
+    minimap = new Minimapper(context, "MINIMAP");
     minimapGeometry = minimap.getCellGeometry();
 
     Dimension d = minimapGeometry.getCellSize();
@@ -895,7 +895,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   // }
 
   private Container getMainPane(Collection<MapCellRenderer> renderers, CellGeometry geo) {
-    mapper = new Mapper(context, renderers, geo);
+    mapper = new Mapper(context, renderers, geo, "Mapper");
     scpMapper = new JScrollPane(mapper);
 
     // ClearLook suggests to remove border

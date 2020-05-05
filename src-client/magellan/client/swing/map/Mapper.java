@@ -203,12 +203,17 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   private AdvancedRegionShapeCellRenderer arr;
 
+  private String id;
+
   /**
    * Creates a new Mapper object.
+   *
+   * @param id
    */
   public Mapper(MagellanContext context, Collection<MapCellRenderer> customRenderers,
-      CellGeometry geom) {
+      CellGeometry geom, String id) {
     super(context.getEventDispatcher(), context.getGameData(), context.getProperties());
+    this.id = id;
 
     instances.add(this);
 
@@ -456,6 +461,19 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     conMenu.updateRenderers(this);
     conMenu.updateTooltips(this);
+
+    final int defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
+    addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseEntered(MouseEvent me) {
+        ToolTipManager.sharedInstance().setDismissDelay(20000);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent me) {
+        ToolTipManager.sharedInstance().setDismissDelay(defaultDismissTimeout);
+      }
+    });
   }
 
   /**
@@ -465,8 +483,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     // standard def is Name~Definition
     String[] tip = settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP).split(
         "~");
-    if (tip.length != 2) {
-      tip = settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP).split("~");
+    if (tip.length < 2) {
+      tip = new String[] { "", tip[0] };
     }
     setTooltipDefinition(tip[0], tip[1]);
   }
@@ -1957,4 +1975,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public boolean isUseSeasonImages() {
     return useSeasonImages;
   }
+
+  public void setID(String id) {
+    this.id = id;
+  }
+
+  public String getID() {
+    return id;
+  }
+
 }

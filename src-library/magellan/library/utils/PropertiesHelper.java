@@ -33,7 +33,7 @@ public class PropertiesHelper {
   private static final Logger log = Logger.getInstance(PropertiesHelper.class);
 
   /** Property type none: Prefix for advanced shape renderer settings */
-  public static final String ADVANCEDSHAPERENDERER = "AdvancedShapeRenderer.";
+  public static final String ADVANCEDSHAPERENDERER = "AdvancedShapeRenderer";
 
   /** Property type String: Postfix for advanced share renderer color settings */
   public static final String ADVANCEDSHAPERENDERER_COLORS = ".Colors";
@@ -51,10 +51,10 @@ public class PropertiesHelper {
   public static final String ADVANCEDSHAPERENDERER_VALUES = ".Values";
 
   /** Property type String: Name of current advanced shape renderer set */
-  public static final String ADVANCEDSHAPERENDERER_CURRENT_SET = "AdvancedShapeRenderer.CurrentSet";
+  public static final String ADVANCEDSHAPERENDERER_S_CURRENT_SET = ".CurrentSet";
 
   /** Property type List<String>: List of all available advanced shape rendererers */
-  public static final String ADVANCEDSHAPERENDERER_SETS = "AdvancedShapeRenderer.Sets";
+  public static final String ADVANCEDSHAPERENDERER_S_SETS = ".Sets";
 
   /** Property type String: ... */
   public static final String ADVANCEDSHAPERENDERER_TOOLTIP = ".Tooltip";
@@ -102,7 +102,8 @@ public class PropertiesHelper {
   public static final String AUTOCOMPLETION_LIMIT_MAKE_COMPLETION = "AutoCompletion.limitMakeCompletion";
 
   /** Property type number: */
-  public static final String AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT = "AutoCompletion.SelfDefinedCompletions.count";
+  public static final String AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT =
+      "AutoCompletion.SelfDefinedCompletions.count";
 
   /** Property type number: */
   public static final String AUTOCOMPLETION_TIME = "AutoCompletion.ActivationTime";
@@ -311,7 +312,8 @@ public class PropertiesHelper {
   public static final String BOOKMARKMANAGER_LASTFILE = "Bookmarkmanager.lastFile";
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that
+   * value. If something goes wrong or the key couldn't be found the default value def
    * is returned.
    */
   public static boolean getBoolean(Properties p, String key, boolean def) {
@@ -324,7 +326,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a Color and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * Searches the property with the given key and if it exists, it tries to convert it into a Color and returns that
+   * value. If something goes wrong or the key couldn't be found the default value def
    * is returned.
    */
   public static Color getColor(Properties p, String key, Color def) {
@@ -340,7 +343,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a float and returns that value. If something goes wrong or the key couldn't be found the default value def
+   * Searches the property with the given key and if it exists, it tries to convert it into a float and returns that
+   * value. If something goes wrong or the key couldn't be found the default value def
    * is returned.
    */
   public static float getFloat(Properties p, String key, float def) {
@@ -358,7 +362,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into an integer and returns that value. If something goes wrong or the key couldn't be found the default value
+   * Searches the property with the given key and if it exists, it tries to convert it into an integer and returns that
+   * value. If something goes wrong or the key couldn't be found the default value
    * def is returned.
    */
   public static int getInteger(Properties p, String key, int def) {
@@ -430,7 +435,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Searches the property with the given key and if it exists, it tries to convert it into a String and returns that value. If something goes wrong or the key couldn't be found the default value
+   * Searches the property with the given key and if it exists, it tries to convert it into a String and returns that
+   * value. If something goes wrong or the key couldn't be found the default value
    * defaultValue is returned.
    */
   public static String getString(Properties p, String key, String defaultValue) {
@@ -442,7 +448,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new object is created. Else the result is stored in <code>r</code>. In either case, the resulting rectangle
+   * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new object is created. Else
+   * the result is stored in <code>r</code>. In either case, the resulting rectangle
    * is returned.
    *
    * @return The loaded rectangle or null if an error occurs.
@@ -466,7 +473,8 @@ public class PropertiesHelper {
   }
 
   /**
-   * Saves the rectangle r with property-key key to the settings. The rectangle is stored as key.x, key.y, key.width, key.height.
+   * Saves the rectangle r with property-key key to the settings. The rectangle is stored as key.x, key.y, key.width,
+   * key.height.
    */
   public static void saveRectangle(Properties settings, Rectangle r, String key) {
     settings.setProperty(key + ".x", String.valueOf(r.x));

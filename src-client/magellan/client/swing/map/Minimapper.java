@@ -37,9 +37,10 @@ public class Minimapper extends Mapper {
    * Creates new Minimapper.
    * 
    * @param context
+   * @param id
    */
-  public Minimapper(MagellanContext context) {
-    super(context, null, new CellGeometry("cellgeometry.txt"));
+  public Minimapper(MagellanContext context, String id) {
+    super(context, null, new CellGeometry("cellgeometry.txt"), id);
 
     // if Mapper has registered us, we don't want this
     ToolTipManager.sharedInstance().unregisterComponent(this);

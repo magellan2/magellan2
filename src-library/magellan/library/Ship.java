@@ -13,7 +13,7 @@
 
 package magellan.library;
 
-import java.util.Collection;
+import java.util.List;
 
 import magellan.library.rules.ShipType;
 
@@ -252,7 +252,7 @@ public interface Ship extends UnitContainer, HasRegion, Selectable {
   /**
    * @return The temporary ships that depend on this ship.
    */
-  public Collection<Ship> getTempShips();
+  public List<Ship> getTempShips();
 
   /**
    * @return A new ship that depends on this ship.

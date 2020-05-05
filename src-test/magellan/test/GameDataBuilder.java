@@ -607,7 +607,7 @@ public class GameDataBuilder {
    */
   public void addUnitToBuilding(Unit unit, Building building) {
     unit.setBuilding(building);
-    if (building.getUnits().size() == 1) {
+    if (building.units().size() == 1) {
       building.setOwner(unit);
       building.setOwnerUnit(unit);
     }

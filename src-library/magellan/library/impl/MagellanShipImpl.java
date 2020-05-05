@@ -14,10 +14,10 @@
 package magellan.library.impl;
 
 import java.math.BigDecimal;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import magellan.library.EntityID;
 import magellan.library.GameData;
@@ -30,7 +30,6 @@ import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ShipTransferRelation;
 import magellan.library.rules.ShipType;
 import magellan.library.utils.Cache;
-import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -109,7 +108,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   private int speed = -1;
 
-  private Map<EntityID, Ship> ships;
+  private List<Ship> ships;
+  private HashSet<EntityID> shipIds;
+  private Ship parent;
 
   /**
    * Sets the region this ship is in and notifies region about it.
@@ -570,26 +571,28 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     return getRelations(ShipTransferRelation.class);
   }
 
-  public Collection<Ship> getTempShips() {
+  public List<Ship> getTempShips() {
     if (ships == null)
       return Collections.emptyList();
-    return Collections.unmodifiableCollection(ships.values());
+    return Collections.unmodifiableList(ships);
   }
 
   public Ship createTempShip() {
+    if (getParent() != null)
+      return getParent().createTempShip();
     if (ships == null) {
-      ships = CollectionFactory.<EntityID, Ship> createSyncOrderedMap(3);
+      ships = new ArrayList<Ship>(3);
+      shipIds = new HashSet<EntityID>(3);
     }
 
     EntityID targetId = EntityID.createEntityID(-getID().intValue(), data.base);
-    for (int id = targetId.intValue(); ships.containsKey(targetId); --id) {
+    for (int id = targetId.intValue(); shipIds.contains(targetId); --id) {
       targetId = EntityID.createEntityID(id, data.base);
     }
 
-    // Ship tempShip = data.getShip(targetId);
-    // if (tempShip == null) {
     MagellanShipImpl tempShip = new MagellanShipImpl(targetId, data);
-    // }
+    tempShip.setParent(this);
+
     tempShip.setName("TEMP SHIP " + targetId);
     tempShip.setType(getShipType());
     tempShip.setShoreId(getShoreId());
@@ -606,8 +609,19 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     // tempShip.setRegion(ship.getRegion());
     tempShip.region = getRegion();
 
-    ships.put(tempShip.getID(), tempShip);
+    ships.add(tempShip);
+    shipIds.add(tempShip.getID());
     return tempShip;
+  }
+
+  private void setParent(MagellanShipImpl parent) {
+    if (parent.getParent() != null)
+      throw new RuntimeException("Temp ship with temp ships " + parent);
+    this.parent = parent;
+  }
+
+  private Ship getParent() {
+    return parent;
   }
 
   @Override
@@ -615,7 +629,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     super.clearRelations();
     if (ships != null) {
       ships.clear();
+      shipIds.clear();
     }
-    ships = null;
   }
 }

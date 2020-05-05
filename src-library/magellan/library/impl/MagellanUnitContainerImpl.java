@@ -33,7 +33,6 @@ import magellan.library.UnitContainer;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
-import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.CastleType;
@@ -130,6 +129,10 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return null;
     }
 
+    return findOwner(oldOwner);
+  }
+
+  private Unit findOwner(Unit oldOwner) {
     if (oldOwner.getRelations(LeaveRelation.class).isEmpty()) {
       // if the current owner does not leave container and gives command to a unit who will be on
       // the ship, this is the new owner.
@@ -145,12 +148,26 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       }
       return newOwner;
     } else {
+      // FIXME first relation is not always the right one, target might give command again
       for (ControlRelation rel : oldOwner.getRelations(ControlRelation.class)) {
-        if (rel.source == oldOwner && rel.target != null && rel.problem == null)
+        if (rel.source == oldOwner && rel.target != null)
           return rel.target;
       }
       // otherwise it's unclear
-      return null;
+      Unit lastOwner = null;
+      for (Unit u : units()) {
+        if (lastOwner != null) {
+          oldOwner = u;
+          break;
+        }
+        if (u == oldOwner) {
+          lastOwner = u;
+        }
+      }
+      if (lastOwner == null || lastOwner == oldOwner)
+        return null;
+      else
+        return findOwner(oldOwner);
     }
   }
 
@@ -392,9 +409,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
               .info("UnitContainer.refreshModifiedUnits(): unit container " + this
                   + " has a relation associated that does not point to it!");
         }
-      } else if (!(rel instanceof RenameNamedRelation)) {
-        MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container "
-            + this + " contains a relation that is not a UnitContainerRelation object!");
       }
     }
   }
@@ -679,6 +693,9 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     getCache().orderEditor = editor;
   }
 
+  /**
+   * @see magellan.library.UnitContainer#getUnits()
+   */
   public Map<EntityID, Unit> getUnits() {
     return units;
   }

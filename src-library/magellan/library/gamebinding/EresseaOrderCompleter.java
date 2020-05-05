@@ -817,25 +817,27 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
           .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
-    // if captn, and target is captn, offer GIVE target X SHIP
-    if (unit.getShip() != null) {
-      Ship s = unit.getShip();
+    //
+    if (unit.getModifiedShip() != null) {
+      Ship s = unit.getModifiedShip();
       if (s.getModifiedOwnerUnit().equals(unit)) {
         // is the amount <= number of ships in the fleet?
         if (i <= s.getAmount()) {
-          // is target also a captn of a ship - of the same ShipType and of the same faction
+          // valid targets are 0, or the captain of another ship or a unit on the same ship or a
+          // unit without ship
           Unit target = getData().getUnit(uid);
-          if (target != null) {
-            // same faction
-            if (target.getFaction() != null && target.getFaction().equals(unit.getFaction())) {
-              Ship targetShip = target.getShip();
+          if (uid.intValue() == 0 || (target != null && unit.getFaction().equals(target
+              .getFaction()))) {
+            Ship targetShip = target == null ? null : target.getModifiedShip();
+            if (targetShip == null || targetShip.equals(s) || target == null || target.equals(
+                targetShip.getModifiedOwnerUnit()))
+
               // same shipType
-              if (targetShip == null || (targetShip.getModifiedOwnerUnit().equals(target)
-                  && targetShip.getShipType().equals(s.getShipType()))) {
+              if (targetShip == null || targetShip.getShipType().equals(s.getShipType())) {
                 completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP),
                     Completion.DEFAULT_PRIORITY + 1));
               }
-            }
+
           }
         }
       }

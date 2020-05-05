@@ -77,7 +77,7 @@ public class UnitArgumentOrder extends SimpleOrder {
       if (zeroAllowed) {
         tUnit = unit.getRegion().getZeroUnit();
       } else {
-        setWarning(unit, line, Resources.get("order.all.war.ning.zeronotallowed"));
+        setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
       }
     } else {
       tUnit = data.getUnit(target);

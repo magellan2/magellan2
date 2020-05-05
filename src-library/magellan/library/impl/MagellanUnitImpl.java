@@ -1550,18 +1550,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Returns the modified unit container this unit belongs to. (ship, building or null)
    */
   public UnitContainer getModifiedUnitContainer() {
+    UnitContainer newContainer = getUnitContainer();
     for (UnitContainerRelation ucr : getRelations(UnitContainerRelation.class)) {
-      if (ucr instanceof EnterRelation)
-        // fast return: first EnterRelation wins
-        return ucr.target;
-      else if (ucr instanceof LeaveRelation && ucr.target.equals(getUnitContainer()))
-        // fast return: first LeaveRelation wins
-        // we only left our container
-        return null;
+      if (ucr instanceof EnterRelation) {
+        newContainer = ucr.target;
+      } else if (ucr instanceof LeaveRelation && ucr.target.equals(newContainer)) {
+        newContainer = null;
+      }
     }
 
     // we stayed in our ship
-    return getUnitContainer();
+    return newContainer;
   }
 
   /**

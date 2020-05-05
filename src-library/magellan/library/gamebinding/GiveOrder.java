@@ -152,7 +152,7 @@ public class GiveOrder extends UnitArgumentOrder {
       return;
 
     if (unit instanceof TempUnit && type != EresseaConstants.OC_CONTROL) {
-      setWarning(unit, line, Resources.get("order.give.warning.temp"));
+      setError(unit, line, Resources.get("order.give.warning.temp"));
       return;
     }
 
@@ -188,7 +188,7 @@ public class GiveOrder extends UnitArgumentOrder {
       if (!unit.equals(tUnit)) {
         if (type == EresseaConstants.OC_CONTROL) {
           if (target.intValue() == 0) {
-            setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+            setError(unit, line, Resources.get("order.all.warning.zeronotallowed"));
           } else {
             UnitRelation rel = new ControlRelation(unit, zeroOrTarget, line);
             if (unit.getUnitContainer() == null || unit.getUnitContainer().getOwnerUnit() != unit) {
@@ -221,27 +221,77 @@ public class GiveOrder extends UnitArgumentOrder {
 
           Ship ship = unit.getModifiedShip(), targetShip = zeroOrTarget.getModifiedShip();
           if (ship == null || ship.getModifiedOwnerUnit() != unit) {
-            setWarning(unit, line, Resources.get("order.give.warning.noship", unit));
+            setWarning(unit, line, Resources.get("order.give.warning.ship.noship", unit));
           } else {
-            if (zeroOrTarget == unit.getRegion().getZeroUnit()) {
-              targetShip = ship.createTempShip();
-            } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
-              setWarning(unit, line, Resources.get("order.give.warning.noship", zeroOrTarget));
+            if (ship.getModifiedAmount() < amount) {
+              setWarning(unit, line, Resources.get("order.give.warning.ship.toomany", unit));
+              amount = ship.getModifiedAmount();
             }
+            if (amount <= 0) {
+              setWarning(unit, line, Resources.get("order.give.warning.ship.amount0"));
+            } else {
+              if (ship.getEffects() != null && !ship.getEffects().isEmpty()) {
+                setWarning(unit, line, Resources.get("order.give.warning.spell", ship));
+              }
+              if (targetShip != null && targetShip.getEffects() != null && !targetShip.getEffects()
+                  .isEmpty()) {
+                setWarning(unit, line, Resources.get("order.give.warning.spell", ship));
+              }
+              if (ship.getShipType().getRange() < 3) {
+                setWarning(unit, line, Resources.get("order.give.warning.ship.boat", ship));
+              }
 
-            ShipTransferRelation rel =
-                new ShipTransferRelation(unit, zeroOrTarget, -1, ship, targetShip, line);
-            rel.amount = Math.min(ship.getModifiedAmount(), amount);
-            rel.add();
-            InterUnitRelation iur = new InterUnitRelation(unit, zeroOrTarget, line);
-            iur.add();
-            if (ship.getModifiedAmount() <= 0) {
-              // last ship, transfer units
-              for (Unit u : ship.modifiedUnits()) {
-                LeaveRelation leave = new LeaveRelation(u, ship, line, true);
-                EnterRelation enter = new EnterRelation(u, targetShip, line);
-                leave.add();
+              if (zeroOrTarget == unit.getRegion().getZeroUnit()) {
+                targetShip = ship.createTempShip();
+                if (amount == ship.getModifiedAmount() && !unit.getRegion().getRegionType()
+                    .isLand()) {
+                  setWarning(unit, line, Resources.get("order.give.warning.ship.lastship"));
+                }
+              } else if (zeroOrTarget == null || !zeroOrTarget.getFaction().equals(unit
+                  .getFaction())) {
+                setError(unit, line, Resources.get("order.give.warning.invalidunit", target));
+              } else if (zeroOrTarget != null && zeroOrTarget.getModifiedShip() == null) {
+                targetShip = ship.createTempShip();
+                EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
                 enter.add();
+              } else if (targetShip == ship) {
+                targetShip = ship.createTempShip();
+                EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
+                enter.add();
+              } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
+                setError(unit, line, Resources.get("order.give.warning.ship.noship", zeroOrTarget));
+                targetShip = null;
+              }
+
+              if (targetShip != null) {
+                if (!targetShip.getShipType().equals(ship.getShipType())) {
+                  setError(unit, line, Resources.get("order.give.warning.shiptype", targetShip));
+                } else {
+                  boolean shoreWarning = false;
+                  if (ship.getShoreId() != targetShip.getShoreId() && ship.getShoreId() >= 0) {
+                    shoreWarning = true;
+                    setWarning(unit, line, Resources.get("order.give.warning.ship.wrongcoast"));
+                  }
+                  if (!shoreWarning || targetShip.getShoreId() >= 0) {
+
+                    ShipTransferRelation rel =
+                        new ShipTransferRelation(unit, zeroOrTarget, -1, ship, targetShip, line);
+                    rel.amount = Math.min(ship.getModifiedAmount(), amount);
+                    rel.add();
+                    InterUnitRelation iur = new InterUnitRelation(unit, zeroOrTarget, line);
+                    iur.add();
+                    if (ship.getModifiedAmount() <= 0 && zeroOrTarget != unit.getRegion()
+                        .getZeroUnit()) {
+                      // last ship, transfer units
+                      for (Unit u : ship.modifiedUnits()) {
+                        LeaveRelation leave = new LeaveRelation(u, ship, line, true);
+                        EnterRelation enter = new EnterRelation(u, targetShip, line);
+                        leave.add();
+                        enter.add();
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -346,9 +396,10 @@ public class GiveOrder extends UnitArgumentOrder {
           setWarning(unit, line, Resources.get("order.give.warning.unknowntype"));
         }
       } else {
-        // relation to myself? you're sick
         setWarning(unit, line, Resources.get("order.give.warning.reflexive"));
       }
+    } else {
+      setWarning(unit, line, Resources.get("order.give.warning.invalidunit", target));
     }
   }
 

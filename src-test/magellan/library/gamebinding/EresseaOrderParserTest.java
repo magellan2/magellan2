@@ -558,6 +558,12 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("GIB 123 2 Würziger~Wagemut");
 
     checkOrder("GIB 123 2 EINHEIT", false);
+
+    checkOrder("GIB 0 1 SCHIFF");
+    checkOrder("GIB 123 1 SCHIFF");
+    checkOrder("GIB 123 1 SCHIFFE", false);
+    checkOrder("GIB 123 ALLES SCHIFF", false);
+    checkOrder("GIB 123 SCHIFF", false);
   }
 
   /**

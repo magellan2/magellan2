@@ -69,6 +69,11 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public Collection<Unit> units();
 
   /**
+   * Returns a direct view of the units. Preferably use units().
+   */
+  public Map<? extends ID, Unit> getUnits();
+
+  /**
    * Retrieve a unit in this container by id.
    */
   public Unit getUnit(ID key);
@@ -170,7 +175,5 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public CacheableOrderEditor getOrderEditor();
 
   public void setOrderEditor(CacheableOrderEditor editor);
-
-  public Map<? extends ID, Unit> getUnits();
 
 }

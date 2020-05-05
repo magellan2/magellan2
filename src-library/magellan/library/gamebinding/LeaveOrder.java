@@ -28,7 +28,9 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -51,13 +53,21 @@ public class LeaveOrder extends SimpleOrder {
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
     if (isValid()) {
       UnitContainer uc = unit.getUnitContainer();
+      UnitContainer ucNew = unit.getModifiedUnitContainer();
 
-      if (uc != null) {
-        LeaveRelation rel = new LeaveRelation(unit, uc, line);
-        rel.add();
+      if (ucNew != null) {
+        UnitRelation lastEnter = null;
+        for (UnitRelation enter : unit.getRelations(EnterRelation.class)) {
+          lastEnter = enter;
+        }
+        if (lastEnter == null || ((EnterRelation) lastEnter).target != ucNew) {
+          LeaveRelation rel = new LeaveRelation(unit, ucNew, line);
+          rel.add();
+        }
       } else {
         setWarning(unit, line, Resources.get("order.leave.warning.nocontainer"));
       }
+
     }
   }
 

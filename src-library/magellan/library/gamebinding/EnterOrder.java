@@ -59,24 +59,25 @@ public class EnterOrder extends UCArgumentOrder {
       return;
 
     UnitContainer target = getContainer(data, unit, type, true);
+    // check whether the unit leaves a container
+    UnitContainer leftUC = unit.getModifiedBuilding();
+    if (leftUC == null) {
+      leftUC = unit.getModifiedShip();
+    }
 
+    EnterRelation enter = null;
     if (target != null) {
-      EnterRelation rel = new EnterRelation(unit, target, line);
-      rel.add();
+      enter = new EnterRelation(unit, target, line);
     } else {
       setWarning(unit, line, Resources.get("order.enter.warning.unknowntarget", container));
     }
 
-    // check whether the unit leaves a container
-    UnitContainer leftUC = unit.getBuilding();
-
-    if (leftUC == null) {
-      leftUC = unit.getShip();
+    if (leftUC != null && leftUC != this) {
+      LeaveRelation leave = new LeaveRelation(unit, leftUC, line, true);
+      leave.add();
     }
-
-    if (leftUC != null) {
-      LeaveRelation rel = new LeaveRelation(unit, leftUC, line, true);
-      rel.add();
+    if (enter != null) {
+      enter.add();
     }
   }
 

@@ -71,35 +71,37 @@ public class EresseaRelationFactory implements RelationFactory {
   /** Order priority */
   public static final int P_BETRETE = 701;
   /** Order priority */
-  public static final int P_VERLASSE = 801;
+  public static final int P_GIB_KOMMANDO = 901;
   /** Order priority */
-  public static final int P_ATTACKIERE = 901;
+  public static final int P_VERLASSE = 1001;
   /** Order priority */
-  public static final int P_RESERVIERE = 1001;
+  public static final int P_ATTACKIERE = 1201;
   /** Order priority */
-  public static final int P_FOLGE = 1301;
+  public static final int P_RESERVIERE = 1301;
   /** Order priority */
-  public static final int P_GIB = 1401;
+  public static final int P_FOLGE = 1401;
   /** Order priority */
-  public static final int P_REKRUTIERE = 1601;
+  public static final int P_GIB = 1501;
   /** Order priority */
-  public static final int P_BEFOERDERE = 1701;
+  public static final int P_REKRUTIERE = 1701;
   /** Order priority */
-  public static final int P_LEHRE = 2001;
+  public static final int P_BEFOERDERE = 1801;
   /** Order priority */
-  public static final int P_FAHRE = 2598;
+  public static final int P_LEHRE = 2301;
   /** Order priority */
-  public static final int P_TRANSPORTIERE = 2599;
+  public static final int P_FAHRE = 2898;
   /** Order priority */
-  public static final int P_NACH = 2600;
+  public static final int P_TRANSPORTIERE = 2899;
   /** Order priority */
-  public static final int P_BEWACHE = 2701;
+  public static final int P_NACH = 2900;
+  /** Order priority */
+  public static final int P_BEWACHE = 3001;
 
   /** Order priority */
-  public static final int P_BUILDING_MAINTENANCE = 1801;
+  public static final int P_BUILDING_MAINTENANCE = 2001;
 
   /** Order priority */
-  public static final int P_UNIT_MAINTENANCE = 3201;
+  public static final int P_UNIT_MAINTENANCE = 3501;
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
@@ -479,9 +481,12 @@ public class EresseaRelationFactory implements RelationFactory {
       return P_RESERVIERE;
     else if (order instanceof FollowUnitOrder)
       return P_FOLGE;
-    else if (order instanceof GiveOrder)
+    else if (order instanceof GiveOrder) {
+      if (((GiveOrder) order).getType() != null && ((GiveOrder) order).getType().equals(
+          EresseaConstants.OC_CONTROL))
+        return P_GIB_KOMMANDO;
       return P_GIB;
-    else if (order instanceof RecruitmentOrder)
+    } else if (order instanceof RecruitmentOrder)
       return P_REKRUTIERE;
     else if (order instanceof PromoteOrder)
       return P_BEFOERDERE;

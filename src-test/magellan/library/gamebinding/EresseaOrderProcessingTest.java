@@ -30,6 +30,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -45,9 +48,6 @@ import magellan.library.relation.MaintenanceRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author stm
@@ -273,7 +273,7 @@ public class EresseaOrderProcessingTest {
     executor.processOrders(region);
 
     int costs = 0;
-    for (Unit u : unit1.getFaction().getUnits().values()) {
+    for (Unit u : unit1.getFaction().units()) {
       costs += u.getPersons();
     }
     costs *= unit1.getPersons();

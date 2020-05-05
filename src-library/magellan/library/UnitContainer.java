@@ -106,6 +106,9 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * 
    * @return The current owner of the UnitContainer or <code>null</code>.
    */
+  /**
+   * @return
+   */
   public Unit getOwner();
 
   /**
@@ -138,6 +141,13 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * In case of a Faction, null is returned.
    */
   public Unit getModifiedOwnerUnit();
+
+  /**
+   * Sets the owner unit after orders.
+   *
+   * @param newOwner
+   */
+  public void setModifiedOwnerUnit(Unit newOwner);
 
   /**
    * Returns the value of comments.
@@ -175,5 +185,20 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public CacheableOrderEditor getOrderEditor();
 
   public void setOrderEditor(CacheableOrderEditor editor);
+
+  /**
+   * Removes the unit from modified units.
+   *
+   * @param unit
+   * @return <code>true</code> iff unit was in the container
+   */
+  public boolean leave(Unit unit);
+
+  /**
+   * Adds a unit (at the end of) the modified units
+   *
+   * @param unit
+   */
+  public void enter(Unit unit);
 
 }

@@ -100,8 +100,7 @@ public class AttackOrder extends UnitArgumentOrder {
       rel.add();
     } else {
       setProblem(ProblemFactory.createProblem(Severity.ERROR, AttackProblem, unit, null, Resources
-          .get("order.attack.warning.unknowntarget", target), line));
-      // setWarning(unit,line,Resources.get("order.attack.warning.unknowntarget", target));
+          .get("order.all.unknownunit", target), line));
     }
 
   }

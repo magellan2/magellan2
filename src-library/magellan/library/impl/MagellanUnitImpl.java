@@ -50,11 +50,9 @@ import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
-import magellan.library.relation.EnterRelation;
 import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
-import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MaintenanceRelation;
 import magellan.library.relation.MovementRelation;
 import magellan.library.relation.PersonTransferRelation;
@@ -62,7 +60,6 @@ import magellan.library.relation.RecruitmentRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.TeachRelation;
 import magellan.library.relation.TransportRelation;
-import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
@@ -221,6 +218,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /** A collection view of the temp units. */
   private Collection<TempUnit> tempUnitCollection;
   private GameData data;
+
+  private static UnitContainer nullContainer = new NullContainer();
 
   private static int deprecationCounter = 0;
 
@@ -704,7 +703,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     }
 
     items.put(i.getItemType().getID(), i);
-    invalidateCache();
+    // FIXME necessary?
+    invalidateCache(true);
 
     return i;
   }
@@ -826,6 +826,24 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   public Ship getShip() {
     return ship;
+  }
+
+  /**
+   * @see magellan.library.Unit#enter(magellan.library.UnitContainer)
+   */
+  public void enter(UnitContainer newUC) {
+    UnitContainer uc = getModifiedUnitContainer();
+    if (uc != null) {
+      uc.leave(this);
+    }
+
+    if (newUC == null) {
+      // null container indicates no container, as opposed to "same as getContainer()"
+      newUC = nullContainer;
+    }
+    getCache().modifiedContainer = newUC;
+
+    newUC.enter(this);
   }
 
   /**
@@ -1107,21 +1125,22 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Resets the cache of this unit to its uninitialized state.
    */
-  @SuppressWarnings("deprecation")
-  private void invalidateCache() {
+  private void invalidateCache(boolean reset) {
     if (hasCache()) {
       final Cache cache1 = getCache();
       cache1.modifiedName = null;
       cache1.modifiedSkills = null;
       cache1.modifiedItems = null;
-      cache1.unitWeight = -1;
-      cache1.modifiedUnitWeight = -1;
       cache1.modifiedPersons = -1;
       cache1.modifiedAmount = -1;
       cache1.modifiedSize = -1;
       cache1.modifiedCombatStatus = EresseaConstants.CS_INIT;
       cache1.modifiedUnaidedValidated = false;
       cache1.modifiedGuard = -1;
+
+      if (reset) {
+        cache1.modifiedContainer = null;
+      }
     }
   }
 
@@ -1158,7 +1177,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   public void addRelation(UnitRelation rel) {
     super.addRelation(rel);
     // FIXME proactive recalculation of modified items!?!
-    invalidateCache();
+    invalidateCache(false);
   }
 
   /**
@@ -1168,7 +1187,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   public UnitRelation removeRelation(UnitRelation rel) {
     final UnitRelation ret = super.removeRelation(rel);
     if (ret != null) {
-      invalidateCache();
+      invalidateCache(false);
     }
     return ret;
   }
@@ -1550,17 +1569,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Returns the modified unit container this unit belongs to. (ship, building or null)
    */
   public UnitContainer getModifiedUnitContainer() {
-    UnitContainer newContainer = getUnitContainer();
-    for (UnitContainerRelation ucr : getRelations(UnitContainerRelation.class)) {
-      if (ucr instanceof EnterRelation) {
-        newContainer = ucr.target;
-      } else if (ucr instanceof LeaveRelation && ucr.target.equals(newContainer)) {
-        newContainer = null;
-      }
-    }
+    if (!hasCache() || getCache().modifiedContainer == null)
+      return getUnitContainer();
 
-    // we stayed in our ship
-    return newContainer;
+    UnitContainer maybeContainer = getCache().modifiedContainer;
+    return maybeContainer == nullContainer ? null : maybeContainer;
   }
 
   /**
@@ -1648,7 +1661,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (items != null) {
       items.clear();
       items = null;
-      invalidateCache();
+      // FIXME necessary?
+      invalidateCache(true);
     }
   }
 
@@ -2910,7 +2924,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
     if (getCache().relations != null) {
       getCache().relations.clear();
     }
-    invalidateCache();
+    // clearCache();
+    // FIXME
+    invalidateCache(true);
     // getCache().clear();
   }
 

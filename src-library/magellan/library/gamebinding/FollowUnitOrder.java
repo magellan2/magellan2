@@ -60,7 +60,7 @@ public class FollowUnitOrder extends UnitArgumentOrder {
         setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
       }
     } else {
-      setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", target));
+      setWarning(unit, line, Resources.get("order.all.warning.unknownunit", target));
     }
   }
 }

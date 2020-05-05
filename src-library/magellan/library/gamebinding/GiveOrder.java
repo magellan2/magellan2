@@ -23,6 +23,7 @@
 //
 package magellan.library.gamebinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import magellan.library.GameData;
@@ -31,6 +32,7 @@ import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
@@ -50,6 +52,7 @@ import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.tasks.ProblemFactory;
 import magellan.library.tasks.ProblemType;
+import magellan.library.utils.Locales;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -145,9 +148,9 @@ public class GiveOrder extends UnitArgumentOrder {
 
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
-    // GIB 0|<enr> (ALLES|EINHEIT|KRaeUTER|KOMMANDO|((([JE] <amount>)|ALLES)
-    // (SILBER|PERSONEN|<gegenstand>)))
-    // GIB EINHEIT <amount> SHIFF
+    // GIB (0|<enr>) (ALLES|KRÄUTER|KOMMANDO|EINHEIT)
+    // GIB (0|<enr>) (([JE] <amount>)|ALLES)(SILBER|PERSONEN|<gegenstand>)))
+    // GIB (0|<enr>) <amount> SCHIFF
     if (!isValid())
       return;
 
@@ -164,7 +167,7 @@ public class GiveOrder extends UnitArgumentOrder {
       if (type == EresseaConstants.OC_CONTROL || type == EresseaConstants.OC_UNIT) {
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET_SPECIAL.type, unit,
-            null, Resources.get("order.give.warning.unknowntarget", target), line));
+            null, Resources.get("order.all.warning.unknowntarget", target), line));
       } else {
         String targetID;
         try {
@@ -176,7 +179,7 @@ public class GiveOrder extends UnitArgumentOrder {
         }
         setProblem(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_UNKNOWN_TARGET.type, unit, null,
-            Resources.get("order.give.warning.unknowntarget", targetID), line));
+            Resources.get("order.all.warning.unknowntarget", targetID), line));
       }
     } else {
       zeroOrTarget = tUnit;
@@ -191,10 +194,15 @@ public class GiveOrder extends UnitArgumentOrder {
             setError(unit, line, Resources.get("order.all.warning.zeronotallowed"));
           } else {
             UnitRelation rel = new ControlRelation(unit, zeroOrTarget, line);
-            if (unit.getUnitContainer() == null || unit.getUnitContainer().getOwnerUnit() != unit) {
+            UnitContainer uc = unit.getModifiedUnitContainer();
+            if (uc == null || uc.getModifiedOwnerUnit() != unit) {
               // better warn too often than too rarely
               rel.setWarning(Resources.get("order.give.warning.nocommand"),
                   OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+            } else if (zeroOrTarget.getModifiedUnitContainer() == uc) {
+              uc.setModifiedOwnerUnit(zeroOrTarget);
+            } else {
+              setError(unit, line, Resources.get("order.give.warning.unitnotin", unit, uc));
             }
             rel.add();
           }
@@ -231,11 +239,11 @@ public class GiveOrder extends UnitArgumentOrder {
               setWarning(unit, line, Resources.get("order.give.warning.ship.amount0"));
             } else {
               if (ship.getEffects() != null && !ship.getEffects().isEmpty()) {
-                setWarning(unit, line, Resources.get("order.give.warning.spell", ship));
+                setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
               }
               if (targetShip != null && targetShip.getEffects() != null && !targetShip.getEffects()
                   .isEmpty()) {
-                setWarning(unit, line, Resources.get("order.give.warning.spell", ship));
+                setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
               }
               if (ship.getShipType().getRange() < 3) {
                 setWarning(unit, line, Resources.get("order.give.warning.ship.boat", ship));
@@ -251,11 +259,16 @@ public class GiveOrder extends UnitArgumentOrder {
                   .getFaction())) {
                 setError(unit, line, Resources.get("order.give.warning.invalidunit", target));
               } else if (zeroOrTarget != null && zeroOrTarget.getModifiedShip() == null) {
+                // target enters new ship
                 targetShip = ship.createTempShip();
-                EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
-                enter.add();
+                eState.enter(zeroOrTarget, targetShip);
+                // EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
+                // enter.add();
               } else if (targetShip == ship) {
+                // unit on our ship
                 targetShip = ship.createTempShip();
+                eState.enter(zeroOrTarget, targetShip);
+
                 EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
                 enter.add();
               } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
@@ -270,7 +283,9 @@ public class GiveOrder extends UnitArgumentOrder {
                   boolean shoreWarning = false;
                   if (ship.getShoreId() != targetShip.getShoreId() && ship.getShoreId() >= 0) {
                     shoreWarning = true;
-                    setWarning(unit, line, Resources.get("order.give.warning.ship.wrongcoast"));
+                    setWarning(unit, line, Resources.get("order.give.warning.ship.wrongshore",
+                        getTranslation(ship.getShoreId(), data),
+                        getTranslation(targetShip.getShoreId(), data)));
                   }
                   if (!shoreWarning || targetShip.getShoreId() >= 0) {
 
@@ -283,12 +298,16 @@ public class GiveOrder extends UnitArgumentOrder {
                     if (ship.getModifiedAmount() <= 0 && zeroOrTarget != unit.getRegion()
                         .getZeroUnit()) {
                       // last ship, transfer units
-                      for (Unit u : ship.modifiedUnits()) {
+                      ArrayList<Unit> left = new ArrayList<Unit>(ship.modifiedUnits());
+                      for (Unit u : left) {
+                        eState.leave(u, ship);
+                        eState.enter(u, targetShip);
                         LeaveRelation leave = new LeaveRelation(u, ship, line, true);
                         EnterRelation enter = new EnterRelation(u, targetShip, line);
                         leave.add();
                         enter.add();
                       }
+                      left.clear();
                     }
                   }
                 }
@@ -401,6 +420,12 @@ public class GiveOrder extends UnitArgumentOrder {
     } else {
       setWarning(unit, line, Resources.get("order.give.warning.invalidunit", target));
     }
+  }
+
+  private String getTranslation(int shore, GameData data) {
+    return data.getGameSpecificStuff().getOrderChanger().getOrderO(
+        Locales.getOrderLocale(), data.getMapMetric().toDirection(shore).getId())
+        .getText();
   }
 
   /**

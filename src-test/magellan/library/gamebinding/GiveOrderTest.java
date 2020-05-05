@@ -35,6 +35,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Order;
@@ -76,6 +77,126 @@ public class GiveOrderTest extends MagellanTestWithResources {
     relationFactory.stopUpdating();
   }
 
+  @Test
+  public void testGiveCommand() {
+    Ship ship = builder.addShip(data, region0, "ship", "Trireme", "Trireme", 200);
+    Unit unit2 = builder.addUnit(data, "two", "Zwei", faction0, region0);
+
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship);
+
+    unit.clearOrders();
+    unit.addOrder("GIB two KOMMANDO");
+
+    process(region0);
+
+    assertEquals(unit2, ship.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testGiveGiveCommand() {
+    Ship ship = builder.addShip(data, region0, "ship", "Trireme", "Trireme", 200);
+    Unit unit2 = builder.addUnit(data, "two", "Zwei", faction0, region0);
+    Unit unit3 = builder.addUnit(data, "tree", "Drei", faction0, region0);
+
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship);
+    builder.addTo(unit3, ship);
+
+    unit.clearOrders();
+    unit.addOrder("GIB two KOMMANDO");
+    unit.addOrder("GIB tree KOMMANDO");
+
+    process(region0);
+
+    assertEquals(unit2, ship.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testGiveGiveCommandOk() {
+    Ship ship = builder.addShip(data, region0, "ship", "Trireme", "Trireme", 200);
+    Unit unit2 = builder.addUnit(data, "two", "Zwei", faction0, region0);
+    Unit unit3 = builder.addUnit(data, "tree", "Drei", faction0, region0);
+
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship);
+    builder.addTo(unit3, ship);
+
+    unit.clearOrders();
+    unit.addOrder("GIB two KOMMANDO");
+    unit2.addOrder("GIB tree KOMMANDO");
+
+    process(region0);
+
+    assertEquals(unit3, ship.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testEnterGiveCommand() {
+    Ship ship = builder.addShip(data, region0, "ship", "Trireme", "Trireme", 200);
+    Ship ship2 = builder.addShip(data, region0, "sh2", "Trireme", "Trireme", 200);
+
+    Unit unit2 = builder.addUnit(data, "two", "Zwei", faction0, region0);
+    Unit unit3 = builder.addUnit(data, "tree", "Drei", faction0, region0);
+
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship);
+    builder.addTo(unit3, ship);
+
+    unit.clearOrders();
+    unit.addOrder("BETRETE SCHIFF sh2");
+    unit.addOrder("GIB tree KOMMANDO");
+
+    process(region0);
+
+    assertEquals(unit, ship2.getModifiedOwnerUnit());
+    assertEquals(ship2, unit.getModifiedShip());
+    assertEquals(ship, unit3.getModifiedShip());
+    assertEquals(unit2, ship.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testGiveLeave() {
+    Unit unit2 = builder.addUnit(data, "two", "Unit2", faction0, region0);
+    Unit unit3 = builder.addUnit(data, "tree", "Unit3", faction0, region0);
+
+    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
+
+    unit.addOrder("GIB two KOMMANDO");
+    unit2.addOrder("VERLASSE");
+    builder.addTo(unit, b1);
+
+    builder.addTo(unit, b1);
+    builder.addTo(unit2, b1);
+    builder.addTo(unit3, b1);
+
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region0);
+
+    assertEquals(unit3, b1.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testGiveLeave2() {
+    Unit unit2 = builder.addUnit(data, "two", "Unit2", faction0, region0);
+    Unit unit3 = builder.addUnit(data, "tree", "Unit3", faction0, region0);
+
+    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
+
+    unit.addOrder("GIB tree KOMMANDO");
+    unit.addOrder("VERLASSE");
+    builder.addTo(unit, b1);
+
+    builder.addTo(unit, b1);
+    builder.addTo(unit2, b1);
+    builder.addTo(unit3, b1);
+
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region0);
+
+    assertEquals(unit3, b1.getModifiedOwnerUnit());
+  }
+
   /**
    * Test basic operation
    */
@@ -88,7 +209,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
 
     Order order = unit.getOrders2().get(0);
     assertTrue(order instanceof GiveOrder);
-    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 1);
 
     assertEquals("Unit_1 (1) besitzt kein Schiff", order.getProblem().getMessage());
 
@@ -96,15 +217,15 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Ship ship2 = builder.addShip(data, region0, "conv", "Trireme", "Konvoi", 200);
 
     // transfer ship from fleet to fleet
-    addToShip(unit, ship);
-    addToShip(unit2, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship2);
     changeAmount(ship, 2);
     changeAmount(ship2, 2);
     assertEquals(400, ship.getModifiedSize());
     assertEquals(400, ship2.getModifiedSize());
 
     order.setProblem(null);
-    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 1);
     assertNull(order.getProblem());
 
     List<UnitRelation> relations = unit.getRelations();
@@ -116,7 +237,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     shipRelations = ship2.getRelations();
     assertEquals(1, shipRelations.size());
 
-    assertEquals(0, str.line);
+    assertEquals(1, str.line);
     assertSame(unit, str.origin);
     assertSame(unit, str.source);
     assertSame(unit2, str.target);
@@ -139,7 +260,8 @@ public class GiveOrderTest extends MagellanTestWithResources {
     assertEquals(200, ship.getModifiedSize());
     assertEquals(200, ship2.getModifiedSize());
 
-    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    process(region0);
+    // order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 1);
     assertNull(order.getProblem());
 
     relations = unit.getRelations();
@@ -153,7 +275,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     shipRelations = ship2.getRelations();
     assertEquals(2, shipRelations.size());
 
-    assertEquals(0, str.line);
+    assertEquals(1, str.line);
     assertSame(unit, str.origin);
     assertSame(unit, str.source);
     assertSame(unit2, str.target);
@@ -169,10 +291,10 @@ public class GiveOrderTest extends MagellanTestWithResources {
     ship.setDamageRatio(3);
     changeAmount(ship, 3);
 
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
 
     Order order = unit.getOrders2().get(0);
-    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 1);
 
     assertNull(order.getProblem());
     assertEquals(1, data.getShips().size());
@@ -210,10 +332,10 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
     changeAmount(ship, 2);
 
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
 
     Order order = unit.getOrders2().get(0);
-    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 0);
+    order.execute(new EresseaRelationFactory.EresseaExecutionState(data), data, unit, 1);
 
     assertNull(order.getProblem());
     assertEquals(1, data.getShips().size());
@@ -231,13 +353,12 @@ public class GiveOrderTest extends MagellanTestWithResources {
   public void testGiveAllShips() {
     Ship ship = builder.addShip(data, region0, "conv", "Trireme", "Trireme", 200);
 
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
 
     unit.clearOrders();
     unit.addOrder("GIB oth 1 SCHIFF"); // give all ships
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(1, ship.getTempShips().size());
     assertEquals(0, ship.getModifiedAmount());
@@ -256,11 +377,10 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
     changeAmount(ship, 3);
 
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
     assertEquals(1, data.getShips().size());
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(1, data.getShips().size());
     assertEquals(2, ship.getTempShips().size());
@@ -269,7 +389,8 @@ public class GiveOrderTest extends MagellanTestWithResources {
     assertNull(data.getShip(tempShip.getID()));
 
     unit.clearOrders();
-    executor.processOrders(region0);
+
+    process(region0);
 
     assertEquals(1, data.getShips().size());
     assertEquals(0, ship.getTempShips().size());
@@ -287,11 +408,10 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
     changeAmount(ship, 2);
 
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
     assertEquals(1, data.getShips().size());
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(1, data.getShips().size());
     assertEquals(2, ship.getTempShips().size());
@@ -311,12 +431,11 @@ public class GiveOrderTest extends MagellanTestWithResources {
     unit.addOrder("GIB oth 1 SCHIFF");
     unit.addOrder("GIB oth 1 SCHIFF");
 
-    addToShip(unit, ship);
-    addToShip(other, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(other, ship2);
     assertEquals(2, data.getShips().size());
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(2, data.getShips().size());
     assertEquals(0, ship.getTempShips().size());
@@ -335,11 +454,10 @@ public class GiveOrderTest extends MagellanTestWithResources {
     unit.addOrder("GIB same 1 SCHIFF");
     same.addOrder("GIB 0 1 SCHIFF");
 
-    addToShip(unit, ship);
-    addToShip(same, ship);
+    builder.addTo(unit, ship);
+    builder.addTo(same, ship);
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(2, ship.getTempShips().size());
     assertTrue(ship.getTempShips().get(0).getTempShips().isEmpty());
@@ -370,13 +488,12 @@ public class GiveOrderTest extends MagellanTestWithResources {
     unit.addOrder("GIB else 1 SCHIFF"); // error
     unit.addOrder("GIB xxxx 1 SCHIFF"); // error, 1 temp ship
 
-    addToShip(unit, ship);
-    addToShip(same, ship);
-    addToShip(captain, ship2);
-    addToShip(other, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(same, ship);
+    builder.addTo(captain, ship2);
+    builder.addTo(other, ship2);
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertEquals(2, data.getShips().size());
     assertEquals(3, ship.getTempShips().size());
@@ -410,23 +527,24 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Ship ship = builder.addShip(data, region0, "ship", "Trireme", "Trireme", 200);
     Ship ship2 = builder.addShip(data, region0, "sh2", "Trireme", "Trireme", 200);
 
-    Unit other = builder.addUnit(data, "oth", "Othership", faction0, region0);
     Unit same = builder.addUnit(data, "same", "Sameship", faction0, region0);
-    changeAmount(ship2, 2);
+    Unit other = builder.addUnit(data, "oth", "Othership", faction0, region0);
+    changeAmount(ship2, 1);
 
-    addToShip(unit, ship);
-    addToShip(same, ship);
-    addToShip(other, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(same, ship);
+    builder.addTo(other, ship2);
 
+    // order: unit, same, other
     unit.clearOrders();
-    unit.addOrder("BETRETE SCHIFF sh2"); // transfers command to same
-    other.addOrder("GIB 1 KOMMANDO"); // command of sh2 to unit
-    unit.addOrder("GIB oth 1 SCHIFF"); // transfer from ship2 sing to new temp ship
+    unit.addOrder("BETRETE SCHIFF sh2"); // transfers command to same, order: same, other, unit
+    other.addOrder("GIB 1 KOMMANDO"); // command of sh2 to unit, order unchanged
+    same.addOrder("GIB 1 1 SCHIFF"); // transfer ship to sh2; moves same to ship2, order:
+    // same, other, unit (for GIB); other, unit, same (for subsequent priorities)
+    unit.addOrder("GIB oth 1 SCHIFF"); // transfer from ship2 sing to new temp ship, order:
+                                       // other, unit, same (for subsequent priorities)
 
-    same.addOrder("GIB 1 1 SCHIFF"); // transfer ship to sh2;
-
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     // expected: unit commands sh2 (2 ships), other commands new ship (1 ship)
 
@@ -434,12 +552,13 @@ public class GiveOrderTest extends MagellanTestWithResources {
     assertEquals(1, ship2.getTempShips().size());
     assertEquals(0, ship.getTempShips().size());
     assertEquals(0, ship.getModifiedAmount());
-    assertEquals(2, ship2.getModifiedAmount());
+    assertEquals(1, ship2.getModifiedAmount());
     Ship tempShip = ship2.getTempShips().iterator().next();
     assertEquals(1, tempShip.getModifiedAmount());
 
     assertEquals(unit, ship2.getModifiedOwnerUnit());
     assertEquals(other, tempShip.getModifiedOwnerUnit());
+    assertEquals(null, ship.getModifiedOwnerUnit());
     assertEquals(ship2, same.getModifiedShip());
   }
 
@@ -451,14 +570,13 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Unit other = builder.addUnit(data, "oth", "Othership", faction0, region0);
     changeAmount(ship, 2);
 
-    addToShip(unit, ship);
-    addToShip(other, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(other, ship2);
 
     unit.clearOrders();
     unit.addOrder("GIB oth 1 SCHIFF"); // wrong ship type
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertNotNull(unit.getOrders2().get(0).getProblem());
     assertEquals(2, ship.getModifiedAmount());
@@ -471,8 +589,8 @@ public class GiveOrderTest extends MagellanTestWithResources {
 
     Unit other = builder.addUnit(data, "oth", "Othership", faction0, region0);
 
-    addToShip(unit, ship);
-    addToShip(other, ship2);
+    builder.addTo(unit, ship);
+    builder.addTo(other, ship2);
 
     ship2.setEffects(Collections.singletonList("Cursed"));
 
@@ -481,8 +599,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     other.clearOrders();
     other.addOrder("GIB 0 1 SCHIFF"); // ship cursed
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertNotNull(unit.getOrders2().get(0).getProblem());
     assertNotNull(other.getOrders2().get(0).getProblem());
@@ -497,13 +614,12 @@ public class GiveOrderTest extends MagellanTestWithResources {
     ship.setAmount(2);
 
     unit.setRegion(ocean);
-    addToShip(unit, ship);
+    builder.addTo(unit, ship);
     unit.clearOrders();
     unit.addOrder("GIB 0 1 SCHIFF"); // okay
     unit.addOrder("GIB 0 1 SCHIFF"); // don't give last ship on ocean
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(ocean);
+    process(ocean);
 
     assertNull(unit.getOrders2().get(0).getProblem());
     assertNotNull(unit.getOrders2().get(1).getProblem());
@@ -530,12 +646,12 @@ public class GiveOrderTest extends MagellanTestWithResources {
     Unit nw2 = builder.addUnit(data, "nw2", "Other", unit.getFaction(), region0);
     Unit ne = builder.addUnit(data, "ne", "Other", unit.getFaction(), region0);
     Unit none2 = builder.addUnit(data, "non2", "Other", unit.getFaction(), region0);
-    addToShip(unit, ship);
-    addToShip(none, shipNone);
-    addToShip(nw, shipnw);
-    addToShip(nw2, ship4);
-    addToShip(ne, ship5);
-    addToShip(none2, shipNone2);
+    builder.addTo(unit, ship);
+    builder.addTo(none, shipNone);
+    builder.addTo(nw, shipnw);
+    builder.addTo(nw2, ship4);
+    builder.addTo(ne, ship5);
+    builder.addTo(none2, shipNone2);
 
     shipnw.setShoreId(1);
     ship4.setShoreId(1);
@@ -553,8 +669,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     assertEquals(-1, shipNone2.getShoreId());
     assertEquals(1, shipnw.getShoreId());
 
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
-    executor.processOrders(region0);
+    process(region0);
 
     assertNull(unit.getOrders2().get(0).getProblem());
     assertNull(unit.getOrders2().get(1).getProblem());
@@ -572,12 +687,9 @@ public class GiveOrderTest extends MagellanTestWithResources {
     // FIXME assertEquals(shipnw.getShoreId(), shipNone.getShoreId());
   }
 
-  private void addToShip(Unit unit0, Ship ship) {
-    unit0.setShip(ship);
-    if (ship.units().size() == 1) {
-      ship.setOwner(unit0);
-      ship.setOwnerUnit(unit0);
-    }
+  private void process(Region region) {
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region);
   }
 
   private void changeAmount(Ship ship, int amount) {

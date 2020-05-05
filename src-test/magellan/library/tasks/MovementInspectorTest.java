@@ -71,7 +71,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
     gd = builder.createSimpleGameData("eressea", 350, true);
     u = gd.getUnits().iterator().next();
     Building b = builder.addBuilding(gd, u.getRegion(), "burg", "Turm", "Turm", 10);
-    builder.addUnitToBuilding(u, b);
+    builder.addTo(u, b);
 
     processor = ((EresseaRelationFactory) gd.getGameSpecificStuff().getRelationFactory());
     processor.stopUpdating();
@@ -125,7 +125,7 @@ public class MovementInspectorTest extends MagellanTestWithResources {
   @Test
   public final void testReviewUnitUnitSeverity3() {
     Unit u2 = builder.addUnit(gd, "2", "Nummer 2", u.getFaction(), u.getRegion());
-    builder.addUnitToBuilding(u2, u.getBuilding());
+    builder.addTo(u2, u.getBuilding());
     u.clearOrders();
     u.addOrder("NACH o");
     u.addOrder("GIB 2 KOMMANDO");

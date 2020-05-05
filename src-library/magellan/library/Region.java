@@ -379,43 +379,6 @@ public interface Region extends UnitContainer, Selectable {
   public Building removeBuilding(Building b);
 
   /**
-   * Returns the items of all units that are stationed in this region and belonging to a faction
-   * that has at least a privileged trust level. <br>
-   * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
-   * The amount of the items of a particular item type are added up, so two units with 5 pieces of
-   * silver yield one silver item of amount 10 here.
-   * 
-   * @deprecated Use
-   *             {@link magellan.library.utils.Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
-   *             instead.
-   */
-  @Deprecated
-  public Collection<Item> items();
-
-  /**
-   * Returns the items of all units that are stationed in this region The amount of the items of a
-   * particular item type are added up, so two units with 5 pieces of silver yield one silver item
-   * of amount 10 here.
-   * 
-   * @deprecated Use
-   *             {@link magellan.library.utils.Units#getContainerAllUnitItems(magellan.library.UnitContainer)}
-   *             instead.
-   */
-  @Deprecated
-  public Collection<Item> allItems();
-
-  /**
-   * Returns a specific item from the {@link #items()} collection identified by the item type or
-   * <code>null</code> if no such item exists in the region.
-   * 
-   * @deprecated Use
-   *             {@link magellan.library.utils.Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
-   *             instead.
-   */
-  @Deprecated
-  public Item getItem(ItemType type);
-
-  /**
    * Returns the maximum number of persons that can be recruited in this region.
    */
   public int maxRecruit();

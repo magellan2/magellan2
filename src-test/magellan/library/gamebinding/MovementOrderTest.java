@@ -32,6 +32,9 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Order;
@@ -43,9 +46,6 @@ import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.Problem;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * @author stm

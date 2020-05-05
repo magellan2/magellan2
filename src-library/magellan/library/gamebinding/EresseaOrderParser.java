@@ -2188,6 +2188,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       if (shallComplete(token, t)) {
         getCompleter().cmpltMacheBuilding(token.getText());
       }
+      // TODO if MACHE new building => implicit leave
       return retVal;
     }
 

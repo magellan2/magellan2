@@ -33,7 +33,6 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Identifiable;
 import magellan.library.Island;
-import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Message;
 import magellan.library.Region;
@@ -54,7 +53,6 @@ import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
-import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 // Fiete 20080806: prepare for loosing special info in CR
@@ -833,126 +831,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     }
 
     return ret;
-  }
-
-  /**
-   * Returns the items of all units that are stationed in this region and belonging to a faction
-   * that has at least a privileged trust level. <br>
-   * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
-   * The amount of the items of a particular item type are added up, so two units with 5 pieces of
-   * silver yield one silver item of amount 10 here.
-   *
-   * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
-   *             instead.
-   */
-  @Deprecated
-  public Collection<Item> items() {
-    if (!hasCache() || (getCache().regionItems == null)) {
-      refreshItems();
-    }
-
-    if (getCache().regionItems != null && getCache().regionItems.values() != null)
-      return Collections.unmodifiableCollection(getCache().regionItems.values());
-    else
-      return Collections.emptyList();
-  }
-
-  /**
-   * Returns the items of all units that are stationed in this region The amount of the items of a
-   * particular item type are added up, so two units with 5 pieces of silver yield one silver item
-   * of amount 10 here.
-   *
-   * @see magellan.library.Region#allItems()
-   * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
-   */
-  @Deprecated
-  public Collection<Item> allItems() {
-    if (!hasCache() || (getCache().allRegionItems == null)) {
-      refreshAllItems();
-    }
-
-    if (getCache().allRegionItems != null && getCache().allRegionItems.values() != null)
-      return Collections.unmodifiableCollection(getCache().allRegionItems.values());
-    else
-      return Collections.emptyList();
-  }
-
-  /**
-   * Returns a specific item from the items() collection identified by the item type.
-   *
-   * @see magellan.library.Region#getItem(magellan.library.rules.ItemType)
-   * @deprecated Use
-   *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
-   *             instead.
-   */
-  @Deprecated
-  public Item getItem(ItemType type) {
-    if (!hasCache() || (getCache().regionItems == null)) {
-      refreshItems();
-    }
-
-    return ((getCache() != null) && (getCache().regionItems != null))
-        ? (Item) getCache().regionItems.get(type.getID()) : null;
-  }
-
-  /**
-   * Updates the cache of items owned by privileged factions in this region. Fiete 20061224: ...and
-   * the factions with "GIVE" alliances too.
-   *
-   * @deprecated
-   */
-  @Deprecated
-  private void refreshItems() {
-    if (getCache().regionItems != null) {
-      getCache().regionItems.clear();
-    } else {
-      getCache().regionItems = new LinkedHashMap<ID, Item>();
-    }
-
-    for (Unit u : units()) {
-      // if(u.getFaction().isPrivileged()) {
-      if (u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
-        for (Item item : u.getItems()) {
-          Item i = getCache().regionItems.get(item.getItemType().getID());
-
-          if (i == null) {
-            i = new Item(item.getItemType(), 0);
-            getCache().regionItems.put(item.getItemType().getID(), i);
-          }
-
-          i.setAmount(i.getAmount() + item.getAmount());
-        }
-      }
-    }
-  }
-
-  /**
-   * Updates the cache of items owned by all factions in this region.
-   *
-   * @author Fiete
-   * @deprecated
-   */
-  @Deprecated
-  private void refreshAllItems() {
-    if (getCache().allRegionItems != null) {
-      getCache().allRegionItems.clear();
-    } else {
-      getCache().allRegionItems = new LinkedHashMap<ID, Item>();
-    }
-
-    for (Unit u : units()) {
-      for (Item item : u.getItems()) {
-        Item i = getCache().allRegionItems.get(item.getItemType().getID());
-
-        if (i == null) {
-          i = new Item(item.getItemType(), 0);
-          getCache().allRegionItems.put(item.getItemType().getID(), i);
-        }
-
-        i.setAmount(i.getAmount() + item.getAmount());
-      }
-
-    }
   }
 
   /**

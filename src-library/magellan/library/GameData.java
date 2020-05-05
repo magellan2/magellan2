@@ -1200,6 +1200,15 @@ public abstract class GameData implements Cloneable, Addeable {
 
     log.fine("start GameData postProcess");
 
+    // unfortunately, this is necessary because there are parse errors when orders are added to
+    // units before the report has been completely read...
+    for (Unit u : getUnits()) {
+      u.reparseOrders();
+    }
+    for (Region r : getRegions()) {
+      r.refreshUnitRelations(true);
+    }
+
     // do game specific post processing
     getGameSpecificStuff().postProcess(this);
 

@@ -31,7 +31,7 @@ import java.util.Set;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
-import magellan.library.relation.ControlRelation;
+import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
@@ -75,10 +75,11 @@ public class MovementOrder extends SimpleOrder {
     if (!isValid())
       return;
 
-    execute(data, unit, unit, new HashSet<Unit>(), line, Integer.MAX_VALUE);
+    execute(state, data, unit, unit, new HashSet<Unit>(), line, Integer.MAX_VALUE);
   }
 
-  private void execute(GameData data, Unit unit, Unit origin, Set<Unit> followers, int line,
+  private void execute(ExecutionState state, GameData data, Unit unit, Unit origin,
+      Set<Unit> followers, int line,
       int maxLength) {
     MovementRelation mRel =
         data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit, directions, maxLength);
@@ -106,7 +107,7 @@ public class MovementOrder extends SimpleOrder {
         if (transportRel.target != null && transportRel.target != unit) {
           removeMovements(transportRel.target);
           passengers.add(transportRel.target);
-          implicitLeave(transportRel.target, mRel, line);
+          implicitLeave(state, transportRel.target, mRel, line);
         }
       }
 
@@ -120,7 +121,8 @@ public class MovementOrder extends SimpleOrder {
             setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
           } else {
             followers.add(follower);
-            execute(data, follower, origin, followers, fRel.line, mRel.getInitialMovement().size());
+            execute(state, data, follower, origin, followers, fRel.line, mRel.getInitialMovement()
+                .size());
           }
         }
       }
@@ -132,42 +134,43 @@ public class MovementOrder extends SimpleOrder {
       transportRel.add();
     }
 
-    implicitLeave(unit, mRel, line);
+    implicitLeave(state, unit, mRel, line);
   }
 
-  private void implicitLeave(Unit unit, MovementRelation mRel, int line) {
+  private void implicitLeave(ExecutionState state, Unit unit, MovementRelation mRel, int line) {
     // check whether the unit leaves a container
-    UnitContainer leftUC = unit.getBuilding();
+    UnitContainer leftUC = unit.getModifiedBuilding();
 
     if (leftUC == null) {
-      leftUC = unit.getShip();
+      leftUC = unit.getModifiedShip();
       if (leftUC != null) {
         // unit is on ship: issue warning if it's not the owner
         if (leftUC.getModifiedOwnerUnit() == unit) {
           leftUC = null;
-        } else if (leftUC.getModifiedUnit(unit.getID()) != null) {
-          if (leftUC.getModifiedOwnerUnit() != unit) {
-            mRel.setWarning(Resources.get("order.move.warning.leaveship"),
-                OrderSemanticsProblemTypes.SEMANTIC_WARNING.type);
-          }
+        } else {
+          mRel.setWarning(Resources.get("order.move.warning.leaveship"),
+              OrderSemanticsProblemTypes.SEMANTIC_WARNING.type);
         }
       }
     }
 
     if (leftUC != null) {
+      EresseaExecutionState eState = (EresseaExecutionState) state;
+      eState.leave(unit, leftUC);
       UnitRelation rel = new LeaveRelation(unit, leftUC, line, true);
 
-      if (leftUC.getModifiedOwnerUnit() == unit) {
-        for (Unit otherUnit : leftUC.modifiedUnits()) {
-          if (otherUnit != unit) {
-            ControlRelation crel = new ControlRelation(unit, otherUnit, line);
-            crel.setWarning(Resources.get("order.move.warning.implicitcommand"),
-                OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-            crel.add();
-            break;
-          }
-        }
-      }
+      // FIXME
+      // if (leftUC.getModifiedOwnerUnit() == unit) {
+      // for (Unit otherUnit : leftUC.modifiedUnits()) {
+      // if (otherUnit != unit) {
+      // ControlRelation crel = new ControlRelation(unit, otherUnit, line);
+      // crel.setWarning(Resources.get("order.move.warning.implicitcommand"),
+      // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+      // crel.add();
+      // break;
+      // }
+      // }
+      // }
       rel.add();
     }
   }

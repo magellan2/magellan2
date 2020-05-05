@@ -25,6 +25,9 @@ package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +37,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.test.GameDataBuilder;
@@ -64,22 +68,55 @@ public class EnterOrderTest extends MagellanTestWithResources {
 
   @Test
   public void testEnter() {
-    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
-    Building b2 = builder.addBuilding(data, region0, "b2", "Burg", "Burg 2", 10);
+    Building b0 = builder.addBuilding(data, region0, "b0", "Burg", "Empty Castle", 10);
+    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Owned Castle", 10);
+    Building b2 = builder.addBuilding(data, region0, "b2", "Burg", "Left Castle", 10);
+    Building b3 = builder.addBuilding(data, region0, "b3", "Burg", "Entered Castle", 10);
 
-    unit.addOrder("BETRETE BURG b2");
-    unit.setBuilding(b1);
+    Unit unit2 = builder.addUnit(data, "Owner", region0);
+    builder.addTo(unit2, b1);
+    builder.addTo(unit, b2);
+
+    unit.addOrder("BETRETE BURG b3");
 
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region0);
 
-    assertEquals(b2, unit.getModifiedBuilding());
-    assertEquals(unit, b2.getModifiedOwnerUnit());
-    assertNull(b1.getModifiedOwnerUnit());
+    assertContainerUnits(b0);
+    assertContainerUnits(b1, unit2);
+    assertEquals(b1, unit2.getModifiedBuilding());
+
+    assertContainerUnits(b2);
+    assertContainerUnits(b3, unit);
+    assertEquals(b3, unit.getModifiedBuilding());
     assertEquals(LeaveRelation.class, unit.getRelations().get(0).getClass());
     LeaveRelation rel = (LeaveRelation) unit.getRelations().get(0);
-    assertEquals(rel.target, b1);
+    assertEquals(rel.target, b2);
     assertEquals(EnterRelation.class, unit.getRelations().get(1).getClass());
+  }
+
+  private void assertContainerUnits(UnitContainer uc, Unit... args) {
+    if (args.length == 0) {
+      assertNull(uc.getModifiedOwnerUnit());
+      assertEquals(0, uc.modifiedUnits().size());
+    } else {
+      assertEquals(args[0], uc.getModifiedOwnerUnit());
+      assertEquals(args.length, uc.modifiedUnits().size());
+      assertCollection(uc.modifiedUnits(), args);
+      assertEquals(args[0], uc.getModifiedUnit(args[0].getID()));
+      if (args.length > 1) {
+        assertEquals(args[1], uc.getModifiedUnit(args[1].getID()));
+      }
+    }
+  }
+
+  private void assertCollection(Collection<Unit> col2, Unit... args) {
+    assertEquals(args.length, col2.size());
+
+    int i = 0;
+    for (Unit u : col2) {
+      assertSame(u, args[i++]);
+    }
   }
 
   @Test

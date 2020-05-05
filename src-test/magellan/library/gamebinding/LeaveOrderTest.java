@@ -66,13 +66,51 @@ public class LeaveOrderTest extends MagellanTestWithResources {
   public void testLeave() {
     Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
     unit.addOrder("VERLASSE");
-    unit.setBuilding(b1);
+    addToContainer(unit, b1);
 
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region0);
 
     assertEquals(null, unit.getModifiedBuilding());
     assertEquals(b1, unit.getBuilding());
+  }
+
+  @Test
+  public void testCommand() {
+    Unit unit2 = builder.addUnit(data, "Unit2", region0);
+    Faction faction2 = builder.addFaction(data, "foes", "Foes", "Menschen", 1);
+    Unit unit3 = builder.addUnit(data, "foe", "Foe", faction2, region0);
+
+    builder.addRegion(data, "1 0", "Bla", "Ebene", 1);
+
+    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
+    unit.addOrder("Nach o");
+    addToContainer(unit, b1);
+    addToContainer(unit3, b1);
+    addToContainer(unit2, b1);
+
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region0);
+
+    assertEquals(null, unit.getModifiedBuilding());
+    assertEquals(unit2, b1.getModifiedOwnerUnit());
+  }
+
+  @Test
+  public void testCommandForeign() {
+    Faction faction2 = builder.addFaction(data, "foes", "Foes", "Menschen", 1);
+    Unit unit3 = builder.addUnit(data, "foe", "Foe", faction2, region0);
+
+    Building b1 = builder.addBuilding(data, region0, "b1", "Burg", "Burg 1", 10);
+    unit.addOrder("VERLASSE");
+    addToContainer(unit, b1);
+    addToContainer(unit3, b1);
+
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    executor.processOrders(region0);
+
+    assertEquals(null, unit.getModifiedBuilding());
+    assertEquals(unit3, b1.getModifiedOwnerUnit());
   }
 
   /**
@@ -84,7 +122,7 @@ public class LeaveOrderTest extends MagellanTestWithResources {
     Building b2 = builder.addBuilding(data, region0, "b2", "Burg", "Burg 2", 10);
     unit.addOrder("BETRETE BURG b2");
     unit.addOrder("VERLASSE");
-    unit.setBuilding(b1);
+    addToContainer(unit, b1);
 
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region0);
@@ -92,6 +130,14 @@ public class LeaveOrderTest extends MagellanTestWithResources {
     // LEAVE should ignore the building we just entered
     assertEquals(b2, unit.getModifiedBuilding());
     assertEquals(b1, unit.getBuilding());
+  }
+
+  private void addToContainer(Unit unit0, Building ship) {
+    unit0.setBuilding(ship);
+    if (ship.units().size() == 1) {
+      ship.setOwner(unit0);
+      ship.setOwnerUnit(unit0);
+    }
   }
 
 }

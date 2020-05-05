@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import java.util.Collection;
+
 import magellan.library.rules.ShipType;
 
 /**
@@ -246,5 +248,15 @@ public interface Ship extends UnitContainer, HasRegion, Selectable {
    * @return The projected size of ships in a fleet
    */
   public int getModifiedSize();
+
+  /**
+   * @return The temporary ships that depend on this ship.
+   */
+  public Collection<Ship> getTempShips();
+
+  /**
+   * @return A new ship that depends on this ship.
+   */
+  public Ship createTempShip();
 
 }

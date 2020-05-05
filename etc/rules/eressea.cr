@@ -1677,13 +1677,11 @@ ITEM "Holz"
 ITEM "Bäume"
 "Bäume";name
 5;weight
-"Holzfällen";makeskill
 "resources";category
 
 ITEM "Schößlinge"
 "Schößlinge";name
 5;weight
-"Holzfällen";makeskill
 "resources";category
 
 ITEM "Mallorn"
@@ -1696,7 +1694,6 @@ ITEM "Mallorn"
 ITEM "Mallornschößlinge"
 "Mallornschößlinge";name
 5;weight
-"Holzfällen";makeskill
 "resources";category
 
 ITEM "Stein"

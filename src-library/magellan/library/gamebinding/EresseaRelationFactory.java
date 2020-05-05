@@ -361,6 +361,7 @@ public class EresseaRelationFactory implements RelationFactory {
         ReserveOwnOrder.execute(r, state, r.getData());
         resExecuted = true;
       }
+      o.order.setProblem(null);
       o.order.execute(state, data, o.unit, o.line);
     }
     if (!bmExecuted) {

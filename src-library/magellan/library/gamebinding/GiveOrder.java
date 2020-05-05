@@ -27,6 +27,7 @@ import java.util.List;
 
 import magellan.library.GameData;
 import magellan.library.Item;
+import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
@@ -34,7 +35,10 @@ import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.EnterRelation;
+import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
+import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.ShipTransferRelation;
@@ -214,13 +218,33 @@ public class GiveOrder extends UnitArgumentOrder {
 
           rel.add();
         } else if (type == EresseaConstants.OC_SHIP) {
-          if (unit.getShip() != null) {
-            ShipTransferRelation rel =
-                new ShipTransferRelation(unit, zeroOrTarget, -1, unit.getShip(), line);
-            rel.amount = Math.min(unit.getShip().getModifiedAmount(), amount);
-            rel.add();
-          }
 
+          Ship ship = unit.getModifiedShip(), targetShip = zeroOrTarget.getModifiedShip();
+          if (ship == null || ship.getModifiedOwnerUnit() != unit) {
+            setWarning(unit, line, Resources.get("order.give.warning.noship", unit));
+          } else {
+            if (zeroOrTarget == unit.getRegion().getZeroUnit()) {
+              targetShip = ship.createTempShip();
+            } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
+              setWarning(unit, line, Resources.get("order.give.warning.noship", zeroOrTarget));
+            }
+
+            ShipTransferRelation rel =
+                new ShipTransferRelation(unit, zeroOrTarget, -1, ship, targetShip, line);
+            rel.amount = Math.min(ship.getModifiedAmount(), amount);
+            rel.add();
+            InterUnitRelation iur = new InterUnitRelation(unit, zeroOrTarget, line);
+            iur.add();
+            if (ship.getModifiedAmount() <= 0) {
+              // last ship, transfer units
+              for (Unit u : ship.modifiedUnits()) {
+                LeaveRelation leave = new LeaveRelation(u, ship, line, true);
+                EnterRelation enter = new EnterRelation(u, targetShip, line);
+                leave.add();
+                enter.add();
+              }
+            }
+          }
         } else if (type == EresseaConstants.OC_HERBS) {
           // create relations for all herbs the unit carries
           ItemCategory herbCategory = data.getRules().getItemCategory(StringID.create(("HERBS")));

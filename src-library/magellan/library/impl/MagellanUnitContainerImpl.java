@@ -464,8 +464,11 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
   private void invalidateCache() {
     if (hasCache()) {
-      getCache().modifiedName = null;
-      getCache().modifiedContainerUnits = null;
+      Cache cache1 = getCache();
+      cache1.modifiedName = null;
+      cache1.modifiedContainerUnits = null;
+      cache1.modifiedAmount = -1;
+      cache1.modifiedSize = -1;
     }
   }
 
@@ -679,4 +682,5 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   public Map<EntityID, Unit> getUnits() {
     return units;
   }
+
 }

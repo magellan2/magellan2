@@ -1099,10 +1099,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
       t.setParent(null);
       gdata.removeTemp(key);
-      // data.tempUnits().remove(key);
 
       processOrders();
-
     }
   }
 

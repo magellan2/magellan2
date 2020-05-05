@@ -36,8 +36,8 @@ import magellan.library.utils.Units;
 public class ShipInspector extends AbstractInspector {
 
   enum ShipProblemTypes {
-    EMPTY, EMPTY_FUSSY, CAPTAIN_FACTION, NOCAPTAIN, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE,
-    WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO, SHIPWRECK, OVERLOADED;
+    EMPTY, EMPTY_FUSSY, CAPTAIN_FACTION, NOCAPTAIN, NOCONVOYCAPTAINS, NOCREW, NONEXTREGION, NOOCEAN,
+    WRONGSHORE, WRONGSHOREHARBOUR, WRONGSHOREHARBOUR_INFO, SHIPWRECK, OVERLOADED;
 
     private ProblemType type;
 
@@ -104,7 +104,10 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
-    int nominalShipSize = s.getShipType().getMaxSize();
+    int nominalShipSize = s.getShipType().getMaxSize() * s.getAmount();
+
+    if (s.getModifiedAmount() == 0)
+      return problems;
 
     // here we have all problems checked also for ships without a captain
     boolean empty = false;
@@ -127,10 +130,14 @@ public class ShipInspector extends AbstractInspector {
     Unit newOwner = s.getModifiedOwnerUnit();
 
     if (!empty) {
-      if (newOwner == null || Units.getCaptainSkillAmount(s) < s.getShipType()
+      if (newOwner == null || Units.getCaptainSkillLevel(s) < s.getShipType()
           .getCaptainSkillLevel()) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCAPTAIN
             .getType(), s, this));
+      } else if (s.getModifiedAmount() > 1 && newOwner.getModifiedPersons() < s
+          .getModifiedAmount()) {
+        problems.add(ProblemFactory.createProblem(Severity.WARNING,
+            ShipProblemTypes.NOCONVOYCAPTAINS.getType(), s, this));
       } else if (!Units.isPrivilegedAndNoSpy(newOwner)) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.CAPTAIN_FACTION
             .getType(), s, this));
@@ -154,7 +161,7 @@ public class ShipInspector extends AbstractInspector {
 
     List<Problem> problems = new ArrayList<Problem>();
     Unit captain = ship.getModifiedOwnerUnit();
-    if (captain == null)
+    if (captain == null || ship.getModifiedAmount() == 0)
       return problems;
 
     List<CoordinateID> modifiedMovement = captain.getModifiedMovement();
@@ -234,7 +241,7 @@ public class ShipInspector extends AbstractInspector {
     }
 
     // overload
-    if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
+    if (ship.getModifiedLoad() > (ship.getModifiedMaxCapacity())) {
       problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
           .getType(), ship, this));
     } else if (ship.getShipType().getMaxPersons() > 0 && ship.getModifiedPersonLoad() > (ship

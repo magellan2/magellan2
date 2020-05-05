@@ -288,23 +288,34 @@ public class Units {
   /**
    * Returns the sailing skill value of the ship's owner
    */
-  public static int getCaptainSkillAmount(Ship s) {
+  public static int getCaptainSkillLevel(Ship s) {
     // FIXME shouldn't access getData() from here, maybe move to GameSpecific
     SkillType sailingSkillType = s.getData().getRules().getSkillType(EresseaConstants.S_SEGELN);
     Unit owner = s.getModifiedOwnerUnit();
-    int captainSkillAmount = 0;
+    int captainSkillLevel = 0;
     if (owner != null) {
       Skill sailingSkill = owner.getModifiedSkill(sailingSkillType);
-      captainSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
+      captainSkillLevel = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
     }
-    return captainSkillAmount;
+    return captainSkillLevel;
   }
 
   /**
    * Returns the number of persons of the ship's owner
    */
   public static int getCaptainPersons(Ship s) {
-    // FIXME shouldn't access getData() from here, maybe move to GameSpecific
+    Unit owner = s.getOwnerUnit();
+    int captainPersons = 0;
+    if (owner != null) {
+      captainPersons = owner.getPersons();
+    }
+    return captainPersons;
+  }
+
+  /**
+   * Returns the number of persons of the ship's owner
+   */
+  public static int getModifiedCaptainPersons(Ship s) {
     Unit owner = s.getModifiedOwnerUnit();
     int captainPersons = 0;
     if (owner != null) {

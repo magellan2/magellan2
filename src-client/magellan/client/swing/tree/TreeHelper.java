@@ -16,7 +16,6 @@ package magellan.client.swing.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -135,7 +134,6 @@ public class TreeHelper {
       boolean sortUnderUnitParent) {
     RegionNodeWrapper regionNodeWrapper = factory.createRegionNodeWrapper(r, 0);
     DefaultMutableTreeNode regionNode = new DefaultMutableTreeNode(regionNodeWrapper);
-    DefaultMutableTreeNode node = null;
 
     List<Unit> units = new ArrayList<Unit>(r.units());
 
@@ -153,20 +151,26 @@ public class TreeHelper {
     Collections.sort(sortedShips, TreeHelper.shipComparator);
     for (Ship s : sortedShips) {
       if (shipNodes == null || !shipNodes.containsKey(s.getID())) {
-        node = new DefaultMutableTreeNode(factory.createUnitContainerNodeWrapper(s));
+        DefaultMutableTreeNode shipNode = new DefaultMutableTreeNode(factory
+            .createUnitContainerNodeWrapper(s));
         if (sortUnderUnitParent && s.getOwnerUnit() != null) {
           DefaultMutableTreeNode unitNode =
               (DefaultMutableTreeNode) unitNodes.get(s.getOwnerUnit().getID());
           if (unitNode != null) {
             DefaultMutableTreeNode parent = (DefaultMutableTreeNode) unitNode.getParent();
-            parent.add(node);
+            parent.add(shipNode);
           }
         } else {
-          regionNode.add(node);
+          regionNode.add(shipNode);
         }
 
         if (shipNodes != null) {
-          shipNodes.put(s.getID(), node);
+          shipNodes.put(s.getID(), shipNode);
+        }
+        for (Ship tempShip : s.getTempShips()) {
+          DefaultMutableTreeNode tShipNode = new DefaultMutableTreeNode(factory
+              .createUnitContainerNodeWrapper(tempShip));
+          shipNode.add(tShipNode);
         }
       }
     }
@@ -176,7 +180,8 @@ public class TreeHelper {
     Collections.sort(sortedBuildings, TreeHelper.buildingCmp);
 
     for (Building b : sortedBuildings) {
-      node = new DefaultMutableTreeNode(factory.createUnitContainerNodeWrapper(b));
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(factory
+          .createUnitContainerNodeWrapper(b));
       regionNode.add(node);
 
       if (buildingNodes != null) {
@@ -186,7 +191,7 @@ public class TreeHelper {
 
     // add borders
     for (Border b : r.borders()) {
-      node = new DefaultMutableTreeNode(factory.createBorderNodeWrapper(b));
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(factory.createBorderNodeWrapper(b));
       regionNode.add(node);
     }
 
@@ -246,8 +251,8 @@ public class TreeHelper {
           ArrayList<TempUnit> temps = new ArrayList<TempUnit>();
           temps.addAll(curUnit.tempUnits());
           Collections.sort(temps, unitSorting);
-          for (Iterator<TempUnit> tempUnits = temps.iterator(); tempUnits.hasNext();) {
-            Unit tempUnit = tempUnits.next();
+          for (TempUnit tempUnit2 : temps) {
+            Unit tempUnit = tempUnit2;
             UnitNodeWrapper tempNodeWrapper =
                 factory.createUnitNodeWrapper(tempUnit, tempUnit.getPersons());
             DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(tempNodeWrapper);

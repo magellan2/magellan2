@@ -4455,40 +4455,54 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // skill
+    int captainSkillLevel = magellan.library.utils.Units.getCaptainSkillLevel(s);
+    StringBuilder text = new StringBuilder(
+        Resources.get("emapdetailspanel.node.sailingskill")).append(": ").append(
+            Resources.get("emapdetailspanel.node.captain")).append(" ").append(captainSkillLevel)
+            .append(" / ")
+            .append(s.getShipType().getCaptainSkillLevel());
 
-    int captainSkillAmount = magellan.library.utils.Units.getCaptainSkillAmount(s);
-    String text =
-        Resources.get("emapdetailspanel.node.sailingskill") + ": "
-            + Resources.get("emapdetailspanel.node.captain") + " " + captainSkillAmount + " / "
-            + s.getShipType().getCaptainSkillLevel();
-
-    if (captainSkillAmount < s.getShipType().getCaptainSkillLevel()) {
-      text += " (!!!)";
+    if (captainSkillLevel < s.getShipType().getCaptainSkillLevel()) {
+      text.append(" (!!!)");
     }
-    text += ", ";
+    text.append(", ");
 
     // Matrosen
     int sailingSkillAmount = magellan.library.utils.Units.getSailingSkillAmount(s);
+    int requiredSkillAmount = s.getShipType().getSailorSkillLevel() * s.getAmount();
+    int requiredModifiedSkillAmount = s.getShipType().getSailorSkillLevel() * s.getModifiedAmount();
 
-    text +=
+    text.append(
         Resources.get("emapdetailspanel.node.crew") + " " + sailingSkillAmount + " / "
-            + (s.getShipType().getSailorSkillLevel() * s.getAmount());
-    if (sailingSkillAmount < s.getShipType().getSailorSkillLevel() * s.getAmount()) {
-      text += " (!!!)";
+            + requiredSkillAmount);
+    if (requiredModifiedSkillAmount != requiredSkillAmount) {
+      text.append(" (").append(requiredModifiedSkillAmount).append(")");
+    }
+    if (sailingSkillAmount < requiredModifiedSkillAmount) {
+      text.append(" (!!!)");
     }
 
     DefaultMutableTreeNode n =
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
     parent.add(n);
 
-    // Bei Flotten: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
+    // Bei Konvois: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
     if (s.getAmount() > 1) {
-      int captainPersons = magellan.library.utils.Units.getCaptainPersons(s);
-      text = Resources.get("emapdetailspanel.node.captainAmount") + ": "
-          + captainPersons + " / "
-          + s.getAmount();
-      if (captainPersons < s.getAmount()) {
-        text += " (!!!)";
+      int captainPersons = magellan.library.utils.Units.getCaptainPersons(s), modCaptainPersons =
+          magellan.library.utils.Units.getModifiedCaptainPersons(s);
+      text = new StringBuilder(Resources.get("emapdetailspanel.node.captainAmount")).append(": ")
+          .append(captainPersons);
+      if (modCaptainPersons != captainPersons) {
+        text.append("(").append(modCaptainPersons).append(")");
+      }
+      text.append(" / ")
+          .append(s.getAmount());
+      if (s.getModifiedAmount() != s.getAmount()) {
+        text.append("(").append(s.getModifiedAmount()).append(")");
+      }
+
+      if (captainPersons < s.getModifiedAmount()) {
+        text.append(" (!!!)");
       }
       n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
       parent.add(n);

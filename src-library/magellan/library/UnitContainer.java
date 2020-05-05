@@ -85,7 +85,7 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public Unit removeUnit(ID key);
 
   /**
-   * DOCUMENT-ME
+   * Returns the units in the container after relations.
    */
   public Collection<Unit> modifiedUnits();
 

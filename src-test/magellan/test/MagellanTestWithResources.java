@@ -51,13 +51,14 @@ import magellan.library.utils.logging.Logger;
  */
 public abstract class MagellanTestWithResources {
   protected static final Locale DE_LOCALE = Locale.GERMANY;
-  protected static final Locale EN_LOCALE = Locale.ENGLISH;
+  protected static final Locale EN_LOCALE = Locale.US;
 
   protected static Properties settings;
   protected static MagellanContext context;
   protected static SelfCleaningProperties completionSettings;
   private static File resourceDir = new File(".");
   private static Locale locale;
+  protected static Locale defaultLocale = DE_LOCALE;
 
   protected static void setLocale(Locale alocale) {
     locale = alocale;
@@ -72,9 +73,15 @@ public abstract class MagellanTestWithResources {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    locale = DE_LOCALE;
+    defaultLocale = DE_LOCALE;
+    setDefaultLocale();
+
     Logger.setLevel(Logger.WARN);
     initResources();
+  }
+
+  protected static void setDefaultLocale() {
+    setLocale(defaultLocale);
   }
 
   /**
@@ -85,6 +92,7 @@ public abstract class MagellanTestWithResources {
     if (context != null) {
       context.getEventDispatcher().quit();
     }
+    defaultLocale = DE_LOCALE;
   }
 
   protected static void initResources() {

@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -44,9 +47,6 @@ import magellan.library.io.MockReader;
 import magellan.library.utils.OrderReader.LineHandler;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class OrderReaderTest extends MagellanTestWithResources {
 
@@ -70,12 +70,14 @@ public class OrderReaderTest extends MagellanTestWithResources {
 
     orderReader = new EresseaSpecificStuff().getOrderReader(data);
     reader = new MockReader();
+    setDefaultLocale();
   }
 
   @Test
   public final void testRead() throws IOException {
     addEresseaHeader();
     addFooter();
+
     orderReader.read(reader);
     Status status = orderReader.getStatus();
     assertEquals(0, status.errors);
@@ -83,11 +85,13 @@ public class OrderReaderTest extends MagellanTestWithResources {
     assertEquals(1, status.factions);
     assertEquals(0, status.units);
     assertEquals(0, status.unknownUnits);
-    assertEquals("de", orderReader.getLocale().getLanguage());
+    assertEquals(defaultLocale.getLanguage(), orderReader.getLocale().getLanguage());
   }
 
   @Test
   public final void testGetHandlers() throws IOException {
+    setLocale(DE_LOCALE);
+    orderReader.setLocale(DE_LOCALE);
     List<LineHandler> handlers = orderReader.getHandlers("E");
     assertEquals(2, handlers.size());
     handlers = orderReader.getHandlers("");

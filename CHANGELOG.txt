@@ -1,3 +1,6 @@
+2019-05-06 / Build 701 - stm (stm2@users.sourceforge.net)
+	* switched to java 11, new magellan version 2.1.0
+
 2019-05-06 / Build 699 - stm (stm2@users.sourceforge.net)
         * ATR/ARR preferences rewrite
         * added ship range calculation for dragon ships

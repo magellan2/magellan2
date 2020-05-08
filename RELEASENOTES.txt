@@ -1,33 +1,35 @@
-!!! Vorsicht, dies ist eine besonders instabile Version. Vielleicht warten Sie lieber auf die 
-nächste stabile Version !!!
+## Neueste Meldungen
 
-Neueste Meldungen
+Eine ganze Menge eher kleinerer, aber merkbarer Änderungen macht diese Version aus.
 
-Dies ist eine experimentelle Magellanversion, ein sogenannter "nightly build". Hier probieren
-wir neue Funktionen aus und stellen sie experimentierfreudigen Benutzern zur Verfügung. Diese
-Version ist jedoch nicht so gut getestet wie eine stabile Version. Im schlimmsten Fall können
-Daten (Reporte, Befehle...) verloren gehen. Falls Sie lieber auf Nummer sicher gehen wollen 
-und auf die neuesten Funktionen verzichten können, benutzen Sie lieber eine stabile Version.
+Die wichtigsten Änderungen:
+
+  * Magellan braucht jetzt Java 11. Dies ist derzeit die einzige Javaversion, die noch ausreichend mit Updates versorgt wird
+  * Die ARR und ATR-Eigenschaften wurden poliert. Eine Erklärung zum ATR und ARR gibt es bald im Eresseawiki (https://wiki.eressea.de/index.php/Magellan).
+  * Unterstützung für Konvois (GIB xyz 1 SCHIFF)
+  * E3CommandParser benutzt jetzt die JShell und ist dadurch viel, viel schneller. Der E3CommandParser erlaubt es, Befehle weitgehend zu programmieren.
+  * Die Befehlserkennung und -verarbeitung wurde in vielen Punkten verbessert. ECheck ist praktisch überflüssig und durch "Offene Probleme" ersetzt.
+  * Weitere Regelupdates (Galeonen, Drachenschiffe, !@Befehle, BEZAHLE, BEFÖRDERE...) wurden implementiert
+  * Das Plugin "BattleAnalyzer" stellt schlachten etwas übersichtlicher dar.
+  * Die Talentstatistik in der Parteienstatistik wurde verbessert.
+  * Unterstützung für andere Spiele (E3, Atlantis, Drachensgrab, ...)
+  * Viele, viele weitere Bugfixes und Verbesserungen an der Bedienbarkeit ...
+
 Für eine Liste mit allen Änderungen siehe CHANGELOG.txt.
 
-Diese Version funktioniert mit E3!
+## Release Notes
 
-Release Notes
+There were a bunch of mostly minor, but notable changes leading up to this version.
 
-This is an experimental version of Magellan, a so called nightly build. Here we try out new 
-functions and make them available to adventurous users. This version has, however, not been
-tested by as many people as a stable version. In the worst case, you could lose data
-(reports, orders...). If you prefer to play it safe and you do not need the newest features, 
-you may prefer to download a stable version. For a complete list of changes see CHANGELOG.txt
+The most important changes (for a complete list of changes see CHANGELOG.txt):
 
-This version supports E3!
-
-Hints for programmers
-- ExtendedCommandsHelper has undergone interface changes!
-- CoordinateID has changed its interface! It is now immutable and translate(..) and subtract(...)
-  no longer change their subject, but return a new, modified object.
-- You should not construct your own region neighborhoods based on CoordinateIDs, but instead use
-  Region.getNeighbours() or Regions.getAllNeighbors() from now on!
-- GameData.units(), regions() etc. no return unmodifiable collections, but you weren't changing 
-  them anyway, were you?
-- Regions.getPath,getNeighbors etc. may have changed slightly
+  * Magellan now requires Java 11. This is currently the only version that is going to provide regular updates.
+  * The ARR and ARR proerties were polished. For an explanation visit the Magellan page in the Eressea wiki (https://wiki.eressea.de/index.php/Magellan).
+  * Support for convoys (GIVE xyz 1 SHIP).
+  * E3CommandParser uses JShell now, making it much faster. E3CommandParser allows you to automate your orders.
+  * Order detection and processing was improved in many parts. ECheck ist practically unnecessary and replaced by the "Open Tasks".
+  * Further rules updates implemented (galleons, dragon ships, !@ orders, PAY NOT, PROMOTE, ...).
+  * The "BattleAnalyzer" plugin displays battles a bit more comprehensively.
+  * The skill statistics of the faction statistics has been improved.
+  * Support for other games (E3, Atlantis, Drachensgrab, ...)
+  * Many, many further bug fixes and improvements ...

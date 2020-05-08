@@ -18,20 +18,20 @@ jobs:
       with:
         java-version: 11
 
-    - name: Test with ant
-      run: |
-         ant -noinput -buildfile build.xml run_tests
-         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-         if [ -n "$fails" ]; then
-           echo Errors in $fails
-           cat $fails
-           exit 1
-         fi
-      # do not exit before all commands are executed
-      shell: bash --noprofile --norc -o pipefail {0}
+#    - name: Test with ant
+#      run: |
+#         ant -noinput -buildfile build.xml run_tests
+#         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+#         if [ -n "$fails" ]; then
+#           echo Errors in $fails
+#           cat $fails
+#           exit 1
+#         fi
+#      # do not exit before all commands are executed
+#      shell: bash --noprofile --norc -o pipefail {0}
       
-    - name: Build with ant
-      run: ant -noinput -buildfile build.xml
+#    - name: Build with ant
+#      run: ant -noinput -buildfile build.xml
 
     - name: Generate version string
       id: get-version
@@ -49,5 +49,17 @@ jobs:
         value="${value//$'\n'/'%0A'}"
         value="${value//$'\r'/'%0D'}"
         echo "::set-env name=BODY::$value"
+
+    - name: git
+      run: |
+        set -x
+        echo $BASE, $VERSION, $TAG
+        echo $BODY
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git remote -v
+        git tag -f "${TAG}"
+        REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+        git push --force "$REMOTE" "${TAG}"
 
 

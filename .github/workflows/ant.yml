@@ -79,7 +79,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
         tag: ${{ env.TAG }}
-        name: Pre-Release ${{ env.VERSION }}
+        name: Pre-Release  ${{ env.VERSION }}
         body: ${{ env.BODY }}
         gzip: folders
         files: >
@@ -87,6 +87,6 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-#          magellan_v${{ env.BASE }}.zip
-#          magellan_v${{ env.BASE }}.jar
+          magellan_v${{ env.BASE }}.zip
+          magellan_v${{ env.BASE }}.jar
 

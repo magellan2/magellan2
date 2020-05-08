@@ -40,8 +40,8 @@ jobs:
         VERSION=$(ant -q -S print_version)
         echo "::set-env name=BASE::${VERSION}"
         echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
-        echo "::set-env name=VERSION::${VERSION}-latest"
-        echo "::set-env name=TAG::v${SHORT}-latest"
+        echo "::set-env name=VERSION::${VERSION}"
+        echo "::set-env name=TAG::v${SHORT}"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
         echo "::set-env name=REFTAG::$REFTAG"

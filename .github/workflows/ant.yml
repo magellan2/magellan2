@@ -54,10 +54,10 @@ jobs:
       id: changelog
       run: |
         value=$(cat RELEASENOTES.txt | iconv -f ISO-8859-1; echo -e '\n# Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
-        value="${value//'%'/'%25'}"
-        value="${value//'"'/'%22'}"
-        value="${value//$'\n'/'%0A'}"
-        value="${value//$'\r'/'%0D'}"
+        json_escape () {
+          printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
+        }
+        value=$(json_escape "$value")
         echo "::set-env name=BODY::$value"
 
     - name: git

@@ -40,6 +40,15 @@ jobs:
         echo "::set-env name=BASE::${VERSION}"
         echo "::set-env name=VERSION::${VERSION}-latest"
         echo "::set-env name=TAG::v${VERSION}-latest"
+      
+    - name: "Sanity check"
+      run: |
+        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
+          echo version $BASE okay
+        else
+          echo version $BASE not okay!
+          exit 1
+        fi
 
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog
@@ -62,4 +71,21 @@ jobs:
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git push --force "$REMOTE" "${TAG}"
 
+#    - uses: meeDamian/github-release@2.0
+#      with:
+#        prerelease: true
+#        allow_override: true
+#        token: ${{ secrets.GITHUB_TOKEN }}
+#        commitish: master
+#        tag: ${TAG}
+#        name: Pre-Release ${VERSION}
+#        body: "${BODY}"
+#        gzip: folders
+#        files: >
+#          LICENSE.txt
+#          README.md
+#          RELEASENOTES.txt
+#          CHANGELOG.txt
+#          magellan_v${BASE}.zip
+#          magellan_v${BASE}.jar
 

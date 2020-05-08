@@ -4,7 +4,7 @@ name: Create pre-release
 on:
   push:
     branches:
-      - "master"
+      - "build-release"
 
 jobs:
   build:
@@ -37,17 +37,17 @@ jobs:
           exit 1
         fi
 
-    - name: Test with ant
-      run: |
-         ant -noinput -buildfile build.xml run_tests
-         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-         if [ -n "$fails" ]; then
-           echo Errors in $fails
-           cat $fails
-           exit 1
-         fi
-      # do not exit before all commands are executed
-      shell: bash --noprofile --norc -o pipefail {0}
+#    - name: Test with ant
+#      run: |
+#         ant -noinput -buildfile build.xml run_tests
+#         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+#         if [ -n "$fails" ]; then
+#           echo Errors in $fails
+#           cat $fails
+#           exit 1
+#         fi
+#      # do not exit before all commands are executed
+#      shell: bash --noprofile --norc -o pipefail {0}
       
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
@@ -70,6 +70,18 @@ jobs:
         git tag -f "${TAG}"
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git push --force "$REMOTE" "${TAG}"
+        # push to homepage
+        mkdir tmp
+        cd tmp
+        git clone -n --depth=1 https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git
+        cd magellan-homepage
+        mkdir nightly-build
+        cp ../../magellan_v${{ env.BASE }}.zip nightly-build/
+        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${{ env.TAG }}" nightly-build/magellan_v${{ env.BASE }}.zip
+        REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git"
+        git push "$REMOTE" 
+        cd ../..
+        rm -rf tmp
 
     - name: Create release
       uses: meeDamian/github-release@2.0

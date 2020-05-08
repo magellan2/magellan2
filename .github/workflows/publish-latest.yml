@@ -1,0 +1,93 @@
+name: Create pre-release
+# Test, build, and publish a release and tag it with "version-latest" on pushes to master
+
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  build:
+    name: Create pre-release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Test with ant
+      run: |
+         ant -noinput -buildfile build.xml run_tests
+         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+         if [ -n "$fails" ]; then
+           echo Errors in $fails
+           cat $fails
+           exit 1
+         fi
+      # do not exit before all commands are executed
+      shell: bash --noprofile --norc -o pipefail {0}
+      
+    - name: Build with ant
+      run: ant -noinput -buildfile build.xml
+
+    - name: Generate version string
+      id: get-version
+      run: |
+        VERSION=$(ant -q -S print_version)
+        echo "::set-env name=BASE::${VERSION}"
+        echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
+        echo "::set-env name=VERSION::${VERSION}-latest"
+        echo "::set-env name=TAG::v${SHORT}-latest"
+      
+    - name: Sanity check
+      run: |
+        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
+          echo version $BASE okay
+        else
+          echo version $BASE not okay!
+          exit 1
+        fi
+
+    - name: Read RELEASENOTES and CHANGELOG
+      id: changelog
+      run: |
+        value=$(cat RELEASENOTES.txt | iconv -f ISO-8859-1; echo -e '\n# Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
+        json_escape () {
+          printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
+        }
+        value=$(json_escape "$value")
+        echo "::set-env name=BODY::$value"
+
+    - name: Publish git tag "vX.Y-latest"
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+        git remote -v
+        git tag -f "${TAG}"
+        REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+        git push --force "$REMOTE" "${TAG}"
+
+    - name: Create release
+      uses: meeDamian/github-release@2.0
+      with:
+        prerelease: true
+        allow_override: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commitish: master
+        tag: ${{ env.TAG }}
+        name: Pre-Release  ${{ env.VERSION }}
+        body: ${{ env.BODY }}
+        gzip: folders
+        files: >
+          LICENSE.txt
+          README.md
+          RELEASENOTES.txt
+          CHANGELOG.txt
+          magellan_v${{ env.BASE }}.zip
+          magellan_v${{ env.BASE }}.jar
+
+

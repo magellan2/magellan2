@@ -11,9 +11,8 @@
 	<property name="VERSION.MAJOR"         value="2"/>
 	<property name="VERSION.MINOR"         value="1"/>
 	<property name="VERSION.SUB"           value="0"/>
-	<property name="VERSION.POST"          value="-beta.1"/>
 
-	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}${VERSION.POST}"/>
+	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
 
 	<!-- Some properties -->
 	<property name="src.library"       location="${basedir}/src-library"/>
@@ -45,7 +44,7 @@
 	<property name="compile.encoding"  value="ISO-8859-1"/>
 
     <!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
-    <presetdef name="javac">
+    <presetdef name="my-javac">
         <javac includeantruntime="false" encoding="${compile.encoding}"/>
     </presetdef>
 
@@ -71,6 +70,19 @@
 		<pathelement location="${classes}" />
 	</path>
 
+	<target name="update_version">
+		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
+			<filterset>
+				<filter token="VERSION" value="${VERSION.POINTED} (build ${build.number})"/>
+			</filterset>
+		</copy>
+		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+    </target>
+	
+	<target name="print_version" depends="update_version">
+		<echo message="${VERSION.POINTED}" />
+	</target>
+
 	<!-- *************************************************************** -->
 	<!-- *                                                             * -->
 	<!-- *  This target compiles and packs the magellan library.       * -->
@@ -82,7 +94,7 @@
 		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.library}/"
+		<my-javac srcdir="${src.library}/"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -95,7 +107,7 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_library_jar" >
@@ -131,7 +143,7 @@
 		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.client}/magellan"
+		<my-javac srcdir="${src.client}/magellan"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -144,7 +156,7 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_client_jar">
@@ -184,7 +196,7 @@
 		<!--		<antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.plugins}/magellan"
+		<my-javac srcdir="${src.plugins}/magellan"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -197,7 +209,7 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_plugins_jar">
@@ -250,7 +262,7 @@
 		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.test}/"
+		<my-javac srcdir="${src.test}/"
 	           destdir="${classes}"
 	           includes="**"
 	           release="${compile.release}"
@@ -263,7 +275,7 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path.test"/>
-		</javac>
+		</my-javac>
 
 	</target>
 

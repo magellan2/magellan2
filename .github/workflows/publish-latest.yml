@@ -30,10 +30,10 @@ jobs:
 
     - name: Sanity check
       run: |
-        if [[ "${ env.TAG}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
+        if [[ "${{ env.TAG }}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
           echo version $TAG okay
         else
-          echo version $BASE $SHORT $VERSION $TAG not okay!
+          echo "version ($BASE, $SHORT, $VERSION) ${{ env.TAG }} not okay!"
           exit 1
         fi
 

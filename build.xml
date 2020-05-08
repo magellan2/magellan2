@@ -11,8 +11,9 @@
 	<property name="VERSION.MAJOR"         value="2"/>
 	<property name="VERSION.MINOR"         value="1"/>
 	<property name="VERSION.SUB"           value="0"/>
+	<property name="VERSION.POST"           value="-beta.4"/>
 
-	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
+	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}${VERSION.POST}"/>
 
 	<!-- Some properties -->
 	<property name="src.library"       location="${basedir}/src-library"/>

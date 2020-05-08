@@ -77,7 +77,7 @@ jobs:
         allow_override: true
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
-        tag: v2.1.0-experimental # ${{ env.TAG }}
+        tag: ${{ env.TAG }}
         name: Pre-Release ${{ env.VERSION }}
         body: Bla # ${{ env.BODY }}
         gzip: folders

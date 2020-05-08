@@ -1,4 +1,4 @@
-name: Create pre-release
+name: Create versioned release
 # Test, build, and publish a release draft on new vX.Y.Z tag
 
 on:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Create release draft
+    name: Create versioned release draft
     runs-on: ubuntu-latest
 
     steps:
@@ -18,6 +18,35 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+
+    - name: Generate version string
+      id: get-version
+      run: |
+        VERSION=$(ant -q -S print_version)
+        echo "::set-env name=BASE::${VERSION}"
+        echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
+        echo "::set-env name=VERSION::${VERSION}"
+        echo "::set-env name=TAG::v${VERSION}"
+
+        REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
+        echo "::set-env name=REFTAG::$REFTAG"
+        echo "::set-env name=REFSHORT::$(echo "${REFTAG#v}" | cut -d. -f-2)"
+      
+    - name: Sanity check
+      run: |
+        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*$ ]]; then
+          echo version $TAG okay
+        else
+          echo version $TAG not okay!
+          exit 1
+        fi
+
+        if [[ "$TAG" == "$REFTAG" ]]; then
+          echo tags match
+        else
+          echo $TAG != $REFTAG
+          exit 1
+        fi
 
     - name: Test with ant
       run: |
@@ -33,35 +62,6 @@ jobs:
       
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
-
-    - name: Generate version string
-      id: get-version
-      run: |
-        VERSION=$(ant -q -S print_version)
-        echo "::set-env name=BASE::${VERSION}"
-        echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
-        echo "::set-env name=VERSION::${VERSION}"
-        echo "::set-env name=TAG::v${SHORT}"
-
-        REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
-        echo "::set-env name=REFTAG::$REFTAG"
-        echo "::set-env name=REFSHORT::$(echo "${REFTAG#v}" | cut -d. -f-2)"
-      
-    - name: Sanity check
-      run: |
-        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*$ ]]; then
-          echo version $BASE okay
-        else
-          echo version $BASE not okay!
-          exit 1
-        fi
-
-        if [[ "$TAG" == "$REFTAG" ]]; then
-          echo tags match
-        else
-          echo $TAG != $REFTAG
-          exit 1
-        fi
 
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog

@@ -19,21 +19,6 @@ jobs:
       with:
         java-version: 11
 
-    - name: Test with ant
-      run: |
-         ant -noinput -buildfile build.xml run_tests
-         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-         if [ -n "$fails" ]; then
-           echo Errors in $fails
-           cat $fails
-           exit 1
-         fi
-      # do not exit before all commands are executed
-      shell: bash --noprofile --norc -o pipefail {0}
-      
-    - name: Build with ant
-      run: ant -noinput -buildfile build.xml
-
     - name: Generate version string
       id: get-version
       run: |
@@ -51,6 +36,21 @@ jobs:
           echo version $BASE not okay!
           exit 1
         fi
+
+    - name: Test with ant
+      run: |
+         ant -noinput -buildfile build.xml run_tests
+         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+         if [ -n "$fails" ]; then
+           echo Errors in $fails
+           cat $fails
+           exit 1
+         fi
+      # do not exit before all commands are executed
+      shell: bash --noprofile --norc -o pipefail {0}
+      
+    - name: Build with ant
+      run: ant -noinput -buildfile build.xml
 
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog

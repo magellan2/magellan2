@@ -74,18 +74,19 @@ jobs:
     - uses: meeDamian/github-release@2.0
       with:
         prerelease: true
+        draft: true
         allow_override: true
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
-        tag: ${TAG}
-        name: Pre-Release ${VERSION}
-        body: "${BODY}"
+        tag: ${{ env.TAG }}
+        name: Pre-Release ${{ env.VERSION }}
+        body: "${{ env.BODY }}"
         gzip: folders
         files: >
           LICENSE.txt
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-          magellan_v${BASE}.zip
-          magellan_v${BASE}.jar
+          magellan_v${{ env.BASE }}.zip
+          magellan_v${{ env.BASE }}.jar
 

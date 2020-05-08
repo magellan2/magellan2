@@ -77,15 +77,15 @@ jobs:
         allow_override: true
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
-        tag: ${{ env.TAG }}
+        tag: v2.1.0-experimental # ${{ env.TAG }}
         name: Pre-Release ${{ env.VERSION }}
-        body: ${{ env.BODY }}
+        body: Bla # ${{ env.BODY }}
         gzip: folders
         files: >
           LICENSE.txt
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-          magellan_v${{ env.BASE }}.zip
-          magellan_v${{ env.BASE }}.jar
+#          magellan_v${{ env.BASE }}.zip
+#          magellan_v${{ env.BASE }}.jar
 

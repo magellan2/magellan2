@@ -80,7 +80,7 @@ jobs:
         commitish: master
         tag: ${{ env.TAG }}
         name: Pre-Release ${{ env.VERSION }}
-        body: "${{ env.BODY }}"
+        body: ${{ env.BODY }}
         gzip: folders
         files: >
           LICENSE.txt

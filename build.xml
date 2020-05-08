@@ -71,6 +71,10 @@
 		<pathelement location="${classes}" />
 	</path>
 
+	<target name="print_version">
+		<echo message="${VERSION.POINTED}" />
+	</target>
+
 	<!-- *************************************************************** -->
 	<!-- *                                                             * -->
 	<!-- *  This target compiles and packs the magellan library.       * -->

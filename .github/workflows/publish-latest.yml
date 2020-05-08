@@ -31,9 +31,9 @@ jobs:
     - name: Sanity check
       run: |
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
-          echo version $BASE okay
+          echo version $TAG okay
         else
-          echo version $BASE not okay!
+          echo version $TAG not okay!
           exit 1
         fi
 

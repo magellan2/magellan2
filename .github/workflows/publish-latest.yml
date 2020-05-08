@@ -27,13 +27,13 @@ jobs:
         echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
         echo "::set-env name=VERSION::${VERSION}-latest"
         echo "::set-env name=TAG::v${SHORT}-latest"
-      
+
     - name: Sanity check
       run: |
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
           echo version $TAG okay
         else
-          echo version $TAG not okay!
+          echo version $BASE $SHORT $VERSION $TAG not okay!
           exit 1
         fi
 

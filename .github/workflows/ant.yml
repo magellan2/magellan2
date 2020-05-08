@@ -30,8 +30,8 @@ jobs:
 #      # do not exit before all commands are executed
 #      shell: bash --noprofile --norc -o pipefail {0}
       
-#    - name: Build with ant
-#      run: ant -noinput -buildfile build.xml
+    - name: Build with ant
+      run: ant -noinput -buildfile build.xml
 
     - name: Generate version string
       id: get-version
@@ -71,21 +71,21 @@ jobs:
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git push --force "$REMOTE" "${TAG}"
 
-#    - uses: meeDamian/github-release@2.0
-#      with:
-#        prerelease: true
-#        allow_override: true
-#        token: ${{ secrets.GITHUB_TOKEN }}
-#        commitish: master
-#        tag: ${TAG}
-#        name: Pre-Release ${VERSION}
-#        body: "${BODY}"
-#        gzip: folders
-#        files: >
-#          LICENSE.txt
-#          README.md
-#          RELEASENOTES.txt
-#          CHANGELOG.txt
-#          magellan_v${BASE}.zip
-#          magellan_v${BASE}.jar
+    - uses: meeDamian/github-release@2.0
+      with:
+        prerelease: true
+        allow_override: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commitish: master
+        tag: ${TAG}
+        name: Pre-Release ${VERSION}
+        body: "${BODY}"
+        gzip: folders
+        files: >
+          LICENSE.txt
+          README.md
+          RELEASENOTES.txt
+          CHANGELOG.txt
+          magellan_v${BASE}.zip
+          magellan_v${BASE}.jar
 

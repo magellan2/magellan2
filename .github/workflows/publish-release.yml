@@ -22,10 +22,9 @@ jobs:
     - name: Generate version string
       id: get-version
       run: |
-        VERSION=$(ant -q -S print_version)
-        echo "::set-env name=BASE::${VERSION}"
+        BASE=$(ant -q -S print_version)
         echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
-        echo "::set-env name=VERSION::${VERSION}"
+        echo "::set-env name=VERSION::${BASE}"
         echo "::set-env name=TAG::v${VERSION}"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"

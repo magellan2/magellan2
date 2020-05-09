@@ -14,28 +14,38 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-
     - name: Generate version string
       id: get-version
       run: |
         BASE=$(ant -q -S print_version)
         echo "::set-env name=BASE::$BASE"
-        echo "::set-env name=SHORT::$(echo "$BASE" | cut -d. -f-2)"
-        echo "::set-env name=VERSION::${BASE}-latest"
-        echo "::set-env name=TAG::v${{ env.SHORT }}-latest"
+        SHORT=$(echo "${BASE}" | cut -d. -f-2)
+        echo "::set-env name=SHORT::$SHORT"
+        echo "::set-env name=VERSION::$(echo ${BASE}-latest)"
+        echo "::set-env name=TAG::$(echo "v${SHORT}-latest")"
 
     - name: Sanity check
       run: |
-        if [[ "${{ env.TAG }}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)*-latest$ ]]; then
-          echo version $TAG okay
+        if [[ "${TAG}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*-latest$ ]]; then
+          echo tag $TAG okay
         else
-          echo "version ($BASE, $SHORT, $VERSION) ${{ env.TAG }} not okay!"
+          echo "tag (${BASE},${SHORT},${VERSION}) $TAG not okay!"
           exit 1
         fi
+
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-latest$ ]]; then
+          echo version $VERSION okay
+          exit 2
+        else
+          echo "version (${BASE},${SHORT},${VERSION}) $VERSION not okay!"
+          exit 1
+        fi
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
 
 #    - name: Test with ant
 #      run: |
@@ -76,29 +86,29 @@ jobs:
         git clone -n --depth=1 https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git
         cd magellan-homepage
         mkdir nightly-build
-        cp ../../magellan_v${{ env.BASE }}.zip nightly-build/
-        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${{ env.TAG }}" nightly-build/magellan_v${{ env.BASE }}.zip
+        cp ../../magellan_${VERSION}.zip nightly-build/
+        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${TAG}" nightly-build/magellan_${VERSION}.zip
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git"
         git push "$REMOTE" 
         cd ../..
         rm -rf tmp
 
-    - name: Create release
-      uses: meeDamian/github-release@2.0
-      with:
-        prerelease: true
-        allow_override: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commitish: master
-        tag: ${{ env.TAG }}
-        name: Pre-Release  ${{ env.VERSION }}
-        body: ${{ env.BODY }}
-        gzip: folders
-        files: >
-          LICENSE.txt
-          README.md
-          RELEASENOTES.txt
-          CHANGELOG.txt
-          magellan_v${{ env.BASE }}.jar
-          magellan_v${{ env.BASE }}.zip
+#    - name: Create release
+#      uses: meeDamian/github-release@2.0
+#      with:
+#        prerelease: true
+#        allow_override: true
+#        token: ${{ secrets.GITHUB_TOKEN }}
+#        commitish: master
+#        tag: ${{ env.TAG }}
+#        name: Pre-Release  ${{ env.VERSION }}
+#        body: ${{ env.BODY }}
+#        gzip: folders
+#        files: >
+#          LICENSE.txt
+#          README.md
+#          RELEASENOTES.txt
+#          CHANGELOG.txt
+#          magellan_${{ env.VERSION }}.jar
+#          magellan_${{ env.VERSION }}.zip
 

@@ -21,7 +21,7 @@ jobs:
         echo "::set-env name=BASE::$BASE"
         SHORT=$(echo "${BASE}" | cut -d. -f-2)
         echo "::set-env name=SHORT::$SHORT"
-        echo "::set-env name=VERSION::$(echo ${BASE}-latest)"
+        echo "::set-env name=VERSION::$(echo "${BASE}-latest")"
         echo "::set-env name=TAG::$(echo "v${SHORT}-latest")"
 
     - name: Sanity check
@@ -35,7 +35,6 @@ jobs:
 
         if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-latest$ ]]; then
           echo version $VERSION okay
-          exit 2
         else
           echo "version (${BASE},${SHORT},${VERSION}) $VERSION not okay!"
           exit 1
@@ -85,9 +84,12 @@ jobs:
         cd tmp
         git clone -n --depth=1 https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git
         cd magellan-homepage
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         mkdir nightly-build
-        cp ../../magellan_${VERSION}.zip nightly-build/
-        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${TAG}" nightly-build/magellan_${VERSION}.zip
+        cp ../../magellan_v${BASE}.zip nightly-build/
+        git add nightly-build/magellan_v${BASE}.zip
+        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${TAG}" nightly-build/magellan_v${BASE}.zip
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git"
         git push "$REMOTE" 
         cd ../..
@@ -101,7 +103,7 @@ jobs:
 #        token: ${{ secrets.GITHUB_TOKEN }}
 #        commitish: master
 #        tag: ${{ env.TAG }}
-#        name: Pre-Release  ${{ env.VERSION }}
+#        name: Pre-Release  v${{ env.VERSION }}
 #        body: ${{ env.BODY }}
 #        gzip: folders
 #        files: >
@@ -109,6 +111,6 @@ jobs:
 #          README.md
 #          RELEASENOTES.txt
 #          CHANGELOG.txt
-#          magellan_${{ env.VERSION }}.jar
-#          magellan_${{ env.VERSION }}.zip
+#          magellan_$v{{ env.VERSION }}.jar
+#          magellan_$v{{ env.VERSION }}.zip
 

@@ -45,18 +45,17 @@ jobs:
       with:
         java-version: 11
 
-
-#    - name: Test with ant
-#      run: |
-#         ant -noinput -buildfile build.xml run_tests
-#         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-#         if [ -n "$fails" ]; then
-#           echo Errors in $fails
-#           cat $fails
-#           exit 1
-#         fi
-#      # do not exit before all commands are executed
-#      shell: bash --noprofile --norc -o pipefail {0}
+    - name: Test with ant
+      run: |
+         ant -noinput -buildfile build.xml run_tests
+         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+         if [ -n "$fails" ]; then
+           echo Errors in $fails
+           cat $fails
+           exit 1
+         fi
+      # do not exit before all commands are executed
+      shell: bash --noprofile --norc -o pipefail {0}
       
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
@@ -79,38 +78,23 @@ jobs:
         git tag -f "${TAG}"
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
         git push --force "$REMOTE" "${TAG}"
-        # push to homepage
-        mkdir tmp
-        cd tmp
-        git clone -n --depth=1 https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git
-        cd magellan-homepage
-        git config user.name "$GITHUB_ACTOR"
-        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-        mkdir nightly-build
-        cp ../../magellan_v${BASE}.zip nightly-build/
-        git add nightly-build/magellan_v${BASE}.zip
-        git commit -m"automatic update by github action ${{ env.GITHUB_WORKFLOW }} for tag ${TAG}" nightly-build/magellan_v${BASE}.zip
-        REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/stm2/magellan-homepage.git"
-        git push "$REMOTE" 
-        cd ../..
-        rm -rf tmp
 
-#    - name: Create release
-#      uses: meeDamian/github-release@2.0
-#      with:
-#        prerelease: true
-#        allow_override: true
-#        token: ${{ secrets.GITHUB_TOKEN }}
-#        commitish: master
-#        tag: ${{ env.TAG }}
-#        name: Pre-Release  v${{ env.VERSION }}
-#        body: ${{ env.BODY }}
-#        gzip: folders
-#        files: >
-#          LICENSE.txt
-#          README.md
-#          RELEASENOTES.txt
-#          CHANGELOG.txt
-#          magellan_$v{{ env.VERSION }}.jar
-#          magellan_$v{{ env.VERSION }}.zip
+    - name: Create release
+      uses: meeDamian/github-release@2.0
+      with:
+        prerelease: true
+        allow_override: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commitish: master
+        tag: ${{ env.TAG }}
+        name: Pre-Release  v${{ env.VERSION }}
+        body: ${{ env.BODY }}
+        gzip: folders
+        files: >
+          LICENSE.txt
+          README.md
+          RELEASENOTES.txt
+          CHANGELOG.txt
+          magellan_$v{{ env.VERSION }}.jar
+          magellan_$v{{ env.VERSION }}.zip
 

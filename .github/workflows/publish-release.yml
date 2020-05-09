@@ -21,6 +21,7 @@ jobs:
         echo "::set-env name=BASE::$BASE"
         SHORT=$(echo "${BASE}" | cut -d. -f-2)
         echo "::set-env name=SHORT::$SHORT"
+        VERSION=$BASE
         echo "::set-env name=VERSION::${BASE}"
         echo "::set-env name=TAG::$(echo "v${VERSION}")"
 

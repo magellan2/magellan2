@@ -99,5 +99,5 @@ jobs:
           RELEASENOTES.txt
           CHANGELOG.txt
           magellan_v${{ env.VERSION }}.jar
-         magellan_v${{ env.VERSION }}.zip
+          magellan_v${{ env.VERSION }}.zip
 

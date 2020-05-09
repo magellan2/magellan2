@@ -95,6 +95,6 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-          magellan_v${{ env.VERSION }}.jar
-          magellan_v${{ env.VERSION }}.zip
+          magellan_v${{ env.BASE }}.jar
+          magellan_v${{ env.BASE }}.zip
 

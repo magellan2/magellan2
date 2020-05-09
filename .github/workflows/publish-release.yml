@@ -14,16 +14,13 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-
     - name: Generate version string
       id: get-version
       run: |
         BASE=$(ant -q -S print_version)
-        echo "::set-env name=SHORT::$(echo "${BASE}" | cut -d. -f-2)"
+        echo "::set-env name=BASE::$BASE"
+        SHORT=$(echo "${BASE}" | cut -d. -f-2)
+        echo "::set-env name=SHORT::$SHORT"
         echo "::set-env name=VERSION::${BASE}"
         echo "::set-env name=TAG::$(echo "v${VERSION}")"
 
@@ -34,9 +31,16 @@ jobs:
     - name: Sanity check
       run: |
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
-          echo version $TAG okay
+          echo tag $TAG okay
         else
-          echo version $TAG not okay!
+          echo "tag (${BASE},${SHORT},${VERSION}) $TAG not okay!"
+          exit 1
+        fi
+
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
+          echo version $VERSION okay
+        else
+          echo "version (${BASE},${SHORT},${VERSION}) $VERSION not okay!"
           exit 1
         fi
 
@@ -46,6 +50,11 @@ jobs:
           echo $TAG != $REFTAG
           exit 1
         fi
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
 
     - name: Test with ant
       run: |
@@ -81,7 +90,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
         tag: ${{ env.TAG }}
-        name: Stable Release  ${{ env.VERSION }}
+        name: Stable Release v${{ env.VERSION }}
         body: ${{ env.BODY }}
         gzip: folders
         files: >
@@ -89,6 +98,6 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-          magellan_v${{ env.BASE }}.jar
-         magellan_v${{ env.BASE }}.zip
+          magellan_v${{ env.VERSION }}.jar
+         magellan_v${{ env.VERSION }}.zip
 

@@ -20,7 +20,7 @@ jobs:
         VERSION=$(ant -q -S print_version)
         PART1=$(echo "${VERSION}" | cut -d- -f1)
         PART2=$(echo "${VERSION}" | cut -d- -f2)
-        BASE=$PART1${PART2%.*}
+        BASE=$PART1-${PART2%.*}
         SHORT=$(echo "${VERSION}" | cut -d. -f-2)
         BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
         echo "::set-env name=BUILD::$BUILD"
@@ -41,7 +41,7 @@ jobs:
           exit 1
         fi
 
-        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)*$ ]]; then
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9][0-9]*)*)?$ ]]; then
           echo version $VERSION okay
         else
           echo "version (${VERSION},${BASE},${SHORT},${BUILD}) $VERSION not okay!"
@@ -57,13 +57,13 @@ jobs:
 
         LASTTAG=$(git tag -l v* --sort='-committerdate')
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
-        if (( BUILD == OLDBUILD )); then
+        if [[ $BUILD == $OLDBUILD ]]; then
           echo "build.number $BUILD has not changed since latest tag ${LASTTAG}, please update by running ant build locally!"
           exit 1
         fi
 
         OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
-        if (( BUILD == OLDBUILD )); then
+        if [[ $BUILD == $OLDBUILD ]]; then
           echo "build.number $BUILD has not changed for tag ${TAG}, please update by running ant build locally!"
           exit 1
         fi

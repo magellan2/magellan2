@@ -11,10 +11,10 @@
 	<property name="VERSION.MAJOR"         value="2"/>
 	<property name="VERSION.MINOR"         value="1"/>
 	<property name="VERSION.SUB"           value="0"/>
-	<!-- possible values include -stable, -rc, and empty string -->
-	<property name="VERSION.POST"           value=""/>
+	<!-- possible values include stable, rc, and develop -->
+	<property name="VERSION.POST"           value="latest"/>
 
-	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}${VERSION.POST}"/>
+	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}-${VERSION.POST}"/>
 
 	<!-- Some properties -->
 	<property name="src.library"       location="${basedir}/src-library"/>
@@ -73,16 +73,18 @@
 	</path>
 
 	<target name="update_version">
+		<property file=".build.number"/>
+		<property name="VERSION.FULL"       value="${VERSION.POINTED}.${build.number}"/>
 		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED} (build ${build.number})"/>
+				<filter token="VERSION" value="${VERSION.FULL} (build ${build.number})"/>
 			</filterset>
 		</copy>
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
     </target>
 	
 	<target name="print_version" depends="update_version">
-		<echo message="${VERSION.POINTED}" />
+		<echo message="${VERSION.FULL}" />
 	</target>
 
 	<!-- *************************************************************** -->
@@ -93,7 +95,6 @@
 	<target name="build_library">
 		<echo message="Compiling Library..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
 		<my-javac srcdir="${src.library}/"
@@ -137,7 +138,6 @@
 	<target name="build_client">
 		<echo message="Compiling Client..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
 		<my-javac srcdir="${src.client}/magellan"
@@ -163,7 +163,7 @@
 
 		<copy file="${etc}/manifest.mf.template" tofile="${etc}/manifest.mf" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -184,7 +184,6 @@
 	<target name="build_plugins">
 		<echo message="Compiling PlugIns..." />
 
-		<!--		<antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
 		<my-javac srcdir="${src.plugins}/magellan"
@@ -245,7 +244,6 @@
 	<target name="build_test">
 		<echo message="Compiling tests..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
 		<my-javac srcdir="${src.test}/"
@@ -296,11 +294,6 @@
 				<include name="*.ini"/>
 			</fileset>
 		</copy>
-		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED} (build ${build.number})"/>
-			</filterset>
-		</copy>
 
 		<mkdir dir="${release}/etc/images" />
 		<copy todir="${release}/etc/images" overwrite="true">
@@ -348,13 +341,9 @@
 	<!-- *  This target runs all the unit tests                        * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="run_tests" description="This target runs the unit tests.">
+	<target name="run_tests" description="This target runs the unit tests." 
+	  		depends="build_library, build_client, build_plugins, build_test">
 
-		<antcall target="build_library" />
-		<antcall target="build_client" />
-		<antcall target="build_plugins" />
-
-		<antcall target="build_test" />
 		<mkdir dir="${junit.output.dir}" />
 
 		<echo message="Running all unit tests" />
@@ -378,7 +367,6 @@
 				<filename name="default????*/**" />
 			</fileset>
 		</delete>
-		<!--        <antcall target="clear-classes"/> -->
 
 		<fail message="test failed" if="test.failure" />
 	</target>
@@ -388,49 +376,24 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application.">
-		<antcall target="prepare_build" />
-		
-		<antcall target="run_tests" />
-
-		<antcall target="build_jar_and_distribute" />
+	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application."
+	        depends="prepare_build, run_tests, build_jar_and_distribute">
 		
 	</target>
 	
-	<target name="prepare_build">
+	<target name="increase_build_number">
 		<buildnumber file=".build.number"/>
-
-		<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}${VERSION.POST}.${build.number}"/>
-		
-		<antcall target="clear-all"/>
 	</target>
 	
-	<target name="build_jar_and_distribute">
-		<antcall target="build_library_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_client_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_plugins_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_help">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="copy_release_data">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	<target name="prepare_build" depends="clear-all, increase_build_number, update_version">
+		
+	</target>
+	
+	<target name="build_jar_and_distribute" depends="build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data">
 
 		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -441,7 +404,7 @@
 			<arg value="-b"/>
 			<arg value="."/>
 			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.POINTED}.jar"/>
+			<arg value="magellan_v${VERSION.FULL}.jar"/>
 			<arg value="-k"/>
 			<arg value="standard"/>
 
@@ -454,13 +417,13 @@
 		</java>
 
 		<echo message="Creating ZIP Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
-		<zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
+		<delete file="${basedir}/magellan_v${VERSION.FULL}.zip" failonerror="false"/>
+		<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
 			<fileset dir="${release}" includes="**"/>
 		</zip>
 
 		<echo message="Creating MacOS Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
+		<delete file="${basedir}/magellan_v${VERSION.FULL}_macos.zip" failonerror="false"/>
 
 		<mkdir dir="${macos}/Magellan.app" />
 		<mkdir dir="${macos}/Magellan.app" />
@@ -484,53 +447,23 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="distribute" description=" This target compiles and packs the whole magellan application.">
-		<antcall target="prepare_build" />
-
-		<antcall target="build_library" />
-
-		<antcall target="build_client" />
-
-		<antcall target="build_plugins" />
-		
-		<antcall target="build_jar_and_distribute" />
+	<target name="distribute" description=" This target compiles and packs the whole magellan application."
+	        depends="prepare_build, build_library, build_client, build_plugins, build_jar_and_distribute">
 
 		<antcall target="clear-all"/>
 	</target>
 
 	<!-- *************************************************************** -->
 	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the whole magellan app.     * -->
+	<!-- *  This target just compiles the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="distributeNoPack" description=" This target compiles and packs the whole magellan application.">
-		<antcall target="prepare_build" />
-
-		<antcall target="build_library">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_client">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_plugins">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_help">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="copy_release_data">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	<target name="distributeNoPack" description=" This target just compiles the whole magellan application."
+	        depends="prepare_build, build_library, build_client, build_plugins, build_help, copy_release_data">
 
 		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -541,7 +474,7 @@
 			<arg value="-b"/>
 			<arg value="."/>
 			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.POINTED}.jar"/>
+			<arg value="magellan_v${VERSION.FULL}.jar"/>
 			<arg value="-k"/>
 			<arg value="standard"/>
 

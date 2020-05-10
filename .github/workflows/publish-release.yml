@@ -17,13 +17,16 @@ jobs:
     - name: Generate version string
       id: get-version
       run: |
-        BASE=$(ant -q -S print_version)
-        echo "::set-env name=BASE::$BASE"
-        SHORT=$(echo "${BASE}" | cut -d. -f-2)
+        VERSION=$(ant -q -S print_version)
+        PART1=$(echo "${VERSION}" | cut -d- -f1)
+        PART2=$(echo "${VERSION}" | cut -d- -f2)
+        BASE=$PART1${PART2%.*}
+        SHORT=$(echo "${VERSION}" | cut -d. -f-2)
+        BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
+        echo "::set-env name=BUILD::$BUILD"
         echo "::set-env name=SHORT::$SHORT"
-        VERSION=$BASE
-        echo "::set-env name=VERSION::${BASE}"
-        echo "::set-env name=TAG::$(echo "v${VERSION}")"
+        echo "::set-env name=VERSION::$VERSION"
+        echo "::set-env name=TAG::$(echo "v${BASE}")"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
         echo "::set-env name=REFTAG::$REFTAG"
@@ -34,14 +37,14 @@ jobs:
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
           echo tag $TAG okay
         else
-          echo "tag (${BASE},${SHORT},${VERSION}) $TAG not okay!"
+          echo "tag (${VERSION},${BASE},${SHORT},${BUILD}) $TAG not okay!"
           exit 1
         fi
 
-        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)*$ ]]; then
           echo version $VERSION okay
         else
-          echo "version (${BASE},${SHORT},${VERSION}) $VERSION not okay!"
+          echo "version (${VERSION},${BASE},${SHORT},${BUILD}) $VERSION not okay!"
           exit 1
         fi
 
@@ -49,6 +52,19 @@ jobs:
           echo tags match
         else
           echo $TAG != $REFTAG
+          exit 1
+        fi
+
+        LASTTAG=$(git tag -l v* --sort='-committerdate')
+        OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if (( BUILD == OLDBUILD )); then
+          echo "build.number $BUILD has not changed since latest tag ${LASTTAG}, please update by running ant build locally!"
+          exit 1
+        fi
+
+        OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if (( BUILD == OLDBUILD )); then
+          echo "build.number $BUILD has not changed for tag ${TAG}, please update by running ant build locally!"
           exit 1
         fi
 

@@ -17,11 +17,12 @@ jobs:
     - name: Generate version string
       id: get-version
       run: |
-        BASE=$(ant -q -S print_version)
-        echo "::set-env name=BASE::$BASE"
-        SHORT=$(echo "${BASE}" | cut -d. -f-2)
+        VERSION=$(ant -q -S print_version)
+        SHORT=$(echo "${VERSION}" | cut -d. -f-2)
+        BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
+        echo "::set-env name=BUILD::$BUILD"
         echo "::set-env name=SHORT::$SHORT"
-        echo "::set-env name=VERSION::$(echo "${BASE}-latest")"
+        echo "::set-env name=VERSION::$VERSION"
         echo "::set-env name=TAG::$(echo "v${SHORT}-latest")"
 
     - name: Sanity check
@@ -29,15 +30,34 @@ jobs:
         if [[ "${TAG}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*-latest$ ]]; then
           echo tag $TAG okay
         else
-          echo "tag (${BASE},${SHORT},${VERSION}) $TAG not okay!"
+          echo "tag (${VERSION}, ${SHORT}) $TAG not okay!"
           exit 1
         fi
 
-        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-latest$ ]]; then
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-latest.[0-9][0-9]*$ ]]; then
           echo version $VERSION okay
         else
-          echo "version (${BASE},${SHORT},${VERSION}) $VERSION not okay!"
+          echo "version $VERSION not okay!"
           exit 1
+        fi
+
+        LASTTAG=$(git tag -l v* --sort='-committerdate' | head -1)
+        OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
+          if (( BUILD == OLDBUILD )); then
+            echo "build.number $BUILD has not changed since latest tag ${LASTTAG}, please update by running ant build locally!"
+            exit 1
+          fi
+        else
+          echo "bad tag or build $LASTTAG - $OLDBUILD"
+        fi
+
+        OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
+          if (( BUILD == OLDBUILD )); then
+            echo "build.number $BUILD has not changed for tag ${TAG}, please update by running ant build locally!"
+            exit 1
+          fi
         fi
 
     - name: Set up JDK 11
@@ -95,6 +115,6 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
-          magellan_v${{ env.BASE }}.jar
-          magellan_v${{ env.BASE }}.zip
+          magellan_v${{ env.VERSION }}.jar
+          magellan_v${{ env.VERSION }}.zip
 

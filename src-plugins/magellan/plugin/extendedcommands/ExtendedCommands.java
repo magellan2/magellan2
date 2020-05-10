@@ -42,10 +42,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.ParseException;
-import bsh.TargetError;
 import jdk.jshell.Diag;
 import jdk.jshell.EvalException;
 import jdk.jshell.JShell;
@@ -594,119 +590,6 @@ public class ExtendedCommands {
 
     runJShell(script, world, unit, container, ui, helper);
     // runBeanShell(script, world, unit, container, ui, helper);
-  }
-
-  protected void runBeanShell(String script, GameData world, Unit unit, UnitContainer container,
-      UserInterface ui, ExtendedCommandsHelper helper) {
-    try {
-      Interpreter interpreter = new Interpreter();
-      interpreter.set("world", world);
-      if (unit != null) {
-        interpreter.set("unit", unit);
-      }
-      if (container != null) {
-        interpreter.set("container", container);
-      }
-      interpreter.set("helper", helper);
-      if (ui != null) {
-        helper.setUI(ui);
-      }
-      interpreter.set("log", DebugDock.getInstance());
-
-      interpreter.eval(script);
-    } catch (EvalError error) {
-      StringBuilder message = new StringBuilder();
-      StringBuilder description = new StringBuilder();
-      if (error instanceof TargetError) {
-        TargetError tError = (TargetError) error;
-        message.append(Resources.get("extended_commands.ex.targeterror.message"));
-        if (tError.getTarget() != null) {
-          message.append("\n\n").append(tError.getTarget());
-        }
-        if (tError.getLocalizedMessage() != null) {
-          description.append("\n\n").append(tError.getLocalizedMessage());
-        }
-
-        int lines = 0;
-        String lib = getLibrary().getScript();
-        for (int i = 0; i < lib.length(); ++i)
-          if (lib.charAt(i) == '\n') {
-            lines++;
-          }
-        if (lib.charAt(lib.length() - 1) != '\n') {
-          lines++;
-        }
-
-        description.append("\n\n");
-        if (tError.getErrorLineNumber() > lines) {
-          description.append(Resources.get("extended_commands.ex.scriptline.message", tError
-              .getErrorLineNumber()
-              - lines));
-        } else {
-          description.append(Resources.get("extended_commands.ex.libline.message", tError
-              .getErrorLineNumber()));
-          // message.append("\n\n").append(tError.getErrorSourceFile());
-          // message.append("\n\n").append(tError.getErrorText());
-          // message.append("\n\n").append(tError.getScriptStackTrace());
-        }
-      } else if (error instanceof ParseException) {
-        ParseException pError = (ParseException) error;
-        message.append(Resources.get("extended_commands.ex.parseerror.message"));
-        message.append("\n\n").append(pError.getLocalizedMessage());
-
-        if (pError.getErrorSourceFile() != null) {
-          description.append("\n\n").append(pError.getErrorSourceFile());
-        }
-        if (pError.getScriptStackTrace() != null) {
-          description.append("\n\n").append(pError.getScriptStackTrace());
-        }
-        try {
-          if (pError.getErrorText() != null) {
-            description.append("\n\n").append(pError.getErrorText());
-          }
-        } catch (NullPointerException e) {
-          // unknown BeanShell bug, ignore
-        }
-        try {
-          pError.getErrorLineNumber();
-          description.append("\n\n").append(pError.getErrorLineNumber());
-        } catch (NullPointerException e) {
-          // unknown BeanShell bug, ignore
-        }
-        // message.append("\n\n").append(pError.currentToken);
-      } else {
-        message.append(Resources.get("extended_commands.ex.evalerror.message"));
-        message.append("\n\n").append((error).getLocalizedMessage());
-        // description.append("\n\n").append((error).getErrorSourceFile());
-      }
-
-      if (client != null) {
-        ErrorWindow errorWindow =
-            new ErrorWindow(client, message.toString(), description.toString(), error);
-        errorWindow.setShutdownOnCancel(false);
-        errorWindow.setVisible(true);
-      } else {
-        log.error(message.toString() + " " + description.toString());
-      }
-    } catch (Throwable throwable) {
-      ExtendedCommands.log.info("", throwable);
-
-      if (client != null) {
-        ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
-        errorWindow.setShutdownOnCancel(false);
-        errorWindow.setVisible(true);
-      }
-    } finally {
-      if (isFireChangeEvent()) {
-        if (client != null) {
-          client.getDispatcher().fire(new GameDataEvent(this, world));
-        }
-      }
-      if (ui != null) {
-        ui.ready();
-      }
-    }
-
   }
 
   protected synchronized void runJShell(String script, GameData world, Unit unit,

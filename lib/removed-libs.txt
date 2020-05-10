@@ -1,2 +1,0 @@
-commons-email-1.0.jar
-ant-1.5.3.jar

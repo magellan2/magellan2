@@ -58,13 +58,7 @@ jobs:
         LASTTAG=$(git tag -l v* --sort='-committerdate')
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ $BUILD == $OLDBUILD ]]; then
-          echo "build.number $BUILD has not changed since latest tag ${LASTTAG}, please update by running ant build locally!"
-          exit 1
-        fi
-
-        OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
-        if [[ $BUILD == $OLDBUILD ]]; then
-          echo "build.number $BUILD has not changed for tag ${TAG}, please update by running ant build locally!"
+          echo "build.number $BUILD has not changed since most recent tag ${LASTTAG}, please update by running ant build locally!"
           exit 1
         fi
 

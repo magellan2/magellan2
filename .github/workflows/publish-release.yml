@@ -20,9 +20,14 @@ jobs:
         BASE=$(ant -q -S print_version)
         echo "::set-env name=BASE::$BASE"
         SHORT=$(echo "${BASE}" | cut -d. -f-2)
+        BUILD=$(echo .build.number | grep build.number | cut -f2 -d"=")
+        echo "::set-env name=BUILD::$BUILD"
         echo "::set-env name=SHORT::$SHORT"
-        echo "::set-env name=VERSION::${BASE}"
-        echo "::set-env name=TAG::$(echo "v${VERSION}")"
+        if [[ $BASE =~ ^.*-.* ]]; then
+	  echo "::set-env name=VERSION::${BASE}.${BUILD}"
+        else
+	  echo "::set-env name=VERSION::${BASE}-${BUILD}"
+        echo "::set-env name=TAG::$(echo "v${BASE}")"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
         echo "::set-env name=REFTAG::$REFTAG"
@@ -48,6 +53,12 @@ jobs:
           echo tags match
         else
           echo $TAG != $REFTAG
+          exit 1
+        fi
+
+        OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if (( BUILD == OLDBUILD )); then
+          echo "build.number $BUILD has not changed, please, update by running ant build locally!"
           exit 1
         fi
 

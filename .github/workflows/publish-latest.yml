@@ -41,10 +41,23 @@ jobs:
           exit 1
         fi
 
+        LASTTAG=$(git tag -l v* --sort='-committerdate' | head -1)
+        OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
+          if (( BUILD == OLDBUILD )); then
+            echo "build.number $BUILD has not changed since latest tag ${LASTTAG}, please update by running ant build locally!"
+            exit 1
+          fi
+        else
+          echo "bad tag or build $LASTTAG - $OLDBUILD"
+        fi
+
         OLDBUILD=$(git show ${TAG}:.build.number | grep build.number | cut -f2 -d"=")
-        if (( BUILD == OLDBUILD )); then
-          echo "build.number $BUILD has not changed, please, update by running ant build locally!"
-          exit 1
+        if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
+          if (( BUILD == OLDBUILD )); then
+            echo "build.number $BUILD has not changed for tag ${TAG}, please update by running ant build locally!"
+            exit 1
+          fi
         fi
 
     - name: Set up JDK 11

@@ -17,7 +17,7 @@
 	<!-- possible values include stable, rc, and develop -->
 	<property name="VERSION.POST"           value="latest"/>
 
-	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}-${VERSION.POST}"/>
+	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
 
 	<!-- Some properties -->
 	<property name="src.library"       location="${basedir}/src-library"/>
@@ -77,10 +77,13 @@
 
 	<target name="update_version">
 		<property file=".build.number"/>
-		<property name="VERSION.FULL"       value="${VERSION.POINTED}.${build.number}"/>
+		<property name="VERSION.FULL"       value="${VERSION.POINTED}-${build.number}.${VERSION.POST}"/>
+		<property name="VERSION.COMPAT"       value="${VERSION.POINTED} (build ${build.number})"/>
+				
 		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.FULL} (build ${build.number})"/>
+				<filter token="VERSION" value="${VERSION.COMPAT}"/>
+				<filter token="SEMANTIC_VERSION" value="${VERSION.FULL}"/>
 			</filterset>
 		</copy>
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>

@@ -35,15 +35,15 @@ jobs:
           exit 1
         fi
 
-        # version is 1.2[.3]-latest.567
-        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-latest.[0-9][0-9]*$ ]]; then
+        # version is 1.2[.3]-567.latest
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?-[0-9][0-9]*[.]latest$ ]]; then
           echo version $VERSION okay
         else
           echo "version $VERSION not okay!"
           exit 1
         fi
 
-	# most recent tag has older build number
+        # most recent tag has older build number
         LASTTAG=$(git tag -l v* --sort='-committerdate' | head -1)
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
@@ -89,7 +89,7 @@ jobs:
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog
       run: |
-        value=$(cat doc/NIGHTLY.txt | iconv -f ISO-8859-1; echo -e '\n\n'; echo -e '\n# Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
+        value=$(cat doc/NIGHTLY.txt | iconv -f ISO-8859-1; echo -e '\n\n'; echo -e '\n## Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
         json_escape () {
           printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
         }

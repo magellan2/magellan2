@@ -34,6 +34,7 @@ jobs:
       
     - name: Sanity check
       run: |
+        # tag is v1.2[.3]-abc4.567
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
           echo tag $TAG okay
         else
@@ -41,6 +42,7 @@ jobs:
           exit 1
         fi
 
+        # version is 1.2[.3]-abc4.567
         if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9][0-9]*)*)?$ ]]; then
           echo version $VERSION okay
         else
@@ -48,6 +50,7 @@ jobs:
           exit 1
         fi
 
+        # git tag has correct version
         if [[ "$TAG" == "$REFTAG" ]]; then
           echo tags match
         else
@@ -55,6 +58,7 @@ jobs:
           exit 1
         fi
 
+        # most recent tag has older build number
         LASTTAG=$(git tag -l v* --sort='-committerdate')
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ $BUILD == $OLDBUILD ]]; then
@@ -111,4 +115,3 @@ jobs:
           CHANGELOG.txt
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
-

@@ -5,6 +5,9 @@
     
     Please call one of the following public targets:
       - distribute
+      - print_version
+      - run_tests
+      - test_and_distribute
       - javadoc (not implemented yet)
 	</description>
 

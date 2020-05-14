@@ -864,7 +864,9 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     private void initSets() {
       atrSets = copySets(atrRenderer.getAllSets());
       nameListModel.clear();
-      nameListModel.addAll(atrSets.keySet());
+      for (String key : atrSets.keySet()) {
+        nameListModel.addElement(key);
+      }
       currentSet = atrRenderer.getCurrentSet();
     }
 
@@ -906,7 +908,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
             atrRenderer.setHAlign(i);
             break;
           }
-      }
+        }
 
         atrRenderer.setAllSets(atrSets);
         atrRenderer.loadSet(getCurrent());

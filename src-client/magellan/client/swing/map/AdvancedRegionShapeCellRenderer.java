@@ -1197,7 +1197,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       List<String> sets = getAllSetNames(localSettings, propKey);
 
       model.clear();
-      model.addAll(sets);
+      for (String element : sets) {
+        model.addElement(element);
+      }
 
       if ((newSelection != null) && model.contains(newSelection)) {
         setsList.setSelectedValue(newSelection, true);

@@ -121,22 +121,35 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
+          VERSION
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
 
-    - name: Trigger publish to archive and homepage
+    - name: prepare
       run: |
-        OWNER=$(echo $GITHUB_REPOSITORY | cut -f1 -d"/")
-        curl -X POST https://api.github.com/repos/${OWNER}/magellan-meta/dispatches \
+        set -x
+        if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).*/\1/")
+        else
+          TYPE=stable
+        fi
+        if [[ ! "$TYPE" =~ ^[a-zA-Z]+$ ]]; then
+          echo "invalid type $TYPE"
+          exit 1
+        fi
+        echo "::set-env name=TYPE::$TYPE"
+
+    - name: trigger meta action
+      run: |
+        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan-meta/dispatches \
           -H 'Accept: application/vnd.github.everst-preview+json' \
           -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
-              "ref" : "${GITHUB_REF}",
-              "repository" : "${GITHUB_REPOSITORY}",
+              "ref" : "${{ github.ref }}",
               "sha": "${{ github.sha }}",
+              "caller_repository" : "${{ github.repository }}",
+              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
               "tag" : "${{ env.TAG }}",
-              "version": "${{ env.VERSION }}",
-              "filename": "magellan_v${{ env.VERSION }}",
-              "type": "latest" }}'
+              "type": "${{ env.TYPE }}" }}'

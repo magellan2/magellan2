@@ -348,7 +348,7 @@
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
 	<target name="run_tests" description="This target runs the unit tests." 
-	  		depends="build_library, build_client, build_plugins, build_test">
+	  		depends="update_version, build_library, build_client, build_plugins, build_test">
 
 		<mkdir dir="${junit.output.dir}" />
 

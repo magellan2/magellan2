@@ -1,0 +1,37 @@
+name: Notify meta of published release
+# react on published release: notify magellan-meta
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  trigger:
+    name: trigger
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Trigger publish to archive and homepage
+      run: |
+        OWNER=${{ github.repository_owner }}
+        if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo $TAG | sed -e "s/.*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).*/\1/")
+        else
+          TYPE=stable
+        if [[ ! "$TYPE" =~ ^[a-zA-Z]+$ ]]; then
+          echo "invalid type $TYPE"
+          exit 1
+        fi
+        
+        curl -X POST https://api.github.com/repos/${OWNER}/magellan-meta/dispatches \
+          -H 'Accept: application/vnd.github.everst-preview+json' \
+          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+          --data '{
+            "event_type": "actions-release-trigger",
+            "client_payload": {
+              "ref" : "${GITHUB_REF}",
+              "sha": "${{ github.sha }}",
+              "caller_repository" : "${GITHUB_REPOSITORY}",
+              "meta_repository" : "${OWNER}/magellan-meta",
+              "tag" : "${{ env.TAG }}",
+              "type": "${TYPE}" }}'

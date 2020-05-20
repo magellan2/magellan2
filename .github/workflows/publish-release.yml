@@ -79,7 +79,7 @@ jobs:
          fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
-      
+
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
 
@@ -112,4 +112,21 @@ jobs:
           CHANGELOG.txt
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
+
+    - name: Trigger publish to archive and homepage
+      run: |
+        OWNER=$(echo $GITHUB_REPOSITORY | cut -f1 -d"/")
+        curl -X POST https://api.github.com/repos/${OWNER}/magellan-meta/dispatches \
+          -H 'Accept: application/vnd.github.everst-preview+json' \
+          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+          --data '{
+            "event_type": "actions-release-trigger",
+            "client_payload": {
+              "ref" : "${GITHUB_REF}",
+              "repository" : "${GITHUB_REPOSITORY}",
+              "sha": "${{ github.sha }}",
+              "tag" : "${{ env.TAG }}",
+              "version": "${{ env.VERSION }}",
+              "filename": "magellan_v${{ env.VERSION }}",
+              "type": "stable" }}'
 

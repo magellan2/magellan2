@@ -82,7 +82,7 @@ jobs:
          fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
-      
+
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
 
@@ -123,4 +123,18 @@ jobs:
           CHANGELOG.txt
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
+
+    - name: Trigger publish to archive and homepage
+      uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.REPO_ACCESS_TEST }}
+          repository: magellan2/magellan-meta
+          event-type: actions-release-trigger
+          client-payload: '{
+              "sha": "${{ github.sha }}",
+              "tag": "${{ env.TAG }}",
+              "version": "${{ env.VERSION }}",
+              "FILENAME": "magellan_v${{ env.VERSION }}",
+              "type": "latest"
+              }'
 

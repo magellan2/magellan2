@@ -1257,31 +1257,35 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
-                Client.startWindow);
-            String currentVersion = VersionInfo.getVersion(tResourceDir);
-            if (!Utils.isEmpty(newestVersion)) {
-              Client.log.info("Newest Version on server: " + newestVersion);
-              Client.log.info("Current Version: " + currentVersion);
-              if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-                String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-                    .getGUILocale().getLanguage());
-                if (url == null) {
-                  url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+            try {
+              String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
+                  Client.startWindow);
+              String currentVersion = VersionInfo.getVersion(tResourceDir);
+              if (!Utils.isEmpty(newestVersion)) {
+                Client.log.info("Newest Version on server: " + newestVersion);
+                Client.log.info("Current Version: " + currentVersion);
+                if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+                  String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+                      .getGUILocale().getLanguage());
+                  if (url == null) {
+                    url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+                  }
+
+                  JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
+                      "client.new_version", new Object[] { newestVersion, url }));
                 }
-
-                JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
-                    "client.new_version", new Object[] { newestVersion, url }));
               }
-            }
 
-            String lastVersion = c.getProperties().getProperty("Client.LastVersion");
-            if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-              UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
-              dlg.setVisible(true);
-              if (!dlg.getResult()) {
-                c.quit(false);
+              String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+              if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+                UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
+                dlg.setVisible(true);
+                if (!dlg.getResult()) {
+                  c.quit(false);
+                }
               }
+            } catch (Exception e) {
+              log.error("Could not check version.", e);
             }
 
             c.application = new DefaultApplication();

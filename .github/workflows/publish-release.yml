@@ -18,32 +18,29 @@ jobs:
       id: get-version
       run: |
         VERSION=$(ant -q -S print_version)
-        PART1=$(echo "${VERSION}" | cut -d- -f1)
-        PART2=$(echo "${VERSION}" | cut -d- -f2)
-        BASE=$PART1-${PART2%.*}
         SHORT=$(echo "${VERSION}" | cut -d. -f-2)
         BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
         echo "::set-env name=BUILD::$BUILD"
         echo "::set-env name=SHORT::$SHORT"
         echo "::set-env name=VERSION::$VERSION"
-        echo "::set-env name=TAG::$(echo "v${BASE}")"
+        echo "::set-env name=TAG::$(echo "v${VERSION}")"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
         echo "::set-env name=REFTAG::$REFTAG"
-        echo "::set-env name=REFSHORT::$(echo "${REFTAG#v}" | cut -d. -f-2)"
+
       
     - name: Sanity check
       run: |
-        # tag is v1.2[.3]-abc4.567
-        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9])*)?$ ]]; then
+        # tag is v1.2[.3]-567[.abc4]
+        if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[1-9][0-9]*)([.][a-z][a-z0-9]*)?$ ]]; then
           echo tag $TAG okay
         else
           echo "tag (${VERSION},${BASE},${SHORT},${BUILD}) $TAG not okay!"
           exit 1
         fi
 
-        # version is 1.2[.3]-abc4.567
-        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[a-z][a-z0-9]*([.][0-9][0-9]*)*)?$ ]]; then
+        # version is 1.2[.3]-567[.abc4]
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[1-9][0-9]*)([.][a-z][a-z0-9]*)?$ ]]; then
           echo version $VERSION okay
         else
           echo "version (${VERSION},${BASE},${SHORT},${BUILD}) $VERSION not okay!"
@@ -54,8 +51,10 @@ jobs:
         if [[ "$TAG" == "$REFTAG" ]]; then
           echo tags match
         else
-          echo $TAG != $REFTAG
-          exit 1
+          echo "WARNING: $TAG <> $REFTAG"
+          TAG=$REFTAG
+          echo "::set-env name=TAG::$TAG"
+          # exit 1
         fi
 
         # most recent tag has older build number
@@ -82,7 +81,7 @@ jobs:
          fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
-      
+
     - name: Build with ant
       run: ant -noinput -buildfile build.xml
 
@@ -113,5 +112,35 @@ jobs:
           README.md
           RELEASENOTES.txt
           CHANGELOG.txt
+          VERSION
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
+
+    - name: prepare
+      run: |
+        set -x
+        if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).*/\1/")
+        else
+          TYPE=stable
+        fi
+        if [[ ! "$TYPE" =~ ^[a-zA-Z]+$ ]]; then
+          echo "invalid type $TYPE"
+          exit 1
+        fi
+        echo "::set-env name=TYPE::$TYPE"
+
+#    - name: trigger meta action
+#      run: |
+#        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan-meta/dispatches \
+#          -H 'Accept: application/vnd.github.everst-preview+json' \
+#          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+#          --data '{
+#            "event_type": "actions-release-trigger",
+#            "client_payload": {
+#              "ref" : "${{ github.ref }}",
+#              "sha": "${{ github.sha }}",
+#              "caller_repository" : "${{ github.repository }}",
+#              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
+#              "tag" : "${{ env.TAG }}",
+#              "type": "${{ env.TYPE }}" }}'

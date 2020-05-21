@@ -96,6 +96,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
   private void setText() {
     // Text area
     final StringBuilder text = new StringBuilder(Resources.get("updatedialog.htmlheader"));
+
     if (currentVersion == null || currentVersion.equals("null")) {
       // could not determine current version!
       text.append(Resources
@@ -105,16 +106,28 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       text.append(Resources.get("updatedialog.firstrunwarning", new Object[] { lastVersion,
           currentVersion }));
       showFile("README.md");
-    } else if (lastVersion.equals("null") || VersionInfo.isNewer(currentVersion, lastVersion)) {
-      text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
-          currentVersion }));
-      showFile("RELEASENOTES.txt");
-    } else if (VersionInfo.isNewer(lastVersion, currentVersion)) {
-      text.append(Resources.get("updatedialog.downgradewarning", new Object[] { lastVersion,
-          currentVersion }));
-      showFile("RELEASENOTES.txt");
-    } else
-      throw new IllegalArgumentException("???");
+    } else {
+      boolean upgrade;
+      upgrade = VersionInfo.isNewer(currentVersion, lastVersion);
+
+      if (lastVersion.equals("null") || upgrade) {
+
+        text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
+            currentVersion }));
+        showFile("RELEASENOTES.txt");
+
+      } else {
+        boolean downgrade;
+        downgrade = VersionInfo.isNewer(lastVersion, currentVersion);
+        if (downgrade) {
+          text.append(Resources.get("updatedialog.downgradewarning", new Object[] { lastVersion,
+              currentVersion }));
+          showFile("RELEASENOTES.txt");
+        } else {
+          log.error(currentVersion + " is neither older or newer than " + lastVersion);
+        }
+      }
+    }
     text.append(Resources.get("updatedialog.infotext", MagellanUrl
         .getMagellanUrl(MagellanUrl.WWW_DOWNLOAD), MagellanUrl
             .getMagellanUrl(MagellanUrl.WWW_FILES), MagellanUrl.getRootUrl()));

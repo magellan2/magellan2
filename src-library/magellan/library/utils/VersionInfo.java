@@ -54,6 +54,20 @@ public class VersionInfo {
    * Gets the Version of this Instance.
    */
   public static String getVersion(File magellanDirectory) {
+    return getVersion(magellanDirectory, "VERSION");
+  }
+
+  public static int PRE_2_1 = 0;
+  public static int POST_2_1 = 1;
+
+  public static String getVersion(File magellanDirectory, int versionVersion) {
+    if (versionVersion == PRE_2_1)
+      return getVersion(magellanDirectory, "VERSION");
+    else
+      return getVersion(magellanDirectory, "SEMANTIC_VERSION");
+  }
+
+  protected static String getVersion(File magellanDirectory, String key) {
     if (VersionInfo.versionIsSet)
       return VersionInfo.Version;
     if (magellanDirectory == null)
@@ -75,7 +89,7 @@ public class VersionInfo {
 
       // ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream("etc/VERSION"));
       ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream(versionFile));
-      VersionInfo.Version = bundle.getString("VERSION");
+      VersionInfo.Version = bundle.getString(key);
       return VersionInfo.Version;
     } catch (IOException e) {
       // do nothing, not important
@@ -167,6 +181,7 @@ public class VersionInfo {
 
   /**
    * Returns rue if firstVersion is strictly greater than secondVersion.
+   * 
    */
   public static boolean isNewer(String firstVersion, String secondVersion) {
     if (Utils.isEmpty(secondVersion) || Utils.isEmpty(firstVersion))
@@ -175,8 +190,8 @@ public class VersionInfo {
     VersionInfo.log.debug("Current: " + secondVersion);
     VersionInfo.log.debug("Newest : " + firstVersion);
 
-    Version a = new Version(firstVersion, ".", false);
-    Version b = new Version(secondVersion, ".", false);
+    Version a = new Version(firstVersion);
+    Version b = new Version(secondVersion);
     return a.isNewer(b);
   }
 }

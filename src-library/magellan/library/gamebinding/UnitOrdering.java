@@ -120,7 +120,7 @@ public class UnitOrdering {
    */
   public void add(Order o, int priority, Unit u, int line) {
     if (filled >= orders.length)
-      throw new IndexOutOfBoundsException(filled);
+      throw new IndexOutOfBoundsException(String.valueOf(filled));
 
     UnitInfo uInfo = unitMap.get(u);
     if (uInfo == null) {

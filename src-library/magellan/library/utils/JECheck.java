@@ -105,10 +105,14 @@ public class JECheck extends Reader {
        * do this so the -m option is not necessarily specified in the arguments but prevent problems
        * with older versions
        */
-      if (JECheck.getVersion(eCheckExe, settings).compareTo(new Version("4.0.6", ".")) >= 0) {
-        commandLine.add("-m");
+      Version eVersion = JECheck.getVersion(eCheckExe, settings);
+      if (eVersion.isError()) {
+        log.warn("incompatible version " + eVersion.toString());
       }
 
+      if (eVersion.compareTo(new Version("4.0.6")) >= 0) {
+        commandLine.add("-m");
+      }
       commandLine.add(orders.getAbsolutePath());
     }
 
@@ -127,6 +131,7 @@ public class JECheck extends Reader {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
+        // continue
       }
 
       // bail out if ECheck runs for longer than 20 secs
@@ -297,7 +302,7 @@ public class JECheck extends Reader {
    * @throws java.text.ParseException DOCUMENT-ME
    */
   public static Collection<ECheckMessage> getMessages(Reader echeckOutput) throws IOException,
-  java.text.ParseException {
+      java.text.ParseException {
     Collection<ECheckMessage> msgs = new LinkedList<ECheckMessage>();
     BufferedReader in = new LineNumberReader(echeckOutput);
     String line = null;
@@ -664,7 +669,12 @@ public class JECheck extends Reader {
    * correctly.
    */
   public static Version getRequiredVersion() {
-    return new Version("4.1.2", ".");
+    try {
+      return new Version("4.1.2", ".");
+    } catch (Exception e) {
+      log.error("incompatible version", e);
+      return null; // incompatible Version class ... that's a problem
+    }
   }
 
   /**

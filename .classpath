@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar" sourcepath="libsrc/commons-httpclient-3.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/jfreechart.jar"/>
-	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="lib" path="lib/jimi.jar"/>
 	<classpathentry kind="lib" path="lib/skins/kunststoff-2_0_2.jar" sourcepath="libsrc/kunststoff-2_0_2.zip"/>
 	<classpathentry kind="lib" path="lib/skins/liquidlnf-2.9.1.jar" sourcepath="libsrc/liquidlnf-2.9.1.zip"/>
@@ -27,5 +26,6 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/idw-gpl-1.6.1.jar" sourcepath="libsrc/idw-gpl-1.6.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/macify-1.4.jar" sourcepath="libsrc/macify-1.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/javahelp-2.0.05.jar" sourcepath="libsrc/javahelp-2.0.05-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

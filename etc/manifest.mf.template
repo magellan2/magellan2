@@ -4,25 +4,24 @@ Specification-Title: Magellan Client @VERSION@ [build @BUILD@]
 Specification-Vendor: Magellan Development Team
 Main-Class: magellan.client.Client
 Class-Path: magellan-client.jar
-            magellan-library.jar 
+            magellan-library.jar
             magellan-help.jar
             magellan-plugins.jar
-            lib/activation.jar 
-            lib/ant-1.7.0.jar 
+            lib/activation.jar
+            lib/ant-1.7.0.jar
             lib/commons-beanutils-core-1.8.3.jar
-            lib/commons-codec-1.14.jar 
-            lib/commons-email-1.5.jar 
-            lib/commons-httpclient-3.1.jar 
-            lib/commons-logging-1.2.jar 
-            lib/idw-gpl-1.6.1.jar 
-            lib/javax.mail.jar 
-            lib/jfreechart.jar 
-            lib/jh.jar 
-            lib/jimi.jar 
+            lib/commons-codec-1.14.jar
+            lib/commons-email-1.5.jar
+            lib/commons-httpclient-3.1.jar
+            lib/commons-logging-1.2.jar
+            lib/idw-gpl-1.6.1.jar
+            lib/javax.mail.jar
+            lib/jfreechart.jar
+            lib/javahelp-2.0.05.jar
+            lib/jimi.jar
             lib/macify-1.4.jar
-            lib/skins/kunststoff-2_0_2.jar 
-            lib/skins/liquidlnf-2.9.1.jar 
-            lib/skins/looks-1.3b1.jar 
+            lib/skins/kunststoff-2_0_2.jar
+            lib/skins/liquidlnf-2.9.1.jar
+            lib/skins/looks-1.3b1.jar
             lib/skins/skinsCollected.jar
             lib/skins/xplookandfeel.jar
-            

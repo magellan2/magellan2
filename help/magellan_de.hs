@@ -27,13 +27,6 @@
   </view>
 
   <view>
-    <name>TOC</name>
-    <label>Allanon Kurzreferenz</label>
-    <type>javax.help.TOCView</type>
-    <data>de/allanonTOC.xml</data>
-  </view>
-
-  <view>
     <name>Search</name>
     <label>Suche</label>
     <type>javax.help.SearchView</type>

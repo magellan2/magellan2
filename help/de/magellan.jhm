@@ -114,11 +114,8 @@
 		<mapID target="reference_shortcuts" url="magellan/reference/shortcuts.html" />
 		<mapID target="reference_commandline" url="magellan/reference/commandline.html" />
 
-		<mapID target="feedback" url="magellan/feedback.html" />
-
-		<mapID target="faq" url="magellan/faq.html" />
-
-
+	<mapID target="faq" url="magellan/faq.html" />
+	<mapID target="feedback" url="magellan/feedback.html" />
 
 
 	<!-- Eressea Online-Hilfe -->
@@ -144,30 +141,6 @@
 		<mapID target="battle_weapons" url="eressea/battle_weapons.html" />
 		<mapID target="battle_hitpoints" url="eressea/battle_hitpoints.html" />
 		<mapID target="battle_armors" url="eressea/battle_armors.html" />
-
-
-
-	<mapID url="allanon/vorwort.html" target="allanon_vorwort"/>
-	<mapID url="allanon/einfuehrung.html" target="allanon_einfuehrung"/>
-	<mapID url="allanon/einstieg.html" target="allanon_einstieg"/>
-	<mapID url="allanon/welten.html" target="allanon_welten"/>
-	<mapID url="allanon/rassen.html" target="allanon_rassen"/>
-	<mapID url="allanon/talente.html" target="allanon_talente"/>
-	<mapID url="allanon/geld.html" target="allanon_geld"/>
-	<mapID url="allanon/haendlerpreise.html" target="allanon_haendlerpreise"/>
-	<mapID url="allanon/produktion.html" target="allanon_produktion"/>
-	<mapID url="allanon/reisen.html" target="allanon_reisen"/>
-	<mapID url="allanon/magie.html" target="allanon_magie"/>
-	<mapID url="allanon/alchimie.html" target="allanon_alchimie"/>
-	<mapID url="allanon/allianzen.html" target="allanon_allianzen"/>
-	<mapID url="allanon/konflikt.html" target="allanon_konflikt"/>
-	<mapID url="allanon/kultur.html" target="allanon_kultur"/>
-	<mapID url="allanon/monster.html" target="allanon_monster"/>
-	<mapID url="allanon/befehle.html" target="allanon_befehle"/>
-	<mapID url="allanon/reihenfolge.html" target="allanon_reihenfolge"/>
-	<mapID url="allanon/fairness.html" target="allanon_fairness"/>
-
-
 
 </map>
 

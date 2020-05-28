@@ -7,7 +7,7 @@ on:
 
 jobs:
   trigger:
-    name: trigger
+    name: notify meta
     runs-on: ubuntu-latest
 
     steps:

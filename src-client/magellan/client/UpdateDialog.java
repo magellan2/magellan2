@@ -111,11 +111,9 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       upgrade = VersionInfo.isNewer(currentVersion, lastVersion);
 
       if (lastVersion.equals("null") || upgrade) {
-
         text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
             currentVersion }));
         showFile("RELEASENOTES.txt");
-
       } else {
         boolean downgrade;
         downgrade = VersionInfo.isNewer(lastVersion, currentVersion);
@@ -143,15 +141,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     setModal(true);
     setTitle(Resources.get("updatedialog.window.caption"));
 
-    // Icon icon = MagellanImages.ABOUT_MAGELLAN;
-
-    // JLabel magellanImage = new JLabel();
-    // magellanImage.setIcon(icon);
-    // magellanImage.setText("");
-    // magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // mainPanel.setBackground(MagellanImages.background);
-    // mainPanel.setForeground(MagellanImages.foreground);
-
     versionInfo = new JEditorPane();
     versionInfo.setBackground(MagellanImages.BACKGROUND);
     versionInfo.setForeground(MagellanImages.FOREGROUND);
@@ -170,9 +159,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
     releaseText.setBackground(MagellanImages.BACKGROUND);
     releaseText.setForeground(Color.BLACK);
-    // releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
-    // Font font = releaseText.getFont();
-    // releaseText.setContentType("text/html");
     releaseText.setEditable(false);
     releaseText.setCaretPosition(0);
     releaseNotesPane = new JScrollPane(releaseText);
@@ -231,9 +217,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel.add(btn_OK);
     buttonPanel.add(btn_Quit);
 
-    // buttonPanel.add(Box.createHorizontalGlue());
-    // buttonPanel.add(Box.createHorizontalStrut(50));
-
     btn_README.setAlignmentX(Component.RIGHT_ALIGNMENT);
     btn_CHANGELOG.setAlignmentX(Component.RIGHT_ALIGNMENT);
     btn_RELEASENOTES.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -246,7 +229,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel2.add(btn_CHANGELOG);
     buttonPanel2.add(Box.createHorizontalGlue());
 
-    // mainPanel.add(magellanImage);
     mainPanel.add(scrollPane);
     mainPanel.add(buttonPanel2);
     mainPanel.add(releaseNotesPane);
@@ -320,5 +302,4 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       }
     }
   }
-
 }

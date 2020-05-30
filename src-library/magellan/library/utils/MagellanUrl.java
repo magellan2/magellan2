@@ -23,13 +23,7 @@
 //
 package magellan.library.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ListResourceBundle;
-import java.util.MissingResourceException;
 import java.util.Properties;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 
 import magellan.library.utils.logging.Logger;
 
@@ -50,7 +44,7 @@ public class MagellanUrl {
    * </code>
    */
   public static final String MAGELLAN_LOCATIONS_URL =
-      "http://magellan-client.sourceforge.net/locations.properties";
+      "https://magellan2.github.io/api/locations";
 
   /** Time to wait between connection attempts. */
   private static final long HTTP_TIMEOUT = 3600000;
@@ -62,10 +56,7 @@ public class MagellanUrl {
   public static final String WWW_BUGS = "www.bugtracker";
 
   /** Key for nightly version */
-  public static final String VERSION_NIGHTLY = "version.nightly";
-
-  /** Key for stable version */
-  public static final String VERSION_RELEASE = "version.release";
+  public static final String VERSIONS = "api.versions";
 
   /** Key for download URL */
   public static final String WWW_DOWNLOAD = "www.download";
@@ -75,28 +66,26 @@ public class MagellanUrl {
 
   private static long lastAccessed = 0;
 
-  private static ResourceBundle bundle, defaultBundle;
+  private static Properties bundle, defaultBundle;
 
   static {
     initResourceBundle();
   }
 
   private static void initResourceBundle() {
-    defaultBundle = new ListResourceBundle() {
-      @Override
-      protected Object[][] getContents() {
-        return new Object[][] { { WWW_ROOT, "http://magellan-client.sourceforge.net" },
-            { WWW_BUGS, "http://magellan-client.sourceforge.net/bugs" },
-            { "www.homepage.alt", "http://magellan.narabi.de" },
-            { WWW_DOWNLOAD, "http://magellan.narabi.de/download_de.php" },
-            { "www.download.de", "http://magellan.narabi.de/download_de.php" },
-            { "www.download.en", "http://magellan.narabi.de/download_en.php" },
-            { WWW_FILES, "http://sourceforge.net/projects/magellan-client/files/" },
-            { "www.fernando", "http://en.wikipedia.org/wiki/Ferdinand_Magellan" },
-            { VERSION_RELEASE, "http://magellan.narabi.de/release/VERSION" },
-            { VERSION_NIGHTLY, "http://magellan.narabi.de/nightly-build/VERSION" } };
-      }
-    };
+    defaultBundle = new Properties();
+
+    for (String[] keyVal : new String[][] { { WWW_ROOT, "https://magellan2.github.io" },
+        { WWW_BUGS, "https://magellan2.github.io/bugs" },
+        { "www.homepage.alt", "http://magellan.narabi.de" },
+        { WWW_DOWNLOAD, "http://magellan.narabi.de/download_de.php" },
+        { "www.download.de", "http://magellan.narabi.de/download_de.php" },
+        { "www.download.en", "http://magellan.narabi.de/download_en.php" },
+        { WWW_FILES, "http://sourceforge.net/projects/magellan-client/files/" },
+        { "www.fernando", "http://en.wikipedia.org/wiki/Ferdinand_Magellan" },
+        { VERSIONS, "https://magellan2.github.io/api/versions" } }) {
+      defaultBundle.put(keyVal[0], keyVal[1]);
+    }
 
     bundle = defaultBundle;
   }
@@ -111,20 +100,15 @@ public class MagellanUrl {
    *         default values.
    */
   public static String getMagellanUrl(String key) {
-    try {
-      if (lastAccessed == 0) {
-        log.warn("URLs not initialized");
-      }
-      return bundle.getString(key);
-    } catch (Exception e) {
-      log.warn("Could not find Magellan URL " + key, e);
-      try {
-        return defaultBundle.getString(key);
-      } catch (MissingResourceException mre) {
-        log.warn("not in default", mre);
-        return null;
-      }
+    if (lastAccessed == 0) {
+      log.warn("URLs not initialized");
     }
+    String url = bundle.getProperty(key);
+    if (url != null)
+      return url;
+
+    log.warn("Could not find Magellan URL " + key);
+    return defaultBundle.getProperty(key);
   }
 
   /**
@@ -151,9 +135,7 @@ public class MagellanUrl {
         HTTPClient client = new HTTPClient(properties);
         HTTPResult result = client.get(MAGELLAN_LOCATIONS_URL);
         if (result != null && result.getStatus() == 200) {
-          // okay, lets get the version from the downloaded file
-          InputStream inputStream = new ByteArrayInputStream(result.getResult());
-          bundle = new PropertyResourceBundle(inputStream);
+          bundle = JsonAdapter.parsePropertiesMap(result.getResult());
         }
         if (client.isConnectionFailed()) {
           log.info("could not connect to magellan locations " + MAGELLAN_LOCATIONS_URL);

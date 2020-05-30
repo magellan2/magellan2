@@ -47,7 +47,7 @@ public class VersionTest {
     v = new Version("2.3.4", ".", true);
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
   }
 
   @SuppressWarnings({ "deprecation", "unused" })
@@ -88,39 +88,39 @@ public class VersionTest {
     Version v = new Version("2.3.4");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
 
     // this is not a valid semantic version, but we allow it for historic reasons
     v = new Version("2.3.x");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("0", v.getBuild());
+    assertEquals("0", v.getRevision());
 
     v = new Version("2.3.4-bla");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
     assertEquals("bla", v.getIdentifiers());
 
     v = new Version("2.3.4-1bla.2.foo");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
     assertEquals("1bla.2.foo", v.getIdentifiers());
 
     v = new Version("2.3.4 (build 789)");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
     assertEquals("", v.getIdentifiers());
-    assertEquals("789", v.getDevel());
+    assertEquals("789", v.getBuild());
 
     v = new Version("2.3.4-1bla.2.foo (build 789)");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
     assertEquals("1bla.2.foo", v.getIdentifiers());
-    assertEquals("789", v.getDevel());
+    assertEquals("789", v.getBuild());
   }
 
   @SuppressWarnings("deprecation")
@@ -133,25 +133,25 @@ public class VersionTest {
     Version v = new Version("2.3.4", ".", false);
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
 
     // this is not a valid semantic version, but we allow it for historic reasons
     v = new Version("2.3.x", ".", false);
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("x", v.getBuild());
+    assertEquals("x", v.getRevision());
 
     v = new Version("2.3.4-bla", ".", false);
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4-bla", v.getBuild());
+    assertEquals("4-bla", v.getRevision());
 
     v = new Version("2.3.4 (build 789)", ".", false);
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4", v.getBuild());
+    assertEquals("4", v.getRevision());
     assertEquals("", v.getIdentifiers());
-    assertEquals("789", v.getDevel());
+    assertEquals("789", v.getBuild());
   }
 
   @Test

@@ -13,11 +13,9 @@
 
 package magellan.library.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -44,8 +42,7 @@ public class VersionInfo {
   /** ResourceKey to show that the nightly update check failed */
   public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
 
-  private static final String DEFAULT_CHECK_URL = "http://magellan.narabi.de/release/VERSION";
-  private static final String NIGHTLY_CHECK_URL = "http://magellan.narabi.de/nightly-build/VERSION";
+  private static final String DEFAULT_VERSION_URL = "https://magellan2.github.io/api/versions";
 
   private static String Version = null;
   private static boolean versionIsSet = false;
@@ -115,22 +112,15 @@ public class VersionInfo {
             String.valueOf(false)));
 
     MagellanUrl.retrieveLocations(properties);
-    String urlstring = MagellanUrl.getMagellanUrl(MagellanUrl.VERSION_RELEASE);
-    if (urlstring == null) {
-      urlstring = VersionInfo.DEFAULT_CHECK_URL;
+    String versionsUrl = MagellanUrl.getMagellanUrl(MagellanUrl.VERSIONS);
+    if (versionsUrl == null) {
+      versionsUrl = VersionInfo.DEFAULT_VERSION_URL;
     }
     long failedTimestamp =
         Long.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, String
             .valueOf(0)));
 
     boolean doCheck = check;
-
-    if (checkNightly) {
-      urlstring = MagellanUrl.getMagellanUrl(MagellanUrl.VERSION_NIGHTLY);
-      if (urlstring == null) {
-        urlstring = VersionInfo.NIGHTLY_CHECK_URL;
-      }
-    }
 
     // if the last failed time was now-7 days, then we try to check again.
     if (failedTimestamp > 0l && doCheck) {
@@ -148,15 +138,17 @@ public class VersionInfo {
 
     // make a connection and try to check....
     if (doCheck) {
-
       try {
         HTTPClient client = new HTTPClient(properties);
-        HTTPResult result = client.get(urlstring);
+        HTTPResult result = client.get(versionsUrl);
         if (result != null && result.getStatus() == 200) {
-          // okay, lets get the version from the downloaded file
-          InputStream inputStream = new ByteArrayInputStream(result.getResult());
-          ResourceBundle bundle = new PropertyResourceBundle(inputStream);
-          newestVersion = bundle.getString("VERSION");
+          String type = checkNightly ? "nightly" : "stable";
+
+          Properties props = JsonAdapter.parsePropertiesMap(result.getResult(), true);
+          newestVersion = props.getProperty("versions." + type + ".raw");
+          if (!Utils.isEmpty(newestVersion) && newestVersion.charAt(0) == 'v') {
+            newestVersion = newestVersion.substring(1);
+          }
         }
         if (client.isConnectionFailed() && !(parent == null)) {
           JOptionPane.showMessageDialog(parent, Resources

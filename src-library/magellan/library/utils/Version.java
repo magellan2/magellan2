@@ -29,13 +29,13 @@ public class Version implements Comparable<Object> {
 
   private String major = "0";
   private String minor = "0";
-  private String build = "0";
+  private String revision = "0";
   private String devel = "0";
 
   private int iMajor;
   private int iMinor;
+  private int iRevision;
   private int iBuild;
-  private int iDevel;
 
   private boolean isNumber = false;
   private String identifiers = "";
@@ -71,21 +71,21 @@ public class Version implements Comparable<Object> {
       if (isNumber) {
         major = Integer.toString(iMajor = Integer.parseInt(st.nextToken()));
         minor = Integer.toString(iMinor = Integer.parseInt(st.nextToken()));
-        build = Integer.toString(iBuild = Integer.parseInt(st.nextToken()));
+        revision = Integer.toString(iRevision = Integer.parseInt(st.nextToken()));
       } else {
         major = st.nextToken();
         minor = st.nextToken();
-        build = st.nextToken();
+        revision = st.nextToken();
         iMajor = Integer.parseInt(major);
         iMinor = Integer.parseInt(minor);
         try {
-          iBuild = Integer.parseInt(build);
+          iRevision = Integer.parseInt(revision);
         } catch (NumberFormatException e) {
-          iBuild = 0;
+          iRevision = 0;
         }
-        if (build.indexOf(" (build ") > 0) {
-          devel = build.substring(build.indexOf(" (build ") + 8, build.length() - 1);
-          build = build.substring(0, build.indexOf(" (")).trim();
+        if (revision.indexOf(" (build ") > 0) {
+          devel = revision.substring(revision.indexOf(" (build ") + 8, revision.length() - 1);
+          revision = revision.substring(0, revision.indexOf(" (")).trim();
         }
       }
     } else
@@ -124,13 +124,13 @@ public class Version implements Comparable<Object> {
     isNumber = false;
 
     if (splitDot.length > 2) {
-      iBuild = parseInt(splitDot[2]);
-      if (iBuild < 0) {
+      iRevision = parseInt(splitDot[2]);
+      if (iRevision < 0) {
         error(str, delim);
         identifiers = splitDot[2] + identifiers;
-        iBuild = 0;
+        iRevision = 0;
       }
-      build = String.valueOf(iBuild);
+      revision = String.valueOf(iRevision);
     } else {
       error(str, delim);
     }
@@ -167,10 +167,10 @@ public class Version implements Comparable<Object> {
 
     if (add.indexOf("(build ") >= 0) {
       devel = add.substring(add.indexOf("(build ") + 7, add.length() - 1);
-      iDevel = parseInt(devel);
-      if (iDevel < 0) {
+      iBuild = parseInt(devel);
+      if (iBuild < 0) {
         error(str, delim);
-        iDevel = 0;
+        iBuild = 0;
       }
     } else if (add.trim().length() > 0) {
       error(str, delim);
@@ -216,12 +216,12 @@ public class Version implements Comparable<Object> {
   /**
    * Returns the Build Version Number
    */
-  public String getBuild() {
-    return build;
+  public String getRevision() {
+    return revision;
   }
 
   /**
-   * Returns the identifers, that follow after the "-" as string.
+   * Returns the identifiers, that follow after the "-" as string.
    */
   public String getIdentifiers() {
     return identifiers;
@@ -230,7 +230,7 @@ public class Version implements Comparable<Object> {
   /**
    * Returns the development build.
    */
-  public String getDevel() {
+  public String getBuild() {
     return devel;
   }
 
@@ -246,7 +246,7 @@ public class Version implements Comparable<Object> {
    * Returns the version number in the Form Major.Minor.Build
    */
   public String toString(String delim) {
-    return major + delim + minor + delim + build;
+    return major + delim + minor + delim + revision;
   }
 
   /**
@@ -262,7 +262,7 @@ public class Version implements Comparable<Object> {
 
     if (getMajor().equalsIgnoreCase(v.getMajor())) {
       if (getMinor().equalsIgnoreCase(v.getMinor())) {
-        if (getBuild().equalsIgnoreCase(v.getBuild())) {
+        if (getRevision().equalsIgnoreCase(v.getRevision())) {
           String a = devel;
           String b = v.devel;
           int cdev = compareS(a, b);
@@ -271,10 +271,10 @@ public class Version implements Comparable<Object> {
           return compareIdentifiers(getIdentifiers(), v.getIdentifiers());
         } else {
           // okay, this is a workaround for 2.0.rc1 > 2.0.0
-          boolean a = isNumber(getBuild());
-          boolean b = isNumber(v.getBuild());
+          boolean a = isNumber(getRevision());
+          boolean b = isNumber(v.getRevision());
           if ((a && b) || (!a && !b))
-            return getBuild().compareTo(v.getBuild());
+            return getRevision().compareTo(v.getRevision());
           else if (a)
             return 1;
           else

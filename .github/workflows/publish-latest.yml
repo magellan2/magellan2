@@ -4,7 +4,7 @@ name: Create pre-release
 on:
   push:
     branches:
-      - "build-release"
+      - "master"
 
 jobs:
   build:
@@ -125,7 +125,7 @@ jobs:
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
 
-    - name: prepare
+    - name: prepare meta
       run: |
         set -x
         if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
@@ -141,7 +141,7 @@ jobs:
 
     - name: trigger meta action
       run: |
-        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan-meta/dispatches \
+        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
           -H 'Accept: application/vnd.github.everst-preview+json' \
           -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
           --data '{
@@ -150,6 +150,7 @@ jobs:
               "ref" : "${{ github.ref }}",
               "sha": "${{ github.sha }}",
               "caller_repository" : "${{ github.repository }}",
-              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
+              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
               "tag" : "${{ env.TAG }}",
+              "version" : "${{ env.VERSION }}",
               "type": "${{ env.TYPE }}" }}'

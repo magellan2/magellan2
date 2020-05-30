@@ -78,11 +78,11 @@ public class MagellanUrl {
     for (String[] keyVal : new String[][] { { WWW_ROOT, "https://magellan2.github.io" },
         { WWW_BUGS, "https://magellan2.github.io/bugs" },
         { "www.homepage.alt", "http://magellan.narabi.de" },
-        { WWW_DOWNLOAD, "http://magellan.narabi.de/download_de.php" },
-        { "www.download.de", "http://magellan.narabi.de/download_de.php" },
-        { "www.download.en", "http://magellan.narabi.de/download_en.php" },
-        { WWW_FILES, "http://sourceforge.net/projects/magellan-client/files/" },
-        { "www.fernando", "http://en.wikipedia.org/wiki/Ferdinand_Magellan" },
+        { WWW_DOWNLOAD, "https://magellan2.github.io/download_de.html" },
+        { "www.download.de", "https://magellan2.github.io/download_de.html" },
+        { "www.download.en", "https://magellan2.github.io/download_en.html" },
+        { WWW_FILES, "https://sourceforge.net/projects/magellan-client/files/" },
+        { "www.fernando", "https://de.wikipedia.org/wiki/Ferdinand_Magellan" },
         { VERSIONS, "https://magellan2.github.io/api/versions" } }) {
       defaultBundle.put(keyVal[0], keyVal[1]);
     }

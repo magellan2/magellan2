@@ -16,6 +16,12 @@ jobs:
         TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
         echo "::set-env name=TAG::$TAG"
 
+    - name: get version
+      run: |
+        wget https://github.com/${{ github.repository }}/releases/download/${TAG}/VERSION
+        VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )
+        echo "::set-env name=VERSION::$VERSION"
+
     - name: prepare
       run: |
         set -x
@@ -43,5 +49,5 @@ jobs:
               "caller_repository" : "${{ github.repository }}",
               "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
               "tag" : "${{ env.TAG }}",
+              "version" : "${{ env.VERSION }}",
               "type": "${{ env.TYPE }}" }}'
-

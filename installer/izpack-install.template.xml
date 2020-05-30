@@ -21,7 +21,7 @@
       <author name="Ralf Duckstein" email="sf.net@duckstein.net"/>
       <author name="Mark Gerritsen" email="regdokhan@gmail.com"/>
     </authors>
-    <url>http://magellan-client.sourceforge.net/</url>
+    <url>https://magellan2.github.io</url>
     <uninstaller write="yes" />
     <javaversion>1.5</javaversion>
     <run-privileged condition="izpack.windowsinstall" uninstaller="yes"/>

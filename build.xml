@@ -14,7 +14,7 @@
 	<property name="VERSION.MAJOR"         value="2"/>
 	<property name="VERSION.MINOR"         value="1"/>
 	<property name="VERSION.SUB"           value="0"/>
-	<!-- possible values include stable, rc, and develop -->
+	<!-- possible values include stable, rc, and betaX -->
 	<property name="VERSION.POST"           value="beta7"/>
 
 	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>

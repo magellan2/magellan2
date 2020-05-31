@@ -180,7 +180,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   protected boolean showTooltip = false;
   protected ItemType silverItemType = null;
   protected ReplacerSystem tooltipDefinition;
-  protected String tooltipDefinitionString = null;
+  protected String[] tooltipDefinitionStrings = new String[2];
   protected static ReplacerFactory tooltipReplacers;
 
   // region sublist for rendering
@@ -201,12 +201,19 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   private boolean useSeasonImages = true;
 
+  private AdvancedRegionShapeCellRenderer arr;
+
+  private String id;
+
   /**
    * Creates a new Mapper object.
+   *
+   * @param id
    */
   public Mapper(MagellanContext context, Collection<MapCellRenderer> customRenderers,
-      CellGeometry geom) {
+      CellGeometry geom, String id) {
     super(context.getEventDispatcher(), context.getGameData(), context.getProperties());
+    this.id = id;
 
     instances.add(this);
 
@@ -216,7 +223,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         new MapContextMenu(context.getClient(), context.getEventDispatcher(), context
             .getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
+    reprocessTooltipDefinition();
 
     setShowTooltip(PropertiesHelper.getBoolean(settings, "Mapper.showTooltips", false));
 
@@ -454,13 +461,32 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     conMenu.updateRenderers(this);
     conMenu.updateTooltips(this);
+
+    final int defaultDismissTimeout = ToolTipManager.sharedInstance().getDismissDelay();
+    addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseEntered(MouseEvent me) {
+        ToolTipManager.sharedInstance().setDismissDelay(20000);
+      }
+
+      @Override
+      public void mouseExited(MouseEvent me) {
+        ToolTipManager.sharedInstance().setDismissDelay(defaultDismissTimeout);
+      }
+    });
   }
 
   /**
    *
    */
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP));
+    // standard def is Name~Definition
+    String[] tip = settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP).split(
+        "~");
+    if (tip.length < 2) {
+      tip = new String[] { "", tip[0] };
+    }
+    setTooltipDefinition(tip[0], tip[1]);
   }
 
   /**
@@ -1273,7 +1299,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     deferPainting(!isDeferringPainting());
 
     this.scaleFactor = scaleFactor;
-    cellGeometry.setScaleFactor(scaleFactor);
+    cellGeometry.setValidScaleFactor(scaleFactor);
+    this.scaleFactor = cellGeometry.getScaleFactor();
 
     mapToScreenBounds = getMapToScreenBounds();
 
@@ -1294,7 +1321,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       MapCellRenderer renderer = plane.getRenderer();
 
       if (renderer != null) {
-        renderer.scale(scaleFactor);
+        renderer.scale(this.scaleFactor);
       }
     }
   }
@@ -1461,7 +1488,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a preferences panel allowing to configure this component.
    */
   public PreferencesAdapter getPreferencesAdapter() {
-    return new MapperPreferences(this);
+    return new MapperPreferences(this, true);
   }
 
   /**
@@ -1614,7 +1641,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Collection<MapCellRenderer> renderers = new LinkedList<MapCellRenderer>();
     renderers.add(new RegionImageCellRenderer(geo, context));
     renderers.add(new RegionShapeCellRenderer(geo, context));
-    renderers.add(new AdvancedRegionShapeCellRenderer(geo, context));
+    renderers.add(arr = new AdvancedRegionShapeCellRenderer(geo, context));
     renderers.add(new BorderCellRenderer(geo, context));
     renderers.add(new BuildingCellRenderer(geo, context));
     renderers.add(new ShipCellRenderer(geo, context));
@@ -1724,17 +1751,18 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Returns the tooltip definition
    */
-  public String getTooltipDefinition() {
-    return tooltipDefinitionString;
+  public String[] getTooltipDefinition() {
+    return tooltipDefinitionStrings;
   }
 
   /**
    * Sets the tooltip definition
    */
-  public void setTooltipDefinition(String tdef) {
-    tooltipDefinitionString = tdef;
+  public void setTooltipDefinition(String name, String tdef) {
+    tooltipDefinitionStrings[0] = name;
+    tooltipDefinitionStrings[1] = tdef;
     tooltipDefinition = ReplacerHelp.createReplacer(tdef);
-    settings.setProperty("Mapper.ToolTip.Definition", tdef);
+    settings.setProperty("Mapper.ToolTip.Definition", name + "~" + tdef);
   }
 
   /**
@@ -1906,10 +1934,17 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   /**
-   * Returns the currend ATR.
+   * Returns the current ATR.
    */
   public AdvancedTextCellRenderer getATR() {
     return atr;
+  }
+
+  /**
+   * Returns the current ARR.
+   */
+  public AdvancedRegionShapeCellRenderer getARR() {
+    return arr;
   }
 
   /**
@@ -1940,4 +1975,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public boolean isUseSeasonImages() {
     return useSeasonImages;
   }
+
+  public void setID(String id) {
+    this.id = id;
+  }
+
+  public String getID() {
+    return id;
+  }
+
 }

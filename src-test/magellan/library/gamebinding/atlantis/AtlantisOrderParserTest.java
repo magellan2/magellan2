@@ -648,8 +648,6 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTestUtil {
   public void testGetHandlers() {
     List<OrderHandler> list = getParser().getHandlers(new OrderToken("a"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertSame(list.size(), 0);
     list = getParser().getHandlers(new OrderToken("wor"));
     assertSame(list.size(), 0);

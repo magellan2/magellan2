@@ -138,7 +138,15 @@ public class Scanner {
             Scanner.log.warn("Error parsing line " + lnr + ": " + line);
             break;
           }
-          String str = Umlaut.replace(line.substring(i, lastQuote), "\\\"", "\"");
+
+          String str = line.substring(i, lastQuote);
+          if (str.contains("\\")) {
+            if (str.matches(".*[\\\\][^\\\\\"].*")) {
+              Scanner.log.warn("Wrong escape in line " + lnr + ": " + line);
+            }
+            str = Umlaut.replace(str, "\\\"", "\"");
+            str = Umlaut.replace(str, "\\\\", "\\");
+          }
           argv[argc] = StringFactory.getFactory().intern(str);
           i = lastQuote;
         } else {

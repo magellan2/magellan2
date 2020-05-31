@@ -28,6 +28,8 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
+import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -50,13 +52,27 @@ public class LeaveOrder extends SimpleOrder {
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
     if (isValid()) {
-      UnitContainer uc = unit.getUnitContainer();
-
-      if (uc != null) {
-        LeaveRelation rel = new LeaveRelation(unit, uc, line);
-        rel.add();
-      } else {
+      UnitContainer ucLeft = unit.getModifiedUnitContainer();
+      if (ucLeft == null) {
         setWarning(unit, line, Resources.get("order.leave.warning.nocontainer"));
+      }
+
+      EresseaExecutionState estate = (EresseaExecutionState) state;
+      boolean entered = false;
+      for (EnterRelation enter : unit.getRelations(EnterRelation.class)) {
+        if (enter.target == ucLeft) {
+          entered = true;
+          break;
+        }
+      }
+      if (!entered) {
+        if (ucLeft != null) {
+          estate.leave(unit, ucLeft);
+          LeaveRelation rel = new LeaveRelation(unit, ucLeft, line);
+          rel.add();
+        }
+      } else {
+        setWarning(unit, line, Resources.get("order.leave.warning.justentered", unit, ucLeft));
       }
     }
   }

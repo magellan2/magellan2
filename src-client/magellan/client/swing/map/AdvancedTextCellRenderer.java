@@ -11,17 +11,11 @@
  *
  */
 
-/*
- * AdvancedTextCellRenderer.java
- *
- * Created on 12. Juli 2001, 19:19
- */
 package magellan.client.swing.map;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,11 +26,15 @@ import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -59,9 +57,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -69,7 +67,6 @@ import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.MagellanDesktop;
-import magellan.client.desktop.ShortcutListener;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -77,6 +74,7 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -89,19 +87,22 @@ import magellan.library.utils.replacers.ReplacerSystem;
  * memory!</i>
  * 
  * @author Andreas
- * @version 1.1
+ * @author stm
+ * @version 1.2
  */
 public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDataListener,
     ContextChangeable, ActionListener {
+
   protected static final String BLANK = "";
   protected boolean breakLines; // Line break style
-  protected static List<String> buffer; // breaking buffer
+  protected List<String> buffer; // breaking buffer
   protected float lastScale = -1; // last scale factor, for broken lines cache
-  protected ATRSet set;
-  protected ATRPreferences adapter;
-  // protected ShortcutListener deflistener; // Shortcutlistener at depth 1 (after STRG-A)
+  protected ATRSet currentSet;
+  protected ATRPreferencesAdapter adapter;
   protected JMenu contextMenu;
   protected ContextObserver obs;
+  private Map<String, ATRSet> atrSets;
+  private boolean deferred;
 
   /**
    * Creates new AdvancedTextCellRenderer
@@ -110,212 +111,78 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     super(geo, context);
     context.getEventDispatcher().addGameDataListener(this);
 
-    if (AdvancedTextCellRenderer.buffer == null) {
-      AdvancedTextCellRenderer.buffer = new LinkedList<String>();
-    }
+    buffer = new LinkedList<String>();
 
-    loadSet(settings.getProperty(PropertiesHelper.ATR_CURRENT_SET, "Standard"));
+    ATRPreferences atrPref = new ATRPreferences(settings);
+    atrSets = atrPref.loadSets();
+    currentSet = atrSets.get(atrPref.getCurrentSet());
 
-    // load style settings
     try {
-      breakLines = settings.getProperty("ATR.breakLines", "false").equals("true");
+      breakLines = atrPref.getBreakLines();
     } catch (Exception exc2) {
       breakLines = false;
     }
 
     try {
-      setHAlign(Integer.parseInt(settings.getProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, "0")));
+      setHAlign(atrPref.getAlign());
     } catch (Exception exc) {
       setHAlign(AbstractTextCellRenderer.CENTER);
     }
-
-    // moved to MapperPanel
-    // create shortcut structure
-    // DesktopEnvironment.registerShortcutListener(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-    // InputEvent.CTRL_MASK |
-    // InputEvent.ALT_MASK), this);
-    // deflistener = new DefListener();
-
-    // create the context menu as needed
   }
 
   /**
-   * Switches to the set with the given name. If such a set does not exist, it is created.
-   */
-  public void loadSet(String name) {
-    loadSet(name, settings);
-
-    if (!exists(name)) {
-      saveSet();
-    }
-  }
-
-  /**
-   * Switches to the given set.
-   */
-  public void loadSet(String name, Properties settings) {
-    ATRSet s = new ATRSet(name);
-    s.load(settings);
-    set = s;
-    settings.setProperty(PropertiesHelper.ATR_CURRENT_SET, name);
-  }
-
-  /**
-   * Saves the current set to the settings.
-   */
-  public void saveSet() {
-    saveSet(settings);
-  }
-
-  /**
-   * Saves the current set to the given settings.
-   */
-  public void saveSet(Properties settings) {
-    set.save(settings);
-
-    if (!exists(set.getName(), settings)) {
-      settings.setProperty(PropertiesHelper.ATR_SETS, settings.getProperty(
-          PropertiesHelper.ATR_SETS, "")
-          + ";" + set.getName());
-    }
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean exists(String name) {
-    return exists(name, settings);
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean exists(String name, Properties settings) {
-    String allSets = settings.getProperty(PropertiesHelper.ATR_SETS, "");
-    int sindex = 0;
-    int i = -1;
-
-    do {
-      i = allSets.indexOf(name, sindex);
-
-      boolean check = (i >= 0);
-
-      try {
-        char first = allSets.charAt(i - 1);
-
-        if (first != ';') {
-          check = false;
-        }
-      } catch (IndexOutOfBoundsException ie) {
-      }
-
-      try {
-        char first = allSets.charAt(i + name.length());
-
-        if (first != ';') {
-          check = false;
-        }
-      } catch (IndexOutOfBoundsException ie2) {
-      }
-
-      if (check)
-        return true;
-
-      sindex++;
-    } while (i >= 0);
-
-    return false;
-  }
-
-  /**
-   * a collection of set names
-   */
-  public List<String> getAllSets() {
-    List<String> c = new LinkedList<String>();
-    StringTokenizer st =
-        new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
-
-    while (st.hasMoreTokens()) {
-      c.add(st.nextToken());
-    }
-
-    return c;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public void removeSet(String name) {
-    String key = "ATR." + name + ".";
-    settings.remove(key + "Def");
-    settings.remove(key + "Unknown");
-
-    StringTokenizer st =
-        new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
-    StringBuffer b = new StringBuffer();
-
-    while (st.hasMoreTokens()) {
-      String s = st.nextToken();
-
-      if (!s.equals(name)) {
-        if (b.length() > 0) {
-          b.append(';');
-        }
-
-        b.append(s);
-      }
-    }
-
-    settings.setProperty(PropertiesHelper.ATR_SETS, b.toString());
-  }
-
-  /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.map.AbstractTextCellRenderer#setHAlign(int)
    */
   @Override
   public void setHAlign(int h) {
     super.setHAlign(h);
-    settings.setProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, String.valueOf(h));
+    invalidate();
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.map.AbstractTextCellRenderer#init(magellan.library.GameData,
    *      java.awt.Graphics, java.awt.Rectangle)
    */
   @Override
   public void init(GameData data, Graphics g, Rectangle offset) {
     if (cellGeo.getScaleFactor() != lastScale) {
-      set.clearCache();
+      if (currentSet != null) {
+        currentSet.clearCache();
+      }
       lastScale = cellGeo.getScaleFactor();
     }
 
     if (this.data != data) {
-      set.clearCache();
-      set.reprocessReplacer();
+      if (currentSet != null) {
+        currentSet.clearCache();
+      }
     }
 
     super.init(data, g, offset);
   }
 
-  // never have single strings
+  /**
+   * Never returns a string.
+   *
+   * @see magellan.client.swing.map.TextCellRenderer#getSingleString(magellan.library.Region,
+   *      java.awt.Rectangle)
+   */
   @Override
   public String getSingleString(Region r, Rectangle rect) {
     return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * Applies replacers and returns result.
    * 
    * @see magellan.client.swing.map.TextCellRenderer#getText(magellan.library.Region,
    *      java.awt.Rectangle)
    */
   @Override
   public String[] getText(Region r, Rectangle rect) {
-    return set.getReplacement(r, getCellGeometry());
+    if (currentSet == null)
+      return null;
+    return currentSet.getReplacement(r, getCellGeometry(), this);
   }
 
   /**
@@ -327,13 +194,69 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the automatic line break property.
    */
   public void setBreakLines(boolean b) {
     if (breakLines != b) {
-      set.clearCache();
+      if (currentSet != null) {
+        currentSet.clearCache();
+      }
       breakLines = b;
-      settings.setProperty("ATR.breakLines", b ? "true" : "false");
+      invalidate();
+    }
+  }
+
+  /**
+   * Returns a view of all possible set definitions with names as keys.
+   */
+  public Map<String, ATRSet> getAllSets() {
+    return Collections.unmodifiableMap(atrSets);
+  }
+
+  protected void setAllSets(Map<String, ATRSet> atrSets2) {
+    atrSets = copySets(atrSets2);
+    currentSet = null;
+  }
+
+  /**
+   * Returns a list of all possible set names.
+   */
+  public List<String> getAllSetNames() {
+    return new ArrayList<String>(atrSets.keySet());
+  }
+
+  /**
+   * Returns the currently used set definition.
+   */
+  public String getCurrentSet() {
+    if (currentSet == null)
+      return null;
+    return currentSet.getName();
+  }
+
+  protected static Map<String, ATRSet> copySets(Map<String, ATRSet> map) {
+    Map<String, ATRSet> setCopy = CollectionFactory.createOrderedMap(map.size());
+    for (Entry<String, ATRSet> entry : map.entrySet()) {
+      setCopy.put(entry.getKey(), new ATRSet(entry.getValue()));
+    }
+    return setCopy;
+  }
+
+  /**
+   * Selects and activates the given set definition.
+   */
+  public void loadSet(String setName) {
+    currentSet = atrSets.get(setName);
+    invalidate();
+  }
+
+  protected void setDeferUpdate(boolean defer) {
+    deferred = defer;
+    invalidate();
+  }
+
+  private void invalidate() {
+    if (!deferred) {
       Mapper.setRenderContextChanged(true);
       DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
     }
@@ -344,66 +267,24 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
    */
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
-    return new ATRPreferences(this);
+    return new ATRPreferencesAdapter(this);
   }
 
   /**
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    set.clearCache();
-    set.reprocessReplacer();
+    if (currentSet != null) {
+      currentSet.clearCache();
+    }
   }
-
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#getShortCuts()
-  // */
-  // public Iterator<KeyStroke> getShortCuts() {
-  // return null;
-  // }
-  //
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
-  // */
-  // public void shortCut(javax.swing.KeyStroke shortcut) {
-  // changeATR();
-  // }
-
-  // /**
-  // * @see
-  // magellan.client.desktop.ExtendedShortcutListener#isExtendedShortcut(javax.swing.KeyStroke)
-  // */
-  // public boolean isExtendedShortcut(KeyStroke stroke) {
-  // // (stm) removed, too obfuscating for users
-  // if (true) return false;
-  // return true;
-  // }
-  //
-  // /**
-  // * @see
-  // magellan.client.desktop.ExtendedShortcutListener#getExtendedShortcutListener(javax.swing.KeyStroke)
-  // */
-  // public ShortcutListener getExtendedShortcutListener(KeyStroke stroke) {
-  // return deflistener;
-  // }
-  //
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
-  // */
-  // public String getShortcutDescription(KeyStroke stroke) {
-  // return Resources.get("map.advancedtextcellrenderer.shortcuts.description");
-  // }
-  //
-  // /**
-  // * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
-  // */
-  // public String getListenerDescription() {
-  // return Resources.get("map.advancedtextcellrenderer.shortcuts.title");
-  // }
 
   // ////////////////
   // Context menu //
   // ////////////////
+  /**
+   * @see magellan.client.swing.context.ContextChangeable#getContextAdapter()
+   */
   public JMenuItem getContextAdapter() {
     if (contextMenu == null) {
       contextMenu = new JMenu(Resources.get("map.advancedtextcellrenderer.context.title"));
@@ -416,11 +297,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
   protected void fillDefItems() {
     contextMenu.removeAll();
 
-    List<String> c = getAllSets();
-    Iterator<String> it = c.iterator();
-
-    while (it.hasNext()) {
-      JMenuItem item = new JMenuItem(it.next());
+    for (String name : atrSets.keySet()) {
+      JMenuItem item = new JMenuItem(name);
       item.addActionListener(this);
       contextMenu.add(item);
     }
@@ -442,7 +320,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
   }
 
   /**
-   * DOCUMENT-ME
+   * Reacts to context menu actions.
    */
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
     loadSet(actionEvent.getActionCommand());
@@ -469,13 +347,13 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 
   protected String[] breakString(String s, CellGeometry geo) {
     int maxWidth = (int) (geo.getCellSize().width * 0.9);
-    AdvancedTextCellRenderer.buffer.clear();
+    buffer.clear();
 
     // create "defined" line breaks
     StringTokenizer st = new StringTokenizer(s, "\n");
 
     while (st.hasMoreTokens()) {
-      AdvancedTextCellRenderer.buffer.add(st.nextToken());
+      buffer.add(st.nextToken());
     }
 
     boolean changed = false;
@@ -483,14 +361,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     do {
       changed = false;
 
-      Iterator<String> it = AdvancedTextCellRenderer.buffer.iterator();
+      Iterator<String> it = buffer.iterator();
       int index = 0;
 
       while (it.hasNext() && !changed) {
         String part = it.next();
 
         if (getWidth(part) > maxWidth) {
-          breakStringImpl(part, AdvancedTextCellRenderer.buffer, maxWidth, index);
+          breakStringImpl(part, maxWidth, index);
           changed = true;
         }
 
@@ -498,16 +376,16 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       }
     } while (changed);
 
-    String strbuf[] = new String[AdvancedTextCellRenderer.buffer.size()];
+    String strbuf[] = new String[buffer.size()];
 
     for (int i = 0; i < strbuf.length; i++) {
-      strbuf[i] = AdvancedTextCellRenderer.buffer.get(i);
+      strbuf[i] = buffer.get(i);
     }
 
     return strbuf;
   }
 
-  private void breakStringImpl(String part, List<String> buffer, int mw, int index) {
+  private void breakStringImpl(String part, int mw, int index) {
     char chr[] = part.toCharArray();
     int len = chr.length;
 
@@ -526,6 +404,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
         chr[len - 2] = '.';
         chr[len - 3] = '.';
       } catch (Exception exc) {
+        // trivial
       }
 
       part = new String(chr, 0, len);
@@ -536,7 +415,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
   /**
    * Encapsulates one setting containing a name, a definition string and a cache object.
    */
-  protected class ATRSet {
+  protected static class ATRSet {
     protected String name;
     protected String def;
     protected String unknown = "-?-";
@@ -545,78 +424,86 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 
     /**
      * Creates a new ATRSet object.
+     *
+     * @throws InvalidNameException if name does not pass {@link ATRPreferences#isValidName(String)}
      */
-    public ATRSet(String name) {
+    public ATRSet(String name) throws InvalidNameException {
+      if (!ATRPreferences.isValidName(name))
+        throw new InvalidNameException(name);
+
       this.name = name;
-      cache = new HashMap<Region, String[]>();
+    }
+
+    public ATRSet(ATRSet value) {
+      name = value.name;
+      def = value.def;
+      unknown = value.unknown;
     }
 
     /**
-     * DOCUMENT-ME
+     * invalidates cached replacement
      */
-    public void clearCache() {
-      cache.clear();
+    private void clearCache() {
+      if (cache != null) {
+        cache.clear();
+      }
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns replacement text for a region.
      */
-    public void reprocessReplacer() {
-      replacer = ReplacerHelp.createReplacer(def, unknown);
-    }
+    public String[] getReplacement(Region r, CellGeometry geo, AdvancedTextCellRenderer atr) {
+      if (cache == null) {
+        cache = new HashMap<Region, String[]>();
+        replacer = ReplacerHelp.createReplacer(def, unknown);
+      }
 
-    /**
-     * DOCUMENT-ME
-     */
-    public String[] getReplacement(Region r, CellGeometry geo) {
       if (cache.containsKey(r))
         return cache.get(r);
 
-      String buf[] = breakString(createString(replacer, r), geo);
+      String buf[] = atr.breakString(atr.createString(replacer, r), geo);
       cache.put(r, buf);
 
       return buf;
     }
 
     /**
-     * DOCUMENT-ME
+     * Changes the definition.
      */
     public void setDef(String def) {
-      clearCache();
       this.def = def;
-      reprocessReplacer();
+      clearCache();
     }
 
     /**
-     * DOCUMENT-ME
      */
     public String getDef() {
       return def;
     }
 
     /**
-     * DOCUMENT-ME
      */
     public String getName() {
       return name;
     }
 
     /**
-     * DOCUMENT-ME
+     * @throws InvalidNameException
      */
-    public void setName(String name) {
+    public void setName(String name) throws InvalidNameException {
+      if (!ATRPreferences.isValidName(name))
+        throw new InvalidNameException(name);
+
       this.name = name;
     }
 
     /**
-     * DOCUMENT-ME
      */
     public String getUnknown() {
       return unknown;
     }
 
     /**
-     * DOCUMENT-ME
      */
     public void setUnknown(String unknown) {
       clearCache();
@@ -626,22 +513,19 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
         this.unknown = "";
       }
 
-      reprocessReplacer();
+      clearCache();
     }
 
     /**
-     * DOCUMENT-ME
      */
     public void load(Properties settings) {
-      clearCache();
-
       String key = "ATR." + name + ".";
       def = settings.getProperty(key + "Def", "rname");
       setUnknown(settings.getProperty(key + "Unknown", "-?-"));
+      clearCache();
     }
 
     /**
-     * DOCUMENT-ME
      */
     public void save(Properties settings) {
       String key = "ATR." + name + ".";
@@ -653,92 +537,146 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
         settings.setProperty(key + "Unknown", unknown);
       }
     }
+
+    public void remove(Properties settings) {
+      String key = "ATR." + name + ".";
+      settings.remove(key + "Def");
+      settings.remove(key + "Unknown");
+    }
+
   }
 
-  class DefListener implements ShortcutListener {
-    protected List<KeyStroke> keys;
+  /**
+   * Thrown if a set name does not correspond to the naming conventions.
+   */
+  public static class InvalidNameException extends Exception {
 
     /**
-     * Creates a new DefListener object.
      */
-    public DefListener() {
-      keys = new ArrayList<KeyStroke>(10);
-
-      for (int i = 1; i < 10; i++) {
-        keys.add(KeyStroke.getKeyStroke(Character.forDigit(i, 10)));
-      }
-
-      keys.add(KeyStroke.getKeyStroke('0'));
+    public InvalidNameException(String name) {
+      super("Invalid name \"" + name + "\"");
     }
 
-    /**
-     * @see magellan.client.desktop.ShortcutListener#getShortCuts()
-     */
-    public Iterator<KeyStroke> getShortCuts() {
-      return keys.iterator();
+  }
+
+  protected static class ATRPreferences {
+
+    private Properties settings;
+
+    public ATRPreferences(Properties settings) {
+      this.settings = settings;
     }
 
-    /**
-     * Selects the x-th set (where shortcut is the x-th registered shortcut.
-     * 
-     * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
-     */
-    public void shortCut(javax.swing.KeyStroke shortcut) {
-      int i = keys.indexOf(shortcut);
-
-      if (i >= 0) {
-        List<String> c = getAllSets();
-
-        if (c.size() > i) {
-          Iterator<String> it = c.iterator();
-          int j = 0;
-
-          while (it.hasNext()) {
-            String s = it.next();
-
-            if (i == j) {
-              loadSet(s);
-              DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
-
-              break;
-            }
-
-            j++;
+    public Map<String, ATRSet> loadSets() {
+      List<String> names = getSets();
+      Map<String, ATRSet> sets = CollectionFactory.createOrderedMap(names.size() + 1);
+      for (String name : names) {
+        try {
+          if (isValidName(name)) {
+            ATRSet set = new ATRSet(name);
+            set.load(settings);
+            sets.put(name, set);
           }
+        } catch (InvalidNameException e) {
+          // skip
         }
       }
+
+      return sets;
+    }
+
+    public static boolean isValidName(String name) {
+      return name != null && name.trim().length() > 0 && !name.matches(".*[;,]");
+    }
+
+    public String getCurrentSet() {
+      return settings.getProperty(PropertiesHelper.ATR_CURRENT_SET, "Standard");
+    }
+
+    public void setCurrentSet(String current) {
+      if (isValidName(current)) {
+        if (current == null || current.length() == 0) {
+          current = "Standard";
+        }
+        settings.setProperty(PropertiesHelper.ATR_CURRENT_SET, current);
+      }
+    }
+
+    public boolean getBreakLines() {
+      return settings.getProperty("ATR.breakLines", "false").equals("true");
+    }
+
+    public void setBreakLines(boolean b) {
+      settings.setProperty("ATR.breakLines", b ? "true" : "false");
+    }
+
+    public int getAlign() {
+      return Integer.parseInt(settings.getProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, "0"));
+    }
+
+    public void setAlign(int h) {
+      settings.setProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, String.valueOf(h));
     }
 
     /**
-     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(javax.swing.KeyStroke)
+     * Saves the current set to the settings.
      */
-    public String getShortcutDescription(KeyStroke stroke) {
-      return null;
+    public void saveSet(ATRSet set) {
+      set.save(settings);
+
+      if (!getSets().contains(set.getName())) {
+        settings.setProperty(PropertiesHelper.ATR_SETS, settings.getProperty(
+            PropertiesHelper.ATR_SETS, "") + ";" + set.getName());
+      }
+    }
+
+    private List<String> getSets() {
+      return Arrays.asList(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard").split(";"));
     }
 
     /**
-     * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+     * Returns true if the a definition for the given name exists.
      */
-    public String getListenerDescription() {
-      return null;
+    public boolean exists(String name) {
+      return getSets().contains(name);
     }
+
+    /**
+     * Remove the definition with the given name.
+     */
+    public void removeSet(ATRSet set) {
+      set.remove(settings);
+
+      List<String> sets = getSets();
+      sets.remove(set.getName());
+      saveSets(sets);
+    }
+
+    private void saveSets(Collection<String> sets) {
+      String st = String.join(";", sets);
+      settings.setProperty(PropertiesHelper.ATR_SETS, st);
+    }
+
   }
 
-  protected class ATRPreferences extends JPanel implements ActionListener, PreferencesAdapter,
-      ListSelectionListener {
-    protected AdvancedTextCellRenderer s;
+  protected static class ATRPreferencesAdapter extends JPanel implements ActionListener,
+      PreferencesAdapter, ListSelectionListener {
+    protected AdvancedTextCellRenderer atrRenderer;
+    protected ATRPreferences atrPreferences;
 
     // global properties
     protected JCheckBox linebreak;
     protected JRadioButton align[];
+    protected Map<String, ATRSet> atrSets;
+    protected String currentSet;
 
     // set-local properties
     protected JTextField replace;
     protected JTextArea def;
 
     // ui things
-    protected JList list;
-    protected DefaultListModel listModel;
+    protected JList<String> nameList;
+    protected DefaultListModel<String> nameListModel;
     protected AbstractButton add;
     protected AbstractButton remove;
     protected AbstractButton rename;
@@ -748,26 +686,16 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     /**
      * Creates a new ATRPreferences object.
      */
-    public ATRPreferences(AdvancedTextCellRenderer s) {
-      this.s = s;
+    public ATRPreferencesAdapter(AdvancedTextCellRenderer s) {
+      atrRenderer = s;
+      atrPreferences = new ATRPreferences(atrRenderer.settings);
       setLayout(new GridBagLayout());
 
       GridBagConstraints c =
           new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.FIRST_LINE_START,
               GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 0, 0);
-      String helpText = Resources.get("map.advancedtextcellrenderer.description");
-      JTextArea fontHelp = new JTextArea(helpText, 2, 0);// , 2, helpText.length()/2);
-      fontHelp.setFont((new JLabel()).getFont());
-      // fontHelp.setPreferredSize(new Dimension(500, 30));
-      fontHelp.setEditable(false);
-      fontHelp.setBorder(null);
-      fontHelp.setBackground(getBackground());
-      fontHelp.setLineWrap(true);
-      fontHelp.setWrapStyleWord(true);
 
       c.fill = GridBagConstraints.HORIZONTAL;
-      this.add(new JScrollPane(fontHelp), c);
-
       c.gridy++;
       this.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
@@ -776,7 +704,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       c.gridy++;
 
       linebreak =
-          new JCheckBox(Resources.get("map.advancedtextcellrenderer.prefs.breakline"), s.breakLines);
+          new JCheckBox(Resources.get("map.advancedtextcellrenderer.prefs.breakline"));
       this.add(linebreak, c);
 
       c.gridy++;
@@ -813,10 +741,18 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       export = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.export"));
       export.addActionListener(this);
 
-      listModel = new DefaultListModel();
-      list = new JList(listModel);
-      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      fillList(set.getName());
+      nameListModel = new DefaultListModel<String>();
+      nameList = new JList<String>(nameListModel);
+      nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+      JButton showInfo =
+          new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.showinfo"));
+      showInfo.setActionCommand("SHOW INFO");
+      showInfo.addActionListener(this);
+
+      JScrollPane scrollPane = new JScrollPane(nameList);
+      scrollPane.setPreferredSize(new Dimension(rename.getPreferredSize().width, 100));
+      nameList.addListSelectionListener(this);
 
       JPanel p = new JPanel(new GridBagLayout());
       GridBagConstraints c =
@@ -834,34 +770,60 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       p.add(export, c);
       c.gridy++;
       c.fill = GridBagConstraints.BOTH;
-      JScrollPane scrollPane = new JScrollPane(list);
-      scrollPane.setPreferredSize(new Dimension(rename.getPreferredSize().width, 100));
       p.add(scrollPane, c);
-
-      list.addListSelectionListener(this);
+      c.fill = GridBagConstraints.HORIZONTAL;
+      c.gridy++;
+      p.add(showInfo, c);
 
       return p;
     }
 
     protected Component createSetPanel() {
-      JPanel sPanel = new JPanel(new BorderLayout());
+      JPanel setPanel = new JPanel(new GridBagLayout());
 
-      JPanel help = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      help.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.replace")));
-      help.add(replace = new JTextField(set.getUnknown(), 5));
-      sPanel.add(help, BorderLayout.NORTH);
+      GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
+          GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 0, 0);
 
-      help = new JPanel();
-      help.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.def"))); // Resources.get("map.advancedtextcellrenderer.prefs.planes")),c);
-      help.add(new JScrollPane(def = new JTextArea(set.getDef(), 11, 30)));
-      sPanel.add(help, BorderLayout.CENTER);
+      JLabel rLabel = new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.unknown"));
+      setPanel.add(rLabel, gbc);
+      gbc.gridx++;
+      gbc.fill = GridBagConstraints.HORIZONTAL;
+      gbc.weightx = 1;
+      gbc.weighty = .1;
+      setPanel.add(replace = new JTextField(5), gbc);
+      rLabel.setLabelFor(replace);
+      replace.setToolTipText(Resources.get("map.advancedtextcellrenderer.prefs.unknown.tooltip"));
 
-      return sPanel;
+      def = new JTextArea(5, 30);
+      def.setWrapStyleWord(false);
+      def.setLineWrap(true);
+
+      JLabel dLabel;
+      gbc.gridx = 0;
+      gbc.gridy++;
+      gbc.weightx = 0;
+      gbc.weighty = 0;
+      gbc.fill = GridBagConstraints.NONE;
+      setPanel.add(dLabel = new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.def")),
+          gbc);
+      JScrollPane defPane;
+      gbc.gridx++;
+      gbc.weightx = 1;
+      gbc.weighty = 1;
+      gbc.gridheight = 2;
+      gbc.fill = GridBagConstraints.BOTH;
+      setPanel.add(defPane = new JScrollPane(def), gbc);
+      dLabel.setLabelFor(defPane);
+
+      setPanel.setBorder(new EtchedBorder());
+      return setPanel;
     }
 
     protected Component createAlignPanel() {
       Box box = new Box(BoxLayout.X_AXIS);
-      box.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.aligntext")));
+      JLabel boxLabel = new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.aligntext"));
+      boxLabel.setLabelFor(box);
+      box.add(boxLabel);
       box.add(Box.createHorizontalStrut(5));
 
       ButtonGroup group = new ButtonGroup();
@@ -870,7 +832,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       for (int i = 0; i < 3; i++) {
         align[i] =
             new JRadioButton(Resources.get("map.advancedtextcellrenderer.prefs.align"
-                + String.valueOf(i)), i == s.getHAlign());
+                + String.valueOf(i)), i == atrRenderer.getHAlign());
         group.add(align[i]);
         box.add(align[i]);
       }
@@ -878,31 +840,12 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       return box;
     }
 
-    protected void fillList() {
-      List<String> c = s.getAllSets();
-
-      if (c.size() > 0) {
-        fillList(c.iterator().next());
-      } else {
-        fillList(null);
-      }
+    protected String getCurrent() {
+      return currentSet;
     }
 
-    protected void fillList(Object select) {
-      List<String> c = s.getAllSets();
-      listModel.removeAllElements();
-
-      Iterator<String> it = c.iterator();
-
-      while (it.hasNext()) {
-        listModel.addElement(it.next());
-      }
-
-      if (select != null) {
-        list.setSelectedValue(select, true);
-      } else {
-        list.setSelectedIndex(-1);
-      }
+    protected ATRSet getCurrentSet() {
+      return atrSets.get(currentSet);
     }
 
     /**
@@ -911,44 +854,75 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
      * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
      */
     public void valueChanged(ListSelectionEvent e) {
-      if (list.getSelectedValue() != null) {
-        if ((set == null) || (list.getSelectedValue() != set.getName())) {
-          if (set != null) {
-            saveSettings();
-          }
-
-          loadSet((String) list.getSelectedValue());
-          updateSet();
-        }
+      if (nameList.getSelectedValue() != null) {
+        updateCurrent(); // update old set
+        currentSet = nameList.getSelectedValue();
+        updateSet();
       }
     }
 
-    protected void updateSet() {
-      replace.setText(set.getUnknown());
-      def.setText(set.getDef());
+    private void initSets() {
+      atrSets = copySets(atrRenderer.getAllSets());
+      nameListModel.clear();
+      for (String key : atrSets.keySet()) {
+        nameListModel.addElement(key);
+      }
+      currentSet = atrRenderer.getCurrentSet();
+    }
+
+    private void updateSet() {
+      if (getCurrentSet() != null) {
+        replace.setText(getCurrentSet().getUnknown());
+        def.setText(getCurrentSet().getDef());
+        nameList.setSelectedValue(getCurrentSet().getName(), true);
+      } else {
+        replace.setText(null);
+        def.setText(null);
+        nameList.setSelectedValue(null, true);
+      }
     }
 
     /**
      * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
      */
     public void initPreferences() {
-      // TODO: implement it
+      initSets();
+      updateSet();
+      linebreak.setSelected(atrRenderer.breakLines);
+      align[atrRenderer.getHAlign()].setSelected(true);
     }
 
     /**
      * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
-      saveSettings();
-      s.setBreakLines(linebreak.isSelected());
+      int newAlign = 0;
+      try {
+        atrRenderer.setDeferUpdate(true);
+        updateCurrent();
+        atrRenderer.setBreakLines(linebreak.isSelected());
 
-      for (int i = 0; i < 3; i++) {
-        if (align[i].isSelected()) {
-          s.setHAlign(i);
-
-          break;
+        for (int i = 0; i < 3; i++) {
+          if (align[i].isSelected()) {
+            newAlign = i;
+            atrRenderer.setHAlign(i);
+            break;
+          }
         }
+
+        atrRenderer.setAllSets(atrSets);
+        atrRenderer.loadSet(getCurrent());
+      } finally {
+        atrRenderer.setDeferUpdate(false);
       }
+
+      atrPreferences.saveSets(Collections.<String> emptyList());
+      for (ATRSet set : atrSets.values()) {
+        atrPreferences.saveSet(set);
+      }
+      atrPreferences.setAlign(newAlign);
+      atrPreferences.setBreakLines(linebreak.isSelected());
+      atrPreferences.setCurrentSet(getCurrent());
     }
 
     /**
@@ -964,7 +938,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
      * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
-      return s.getName();
+      return atrRenderer.getName();
     }
 
     /**
@@ -981,13 +955,21 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
         importSet();
       } else if (e.getSource() == export) {
         exportSet();
+      } else if (e.getSource() instanceof JButton) {
+        JButton button = (JButton) e.getSource();
+        if (button.getActionCommand().equals("SHOW INFO")) {
+          ToolTipReplacersInfo.showInfoDialog(this, Resources.get(
+              "map.advancedtextcellrenderer.description"));
+        }
       }
     }
 
-    protected void saveSettings() {
-      set.setDef(def.getText());
-      set.setUnknown(replace.getText());
-      saveSet();
+    protected void updateCurrent() {
+      ATRSet set = atrSets.get(getCurrent());
+      if (set != null) {
+        set.setDef(def.getText());
+        set.setUnknown(replace.getText());
+      }
     }
 
     protected void addSet() {
@@ -995,49 +977,81 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
           JOptionPane.showInputDialog(this, Resources
               .get("map.advancedtextcellrenderer.prefs.add.text"));
 
-      if ((name != null) && !name.trim().equals("")) {
-        if (exists(name)) {
+      if (name != null) {
+        if (atrSets.containsKey(name) || !ATRPreferences.isValidName(name)) {
           JOptionPane.showMessageDialog(this, Resources
               .get("map.advancedtextcellrenderer.prefs.nameexists"));
         } else {
-          saveSettings();
-          loadSet(name);
-          fillList(name);
+          try {
+            ATRSet set = new ATRSet(name);
+            set.def = name;
+            addSet(set);
+            nameList.setSelectedValue(name, true);
+          } catch (InvalidNameException e) {
+            // already checked
+          }
         }
       }
     }
 
+    protected void addSet(ATRSet set) {
+      atrSets.put(set.getName(), set);
+      int index = nameList.getSelectedIndex() + 1;
+      nameListModel.add(index >= 0 ? index : nameListModel.size(), set.getName());
+    }
+
     protected void renameSet() {
+      if (nameList.getSelectedValue() == null)
+        return;
       String newName =
           JOptionPane.showInputDialog(this, Resources
-              .get("map.advancedtextcellrenderer.prefs.rename.text"));
+              .get("map.advancedtextcellrenderer.prefs.rename.text"), getCurrent());
 
-      if ((newName != null) && !newName.trim().equals("")) {
-        if (exists(newName)) {
+      if ((newName != null) && !newName.trim().equals("") && !newName.equals(getCurrent())) {
+        if (atrSets.containsKey(newName) || !ATRPreferences.isValidName(newName)) {
           JOptionPane.showMessageDialog(this, Resources
               .get("map.advancedtextcellrenderer.prefs.nameexists"));
         } else {
-          s.removeSet(set.getName());
-          set.setName(newName);
-          saveSettings();
-          fillList(newName);
+          ATRSet set = getCurrentSet();
+
+          nameListModel.set(nameList.getSelectedIndex(), newName);
+          Map<String, ATRSet> copy = copySets(atrSets);
+          atrSets.clear();
+          for (String name : copy.keySet()) {
+            if (name.equals(set.getName())) {
+              try {
+                set.setName(newName);
+              } catch (InvalidNameException e) {
+                // already checked
+              }
+              atrSets.put(newName, set);
+            } else {
+              atrSets.put(name, copy.get(name));
+            }
+          }
+
+          nameList.setSelectedValue(newName, false);
+
         }
       }
     }
 
     protected void removeSet() {
-      String name = (String) list.getSelectedValue();
+      String name = nameList.getSelectedValue();
 
       if (name != null) {
-        s.removeSet(name);
+        removeSet(name);
+      }
+    }
 
-        ATRSet old = set;
-        set = null;
-        fillList();
+    protected void removeSet(String name) {
+      int i = nameListModel.indexOf(name);
+      if (i >= 0) {
+        atrSets.remove(name);
+        nameListModel.remove(i);
+        nameList.setSelectedIndex(i >= nameListModel.getSize() ? 0 : i);
 
-        if (set == null) {
-          set = old;
-        }
+        updateSet();
       }
     }
 
@@ -1047,7 +1061,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 
       if (ret == JFileChooser.APPROVE_OPTION) {
         java.io.File f = jfc.getSelectedFile();
-        String lastName = set.getName();
+        String lastName = getCurrentSet().getName();
 
         try {
           Properties prop = new Properties();
@@ -1068,14 +1082,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
               "could not read file " + f + ", " + exc.getLocalizedMessage());
         }
 
-        fillList(lastName);
+        nameList.setSelectedValue(lastName, true);
       }
     }
 
     protected String importImpl(String name, Properties prop) {
       String oldName = name;
 
-      while ((name != null) && exists(name)) {
+      while ((name != null) && (atrSets.containsKey(name) || ATRPreferences.isValidName(name))) {
         name =
             JOptionPane.showInputDialog(this, Resources.get(
                 "map.advancedtextcellrenderer.prefs.nameexists2", name));
@@ -1084,16 +1098,26 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       if (name == null)
         return null;
 
-      saveSettings();
-      s.loadSet(oldName, prop);
-      set.setName(name);
-      updateSet();
-      saveSettings();
+      ATRSet set;
+      try {
+        set = new ATRSet(oldName);
+        set.load(prop);
+        set.setName(name);
+        addSet(set);
+      } catch (InvalidNameException e) {
+        // already checked or (in case of oldName ignored
+      }
 
       return name;
     }
 
     protected void exportSet() {
+      ATRSet set = getCurrentSet();
+      if (set == null) {
+        JOptionPane.showMessageDialog(this, Resources.get(
+            "map.advancedtextcellrenderer.prefs.noselection"));
+        return;
+      }
       JFileChooser jfc = new JFileChooser(Client.getResourceDirectory());
       int ret = jfc.showSaveDialog(this);
 
@@ -1102,7 +1126,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
           java.io.File f = jfc.getSelectedFile();
           FileOutputStream out = new FileOutputStream(f);
           Properties prop = new Properties();
-          saveSet(prop);
+
+          set.save(prop);
           prop.store(out, "ATR exported settings");
           out.close();
         } catch (IOException exc) {

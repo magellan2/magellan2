@@ -14,6 +14,7 @@
 package magellan.library.utils.logging;
 
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -449,14 +450,23 @@ public class Logger {
         Logger.searchAwtLogger = false;
 
         try {
-          Logger.awtLogger =
-              Class.forName("magellan.library.utils.logging.AWTLogger").newInstance();
+          Constructor<?> constructor = Class.forName("magellan.library.utils.logging.AWTLogger")
+              .getConstructor();
+          Logger.awtLogger = constructor.newInstance();
         } catch (ClassNotFoundException e) {
           debug("AWTLogger not found", e);
         } catch (InstantiationException e) {
           debug("Cannot instanciate AWTLogger", e);
         } catch (IllegalAccessException e) {
           debug("Cannot access AWTLogger", e);
+        } catch (NoSuchMethodException e) {
+          debug("AWTLogger does not have constructor");
+        } catch (SecurityException e) {
+          debug("Security exception", e);
+        } catch (IllegalArgumentException e) {
+          debug("illegal argument", e);
+        } catch (InvocationTargetException e) {
+          debug("Exception in AWTLogger constructor", e);
         }
       }
     }

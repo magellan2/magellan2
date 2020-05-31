@@ -196,22 +196,63 @@ public class CellGeometry {
    * @throws IllegalArgumentException if scaleFactor <= 0.
    */
   public void setScaleFactor(float scaleFactor) {
-    if (scaleFactor <= 0 || Float.isInfinite(scaleFactor))
-      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
+    validateScaleFactor(scaleFactor, true);
+  }
 
-    this.scaleFactor = scaleFactor;
+  public void setValidScaleFactor(float scaleFactor2) {
+    while (!validateScaleFactor(scaleFactor2, true) && scaleFactor2 < 1e7) {
+      scaleFactor2 *= 2;
+    }
+  }
 
-    // FIXME we should somehow intercept calls which lead to scaledCellSize.* < 1
+  public boolean isValidScaleFactor(float scaleFactor2) {
+    return validateScaleFactor(scaleFactor2, false);
+  }
 
-    scaledPoly = scalePolygon(scaleFactor);
-    scaledCellSize.width = Math.max(1, (int) (unscaledCellSize.width * scaleFactor));
-    scaledCellSize.height = Math.max(1, (int) (unscaledCellSize.height * scaleFactor));
+  private boolean validateScaleFactor(float scaleFactor2, boolean apply) {
+    if (scaleFactor2 <= 0 || Float.isInfinite(scaleFactor2))
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor2);
 
-    scaledImgOffset.x = (int) (imgOffset.x * scaleFactor);
-    scaledImgOffset.y = (int) (imgOffset.y * scaleFactor);
+    boolean valid;
+    synchronized (this) {
+      scale(scaleFactor2);
+      valid = isValidGeometry();
+      if (!apply) {
+        scale(scaleFactor);
+      } else {
+        scaleFactor = scaleFactor2;
+      }
+    }
+    return valid;
+  }
 
-    scaledImgSize.width = (int) Math.ceil(imgSize.width * scaleFactor);
-    scaledImgSize.height = (int) Math.ceil(imgSize.height * scaleFactor);
+  private void scale(float scaleFactor2) {
+    scaledPoly = scalePolygon(scaleFactor2);
+    scaledCellSize.width = Math.max(1, (int) (unscaledCellSize.width * scaleFactor2));
+    scaledCellSize.height = Math.max(1, (int) (unscaledCellSize.height * scaleFactor2));
+
+    scaledImgOffset.x = (int) (imgOffset.x * scaleFactor2);
+    scaledImgOffset.y = (int) (imgOffset.y * scaleFactor2);
+
+    scaledImgSize.width = (int) Math.ceil(imgSize.width * scaleFactor2);
+    scaledImgSize.height = (int) Math.ceil(imgSize.height * scaleFactor2);
+  }
+
+  private boolean isValidGeometry() {
+    for (int n1 = 0; n1 < scaledPoly.npoints; ++n1) {
+      for (int n2 = n1 + 1; n2 < scaledPoly.npoints; ++n2) {
+        if (scaledPoly.xpoints[n1] == scaledPoly.xpoints[n2]
+            && scaledPoly.ypoints[n1] == scaledPoly.ypoints[n2])
+          return false;
+      }
+    }
+
+    if (scaledCellSize.width < 1 || scaledCellSize.height < 1)
+      return false;
+    if (imgSize.width >= 1 && scaledImgSize.width < 1 || imgSize.height >= 1
+        && scaledImgSize.height < 1)
+      return false;
+    return true;
   }
 
   /**

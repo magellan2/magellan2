@@ -746,10 +746,10 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    *
    * @param uid the unit's id
    * @param i the amount
-   * @param persons Whether to add "PERSONEN" or not
+   * @param each Whether amount contained "JE"
    */
   /** Add completions for command GibUIDAmount. */
-  public void cmpltGibUIDAmount(UnitID uid, int i, boolean persons) {
+  public void cmpltGibUIDAmount(UnitID uid, int i, boolean each) {
     addUnitItems(i, "");
 
     if ((i != 0) && (uid != null)) {
@@ -791,7 +791,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       } catch (RulesException e) {
         tounit = "TEMP " + uid;
       }
-      if (persons && (unit.getPersons() >= i)) {
+      if (!each && (unit.getPersons() >= i)) {
         order = getOrderTranslation(EresseaConstants.OC_MEN);
       }
       for (final Item item : unit.getItems()) {
@@ -812,30 +812,32 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       }
     }
 
-    if (persons) {
+    if (!each) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MEN), (unit
           .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
-    // if captn, and target is captn, offer GIVE target X SHIP
-    if (unit.getShip() != null) {
-      Ship s = unit.getShip();
+    //
+    if (!each && unit.getModifiedShip() != null) {
+      Ship s = unit.getModifiedShip();
       if (s.getModifiedOwnerUnit().equals(unit)) {
         // is the amount <= number of ships in the fleet?
-        if (i <= s.getAmount()) {
-          // is target also a captn of a ship - of the same ShipType and of the same faction
+        if (i <= s.getModifiedAmount()) {
+          // valid targets are 0, or the captain of another ship or a unit on the same ship or a
+          // unit without ship
           Unit target = getData().getUnit(uid);
-          if (target != null) {
-            // same faction
-            if (target.getFaction() != null && target.getFaction().equals(unit.getFaction())) {
-              Ship targetShip = target.getShip();
+          if (uid.intValue() == 0 || (target != null && unit.getFaction().equals(target
+              .getFaction()))) {
+            Ship targetShip = target == null ? null : target.getModifiedShip();
+            if (targetShip == null || targetShip.equals(s) || target == null || target.equals(
+                targetShip.getModifiedOwnerUnit()))
+
               // same shipType
-              if (targetShip == null || (targetShip.getModifiedOwnerUnit().equals(target)
-                  && targetShip.getShipType().equals(s.getShipType()))) {
+              if (targetShip == null || targetShip.getShipType().equals(s.getShipType())) {
                 completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SHIP),
                     Completion.DEFAULT_PRIORITY + 1));
               }
-            }
+
           }
         }
       }

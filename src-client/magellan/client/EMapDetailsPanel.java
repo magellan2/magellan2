@@ -24,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -2504,9 +2505,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         } catch (Exception e) {
           prefix = "???";
         }
+        Unit object = irel.source == u || irel.source == null ? irel.target : irel.source;
         UnitNodeWrapper w =
-            nodeWrapperFactory.createUnitNodeWrapper(irel.target, prefix + ": ", irel.target
-                .getPersons(), irel.target.getModifiedPersons());
+            nodeWrapperFactory.createUnitNodeWrapper(object, prefix + ": ", object
+                .getPersons(), object.getModifiedPersons());
         w.setReverseOrder(true);
         miscNode.add(new DefaultMutableTreeNode(w));
       }
@@ -3967,12 +3969,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         maxSize = buildingType.getMaxSize();
       }
     }
-    appendBuildingCosts(b.getBuildingType().getRawMaterials(), skillLevel, minSize, maxSize,
+    appendBuildingCosts(b.getBuildingType().getRawMaterials(), skillLevel, minSize, maxSize, 1,
         parent, expandableNodes);
   }
 
   private void appendBuildingCosts(Collection<Item> rawMaterials, int skillLevel, int minSize,
-      int maxSize, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
+      int maxSize, int amount, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
     Iterator<Item> iter = rawMaterials.iterator();
 
     DefaultMutableTreeNode n;
@@ -4010,11 +4013,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (minSize >= 0) {
           m =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get(
-                  "emapdetailspanel.node.buildingsizelimits", minSize, maxSize), "build_size"));
+                  "emapdetailspanel.node.buildingsizelimits", minSize, maxSize, amount),
+                  "build_size"));
         } else {
           m =
-              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper("MAX: "
-                  + maxSize, "build_size"));
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get(
+                  "emapdetailspanel.node.buildingsizemax", maxSize, amount),
+                  "build_size"));
         }
         n.add(m);
       }
@@ -4233,7 +4238,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
 
-    int nominalShipSize = s.getShipType().getMaxSize() * s.getAmount();
+    int nominalShipSize = magellan.library.utils.Units.getNominalSize(s);
 
     if (s.getSize() != nominalShipSize) {
       // nominal size and damage
@@ -4304,8 +4309,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     int minSize = -1;
     int maxSize = shipType.getMaxSize();
 
-    appendBuildingCosts(s.getShipType().getRawMaterials(), skillLevel, minSize, maxSize, parent,
-        expandableNodes);
+    appendBuildingCosts(s.getShipType().getRawMaterials(), skillLevel, minSize, maxSize, s
+        .getAmount(), parent, expandableNodes);
   }
 
   /**
@@ -4455,40 +4460,54 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // skill
+    int captainSkillLevel = magellan.library.utils.Units.getCaptainSkillLevel(s);
+    StringBuilder text = new StringBuilder(
+        Resources.get("emapdetailspanel.node.sailingskill")).append(": ").append(
+            Resources.get("emapdetailspanel.node.captain")).append(" ").append(captainSkillLevel)
+            .append(" / ")
+            .append(s.getShipType().getCaptainSkillLevel());
 
-    int captainSkillAmount = magellan.library.utils.Units.getCaptainSkillAmount(s);
-    String text =
-        Resources.get("emapdetailspanel.node.sailingskill") + ": "
-            + Resources.get("emapdetailspanel.node.captain") + " " + captainSkillAmount + " / "
-            + s.getShipType().getCaptainSkillLevel();
-
-    if (captainSkillAmount < s.getShipType().getCaptainSkillLevel()) {
-      text += " (!!!)";
+    if (captainSkillLevel < s.getShipType().getCaptainSkillLevel()) {
+      text.append(" (!!!)");
     }
-    text += ", ";
+    text.append(", ");
 
     // Matrosen
     int sailingSkillAmount = magellan.library.utils.Units.getSailingSkillAmount(s);
+    int requiredSkillAmount = s.getShipType().getSailorSkillLevel() * s.getAmount();
+    int requiredModifiedSkillAmount = s.getShipType().getSailorSkillLevel() * s.getModifiedAmount();
 
-    text +=
+    text.append(
         Resources.get("emapdetailspanel.node.crew") + " " + sailingSkillAmount + " / "
-            + (s.getShipType().getSailorSkillLevel() * s.getAmount());
-    if (sailingSkillAmount < s.getShipType().getSailorSkillLevel() * s.getAmount()) {
-      text += " (!!!)";
+            + requiredSkillAmount);
+    if (requiredModifiedSkillAmount != requiredSkillAmount) {
+      text.append(" (").append(requiredModifiedSkillAmount).append(")");
+    }
+    if (sailingSkillAmount < requiredModifiedSkillAmount) {
+      text.append(" (!!!)");
     }
 
     DefaultMutableTreeNode n =
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
     parent.add(n);
 
-    // Bei Flotten: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
+    // Bei Konvois: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
     if (s.getAmount() > 1) {
-      int captainPersons = magellan.library.utils.Units.getCaptainPersons(s);
-      text = Resources.get("emapdetailspanel.node.captainAmount") + ": "
-          + captainPersons + " / "
-          + s.getAmount();
-      if (captainPersons < s.getAmount()) {
-        text += " (!!!)";
+      int captainPersons = magellan.library.utils.Units.getCaptainPersons(s), modCaptainPersons =
+          magellan.library.utils.Units.getModifiedCaptainPersons(s);
+      text = new StringBuilder(Resources.get("emapdetailspanel.node.captainAmount")).append(": ")
+          .append(captainPersons);
+      if (modCaptainPersons != captainPersons) {
+        text.append("(").append(modCaptainPersons).append(")");
+      }
+      text.append(" / ")
+          .append(s.getAmount());
+      if (s.getModifiedAmount() != s.getAmount()) {
+        text.append("(").append(s.getModifiedAmount()).append(")");
+      }
+
+      if (captainPersons < s.getModifiedAmount()) {
+        text.append(" (!!!)");
       }
       n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
       parent.add(n);
@@ -4624,7 +4643,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     if (s.getDamageRatio() > 0) {
       int absolute =
           new BigDecimal(s.getDamageRatio() * s.getSize()).divide(new BigDecimal(100),
-              BigDecimal.ROUND_UP).intValue();
+              RoundingMode.UP).intValue();
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.damage") + ": "
           + s.getDamageRatio() + "% / " + absolute, "damage"));
     }

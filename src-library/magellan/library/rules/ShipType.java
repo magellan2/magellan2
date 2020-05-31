@@ -24,6 +24,7 @@ public class ShipType extends ConstructibleType {
   Logger log = Logger.getInstance(ShipType.class);
 
   private int range = -1;
+  private String rangeFormula;
   private int capacity = -1;
   private int captainLevel = -1;
   private int sailorLevel = -1;
@@ -55,6 +56,22 @@ public class ShipType extends ConstructibleType {
    */
   public int getRange() {
     return range;
+  }
+
+  /**
+   * Returns the ship range formula.
+   */
+  public String getRangeFormula() {
+    return rangeFormula;
+  }
+
+  /**
+   * Sets the formula for ship range.
+   *
+   * @param rangeFormula
+   */
+  public void setRangeFormula(String rangeFormula) {
+    this.rangeFormula = rangeFormula;
   }
 
   /**
@@ -175,4 +192,5 @@ public class ShipType extends ConstructibleType {
   public StringID getID() {
     return (StringID) id;
   }
+
 }

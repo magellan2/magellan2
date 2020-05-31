@@ -2132,6 +2132,7 @@ SHIPTYPE "Einbaum"
 3;size
 1;level
 3;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 20;capacity
 2;persons
 1;captainlevel
@@ -2144,6 +2145,7 @@ SHIPTYPE "Floß"
 10;size
 1;level
 1;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 500;capacity
 5;persons
 1;captainlevel
@@ -2154,6 +2156,7 @@ SHIPTYPE "Kutter"
 10;size
 2;level
 2;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 50;capacity
 5;persons
 2;captainlevel
@@ -2164,6 +2167,7 @@ SHIPTYPE "Barke"
 10;size
 2;level
 3;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 50;capacity
 11;persons
 2;captainlevel
@@ -2174,6 +2178,7 @@ SHIPTYPE "Kogge"
 100;size
 4;level
 4;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 2000;capacity
 50;persons
 4;captainlevel
@@ -2184,6 +2189,7 @@ SHIPTYPE "Karavelle"
 300;size
 6;level
 4;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 6000;capacity
 150;persons
 6;captainlevel
@@ -2194,6 +2200,7 @@ SHIPTYPE "Fregatte"
 100;size
 5;level
 4;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 1000;capacity
 110;persons
 5;captainlevel
@@ -2207,6 +2214,7 @@ SHIPTYPE "Galeone"
 300;size
 7;level
 4;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 3000;capacity
 310;persons
 7;captainlevel
@@ -2220,6 +2228,7 @@ SHIPTYPE "Drachenschiff"
 100;size
 5;level
 6;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 500;capacity
 110;persons
 5;captainlevel
@@ -2233,6 +2242,7 @@ SHIPTYPE "Trireme"
 300;size
 7;level
 6;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 1500;capacity
 310;persons
 7;captainlevel
@@ -2246,6 +2256,7 @@ SHIPTYPE "Königsbarke"
 10;size
 5;level
 5;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 50;capacity
 11;persons
 5;captainlevel
@@ -2259,6 +2270,7 @@ SHIPTYPE "Katamaran"
 30;size
 7;level
 7;range
+"$range + max(0, ($currentcaptainlevel - (1 + $captainlevel) / 2) / 6)";rangeformula
 100;capacity
 22;persons
 7;captainlevel

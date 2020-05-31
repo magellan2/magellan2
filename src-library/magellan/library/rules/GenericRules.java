@@ -85,8 +85,14 @@ public class GenericRules implements Rules {
             IntegerID.class, EntityID.class, UnitID.class }) {
           try {
             constructor = class1.getConstructor(idclass);
+            try {
+              if (!constructor.trySetAccessible())
+                return null;
+            } catch (NoSuchMethodError e) {
+              // must be pre java 9, this is fine
+            }
           } catch (Exception e) {
-
+            //
           }
           if (constructor != null) {
             break;
@@ -94,10 +100,9 @@ public class GenericRules implements Rules {
         }
         if (constructor == null)
           throw new RuntimeException("no constructor found");
-        GenericRules.addObjectType(objectType = constructor.newInstance(id), map, mapNames);// new
-        // T(id),
-        // mapT,
-        // mapTNames);
+
+        GenericRules.addObjectType(objectType = constructor.newInstance(id), map, mapNames);
+        // new T(id), mapT, mapTNames);
       } catch (Exception e) {
         GenericRules.log.error("class has no constructor C(ID)", e);
         throw new RuntimeException(e);
@@ -827,11 +832,12 @@ public class GenericRules implements Rules {
 
     // pavkovic 2004.03.08: for now also return object with id
     // return null;
-    // FIXME (stm) only objects.get(normName) makes sense
-    return objects.get(StringID.create(normName));
+    return objects.get(normName);
   }
 
   private String gameSpecificStuffClassName;
+
+  private String gameName;
 
   /**
    * Sets the name of the class for getGameSpecificStuff()
@@ -854,7 +860,8 @@ public class GenericRules implements Rules {
         gameSpecificStuff = new GameSpecificStuffProvider().getGameSpecificStuff();
       } else {
         gameSpecificStuff =
-            new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
+            new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName,
+                this);
       }
     }
     return gameSpecificStuff;
@@ -891,6 +898,14 @@ public class GenericRules implements Rules {
     new SkillCategory(StringID.create("foo"));
     new SkillType(StringID.create("foo"));
     new MagellanSpellImpl(StringID.create("foo"), null);
+  }
+
+  public void setGameName(String name) {
+    gameName = name;
+  }
+
+  public String getGameName() {
+    return gameName;
   }
 
 }

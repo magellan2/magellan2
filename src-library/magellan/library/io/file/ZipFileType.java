@@ -143,6 +143,7 @@ public class ZipFileType extends FileType {
           currIn.close();
         }
       }
+      zfile.close();
 
       // do not reuse oldEntry but create a new ZipEntry
       zos.putNextEntry(new ZipEntry(zipentry.getName()));

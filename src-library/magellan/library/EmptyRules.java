@@ -445,4 +445,12 @@ public class EmptyRules implements Rules {
     return null;
   }
 
+  public void setGameName(String name) {
+    // nop
+  }
+
+  public String getGameName() {
+    return null;
+  }
+
 }

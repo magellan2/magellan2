@@ -18,6 +18,7 @@ import java.util.Iterator;
 import javax.swing.ToolTipManager;
 
 import magellan.client.MagellanContext;
+import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -36,9 +37,10 @@ public class Minimapper extends Mapper {
    * Creates new Minimapper.
    * 
    * @param context
+   * @param id
    */
-  public Minimapper(MagellanContext context) {
-    super(context, null, new CellGeometry("cellgeometry.txt"));
+  public Minimapper(MagellanContext context, String id) {
+    super(context, null, new CellGeometry("cellgeometry.txt"), id);
 
     // if Mapper has registered us, we don't want this
     ToolTipManager.sharedInstance().unregisterComponent(this);
@@ -67,8 +69,8 @@ public class Minimapper extends Mapper {
   }
 
   /**
-	 * 
-	 */
+   *
+   */
   @Override
   public void setRenderer(MapCellRenderer renderer, int plane) {
     if (plane == Mapper.PLANE_REGION) {
@@ -105,8 +107,8 @@ public class Minimapper extends Mapper {
   }
 
   /**
-	 * 
-	 */
+   *
+   */
   public MapCellRenderer getMinimapRenderer() {
     return myRenderer;
   }
@@ -125,25 +127,6 @@ public class Minimapper extends Mapper {
     return myRenderer.getPaintMode();
   }
 
-  /**
-   * DOCUMENT-ME
-   */
-  public void synchronizeColors() {
-    // synchronize factions
-    myRenderer.loadFactionColors(RegionShapeCellRenderer.DEFAULT_FACTION_KEY, false);
-    myRenderer.saveFactionColors();
-
-    // synchronize regions
-    myRenderer.loadRegionColors(RegionShapeCellRenderer.DEFAULT_REGION_KEY, false);
-    myRenderer.saveRegionColors();
-
-    // load unknown/ocean
-    myRenderer.loadOceanColor();
-    myRenderer.loadUnknownColor();
-
-    repaint();
-  }
-
   @Override
   protected void setLastRegionRenderingType(int l) {
     minimapLastType = l;
@@ -152,5 +135,10 @@ public class Minimapper extends Mapper {
   @Override
   protected int getLastRegionRenderingType() {
     return minimapLastType;
+  }
+
+  @Override
+  public PreferencesAdapter getPreferencesAdapter() {
+    return new MapperPreferences(this, false);
   }
 }

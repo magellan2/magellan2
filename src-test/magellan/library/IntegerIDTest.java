@@ -155,6 +155,7 @@ public class IntegerIDTest {
   /**
    * Test method for {@link magellan.library.IntegerID#equals(java.lang.Object)}.
    */
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public final void testEqualsObject() {
     IntegerID id1 = IntegerID.create(42), id2 = IntegerID.create(42), id3 = IntegerID.create("42"), id4 =

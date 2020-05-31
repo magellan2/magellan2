@@ -4,27 +4,31 @@
 	<classpathentry kind="src" path="src-plugins"/>
 	<classpathentry kind="src" path="src-client"/>
 	<classpathentry kind="src" path="src-test"/>
-	<classpathentry kind="src" path="src-internal"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry exported="true" kind="lib" path="lib/ant-1.7.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/bsh-2.0b4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.3.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-email-1.1.jar" sourcepath="libsrc/commons-email-1.1-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-httpclient-3.1.jar" sourcepath="libsrc/commons-httpclient-3.1-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/idw-gpl-1.6.1.jar" sourcepath="libsrc/idw-gpl-1.6.1-src.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/jfreechart.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jh.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jimi.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mail.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/skins/kunststoff-2_0_2.jar" sourcepath="libsrc/kunststoff-2_0_2.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/skins/liquidlnf-2.9.1.jar" sourcepath="libsrc/liquidlnf-2.9.1.zip"/>
-	<classpathentry exported="true" kind="lib" path="lib/skins/looks-1.3b1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/skins/skinsCollected.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/skins/xplookandfeel.jar"/>
-	<classpathentry kind="lib" path="lib/javadocking.jar" sourcepath="libsrc/javadocking/javadocking/src"/>
-	<classpathentry kind="lib" path="lib/macify-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar" sourcepath="libsrc/commons-httpclient-3.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/jfreechart.jar"/>
+	<classpathentry kind="lib" path="lib/jimi.jar"/>
+	<classpathentry kind="lib" path="lib/skins/kunststoff-2_0_2.jar" sourcepath="libsrc/kunststoff-2_0_2.zip"/>
+	<classpathentry kind="lib" path="lib/skins/liquidlnf-2.9.1.jar" sourcepath="libsrc/liquidlnf-2.9.1.zip"/>
+	<classpathentry kind="lib" path="lib/skins/looks-1.3b1.jar"/>
+	<classpathentry kind="lib" path="lib/skins/skinsCollected.jar"/>
+	<classpathentry kind="lib" path="lib/skins/xplookandfeel.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-core-1.8.3.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-email-1.5.jar" sourcepath="libsrc/commons-email-1.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.14.jar" sourcepath="libsrc/commons-codec-1.14-sources.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/idw-gpl-1.6.1.jar" sourcepath="libsrc/idw-gpl-1.6.1-src.zip"/>
+	<classpathentry kind="lib" path="lib/macify-1.4.jar" sourcepath="libsrc/macify-1.4-sources.jar"/>
+	<classpathentry kind="lib" path="lib/javahelp-2.0.05.jar" sourcepath="libsrc/javahelp-2.0.05-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.11.0.jar" sourcepath="libsrc/jackson-core-2.11.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-databind-2.11.0.jar" sourcepath="libsrc/jackson-databind-2.11.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-annotations-2.11.0.jar" sourcepath="libsrc/jackson-annotations-2.11.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

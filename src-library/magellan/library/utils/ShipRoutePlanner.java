@@ -42,7 +42,7 @@ public class ShipRoutePlanner extends RoutePlanner {
    * faction.
    */
   public static boolean canPlan(Ship ship) {
-    if (ship.getSize() < ship.getShipType().getMaxSize())
+    if (ship.getSize() < Units.getNominalSize(ship))
       return false;
 
     return (ship.getModifiedOwnerUnit() != null)
@@ -60,7 +60,8 @@ public class ShipRoutePlanner extends RoutePlanner {
    * @return the unit whose orders may have changed if orders were changed (i.e., the user didn't
    *         abort and a path existed)
    */
-  public Unit planShipRoute(Ship ship, GameData data, Component ui, RoutingDialogDataPicker picker) {
+  public Unit planShipRoute(Ship ship, GameData data, Component ui,
+      RoutingDialogDataPicker picker) {
     Unit shipOwner = ship.getModifiedOwnerUnit();
 
     if (shipOwner == null) {
@@ -135,8 +136,8 @@ public class ShipRoutePlanner extends RoutePlanner {
    * @param start The region where to start, not necessarily equal to the ship's region
    * @param destination The target region
    * @param ui The parent component for message panes
-   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that
-   *          the ship's range is not exceeded.
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so
+   *          that the ship's range is not exceeded.
    * @param mode a combination of {@link RoutePlanner#MODE_CONTINUOUS},
    *          {@link RoutePlanner#MODE_RETURN}, {@link RoutePlanner#MODE_STOP}
    * @param useVorlage If this is <code>true</code>, <em>Vorlage</em> meta commands are produced.

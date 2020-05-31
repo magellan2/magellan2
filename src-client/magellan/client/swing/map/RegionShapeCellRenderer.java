@@ -34,12 +34,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.AbstractListModel;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -53,7 +56,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ListCellRenderer;
 
 import magellan.client.MagellanContext;
 import magellan.client.desktop.Initializable;
@@ -68,6 +70,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -112,23 +115,61 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   /** Defines the Trust Level GUARD paint mode. */
   public static final int PAINT_TRUST_GUARD = 4;
 
+  /** Number of modes we have **/
+  public static final int PAINT_MODECOUNT = 5;
+
+  private enum PredefinedColors {
+    OCEAN_COLOR("GeomRenderer.OceanColor", "128,128,255"), UNKNOWN_COLOR(
+        "GeomRenderer.UnknownColor", "128,128,128"), WARNING_COLOR("GeomRenderer.WarningColor",
+            "255,0,0"), TYPELESS_COLOR("GeomRenderer.TypelessColor", "128,128,128");
+
+    private String label;
+    private String color;
+
+    PredefinedColors(String label, String defaultColor) {
+      this.label = label;
+      color = defaultColor;
+    }
+  }
+
+  private static class PredefinedColor {
+
+    private PredefinedColors predef;
+    Color color;
+
+    public PredefinedColor(PredefinedColors predefColor) {
+      predef = predefColor;
+    }
+
+    public Color getColor() {
+      return color;
+    }
+
+    public void setColor(Color c) {
+      color = c;
+    }
+
+    public void save(Properties settings) {
+      settings.setProperty(predef.label, Colors.encode(getColor()));
+    }
+
+    public void load(Properties settings) {
+      String definition = settings.getProperty(predef.label, predef.color);
+      color = Colors.decode(definition.replace(';', ','));
+    }
+
+  }
+
+  PredefinedColor[] predefinedColors;
+
   /** Stores the current painting mode. */
   protected int paintMode;
-
-  /** Used for storing all found factions. */
-  private List<String> factions = new LinkedList<String>();
 
   /** Stores the faction - color pairs. The key is the faction name (Faction.getName()) */
   protected Map<String, Color> factionColors;
 
-  /** The ocean is rendered with this color in Politics Mode. */
-  protected Color oceanColor;
-
-  /** All regions which can't be assigned to a faction are rendered with this color. */
-  protected Color unknownColor;
-
-  /** Stores the region - color paires. The key is the region type name (RegionType.getName()). */
-  protected Map<StringID, Color> regionColors;
+  /** Stores the region - color pairs. The key is the region type name (RegionType.getName()). */
+  protected Map<String, Color> regionColors;
 
   /** The PreferencesAdapter used for changing colors. */
   protected GeomRendererAdapter adapter;
@@ -142,15 +183,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   /** The default key for settings operations with the Politics Mode variable. */
   protected String paintKey;
 
-  /** A default color for regions without type. */
-  public static Color typelessColor = new Color(128, 128, 128);
   protected JMenu contextMenu;
   protected ContextObserver obs;
   protected Color singleColorArray[] = new Color[1];
-
-  // private Random random;
-
-  // private Color lastColor;
 
   /**
    * Constructs a new RegionShapeCellRenderer object using the given geometry and settings. The
@@ -184,7 +219,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     super(geo, context);
 
     factionColors = new HashMap<String, Color>();
-    regionColors = new HashMap<StringID, Color>();
+    regionColors = new HashMap<String, Color>();
 
     // use this keys for default load/save operations
     factionKey = fKey;
@@ -193,8 +228,12 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
 
     // initialize faction colors
     loadFactionColors(false);
-    loadOceanColor();
-    loadUnknownColor();
+
+    predefinedColors = new PredefinedColor[PredefinedColors.values().length];
+    for (int i = 0; i < predefinedColors.length; ++i) {
+      predefinedColors[i] = new PredefinedColor(PredefinedColors.values()[i]);
+    }
+    loadPredefinedColors();
 
     // initialize region colors
     initDefaultRegionTypeColors(); // load default as base
@@ -209,7 +248,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     initContextMenu();
 
     context.getEventDispatcher().addGameDataListener(this);
-    // random = new Random(System.currentTimeMillis() / 10000);
   }
 
   /**
@@ -225,18 +263,25 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * <li>Hochebene</li>
    * <li>Berge</li>
    * <li>Gletscher</li>
+   * <li>Vulkan</li>
    * </ul>
    */
   protected void initDefaultRegionTypeColors() {
-    regionColors.put(StringID.create("Ebene"), new Color(49, 230, 0));
-    regionColors.put(StringID.create("Sumpf"), new Color(0, 180, 160));
-    regionColors.put(StringID.create("Wald"), new Color(36, 154, 0));
-    regionColors.put(StringID.create("Wüste"), new Color(244, 230, 113));
-    regionColors.put(StringID.create("Ozean"), new Color(128, 128, 255));
-    regionColors.put(StringID.create("Feuerwand"), new Color(255, 79, 0));
-    regionColors.put(StringID.create("Hochebene"), new Color(166, 97, 56));
-    regionColors.put(StringID.create("Berge"), new Color(155, 145, 141));
-    regionColors.put(StringID.create("Gletscher"), new Color(222, 226, 244));
+    addRegionColor(regionColors, EresseaConstants.RT_OCEAN, new Color(128, 128, 255));
+    addRegionColor(regionColors, EresseaConstants.RT_PLAIN, new Color(49, 230, 0));
+    addRegionColor(regionColors, EresseaConstants.RT_SWAMP, new Color(0, 180, 160));
+    addRegionColor(regionColors, EresseaConstants.RT_FOREST, new Color(36, 154, 0));
+    addRegionColor(regionColors, EresseaConstants.RT_DESERT, new Color(244, 230, 113));
+    addRegionColor(regionColors, EresseaConstants.RT_FIREWALL, new Color(255, 79, 0));
+    addRegionColor(regionColors, EresseaConstants.RT_HIGHLAND, new Color(166, 97, 56));
+    addRegionColor(regionColors, EresseaConstants.RT_MOUNTAIN, new Color(155, 145, 141));
+    addRegionColor(regionColors, EresseaConstants.RT_GLACIER, new Color(222, 226, 244));
+    addRegionColor(regionColors, EresseaConstants.RT_VOLCANO, new Color(222, 0, 154));
+    addRegionColor(regionColors, EresseaConstants.RT_ACTIVE_VOLCANO, new Color(142, 0, 98));
+  }
+
+  private void addRegionColor(Map<String, Color> colorMap, StringID id, Color c) {
+    colorMap.put(id.toString(), c);
   }
 
   // //////////////////
@@ -280,6 +325,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @param c The (new) color
    */
   public void setFactionColor(String name, Color c) {
+    if (name == null) {
+      name = "null";
+    }
     if (c == null) {
       if (factionColors.remove(name) != null) {
         saveFactionColors();
@@ -295,36 +343,13 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   }
 
   /**
-   * Puts a whole map to the faction-colors Table. Keys of this map should be factions or strings.
-   * 
-   * @param map A map containing Faction/String - Color pairs
-   */
-  public void setFactionColors(Map<?, Color> map) {
-    Iterator<?> it = map.keySet().iterator();
-
-    while (it.hasNext()) {
-      Object o = it.next();
-
-      if (o instanceof Faction) {
-        factionColors.put(((Faction) o).getName(), map.get(o));
-      }
-
-      if (o instanceof String) {
-        factionColors.put((String) o, map.get(o));
-      }
-    }
-
-    saveFactionColors();
-  }
-
-  /**
    * Changes the color of region-type r to color c.
    * 
    * @param r The RegionType the color is for
    * @param c The (new) color
    */
   public void setRegionColor(RegionType r, Color c) {
-    setRegionColor(r.getID(), c);
+    setRegionColor(r.getID().toString(), c);
   }
 
   /**
@@ -333,7 +358,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @param name The RegionType name the color is for
    * @param c The (new) color
    */
-  public void setRegionColor(StringID name, Color c) {
+  public void setRegionColor(String name, Color c) {
     Color oldC = regionColors.get(name);
 
     if (!c.equals(oldC)) {
@@ -343,31 +368,12 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   }
 
   /**
-   * Puts a whole map to the region-colors Table. Keys should be region-types or strings.
-   * 
-   * @param map A map containig RegionType/String - Color pairs
-   */
-  public void setRegionColors(Map<Object, Color> map) {
-    for (Object o : map.keySet()) {
-      if (o instanceof RegionType) {
-        regionColors.put(((RegionType) o).getID(), map.get(o));
-      }
-
-      if (o instanceof String) {
-        regionColors.put(StringID.create((String) o), map.get(o));
-      }
-    }
-
-    saveRegionColors();
-  }
-
-  /**
    * Returns the colors used for ocean regions in Politics Mode.
    * 
    * @return the ocean color
    */
   public Color getOceanColor() {
-    return oceanColor;
+    return getPredefinedColor(PredefinedColors.OCEAN_COLOR);
   }
 
   /**
@@ -376,8 +382,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @param c The new ocean color
    */
   public void setOceanColor(Color c) {
-    oceanColor = c;
-    saveOceanColor();
+    setPredefinedColor(PredefinedColors.OCEAN_COLOR, c);
   }
 
   /**
@@ -386,7 +391,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @return The color for unassigned regions
    */
   public Color getUnknownColor() {
-    return unknownColor;
+    return getPredefinedColor(PredefinedColors.UNKNOWN_COLOR);
   }
 
   /**
@@ -396,8 +401,36 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @param c The new color for unassigned regions
    */
   public void setUnknownColor(Color c) {
-    unknownColor = c;
-    saveUnknownColor();
+    setPredefinedColor(PredefinedColors.UNKNOWN_COLOR, c);
+  }
+
+  /**
+   * Returns a special color used, for example, for unknown factions.
+   */
+  public Color getWarningColor() {
+    return getPredefinedColor(PredefinedColors.WARNING_COLOR);
+  }
+
+  private void setPredefinedColor(PredefinedColors color, Color c) {
+    PredefinedColor predef = predefinedColors[color.ordinal()];
+    predef.setColor(c);
+    predef.save(settings);
+  }
+
+  private Color getPredefinedColor(PredefinedColors color) {
+    return predefinedColors[color.ordinal()].getColor();
+  }
+
+  protected void loadPredefinedColors() {
+    for (PredefinedColor predef : predefinedColors) {
+      predef.load(settings);
+    }
+  }
+
+  private void savePredefinedColors() {
+    for (PredefinedColor predef : predefinedColors) {
+      predef.save(settings);
+    }
   }
 
   /**
@@ -428,7 +461,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   }
 
   /**
-   * Sets the key used for deafult settings operations concerning the region colors.
+   * Sets the key used for default settings operations concerning the region colors.
    * 
    * @param rKey the new key
    */
@@ -446,7 +479,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   }
 
   /**
-   * Sets the key used for deafult settings operations concerning the Politics Mode.
+   * Sets the key used for default settings operations concerning the Politics Mode.
    * 
    * @param pKey the new key
    */
@@ -457,29 +490,26 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
   // //////////////////////////////
   // Global settings operations //
   // //////////////////////////////
-  protected void load(Map<String, Color> dest, String key, boolean reset) {
-    load(dest, key, reset, String.class);
-  }
 
   /**
-   * Parses the global settings value with the given key into the hashtable dest. If the reset flag
-   * is set, the hashtable is cleared before parsing.
+   * Parses the global settings value with the given key into the hash table dest. If the reset flag
+   * is set, the hash table is cleared before parsing.
    * 
-   * @param dest The destination hashtable
+   * @param dest The destination hash table
    * @param key the settings key to use
-   * @param reset true if the hashtable should be cleared
+   * @param reset true if the hash table should be cleared
    */
-  protected <T> void load(Map<T, Color> dest, String key, boolean reset, Class<T> keyType) {
+  protected void load(Map<String, Color> dest, String key, boolean reset) {
     if (reset) {
       dest.clear();
     }
 
-    String colors = settings.getProperty(key);
+    String colorSetting = settings.getProperty(key);
 
-    if (colors == null)
+    if (colorSetting == null)
       return;
 
-    StringTokenizer st = new StringTokenizer(colors, ";");
+    StringTokenizer st = new StringTokenizer(colorSetting, ";");
 
     try {
       while (st.hasMoreTokens()) {
@@ -488,18 +518,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         String green = st.nextToken();
         String blue = st.nextToken();
 
-        T mkey;
-        // i.pavkovic: stay conform with Colors.decode
-        if (keyType.equals(String.class)) {
-          mkey = (T) name;
-        } else if (keyType.equals(StringID.class)) {
-          mkey = (T) StringID.create(name);
-        } else {
-          RegionShapeCellRenderer.log.error("unknown key type");
-          return;
-        }
-
-        dest.put(mkey, Colors.decode(red + "," + green + "," + blue));
+        dest.put(name, Colors.decode(red + "," + green + "," + blue));
       }
     } catch (ClassCastException exc) {
       RegionShapeCellRenderer.log.error(exc);
@@ -507,22 +526,20 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     } catch (Exception exc) {
       RegionShapeCellRenderer.log.warn(exc);
     }
-
-    // maybe not the right count
   }
 
   /**
-   * Writes the given hashtable into the global settings using the given key.
+   * Writes the given hash table into the global settings using the given key.
    * 
-   * @param source The source hashtable with name-Color pairs
+   * @param source The source hash table with name-Color pairs
    * @param key The key for the property to set
    */
-  protected void save(Map<?, Color> source, String key) {
+  protected void save(Map<String, Color> source, String key) {
     StringBuffer buffer = new StringBuffer();
-    Iterator<?> it = source.keySet().iterator();
+    Iterator<String> it = source.keySet().iterator();
 
     while (it.hasNext()) {
-      Object name = it.next();
+      String name = it.next();
       Color col = source.get(name);
       buffer.append(name);
       buffer.append(';');
@@ -540,7 +557,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * Loads the faction colors saved with the default key factionKey. If the reset flag is set, the
    * color-table is cleared before loading.
    * 
-   * @param reset true if the faction-colors should be resetted
+   * @param reset true if the faction-colors should be reset
    */
   public void loadFactionColors(boolean reset) {
     loadFactionColors(factionKey, reset);
@@ -577,7 +594,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * Loads the region colors saved with the default key regionKey. If the reset flag is set, the
    * color-table is cleared before loading.
    * 
-   * @param reset true if the region colors should be resetted
+   * @param reset true if the region colors should be reset
    */
   public void loadRegionColors(boolean reset) {
     loadRegionColors(regionKey, reset);
@@ -588,10 +605,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * cleared before loading.
    * 
    * @param key the property to load from
-   * @param reset true if the region colors should be resetted
+   * @param reset true if the region colors should be reset
    */
   public void loadRegionColors(String key, boolean reset) {
-    load(regionColors, key, reset, StringID.class);
+    load(regionColors, key, reset);
   }
 
   /**
@@ -610,56 +627,26 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     save(regionColors, key);
   }
 
-  /**
-   * Loads the ocean color used for ocean fields in Politics Mode. The key for this is
-   * "GeomRenderer.OceanColor".
-   */
-  public void loadOceanColor() {
-    String color = settings.getProperty("GeomRenderer.OceanColor", "128,128,255");
-
-    // replace old ";" with ","
-    oceanColor = Colors.decode(color.replace(';', ','));
-  }
-
-  /**
-   * Saves the ocean color using the key "GeomRenderer.OceanColor".
-   */
-  public void saveOceanColor() {
-    settings.setProperty("GeomRenderer.OceanColor", Colors.encode(oceanColor));
-  }
-
-  /**
-   * Loads the unknown color used for unassigned fields in Politics Mode. The key for this is
-   * "GeomRenderer.UnknownColor".
-   */
-  public void loadUnknownColor() {
-    String color = settings.getProperty("GeomRenderer.UnknownColor", "128,128,128");
-
-    // replace old ";" with ","
-    unknownColor = Colors.decode(color.replace(';', ','));
-  }
-
-  /**
-   * Saves the unknown color using the key "GeomRenderer.UnknownColor".
-   */
-  public void saveUnknownColor() {
-    settings.setProperty("GeomRenderer.UnknownColor", Colors.encode(unknownColor));
-  }
-
   // ////////////////////////////////////
   // Rendering color decision methods //
   // ////////////////////////////////////
+
+  /** Used for storing all found factions. */
+  private List<String> factions = new LinkedList<String>();
+
   @Override
-  protected Color[] getColor(Region r) {
-    if (paintMode != RegionShapeCellRenderer.PAINT_ALLFACTIONS)
-      return null;
+  protected void getColor(Vector<Color> colorBuffer, Region r) {
+    if (paintMode != RegionShapeCellRenderer.PAINT_ALLFACTIONS) {
+      colorBuffer.setSize(0);
+      return;
+    }
 
     Color col = getTagColor(r);
 
     if (col != null) {
-      singleColorArray[0] = col;
-
-      return singleColorArray;
+      colorBuffer.setSize(1);
+      colorBuffer.add(col);
+      return;
     }
 
     factions.clear();
@@ -667,7 +654,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     Iterator<Unit> it = r.units().iterator();
 
     while (it.hasNext()) {
-      String f = (it.next()).getFaction().getName();
+      Unit u = it.next();
+      String f = (u).getFaction().getName();
 
       if (!factions.contains(f)) {
         factions.add(f);
@@ -675,28 +663,30 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     }
 
     if (factions.size() == 0) {
-      singleColorArray[0] = getUnknownColor();
-
+      colorBuffer.setSize(0);
       if (r.getRegionType().isOcean()) {
-        singleColorArray[0] = getOceanColor();
-      }
+        colorBuffer.add(getOceanColor());
+      } else {
+        colorBuffer.add(getUnknownColor());
 
-      return singleColorArray;
+      }
+      return;
     }
 
     if (factions.size() == 1) {
-      singleColorArray[0] = getFactionColor(factions.get(0));
-
-      return singleColorArray;
+      colorBuffer.setSize(0);
+      colorBuffer.add(getFactionColor(factions.get(0)));
+      return;
     }
 
-    Color cols[] = new Color[factions.size()];
+    int size = factions.size();
+    colorBuffer.setSize(size);
 
-    for (int i = 0; i < cols.length; i++) {
-      cols[i] = getFactionColor(factions.get(i));
+    for (int i = 0; i < size; i++) {
+      colorBuffer.set(i, getFactionColor(factions.get(i)));
     }
 
-    return cols;
+    return;
   }
 
   @Override
@@ -713,17 +703,19 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     case PAINT_POLITICS:
       return getPoliticsColor(r);
 
-    case PAINT_ALLFACTIONS:
-      return getUnknownColor(); // this is an error !!!
-
     case PAINT_TRUST_OVERALL:
       return getTrustColor(r, false);
 
     case PAINT_TRUST_GUARD:
       return getTrustColor(r, true);
 
+    case PAINT_ALLFACTIONS:
+      log.warn("illegal program state");
+      return getUnknownColor(); // this is an error !!!
+
     default:
-      return null; // error
+      log.warn("illegal program state");
+      return getUnknownColor(); // error
     }
   }
 
@@ -825,18 +817,16 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    */
   protected Color getRegionTypeColor(RegionType type) {
     if (type == null)
-      return RegionShapeCellRenderer.typelessColor;
+      return getPredefinedColor(PredefinedColors.TYPELESS_COLOR);
 
-    if (!regionColors.containsKey(type.getID())) {
-      Color c =
-          new Color((int) (Math.random() * 128) + 128, (int) (Math.random() * 128) + 128,
-              (int) (Math.random() * 128) + 128);
-      setRegionColor(type.getID(), c);
-
-      // adapter.addColor(0,type,c);
+    String name = type.getID().toString();
+    Color c = regionColors.get(name);
+    if (c == null) {
+      c = getNewColor(name, regionColors, new Color[] {}, 150);
+      setRegionColor(name, c);
     }
 
-    return regionColors.get(type.getID());
+    return c;
   }
 
   /**
@@ -862,9 +852,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       return getFactionColor(f);
 
     if (r.getRegionType().isOcean())
-      return oceanColor;
+      return getOceanColor();
 
-    return unknownColor;
+    return getUnknownColor();
   }
 
   /**
@@ -890,17 +880,38 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       f = "null";
     }
 
-    if (!factionColors.containsKey(f)) {
-      int i = 0;
-      Color c = createColor(f, i);
-      while ((distance(c, oceanColor) < 160 || distance(c, unknownColor) < 160) && i++ < 50) {
-        c = createColor(f, i);
-      }
+    Color c = factionColors.get(f);
+    if (c == null) {
+      c = getNewColor(f, factionColors, new Color[] { getOceanColor(), getUnknownColor(),
+          getWarningColor() }, 150);
       setFactionColor(f, c);
     }
 
-    // adapter.addColor(1,f,c);
-    return factionColors.get(f);
+    return c;
+  }
+
+  private Color getNewColor(String name, Map<String, Color> colors, Color[] avoid, int mindist) {
+    int maxDist = -1;
+    Color cmax = getPredefinedColor(PredefinedColors.TYPELESS_COLOR);
+
+    int MAX = 100;
+    for (int i = 0; i < MAX; ++i) {
+      Color cCand = createColor(name, i);
+      while ((distance(cCand, getOceanColor()) < 160 || distance(cCand, getUnknownColor()) < 160)
+          && i++ < MAX) {
+        cCand = createColor(name, i);
+      }
+
+      int minDist = Integer.MAX_VALUE;
+      for (Color c : colors.values()) {
+        minDist = Math.min(minDist, distance(c, cCand));
+      }
+      if (maxDist < minDist) {
+        cmax = cCand;
+        maxDist = minDist;
+      }
+    }
+    return cmax;
   }
 
   private int distance(Color c1, Color c2) {
@@ -917,39 +928,11 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     Color c =
         new Color(min + (Math.abs(name.hashCode()) + 31 * seed) % diff, min
             + (Math.abs(name.hashCode() >> 6) + 31 * seed) % diff, min
-            + (Math.abs(hashCode() >> 12) + 31 * seed) % diff);
-    // lastColor = c;
+                + (Math.abs(name.hashCode() >> 12) + 31 * seed) % diff);
+    // new Color((int) (Math.random() * 128) + 128, (int) (Math.random() * 128) + 128, (int)
+    // (Math.random() * 128) + 128);
     return c;
   }
-
-  // /**
-  // * Create a random color that is different from the last created color.
-  // */
-  // private Color createColor() {
-  // final int min = 100, max = 240, diff = max - min;
-  // if (lastColor == null) {
-  // lastColor = new Color(min, min, min);
-  // }
-  // int offsR = lastColor.getRed() - min;
-  // int offsG = lastColor.getGreen() - min;
-  // int offsB = lastColor.getBlue() - min;
-  // switch (random.nextInt(3)) {
-  // case 0:
-  // offsR += diff / 3 + 1;
-  // break;
-  // case 1:
-  // offsG += diff / 3 + 1;
-  // break;
-  // case 2:
-  // offsB += diff / 3 + 1;
-  // break;
-  // }
-  // Color c =
-  // new Color((offsR + random.nextInt(diff / 4 + 1)) % diff + min, (offsG + random.nextInt(25))
-  // % diff + min, (offsB + random.nextInt(25)) % diff + min);
-  // lastColor = c;
-  // return c;
-  // }
 
   /**
    * Returns the color for faction f. If there's no entry in the faction-color table the entry is
@@ -972,10 +955,11 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * @return the color for the given faction
    */
   protected Color getFactionColor(String f, Color c) {
+    if (f == null) {
+      f = "null";
+    }
     if (!factionColors.containsKey(f)) {
       setFactionColor(f, c);
-
-      // adapter.addColor(1,f,c);
     }
 
     return factionColors.get(f);
@@ -1049,27 +1033,27 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
 
     JMenuItem item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.terrain"));
     item.addActionListener(al);
-    item.setActionCommand("0");
+    item.setActionCommand(String.valueOf(RegionShapeCellRenderer.PAINT_REGIONTYPE));
     contextMenu.add(item);
 
     item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.byfaction"));
     item.addActionListener(al);
-    item.setActionCommand("1");
+    item.setActionCommand(String.valueOf(RegionShapeCellRenderer.PAINT_POLITICS));
     contextMenu.add(item);
 
     item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.allfactions"));
     item.addActionListener(al);
-    item.setActionCommand("2");
+    item.setActionCommand(String.valueOf(RegionShapeCellRenderer.PAINT_ALLFACTIONS));
     contextMenu.add(item);
 
     item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevel"));
     item.addActionListener(al);
-    item.setActionCommand("3");
+    item.setActionCommand(String.valueOf(RegionShapeCellRenderer.PAINT_TRUST_OVERALL));
     contextMenu.add(item);
 
     item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevelandguard"));
     item.addActionListener(al);
-    item.setActionCommand("4");
+    item.setActionCommand(String.valueOf(RegionShapeCellRenderer.PAINT_TRUST_GUARD));
     contextMenu.add(item);
   }
 
@@ -1119,7 +1103,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
 
       // generates a new one if not present
       if (f.getTrustLevel() <= Faction.TL_DEFAULT) {
-        getFactionColor(f, Color.red);
+        getFactionColor(f, getWarningColor());
       } else {
         getFactionColor(f);
       }
@@ -1133,9 +1117,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    */
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
-    /*
-     * if (adapter==null) adapter=new GeomRendererAdapter(); return adapter;
-     */
     return new GeomRendererAdapter();
   }
 
@@ -1145,20 +1126,22 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
    * performed through calls of addColor(). Changes are applied directly.
    */
   protected class GeomRendererAdapter extends JPanel implements PreferencesAdapter, ActionListener {
+
     private class ModePanel extends JPanel implements ActionListener {
       /**
        * The element for showing in the list. Encapsulates name and color plus an id(not necessary)
        */
       private class ListElement {
         String name;
-        // StringID id;
         Color color;
 
-        ListElement(String n, StringID i, Color c) {
+        ListElement(String n, Color c) {
+          if (n == null || c == null)
+            throw new NullPointerException();
           name = n;
-          // id = i;
           color = c;
         }
+
       }
 
       // /////////////////
@@ -1237,7 +1220,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       /**
        * Renders the list. Prefers ListElement values were the color is used for a color icon.
        */
-      private class ModePanelCellRenderer extends JLabel implements ListCellRenderer {
+      private class ModePanelCellRenderer extends DefaultListCellRenderer { // implements
+                                                                            // ListCellRenderer<ListElement>
+                                                                            // {
         /**
          * Simple colored icon of given size(uses prefDim of ModePanel)
          */
@@ -1274,8 +1259,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
           }
 
           /**
-					 * 
-					 */
+           *
+           */
           public void setColor(Color c) {
             myColor = c;
           }
@@ -1296,28 +1281,28 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
          * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
          *      java.lang.Object, int, boolean, boolean)
          */
-        public Component getListCellRendererComponent(JList aList, Object value, int index,
-            boolean isSelected, boolean cellHasFocus) {
+        @Override
+        public Component getListCellRendererComponent(JList<?> aList,
+            Object value, int index, boolean isSelected, boolean cellHasFocus) {
           if (value instanceof ListElement) {
             ListElement elem = (ListElement) value;
             setText(elem.name);
             icon.setColor(elem.color);
           } else {
-            icon.setColor(Color.white);
-            setText("---");
+            log.warn("invalid list element");
+            setText(value.toString());
           }
-
           setBackground(isSelected ? aList.getSelectionBackground() : aList.getBackground());
           setForeground(isSelected ? aList.getSelectionForeground() : aList.getForeground());
-
           return this;
         }
+
       }
 
       /**
        * A small ListModel implementation that allows ordering through a Comparator.
        */
-      private class SortableListModel<T> extends AbstractListModel {
+      private class SortableListModel<T> extends AbstractListModel<T> {
         protected List<T> listData;
         protected Comparator<T> comp = null;
         protected int listOffset = -1;
@@ -1336,7 +1321,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         /**
          * @see javax.swing.ListModel#getElementAt(int)
          */
-        public Object getElementAt(int index) {
+        public T getElementAt(int index) {
           return listData.get(index);
         }
 
@@ -1416,9 +1401,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       @SuppressWarnings("hiding")
       private final Logger log = Logger.getInstance(ModePanel.class);
       protected boolean politicsMode;
-      private Collection<Object> myColors;
+      private Collection<String> myColors;
       private Dimension prefDim;
-      private JList list;
+      private JList<ListElement> list;
       private SortableListModel<ListElement> listModel;
       private String oceanLabel;
       private String unknownLabel;
@@ -1441,14 +1426,14 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         trustComp = new ListElementFactionTrustComparator();
 
         listModel = new SortableListModel<ListElement>(null);
-        myColors = new LinkedList<Object>();
+        myColors = new LinkedList<String>();
 
         prefDim = new Dimension(50, 10);
 
-        list = new JList(listModel);
+        list = new JList<ListElement>(listModel);
         list.setCellRenderer(new ModePanelCellRenderer());
 
-        final JList mList = list;
+        final JList<ListElement> mList = list;
         list.addMouseListener(new MouseAdapter() {
           @Override
           public void mouseClicked(MouseEvent e) {
@@ -1495,67 +1480,22 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         loadElements(politicsMode ? factionColors : regionColors);
       }
 
-      protected void addGUIPair(Object obj, Color col) {
-        String name = null;
-        StringID id = null;
-
-        if (obj instanceof RegionType) {
-          RegionType rt = (RegionType) obj;
-          name = rt.getName();
-          id = rt.getID();
-        } else if (obj instanceof StringID) {
-          id = (StringID) obj;
-          name = id.toString();
-        } else {
-          if (obj != null) {
-            name = obj.toString();
-          } else {
-            name = "null";
-          }
-        }
-
-        if (name == null) {
-          log.info(obj);
-        }
-
-        ListElement element = new ListElement(name, id, col);
+      protected void addGUIPair(ListElement element, Color col) {
+        // ListElement element = new ListElement(obj.getLabel(), obj.getId(), col);
         listModel.add(element);
       }
 
-      protected <T> void loadElements(Map<T, Color> source) {
+      protected void loadElements(Map<String, Color> source) {
         listModel.removeAll();
         if (politicsMode) { // add ocean and unknown
-          addGUIPair(oceanLabel, oceanColor);
-          addGUIPair(unknownLabel, unknownColor);
+          addGUIPair(new ListElement(oceanLabel, getOceanColor()), getOceanColor());
+          addGUIPair(new ListElement(unknownLabel, getUnknownColor()), getUnknownColor());
         }
 
-        // if we get IDs we have to get the object behind
-        Iterator<T> it = source.keySet().iterator();
-
-        while (it.hasNext()) {
-          Object name;
-          T key = it.next();
-
-          if (politicsMode) {
-            // we work with factionColors, so key is a String
-            name = key;
-          } else {
-            // we work with regionColors, so key is a StringID
-            StringID id = (StringID) key;
-            name = id;
-
-            if ((data != null) && (data.getRules() != null)) {
-              RegionType rt = data.getRules().getRegionType(id);
-
-              if (rt != null) {
-                name = rt;
-              }
-            }
-          }
-
+        for (String key : source.keySet()) {
           Color c = source.get(key);
-          addGUIPair(name, c);
-          myColors.add(name);
+          addGUIPair(new ListElement(key, c), c);
+          myColors.add(key);
         }
 
         if (nameBox != null) {
@@ -1564,42 +1504,13 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
         list.repaint();
       }
 
-      /**
-       * Adds a name/color pair to the list
-       */
-      public void addColor(String name, Color c) {
-        if (name == null) {
-          name = "null";
-        }
-
-        if (!myColors.contains(name)) {
-          addGUIPair(name, c);
-          myColors.add(name);
-        }
-      }
-
-      /**
-       * Add a region type/color pair to the list
-       */
-      public void addColor(RegionType name, Color c) {
-        if (!myColors.contains(name)) {
-          addGUIPair(name, c);
-          myColors.add(name);
-        }
-      }
-
-      public void removeColor(String name) {
-        for (int i = 0; i < listModel.getSize(); ++i) {
-          ListElement element = (ListElement) listModel.getElementAt(i);
-          if (element.name.equals(name)) {
-            listModel.remove(element);
-            myColors.remove(name);
-          }
-        }
+      public void removeColor(ListElement element) {
+        listModel.remove(element);
+        myColors.remove(element.name);
       }
 
       protected void actionPerformed(int index) {
-        ListElement element = (ListElement) listModel.getElementAt(index);
+        ListElement element = listModel.getElementAt(index);
 
         String title = null;
         if (oceanLabel.equals(element.name)) {
@@ -1633,17 +1544,16 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
           listModel.sort(trustComp, 2);
           list.repaint();
         } else if (e.getSource() == removeButton) {
-          ListElement element = (ListElement) list.getSelectedValue();
+          ListElement element = list.getSelectedValue();
           if (element != null
               && JOptionPane.showConfirmDialog(this, Resources.get(
                   "map.regionshapecellrenderer.dialog.confirmdelete.message", element.name, list
                       .getSelectedIndices().length), Resources
-                  .get("map.regionshapecellrenderer.dialog.confirmdelete.title"),
+                          .get("map.regionshapecellrenderer.dialog.confirmdelete.title"),
                   JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            for (Object val : list.getSelectedValues()) {
-              element = (ListElement) val;
-              if (!oceanLabel.equals(element.name) && !unknownLabel.equals(element.name)) {
-                removeColor(element.name);
+            for (ListElement element2 : list.getSelectedValuesList()) {
+              if (!oceanLabel.equals(element2.name) && !unknownLabel.equals(element2.name)) {
+                removeColor(element2);
               }
             }
           }
@@ -1656,7 +1566,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       public Map<String, Color> getElements() {
         Map<String, Color> result = new HashMap<String, Color>();
         for (int index = 0; index < listModel.getSize(); ++index) {
-          ListElement element = (ListElement) listModel.getElementAt(index);
+          ListElement element = listModel.getElementAt(index);
           result.put(element.name, element.color);
         }
         return result;
@@ -1674,7 +1584,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     protected CardLayout card;
 
     /** The box for the two modes */
-    private JComboBox modeBox;
+    private JComboBox<String> modeBox;
 
     /** The two ModePanels for RegionType and Politics Mode */
     private ModePanel content[];
@@ -1701,12 +1611,15 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       inner.add(scroller, "1");
 
       String items[] = new String[5];
+      if (RegionShapeCellRenderer.PAINT_MODECOUNT != 5) {
+        log.errorOnce("wrong number of modes in RegionShapeCellRenderer");
+      }
       items[0] = Resources.get("map.regionshapecellrenderer.cmb.mode.terrain");
       items[1] = Resources.get("map.regionshapecellrenderer.cmb.mode.byfaction");
       items[2] = Resources.get("map.regionshapecellrenderer.cmb.mode.allfactions");
       items[3] = Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevel");
       items[4] = Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevelandguard");
-      modeBox = new JComboBox(items);
+      modeBox = new JComboBox<String>(items);
       modeBox.setEditable(false);
       modeBox.addActionListener(this);
 
@@ -1736,33 +1649,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     }
 
     /**
-     * Adds a new pair to the indexed ModePanel.
-     * 
-     * @param index the ModePanel to use - 0 for RegionType, 1 for Politics
-     * @param name the name of the new pair
-     * @param c the color of the new pair
-     */
-    public void addColor(int index, String name, Color c) {
-      content[index].addColor(name, c);
-    }
-
-    /**
-     * @see #addColor(int, String, Color)
-     */
-    public void addColor(int index, RegionType name, Color c) {
-      content[index].addColor(name, c);
-    }
-
-    /**
-     * Remove a color mapping from the indexed ModePanel
-     * 
-     * @see #addColor(int, String, Color)
-     */
-    public void removeColor(int index, String name) {
-      content[index].removeColor(name);
-    }
-
-    /**
      * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
      */
     public void initPreferences() {
@@ -1786,7 +1672,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
           } else if (mode == 1) {
             setFactionColor(entry.getKey(), entry.getValue());
           } else if (mode == 0) {
-            setRegionColor(StringID.create(entry.getKey()), entry.getValue());
+            setRegionColor(entry.getKey(), entry.getValue());
           }
         }
       }
@@ -1798,8 +1684,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       }
       saveFactionColors();
       saveRegionColors();
-      saveOceanColor();
-      saveUnknownColor();
+
+      savePredefinedColors();
     }
 
     /**
@@ -1855,4 +1741,5 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       modeBox.setSelectedIndex(c);
     }
   }
+
 }

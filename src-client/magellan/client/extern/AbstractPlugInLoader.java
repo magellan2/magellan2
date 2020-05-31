@@ -184,6 +184,7 @@ public abstract class AbstractPlugInLoader<T> {
               }
             }
           }
+          zip.close();
         } else if (file.getName().toLowerCase().endsWith(postfix)) {
           String name = file.getName();
           name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');

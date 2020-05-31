@@ -34,7 +34,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -102,8 +104,8 @@ import magellan.client.actions.file.QuitAction;
 import magellan.client.actions.file.SaveOrdersAction;
 import magellan.client.actions.map.AddSelectionAction;
 import magellan.client.actions.map.ExpandSelectionAction;
-import magellan.client.actions.map.FillSelectionAction;
 import magellan.client.actions.map.FillInsideAction;
+import magellan.client.actions.map.FillSelectionAction;
 import magellan.client.actions.map.InvertSelectionAction;
 import magellan.client.actions.map.IslandAction;
 import magellan.client.actions.map.MapSaveAction;
@@ -487,19 +489,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   protected static Properties initNewSettings() {
     SelfCleaningProperties settings = new SelfCleaningProperties();
     settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ",Einkaufsgut");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Einkaufsgut");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER
+        + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, ",Einkaufsgut");
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER
+        + PropertiesHelper.ADVANCEDSHAPERENDERER_S_CURRENT_SET, "Einkaufsgut");
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,
         "\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "10");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,
         "0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
-    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + "Einkaufsgut"
+    settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, "0");
     // Message Panel Default colors.
     settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
@@ -1253,31 +1257,35 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
-                Client.startWindow);
-            String currentVersion = VersionInfo.getVersion(tResourceDir);
-            if (!Utils.isEmpty(newestVersion)) {
-              Client.log.info("Newest Version on server: " + newestVersion);
-              Client.log.info("Current Version: " + currentVersion);
-              if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-                String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-                    .getGUILocale().getLanguage());
-                if (url == null) {
-                  url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+            try {
+              String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
+                  Client.startWindow);
+              String currentVersion = VersionInfo.getVersion(tResourceDir);
+              if (!Utils.isEmpty(newestVersion)) {
+                Client.log.info("Newest Version on server: " + newestVersion);
+                Client.log.info("Current Version: " + currentVersion);
+                if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+                  String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+                      .getGUILocale().getLanguage());
+                  if (url == null) {
+                    url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+                  }
+
+                  JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
+                      "client.new_version", new Object[] { newestVersion, url }));
                 }
-
-                JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
-                    "client.new_version", new Object[] { newestVersion, url }));
               }
-            }
 
-            String lastVersion = c.getProperties().getProperty("Client.LastVersion");
-            if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-              UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
-              dlg.setVisible(true);
-              if (!dlg.getResult()) {
-                c.quit(false);
+              String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+              if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+                UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
+                dlg.setVisible(true);
+                if (!dlg.getResult()) {
+                  c.quit(false);
+                }
               }
+            } catch (Exception e) {
+              log.error("Could not check version.", e);
             }
 
             c.application = new DefaultApplication();
@@ -2245,7 +2253,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
             if (units > 0) {
               BigDecimal percent = (new BigDecimal((done * 100) / ((float) units))).setScale(2,
-                  BigDecimal.ROUND_DOWN);
+                  RoundingMode.DOWN);
               title3.append(" (").append(units).append(" ").append(Resources.get(
                   "client.title.unit")).append(", ").append(done).append(" ").append(Resources.get(
                       "client.title.done")).append(", ").append(Resources.get(
@@ -2879,7 +2887,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     for (Class<MagellanPlugIn> plugInClass : plugInClasses) {
       try {
-        MagellanPlugIn plugIn = plugInClass.newInstance();
+        Constructor<MagellanPlugIn> constructor = plugInClass.getConstructor();
+        try {
+          if (!constructor.trySetAccessible())
+            return;
+        } catch (NoSuchMethodError e) {
+          // must be pre java 9, this is fine
+        }
+
+        MagellanPlugIn plugIn = constructor.newInstance();
+
         plugIn.init(this, properties);
         plugIns.add(plugIn);
       } catch (Throwable t) {

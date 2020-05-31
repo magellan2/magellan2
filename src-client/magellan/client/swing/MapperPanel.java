@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,8 +41,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
-import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -71,6 +72,8 @@ import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.preferences.MapPreferences;
+import magellan.client.swing.map.AdvancedRegionShapeCellRenderer;
+import magellan.client.swing.map.AdvancedTextCellRenderer;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.HexCellRenderer;
 import magellan.client.swing.map.MapCellRenderer;
@@ -88,6 +91,7 @@ import magellan.library.HasRegion;
 import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
+import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -163,8 +167,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.removeAllItems();
 
-    for (int i = 0; i < levels.size(); i++) {
-      cmbLevel.addItem(levels.get(i));
+    for (Integer level : levels) {
+      cmbLevel.addItem(level);
     }
 
     if (cmbLevel.getItemCount() > 0) {
@@ -329,7 +333,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
               centerRect.x -=
                   ((scpMapper.getViewport().getViewRect().getWidth() - centerRect.getWidth()) / 2);
               centerRect.y -=
-                  ((scpMapper.getViewport().getViewRect().getHeight() - centerRect.getHeight()) / 2);
+                  ((scpMapper.getViewport().getViewRect().getHeight() - centerRect.getHeight())
+                      / 2);
               scpMapper.getViewport().setViewPosition(centerRect.getLocation());
             }
           }
@@ -341,8 +346,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
   Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
-
-  private Random random = new Random();
 
   private boolean showNavi = true;
 
@@ -391,7 +394,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       @Override
       public void mouseReleased(MouseEvent e) {
         if (((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) || !dragValidated
-            || ((e.getModifiers() & InputEvent.CTRL_MASK) != 0))
+            || ((e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0))
           return;
 
         Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
@@ -445,43 +448,46 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     });
 
     // initialize Shortcuts
-    // (stm) deactivated, too obfuscating for user
     tooltipShortcut = new TooltipShortcut();
 
-    mapperShortcuts = new ArrayList<KeyStroke>(13);
+    mapperShortcuts = new ArrayList<KeyStroke>(16);
     // 0: request Focus
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK));
     // 1: request Focus
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.ALT_DOWN_MASK));
     // 2: add Hotspot
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
     // 3: remove Hotspot
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK
-        | InputEvent.SHIFT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK));
     // 4: fog of war
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
     // 5: tooltip selection
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK
-        | InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK));
 
     // 6,7: Map Zoom in First is numpad, scnd is normal key
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_MASK));
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_DOWN_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.CTRL_DOWN_MASK));
     // 8,9: Map Zoom out
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_MASK));
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_DOWN_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_DOWN_MASK));
 
     // 3 Level Zoom in
     // 10,11 Fast Zoom In
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.ALT_MASK));
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.ALT_DOWN_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, InputEvent.ALT_DOWN_MASK));
     // 12,13 Fast Zoom out
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.ALT_MASK));
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.ALT_DOWN_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.ALT_DOWN_MASK));
 
     // 14: ATR selection
-    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK
-        | InputEvent.ALT_MASK));
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK));
+
+    // 15: ARR selection
+    mapperShortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
 
@@ -498,7 +504,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Creates the Minimap Panel.
    */
   protected void initMinimap() {
-    minimap = new Minimapper(context);
+    minimap = new Minimapper(context, "MINIMAP");
     minimapGeometry = minimap.getCellGeometry();
 
     Dimension d = minimapGeometry.getCellSize();
@@ -583,15 +589,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   protected void rescale() {
     minimapScaler
         .componentResized(new ComponentEvent(minimapPane, ComponentEvent.COMPONENT_RESIZED));
-  }
-
-  /**
-   * Update the minimap's colors.
-   *
-   * @see Minimapper#synchronizeColors()
-   */
-  public void synchronizeMinimap() {
-    minimap.synchronizeColors();
   }
 
   /**
@@ -898,7 +895,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   // }
 
   private Container getMainPane(Collection<MapCellRenderer> renderers, CellGeometry geo) {
-    mapper = new Mapper(context, renderers, geo);
+    mapper = new Mapper(context, renderers, geo, "Mapper");
     scpMapper = new JScrollPane(mapper);
 
     // ClearLook suggests to remove border
@@ -932,14 +929,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     sldScaling.addKeyListener(new KeyAdapter() {
       @Override
       public void keyPressed(KeyEvent e) {
-        if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+        if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
           sldScaling.setSnapToTicks(true);
         }
       }
 
       @Override
       public void keyReleased(KeyEvent e) {
-        if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+        if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0) {
           sldScaling.setSnapToTicks(false);
         }
       }
@@ -1149,7 +1146,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
 
     case 5:
-      // tooltips? open problems are opened CTRL+P
+      // CTRL+Shift+P
       changeTooltip();
       break;
 
@@ -1192,7 +1189,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
 
     case 14:
+      // CTRL+Shift+T
       changeATR();
+      break;
+
+    case 15:
+      // CTRL+Shift+R
+      changeARR();
       break;
     }
   }
@@ -1201,75 +1204,119 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Creates a popup menu for changing tooltips
    */
   private void changeTooltip() {
-    final List<?> list = mapper.getAllTooltipDefinitions();
-    if (list == null)
-      return;
-
-    JPopupMenu menu = new JPopupMenu("tooltips");
-    JMenuItem popupCaption =
-        new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
-    popupCaption.setEnabled(false);
-    menu.add(popupCaption);
-
-    for (int i = 0; i < 10; ++i) {
-      final int number = i;
-      JMenuItem item =
-          new JMenuItem(new AbstractAction(String.valueOf(number) + " "
-              + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
-
-            public void actionPerformed(ActionEvent e) {
-              if (list.size() > (2 * number)) {
-                mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
-              }
-            }
-          });
-      item.setMnemonic(Character.forDigit(i, 10));
-      menu.add(item);
-      if (list.size() > (2 * number)) {
-        item.setEnabled(true);
-      } else {
-        item.setEnabled(false);
-      }
+    final List<String> list = mapper.getAllTooltipDefinitions();
+    String[] current = mapper.getTooltipDefinition();
+    final Map<String, String> defs = CollectionFactory.createOrderedMap(list.size() / 2);
+    for (ListIterator<String> it = list.listIterator(); it.hasNext();) {
+      defs.put(it.next(), it.next());
     }
-    menu.show(this, getLocation().x, getLocation().y);
+
+    showDialog(new ArrayList<String>(defs.keySet()), Resources.get(
+        "mapperpanel.shortcuts.changetooltipmenu.caption"), null,
+        new Loader() {
+          public void load(String name) {
+            mapper.setTooltipDefinition(name, defs.get(name));
+            mapper.setShowTooltip(true);
+          }
+        }, current[0]);
   }
+  // if (list == null)
+  // return;
+  //
+  // JPopupMenu menu = new JPopupMenu("tooltips");
+  // JMenuItem popupCaption =
+  // new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
+  // popupCaption.setEnabled(false);
+  // menu.add(popupCaption);
+  //
+  // for (int i = 0; i < 10; ++i) {
+  // final int number = i;
+  // JMenuItem item =
+  // new JMenuItem(new AbstractAction(String.valueOf(number) + " "
+  // + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
+  //
+  // public void actionPerformed(ActionEvent e) {
+  // if (list.size() > (2 * number)) {
+  // mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
+  // }
+  // }
+  // });
+  // item.setMnemonic(Character.forDigit(i, 10));
+  // menu.add(item);
+  // if (list.size() > (2 * number)) {
+  // item.setEnabled(true);
+  // } else {
+  // item.setEnabled(false);
+  // }
+  // }
+  // menu.show(this, getLocation().x, getLocation().y);
+  // }
 
   /**
    * Creates a popup menu for changing tooltips.
    */
   private void changeATR() {
-    final List<String> sets = mapper.getATR().getAllSets();
+    final AdvancedTextCellRenderer atr = mapper.getATR();
+    final List<String> sets = atr.getAllSetNames();
+    showDialog(sets, Resources.get("mapperpanel.shortcuts.changeatr.caption"), atr, new Loader() {
+      public void load(String name) {
+        atr.loadSet(name);
+      }
+    }, atr.getCurrentSet());
+  }
+
+  /**
+   * Creates a popup menu for changing tooltips.
+   */
+  private void changeARR() {
+    final AdvancedRegionShapeCellRenderer arr = mapper.getARR();
+    final List<String> sets = arr.getAllSetNames();
+    showDialog(sets, Resources.get("mapperpanel.shortcuts.changearr.caption"), arr, new Loader() {
+      public void load(String name) {
+        arr.loadSet(name);
+      }
+    }, arr.getCurrentSet());
+  }
+
+  interface Loader {
+    void load(String name);
+  }
+
+  private void showDialog(final List<String> sets, String caption,
+      final MapCellRenderer newRenderer, final Loader loader, String currentSet) {
     if (sets == null)
       return;
 
     JPopupMenu menu = new JPopupMenu("tooltips");
-    JMenuItem popupCaption =
-        new JMenuItem(Resources.get("mapperpanel.shortcuts.changeatr.caption"));
+    JMenuItem popupCaption = new JMenuItem(caption);
     popupCaption.setEnabled(false);
     menu.add(popupCaption);
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < sets.size(); ++i) {
       final int number = i;
-      String name = i < sets.size() ? sets.get(i) : "---";
-      JMenuItem item = new JMenuItem(new AbstractAction(String.valueOf(number) + " " + name) {
+      String name = sets.get(number);
+      JMenuItem item = new JMenuItem(new AbstractAction(String.valueOf(number + 1) + " " + name) {
 
         public void actionPerformed(ActionEvent e) {
 
           if (sets.size() > number) {
-            mapper.setRenderer(mapper.getATR());
-            mapper.getATR().loadSet(sets.get(number));
+            if (newRenderer != null) {
+              mapper.setRenderer(newRenderer);
+            }
+            loader.load(sets.get(number));
+
             Mapper.setRenderContextChanged(true);
             DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
           }
         }
       });
-      item.setMnemonic(Character.forDigit(i, 10));
-      menu.add(item);
-      if (sets.size() > number) {
-        item.setEnabled(true);
-      } else {
-        item.setEnabled(false);
+      if (number < 10) {
+        item.setMnemonic(Character.forDigit((number + 1) % 10, 10));
       }
+      if (sets.get(number).equals(currentSet)) {
+        item.setFont(item.getFont().deriveFont(Font.BOLD));
+      }
+      menu.add(item);
     }
     menu.show(this, getLocation().x, getLocation().y);
   }
@@ -1438,7 +1485,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       java.util.List<String> list = mapper.getAllTooltipDefinitions();
 
       if ((list != null) && (list.size() > (2 * index))) {
-        mapper.setTooltipDefinition(list.get((2 * index) + 1));
+        mapper.setTooltipDefinition(list.get(2 * index), list.get((2 * index) + 1));
       }
     }
 

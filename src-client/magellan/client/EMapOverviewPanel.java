@@ -1514,6 +1514,44 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
+   * Inserts a new ship into the tree.
+   */
+  public void tempShipCreated(Ship parent, Ship newShip) {
+    DefaultMutableTreeNode parentNode =
+        (DefaultMutableTreeNode) shipNodes.get(parent.getID());
+    if (parentNode != null) {
+
+      if (newShip == null) {
+        if (parentNode.getChildCount() > 0) {
+          parentNode.removeAllChildren();
+          treeModel.reload(parentNode);
+        }
+        return;
+      }
+
+      Comparator<Unique> idComp = IDComparator.DEFAULT;
+      List<Ship> siblings = new LinkedList<Ship>(parent.getTempShips());
+      Collections.sort(siblings, idComp);
+
+      int index = Collections.binarySearch(siblings, newShip, idComp);
+
+      // bugfixing if creating more than one temp unit at once:
+      // lower maximum to parentNode.getChildCount()
+      index = Math.min(index, parentNode.getChildCount());
+      if (index >= 0) {
+        insertShip(parentNode, newShip, index);
+      } else {
+        EMapOverviewPanel.log
+            .info(
+                "EMapOverviewPanel.tempUnitCreated(): new temp ship is not a child of its parent!");
+      }
+    } else {
+      EMapOverviewPanel.log
+          .info("EMapOverviewPanel.tempUnitCreated(): cannot determine parent node of temp ship!");
+    }
+  }
+
+  /**
    * Inserts the temp unit into the tree.
    *
    * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
@@ -1567,6 +1605,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     /*
      * parentNode.remove(unitNode); treeModel.reload(parentNode);
      */
+  }
+
+  private void insertShip(DefaultMutableTreeNode parentNode, Ship newShip, int index) {
+    UnitContainerNodeWrapper w = nodeWrapperFactory.createUnitContainerNodeWrapper(newShip);
+    DefaultMutableTreeNode shipNode = new DefaultMutableTreeNode(w);
+    parentNode.insert(shipNode, index);
+    treeModel.reload(parentNode);
   }
 
   private void insertUnit(DefaultMutableTreeNode parentNode, Unit u, int index) {
@@ -2116,7 +2161,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   protected synchronized void update(Unit u) {
     // log.finest(u);
     // long time = System.currentTimeMillis();
-    // TreeNode regionNode = regionNodes.get(u.getRegion().getID());
+    TreeNode regionNode = regionNodes.get(u.getRegion().getID());
     // Set<TreeNode> parents = new HashSet<TreeNode>();
     // parents.add(regionNode);
     //
@@ -2130,8 +2175,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         unw.clearBuffer();
         // parents.add(parent);
       }
-    }
 
+    }
+    for (Ship parent : u.getRegion().ships()) {
+      tempShipCreated(parent, null);
+      for (Ship tempShip : parent.getTempShips()) {
+        tempShipCreated(parent, tempShip);
+      }
+    }
     updateTree(this);
 
     // log.finest(System.currentTimeMillis() - time);

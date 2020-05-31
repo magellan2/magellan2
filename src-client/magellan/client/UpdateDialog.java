@@ -96,6 +96,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
   private void setText() {
     // Text area
     final StringBuilder text = new StringBuilder(Resources.get("updatedialog.htmlheader"));
+
     if (currentVersion == null || currentVersion.equals("null")) {
       // could not determine current version!
       text.append(Resources
@@ -105,16 +106,26 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       text.append(Resources.get("updatedialog.firstrunwarning", new Object[] { lastVersion,
           currentVersion }));
       showFile("README.md");
-    } else if (lastVersion.equals("null") || VersionInfo.isNewer(currentVersion, lastVersion)) {
-      text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
-          currentVersion }));
-      showFile("RELEASENOTES.txt");
-    } else if (VersionInfo.isNewer(lastVersion, currentVersion)) {
-      text.append(Resources.get("updatedialog.downgradewarning", new Object[] { lastVersion,
-          currentVersion }));
-      showFile("RELEASENOTES.txt");
-    } else
-      throw new IllegalArgumentException("???");
+    } else {
+      boolean upgrade;
+      upgrade = VersionInfo.isNewer(currentVersion, lastVersion);
+
+      if (lastVersion.equals("null") || upgrade) {
+        text.append(Resources.get("updatedialog.updatewarning", new Object[] { lastVersion,
+            currentVersion }));
+        showFile("RELEASENOTES.txt");
+      } else {
+        boolean downgrade;
+        downgrade = VersionInfo.isNewer(lastVersion, currentVersion);
+        if (downgrade) {
+          text.append(Resources.get("updatedialog.downgradewarning", new Object[] { lastVersion,
+              currentVersion }));
+          showFile("RELEASENOTES.txt");
+        } else {
+          log.error(currentVersion + " is neither older or newer than " + lastVersion);
+        }
+      }
+    }
     text.append(Resources.get("updatedialog.infotext", MagellanUrl
         .getMagellanUrl(MagellanUrl.WWW_DOWNLOAD), MagellanUrl
             .getMagellanUrl(MagellanUrl.WWW_FILES), MagellanUrl.getRootUrl()));
@@ -129,15 +140,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
     setModal(true);
     setTitle(Resources.get("updatedialog.window.caption"));
-
-    // Icon icon = MagellanImages.ABOUT_MAGELLAN;
-
-    // JLabel magellanImage = new JLabel();
-    // magellanImage.setIcon(icon);
-    // magellanImage.setText("");
-    // magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // mainPanel.setBackground(MagellanImages.background);
-    // mainPanel.setForeground(MagellanImages.foreground);
 
     versionInfo = new JEditorPane();
     versionInfo.setBackground(MagellanImages.BACKGROUND);
@@ -157,9 +159,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
     releaseText.setBackground(MagellanImages.BACKGROUND);
     releaseText.setForeground(Color.BLACK);
-    // releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
-    // Font font = releaseText.getFont();
-    // releaseText.setContentType("text/html");
     releaseText.setEditable(false);
     releaseText.setCaretPosition(0);
     releaseNotesPane = new JScrollPane(releaseText);
@@ -218,9 +217,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel.add(btn_OK);
     buttonPanel.add(btn_Quit);
 
-    // buttonPanel.add(Box.createHorizontalGlue());
-    // buttonPanel.add(Box.createHorizontalStrut(50));
-
     btn_README.setAlignmentX(Component.RIGHT_ALIGNMENT);
     btn_CHANGELOG.setAlignmentX(Component.RIGHT_ALIGNMENT);
     btn_RELEASENOTES.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -233,7 +229,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     buttonPanel2.add(btn_CHANGELOG);
     buttonPanel2.add(Box.createHorizontalGlue());
 
-    // mainPanel.add(magellanImage);
     mainPanel.add(scrollPane);
     mainPanel.add(buttonPanel2);
     mainPanel.add(releaseNotesPane);
@@ -307,5 +302,4 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
       }
     }
   }
-
 }

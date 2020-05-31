@@ -911,17 +911,17 @@ public abstract class GameData implements Cloneable, Addeable {
           log.warn("could not remove unit " + u);
         }
         for (TempUnit t : u.tempUnits()) {
-          if (tempUnitView().remove(t) == null) {
+          if (tempUnitView().remove(t.getID()) == null) {
             log.warn("could not remove TEMP unit " + t);
           }
         }
       }
       for (Ship s : removed.ships())
-        if (shipView().remove(s) == null) {
+        if (shipView().remove(s.getID()) == null) {
           log.warn("could not remove ship " + s);
         }
       for (Building b : removed.buildings())
-        if (buildingView().remove(b) == null) {
+        if (buildingView().remove(b.getID()) == null) {
           log.warn("could not remove TEMP unit " + b);
         }
       // for (HotSpot h : hotSpotView().values()) {
@@ -1199,6 +1199,15 @@ public abstract class GameData implements Cloneable, Addeable {
     // return;
 
     log.fine("start GameData postProcess");
+
+    // unfortunately, this is necessary because there are parse errors when orders are added to
+    // units before the report has been completely read...
+    for (Unit u : getUnits()) {
+      u.reparseOrders();
+    }
+    for (Region r : getRegions()) {
+      r.refreshUnitRelations(true);
+    }
 
     // do game specific post processing
     getGameSpecificStuff().postProcess(this);

@@ -69,6 +69,11 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public Collection<Unit> units();
 
   /**
+   * Returns a direct view of the units. Preferably use units().
+   */
+  public Map<? extends ID, Unit> getUnits();
+
+  /**
    * Retrieve a unit in this container by id.
    */
   public Unit getUnit(ID key);
@@ -85,7 +90,7 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public Unit removeUnit(ID key);
 
   /**
-   * DOCUMENT-ME
+   * Returns the units in the container after relations.
    */
   public Collection<Unit> modifiedUnits();
 
@@ -100,6 +105,9 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * use {@link #getOwnerUnit()} instead!
    * 
    * @return The current owner of the UnitContainer or <code>null</code>.
+   */
+  /**
+   * @return
    */
   public Unit getOwner();
 
@@ -133,6 +141,13 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * In case of a Faction, null is returned.
    */
   public Unit getModifiedOwnerUnit();
+
+  /**
+   * Sets the owner unit after orders.
+   *
+   * @param newOwner
+   */
+  public void setModifiedOwnerUnit(Unit newOwner);
 
   /**
    * Returns the value of comments.
@@ -171,6 +186,19 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
 
   public void setOrderEditor(CacheableOrderEditor editor);
 
-  public Map<? extends ID, Unit> getUnits();
+  /**
+   * Removes the unit from modified units.
+   *
+   * @param unit
+   * @return <code>true</code> iff unit was in the container
+   */
+  public boolean leave(Unit unit);
+
+  /**
+   * Adds a unit (at the end of) the modified units
+   *
+   * @param unit
+   */
+  public void enter(Unit unit);
 
 }

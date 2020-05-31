@@ -28,6 +28,7 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.utils.OrderToken;
@@ -58,25 +59,34 @@ public class EnterOrder extends UCArgumentOrder {
     if (!isValid())
       return;
 
+    EresseaExecutionState eState = (EresseaExecutionState) state;
+
     UnitContainer target = getContainer(data, unit, type, true);
-
-    if (target != null) {
-      EnterRelation rel = new EnterRelation(unit, target, line);
-      rel.add();
-    } else {
-      setWarning(unit, line, Resources.get("order.enter.warning.unknowntarget", container));
-    }
-
     // check whether the unit leaves a container
-    UnitContainer leftUC = unit.getBuilding();
-
+    UnitContainer leftUC = unit.getModifiedBuilding();
     if (leftUC == null) {
-      leftUC = unit.getShip();
+      leftUC = unit.getModifiedShip();
     }
 
-    if (leftUC != null) {
-      LeaveRelation rel = new LeaveRelation(unit, leftUC, line, true);
-      rel.add();
+    if (target != null && leftUC == target) {
+      setError(unit, line, Resources.get("order.enter.warning.alreadyin", container));
+    }
+
+    EnterRelation enter = null;
+    if (target != null) {
+      enter = new EnterRelation(unit, target, line);
+    } else {
+      setWarning(unit, line, Resources.get("order.all.warning.unknowntarget", container));
+    }
+
+    if (leftUC != null && leftUC != this) {
+      eState.leave(unit, leftUC);
+      LeaveRelation leave = new LeaveRelation(unit, leftUC, line, true);
+      leave.add();
+    }
+    if (enter != null) {
+      eState.enter(unit, target);
+      enter.add();
     }
   }
 

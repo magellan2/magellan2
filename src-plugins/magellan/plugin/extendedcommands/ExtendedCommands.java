@@ -27,15 +27,29 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import jdk.jshell.Diag;
+import jdk.jshell.EvalException;
+import jdk.jshell.JShell;
+import jdk.jshell.Snippet;
+import jdk.jshell.Snippet.Kind;
+import jdk.jshell.SnippetEvent;
+import jdk.jshell.SourceCodeAnalysis.Completeness;
+import jdk.jshell.SourceCodeAnalysis.CompletionInfo;
 import magellan.client.Client;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.swing.DebugDock;
@@ -57,14 +71,6 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import bsh.EvalError;
-import bsh.Interpreter;
-import bsh.ParseException;
-import bsh.TargetError;
-
 /**
  * This class holds the commands for all units.
  * 
@@ -72,6 +78,87 @@ import bsh.TargetError;
  * @version 1.0, 11.09.2007
  */
 public class ExtendedCommands {
+
+  public static class JShellException extends Exception {
+
+    private Snippet snippet;
+    private SnippetEvent event;
+    private String message;
+    private Stream<Diag> diagnostics;
+
+    public JShellException(Snippet snippet, Stream<Diag> diagnostics) {
+      super("Error in snippet: " + snippet.kind());
+      message = "Error in snippet: " + snippet.kind();
+      this.snippet = snippet;
+      this.diagnostics = diagnostics;
+    }
+
+    public JShellException(SnippetEvent event, Stream<Diag> diagnostics) {
+      super();
+      this.event = event;
+      this.diagnostics = diagnostics;
+
+      switch (event.status()) {
+      case REJECTED:
+        message = "Snippet rejected";
+        break;
+      default:
+        if (event.exception() != null) {
+          if (event.exception() instanceof EvalException) {
+            message = "Exception in snippet caused by " + ((EvalException) event.exception())
+                .getExceptionClassName();
+          } else {
+            message = "Exception in snippet: " + event.exception().getMessage();
+          }
+        } else {
+          message = "Snippet problem: " + event.toString();
+        }
+      }
+    }
+
+    @Override
+    public String getMessage() {
+      return message;
+    }
+
+    public String getDescription() {
+      final StringBuilder sb = new StringBuilder();
+      if (diagnostics != null) {
+        diagnostics.forEach(new Consumer<Diag>() {
+          public void accept(Diag t) {
+            sb.append(t.toString()).append("\n");
+          }
+        });
+        if (sb.length() > 0) {
+          sb.insert(0, "DIAGNOSTICS\n");
+        }
+      }
+      if (snippet != null) {
+        sb.append("\nSNIPPET\n");
+        sb.append(snippet.toString());
+      } else if (event != null) {
+        sb.append("\nEVENT\n");//
+        sb.append(event.toString()); //
+        if (event.exception() != null) {
+          sb.append("\nEXCEPTION ");
+          if (event.exception() instanceof EvalException) {
+            sb.append(((EvalException) event.exception()).getExceptionClassName()).append("\n");
+            StringWriter writer = new StringWriter();
+            PrintWriter wwriter = new PrintWriter(writer);
+            event.exception().printStackTrace(wwriter);
+            sb.append(writer.toString());
+            wwriter.close();
+          } else {
+            sb.append(event.exception().getClass().getName()).append("\n");
+            sb.append(event.exception());
+          }
+        }
+      } else {
+        sb.append("Unknown error");
+      }
+      return sb.toString();
+    }
+  }
 
   private static final Logger log = Logger.getInstance(ExtendedCommands.class);
   public static final String COMANDFILENAME = "extendedcommands.xml";
@@ -481,102 +568,84 @@ public class ExtendedCommands {
     }
   }
 
+  public static class RunHelper {
+    public static GameData world;
+    public static UnitContainer container;
+    public static Unit unit;
+    public static ExtendedCommandsHelper helper;
+    public static DebugDock log;
+
+  }
+
   protected void runExecute(final String script, final GameData world, final Unit unit,
       final UnitContainer container, final UserInterface ui) {
 
-    ExtendedCommandsHelper helper;
     log.info("ExtCmds Thread started for world " + world + ", unit " + unit + ", container "
         + container);
+
+    ExtendedCommandsHelper helper = new ExtendedCommandsHelper(client, world, unit, container);
+    if (ui != null) {
+      helper.setUI(ui);
+    }
+
+    runJShell(script, world, unit, container, ui, helper);
+    // runBeanShell(script, world, unit, container, ui, helper);
+  }
+
+  protected synchronized void runJShell(String script, GameData world, Unit unit,
+      UnitContainer container, UserInterface ui, ExtendedCommandsHelper helper) {
     try {
-      Interpreter interpreter = new Interpreter();
-      interpreter.set("world", world);
-      if (unit != null) {
-        interpreter.set("unit", unit);
-      }
-      if (container != null) {
-        interpreter.set("container", container);
-      }
-      interpreter
-          .set("helper", helper = new ExtendedCommandsHelper(client, world, unit, container));
-      if (ui != null) {
-        helper.setUI(ui);
-      }
-      interpreter.set("log", DebugDock.getInstance());
+      final JShell sh = JShell.builder().executionEngine("local").build();
 
-      interpreter.eval(script);
-    } catch (EvalError error) {
-      StringBuilder message = new StringBuilder();
-      StringBuilder description = new StringBuilder();
-      if (error instanceof TargetError) {
-        TargetError tError = (TargetError) error;
-        message.append(Resources.get("extended_commands.ex.targeterror.message"));
-        if (tError.getTarget() != null) {
-          message.append("\n\n").append(tError.getTarget());
-        }
-        if (tError.getLocalizedMessage() != null) {
-          description.append("\n\n").append(tError.getLocalizedMessage());
-        }
+      RunHelper.world = world;
+      RunHelper.container = container;
+      RunHelper.unit = unit;
+      RunHelper.helper = helper;
+      RunHelper.log = DebugDock.getInstance();
 
-        int lines = 0;
-        String lib = getLibrary().getScript();
-        for (int i = 0; i < lib.length(); ++i)
-          if (lib.charAt(i) == '\n') {
-            lines++;
+      StringBuilder incomplete = new StringBuilder();
+      for (String line : script.split("[\r\n]+")) {
+        CompletionInfo c = sh.sourceCodeAnalysis().analyzeCompletion(line);
+        if (!c.completeness().equals(Completeness.EMPTY)) {
+          incomplete.append(line).append("\n");
+        }
+      }
+
+      String remaining = script;
+      boolean firstStatement = true;
+      for (List<Snippet> snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining); remaining
+          .trim().length() > 0; snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining)) {
+        for (Snippet snippet : snippets) {
+          Kind kind = snippet.kind();
+          switch (kind) {
+          case ERRONEOUS:
+            // throw new JShellException(snippet, sh.diagnostics(snippet));
+            break;
+          case IMPORT:
+            if (!firstStatement) {
+              log.warn("ExtendedCommands: import statement after first code statement: " + snippet
+                  .source());
+              firstStatement = true;
+            }
+            break;
+          default:
+            if (firstStatement) {
+              defineGlobals(sh);
+              firstStatement = false;
+            }
+            break;
           }
-        if (lib.charAt(lib.length() - 1) != '\n') {
-          lines++;
         }
 
-        description.append("\n\n");
-        if (tError.getErrorLineNumber() > lines) {
-          description.append(Resources.get("extended_commands.ex.scriptline.message", tError
-              .getErrorLineNumber()
-              - lines));
-        } else {
-          description.append(Resources.get("extended_commands.ex.libline.message", tError
-              .getErrorLineNumber()));
-          // message.append("\n\n").append(tError.getErrorSourceFile());
-          // message.append("\n\n").append(tError.getErrorText());
-          // message.append("\n\n").append(tError.getScriptStackTrace());
-        }
-      } else if (error instanceof ParseException) {
-        ParseException pError = (ParseException) error;
-        message.append(Resources.get("extended_commands.ex.parseerror.message"));
-        message.append("\n\n").append(pError.getLocalizedMessage());
-
-        if (pError.getErrorSourceFile() != null) {
-          description.append("\n\n").append(pError.getErrorSourceFile());
-        }
-        if (pError.getScriptStackTrace() != null) {
-          description.append("\n\n").append(pError.getScriptStackTrace());
-        }
-        try {
-          if (pError.getErrorText() != null) {
-            description.append("\n\n").append(pError.getErrorText());
-          }
-        } catch (NullPointerException e) {
-          // unknown BeanShell bug, ignore
-        }
-        try {
-          pError.getErrorLineNumber();
-          description.append("\n\n").append(pError.getErrorLineNumber());
-        } catch (NullPointerException e) {
-          // unknown BeanShell bug, ignore
-        }
-        // message.append("\n\n").append(pError.currentToken);
-      } else {
-        message.append(Resources.get("extended_commands.ex.evalerror.message"));
-        message.append("\n\n").append((error).getLocalizedMessage());
-        // description.append("\n\n").append((error).getErrorSourceFile());
+        remaining = eval(sh, remaining);
       }
-
+    } catch (JShellException e) {
       if (client != null) {
-        ErrorWindow errorWindow =
-            new ErrorWindow(client, message.toString(), description.toString(), error);
+        ErrorWindow errorWindow = new ErrorWindow(client, e.getMessage(), e.getDescription(), e);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
       } else {
-        log.error(message.toString() + " " + description.toString());
+        log.error(e.getDescription(), e);
       }
     } catch (Throwable throwable) {
       ExtendedCommands.log.info("", throwable);
@@ -596,7 +665,36 @@ public class ExtendedCommands {
         ui.ready();
       }
     }
+  }
 
+  private String eval(final JShell sh, String source) throws JShellException {
+    CompletionInfo c = sh.sourceCodeAnalysis().analyzeCompletion(source);
+    List<SnippetEvent> evaluation = sh.eval(c.source());
+
+    for (SnippetEvent event : evaluation) {
+      log.finer("eval: " + event.value() + "\n" + source);
+      switch (event.status()) {
+      case REJECTED:
+        throw new JShellException(event, sh.diagnostics(event.snippet()));
+      default:
+        if (event.exception() != null)
+          throw new JShellException(event, sh.diagnostics(event.snippet()));
+      }
+    }
+    return c.remaining();
+  }
+
+  private void defineGlobals(JShell sh) {
+    sh.eval(
+        "magellan.library.GameData world = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.world;");
+    sh.eval(
+        "magellan.library.Unit unit = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.unit;");
+    sh.eval(
+        "magellan.library.UnitContainer container = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.container;");
+    sh.eval(
+        "magellan.plugin.extendedcommands.ExtendedCommandsHelper helper = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.helper;");
+    sh.eval(
+        "magellan.client.swing.DebugDock log = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.log;");
   }
 
   /**

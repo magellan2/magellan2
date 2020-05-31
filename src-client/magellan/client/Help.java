@@ -53,6 +53,13 @@ public class Help {
       super(message);
     }
 
+    /**
+     * @see Exception#Exception(String, Throwable)
+     */
+    public HelpException(String message, Throwable cause) {
+      super(message, cause);
+    }
+
   }
 
   private static final Logger log = Logger.getInstance(Help.class);
@@ -94,7 +101,7 @@ public class Help {
       hb.initPresentation();
 
     } catch (Exception e) {
-      throw new HelpException("Could not initialize the Java Help environment.");
+      throw new HelpException("Could not initialize the Java Help environment.", e);
     }
   }
 

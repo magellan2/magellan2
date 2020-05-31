@@ -33,7 +33,6 @@ import magellan.library.GameData;
 import magellan.library.StringID;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
-import magellan.library.gamebinding.AbstractOrderCompleter;
 import magellan.library.gamebinding.AbstractOrderParser;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GiveOrder;

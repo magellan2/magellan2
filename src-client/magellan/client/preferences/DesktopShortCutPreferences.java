@@ -84,8 +84,7 @@ import magellan.library.utils.Resources;
  * @author ...
  * @version 1.0, 15.02.2008
  */
-public class DesktopShortCutPreferences extends JPanel implements PreferencesAdapter,
-    ActionListener {
+public class DesktopShortCutPreferences extends JPanel implements PreferencesAdapter {
   private MagellanDesktop desktop;
 
   protected JTable table;
@@ -267,17 +266,18 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-   * @deprecated TODO: implement it!
    */
-  @Deprecated
   public void initPreferences() {
-    // TODO: implement it
+    // TODO
+    // as long as shortcuts cannot be changed from outside the preferences, this is safe to not
+    // implement.
   }
 
   /**
    * 
    */
   public void applyPreferences() {
+    // shortcuts are changed immediately on change
   }
 
   /**
@@ -391,7 +391,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
     if (stroke.getModifiers() != 0) {
       s =
-          KeyEvent.getKeyModifiersText(stroke.getModifiers()) + " + "
+          InputEvent.getModifiersExText(stroke.getModifiers()) + " + "
               + KeyEvent.getKeyText(stroke.getKeyCode());
     } else {
       s = KeyEvent.getKeyText(stroke.getKeyCode());
@@ -455,7 +455,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           int res =
               JOptionPane.showConfirmDialog(this, Resources
                   .get("desktop.magellandesktop.prefs.shortcuts.warning"), Resources
-                  .get("desktop.magellandesktop.prefs.shortcuts.warningtitle"),
+                      .get("desktop.magellandesktop.prefs.shortcuts.warningtitle"),
                   JOptionPane.YES_NO_OPTION);
           doIt = (res == JOptionPane.YES_OPTION);
         }
@@ -487,12 +487,6 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       }
     }
     return false;
-  }
-
-  /**
-   * 
-   */
-  public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
   }
 
   protected class InformDialog extends JDialog implements ActionListener {
@@ -581,9 +575,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
     protected void init() {
       JPanel con = new JPanel(new BorderLayout());
-      con.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label")),
-          BorderLayout.NORTH);
+      JLabel label = new JLabel(
+          Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label"));
+      con.add(label, BorderLayout.NORTH);
       text = new KeyTextField();
+      label.setLabelFor(text);
       con.add(text, BorderLayout.CENTER);
 
       JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -643,7 +639,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       this.key = key;
       this.modifiers = modifiers;
 
-      String s = KeyEvent.getKeyModifiersText(modifiers);
+      String s = InputEvent.getModifiersExText(modifiers);
 
       if ((s != null) && (s.length() > 0)) {
         s += ('+' + KeyEvent.getKeyText(key));
@@ -665,7 +661,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
      * 
      */
     public void keyPressed(KeyEvent p1) {
-      modifiers = p1.getModifiers();
+      modifiers = p1.getModifiersEx();
       key = p1.getKeyCode();
 
       // avoid double string
@@ -675,22 +671,22 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
         switch (key) {
         case KeyEvent.VK_SHIFT:
-          xored = InputEvent.SHIFT_MASK;
+          xored = InputEvent.SHIFT_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_CONTROL:
-          xored = InputEvent.CTRL_MASK;
+          xored = InputEvent.CTRL_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_ALT:
-          xored = InputEvent.ALT_MASK;
+          xored = InputEvent.ALT_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_ALT_GRAPH:
-          xored = InputEvent.ALT_GRAPH_MASK;
+          xored = InputEvent.ALT_GRAPH_DOWN_MASK;
 
           break;
         }
@@ -698,7 +694,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         modifiers ^= xored;
       }
 
-      String s = KeyEvent.getKeyModifiersText(modifiers);
+      String s = InputEvent.getModifiersExText(modifiers);
 
       if ((s != null) && (s.length() > 0)) {
         s += ('+' + KeyEvent.getKeyText(key));
@@ -714,6 +710,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
      * 
      */
     public void keyTyped(KeyEvent p1) {
+      // keyPressed used
     }
 
     /**

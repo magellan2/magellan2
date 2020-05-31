@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -63,13 +63,13 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
 
 /**
  * Panel for maintainig the SkillTypeList for sorting after skillType
- * 
+ *
  * @author ...
  * @version 1.0, 20.11.2007
  */
 public class RegionOverviewSkillPreferences extends JPanel implements PreferencesAdapter {
 
-  private JList skillList = null;
+  private JList<SkillType> skillList = null;
   private JButton upButton = null;
   private JButton downButton = null;
   private JButton refreshListButton = null;
@@ -88,7 +88,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
         .get("emapoverviewpanel.prefs.skillorder")));
     this.settings = settings;
 
-    skillList = new JList();
+    skillList = new JList<SkillType>();
     skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     skillList.setCellRenderer(new MyCellRenderer(data, imageFactory));
     // entries for List are updated in initPreferences
@@ -112,12 +112,12 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
         if (selIndices.length == 0)
           return;
 
-        List<Object> newData = new LinkedList<Object>();
-        ListModel oldData = skillList.getModel();
+        List<SkillType> newData = new LinkedList<SkillType>();
+        ListModel<SkillType> oldData = skillList.getModel();
         List<Integer> newSelectedIndices = new LinkedList<Integer>();
 
         for (int i = 0; i < oldData.getSize(); i++) {
-          Object o = oldData.getElementAt(i);
+          SkillType o = oldData.getElementAt(i);
 
           if (skillList.isSelectedIndex(i)) {
             int newPos;
@@ -135,7 +135,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
           }
         }
 
-        skillList.setListData(newData.toArray());
+        skillList.setListData(newData.toArray(new SkillType[0]));
 
         int selection[] = new int[newSelectedIndices.size()];
         int i = 0;
@@ -164,12 +164,12 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
         if (selIndices.length == 0)
           return;
 
-        List<Object> newData = new LinkedList<Object>();
-        ListModel oldData = skillList.getModel();
+        List<SkillType> newData = new LinkedList<SkillType>();
+        ListModel<SkillType> oldData = skillList.getModel();
         List<Integer> newSelectedIndices = new LinkedList<Integer>();
 
         for (int i = oldData.getSize() - 1; i >= 0; i--) {
-          Object o = oldData.getElementAt(i);
+          SkillType o = oldData.getElementAt(i);
 
           if (skillList.isSelectedIndex(i)) {
             int newPos;
@@ -189,7 +189,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
           }
         }
 
-        skillList.setListData(newData.toArray());
+        skillList.setListData(newData.toArray(new SkillType[0]));
 
         int selection[] = new int[newSelectedIndices.size()];
         int i = 0;
@@ -226,11 +226,11 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
         if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
           return;
 
-        ListModel listData = skillList.getModel();
+        ListModel<SkillType> listData = skillList.getModel();
         List<SkillType> v = new LinkedList<SkillType>();
 
         for (int index = 0; index < listData.getSize(); index++) {
-          v.add((SkillType) listData.getElementAt(index));
+          v.add(listData.getElementAt(index));
         }
 
         if (skillTypeComparator == null) {
@@ -238,19 +238,18 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
         }
 
         Collections.sort(v, skillTypeComparator);
-        skillList.setListData(v.toArray());
+        skillList.setListData(v.toArray(new SkillType[0]));
       }
     });
     buttons.add(refreshListButton, c);
 
     this.add(buttons, BorderLayout.EAST);
 
-    // FIXME(stm) this call is strictly not necessary
     initPreferences();
   }
 
   /**
-   * DOCUMENT-ME
+   * Make this editable.
    */
   @Override
   public void setEnabled(boolean enable) {
@@ -278,7 +277,7 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
 
       Collections.sort(v, new SkillTypeRankComparator(new NameComparator(IDComparator.DEFAULT),
           settings));
-      skillList.setListData(v.toArray());
+      skillList.setListData(v.toArray(new SkillType[0]));
 
       if (v.size() > 0) {
         setEnabled(true);
@@ -308,10 +307,10 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    ListModel listData = skillList.getModel();
+    ListModel<SkillType> listData = skillList.getModel();
 
     for (int index = 0; index < listData.getSize(); index++) {
-      SkillType s = (SkillType) listData.getElementAt(index);
+      SkillType s = listData.getElementAt(index);
       settings.setProperty("ClientPreferences.compareValue." + s.getID(), String.valueOf(index));
 
     }
@@ -323,7 +322,8 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
    * @author ...
    * @version 1.0, 20.11.2007
    */
-  private static class MyCellRenderer extends JLabel implements ListCellRenderer {
+  private static class MyCellRenderer extends DefaultListCellRenderer implements
+      ListCellRenderer<Object> {
     // we need a reference to the translations
     private GameData data = null;
     // we need a reference to the ImageFactory
@@ -343,15 +343,17 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
 
     /**
      * returns the JLabel to display in our skill list
-     * 
+     *
+     * @param value value to display
+     * @param index cell index
+     * @param isSelected is the cell selected
+     * @param cellHasFocus the list and the cell have the focus
      * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
      *      java.lang.Object, int, boolean, boolean)
      */
-    public Component getListCellRendererComponent(JList list, Object value, // value to display
-        int index, // cell index
-        boolean isSelected, // is the cell selected
-        boolean cellHasFocus) // the list and the cell have the focus
-    {
+    @Override
+    public Component getListCellRendererComponent(JList<?> list, Object value,
+        int index, boolean isSelected, boolean cellHasFocus) {
       String s = value.toString();
       String normalizedIconName = Umlaut.convertUmlauts(s).toLowerCase();
       s = data.getTranslation(s);

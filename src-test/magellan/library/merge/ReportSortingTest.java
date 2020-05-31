@@ -30,6 +30,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.junit.Test;
+
 import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -42,8 +44,6 @@ import magellan.library.io.file.FileTypeFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 import magellan.test.merge.WriteGameData;
-
-import org.junit.Test;
 
 public class ReportSortingTest extends MagellanTestWithResources {
 
@@ -215,7 +215,7 @@ public class ReportSortingTest extends MagellanTestWithResources {
   private void assertOrder(GameData gdm, String id1, String id2) {
     assertTrue("index of " + id1 + " not < " + id2, gdm.getUnit(
         EntityID.createEntityID(id1, gdm.base)).getSortIndex() < gdm.getUnit(
-        EntityID.createEntityID(id2, gdm.base)).getSortIndex());
+            EntityID.createEntityID(id2, gdm.base)).getSortIndex());
   }
 
   @Test
@@ -524,10 +524,10 @@ public class ReportSortingTest extends MagellanTestWithResources {
     unit212.setSortIndex(2);
     unit213.setSortIndex(3);
     Building b21 = builder.addBuilding(gd2, region21, "b1", "BURG", "Burg 1", 10);
-    builder.addUnitToBuilding(unit211, b21);
-    builder.addUnitToBuilding(unit212, b21);
+    builder.addTo(unit211, b21);
+    builder.addTo(unit212, b21);
     Building b22 = builder.addBuilding(gd2, region21, "b2", "BURG", "Burg 2", 10);
-    builder.addUnitToBuilding(unit213, b22);
+    builder.addTo(unit213, b22);
 
     WriteGameData.writeCR(gd2, new File("./test/tc010/gd2.cr"));
 

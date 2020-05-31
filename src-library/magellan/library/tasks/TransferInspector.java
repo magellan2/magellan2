@@ -31,6 +31,11 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Unit;
+import magellan.library.relation.ControlRelation;
+import magellan.library.relation.EnterRelation;
+import magellan.library.relation.ReserveRelation;
+import magellan.library.relation.TransferRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.GameDataInspector.GameDataProblemTypes;
 import magellan.library.tasks.Problem.Severity;
 
@@ -42,7 +47,7 @@ public class TransferInspector extends AbstractInspector {
   /** */
   public enum TransferProblemTypes {
     /** empty unit loses items */
-    LOST_ITEMS;
+    LOST_ITEMS, ENTER_GIVE;
 
     /**    */
     public ProblemType type;
@@ -79,15 +84,49 @@ public class TransferInspector extends AbstractInspector {
 
   @Override
   public List<Problem> findProblems(Unit u) {
+    List<Problem> p = findLost(u);
+    if (p != null)
+      return p;
+
+    p = findEnterConflict(u);
+    if (p != null)
+      return p;
+
+    return Collections.emptyList();
+  }
+
+  private List<Problem> findEnterConflict(Unit u) {
+    List<? extends UnitRelation> reorder = u.getRelations(EnterRelation.class);
+    if (reorder.isEmpty()) {
+      reorder = u.getRelations(ControlRelation.class);
+    }
+    if (!reorder.isEmpty()) {
+      List<? extends UnitRelation> transfers = u.getRelations(TransferRelation.class);
+      if (transfers.isEmpty()) {
+        transfers = u.getRelations(ReserveRelation.class);
+      }
+      if (!transfers.isEmpty())
+        return singletonList(ProblemFactory.createProblem(Severity.WARNING,
+            TransferProblemTypes.ENTER_GIVE.getType(), u, this, -1));
+    }
+    return null;
+  }
+
+  private List<Problem> singletonList(SimpleProblem problem) {
+    LinkedList<Problem> problems = new LinkedList<Problem>();
+    problems.add(problem);
+    return problems;
+  }
+
+  private List<Problem> findLost(Unit u) {
     if (u.getModifiedPersons() == 0) {
       for (Item i : u.getModifiedItems()) {
         if (i.getAmount() > 0)
-          return Collections.<Problem> singletonList(ProblemFactory.createProblem(Severity.WARNING,
+          return singletonList(ProblemFactory.createProblem(Severity.WARNING,
               TransferProblemTypes.LOST_ITEMS.getType(), u, this, -1));
       }
     }
-
-    return Collections.emptyList();
+    return null;
   }
 
   public Collection<ProblemType> getTypes() {

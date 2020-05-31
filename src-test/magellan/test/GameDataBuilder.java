@@ -24,6 +24,7 @@ import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -67,24 +68,24 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
-   * and one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one
+   * region, and one unit
    */
   public GameData createSimplestGameData(int round) throws Exception {
     return createSimplestGameData(round, true);
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
-   * and (if <code>addUnit</code>) one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one
+   * region, and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(int round, boolean addUnit) throws Exception {
     return createSimplestGameData(getGameName(), round, addUnit, true);
   }
 
   /**
-   * Creates a GameData object that is always postProcessed with one faction, one island, one region,
-   * and (if <code>addUnit</code>) one unit
+   * Creates a GameData object that is always postProcessed with one faction, one island, one
+   * region, and (if <code>addUnit</code>) one unit
    */
   public GameData createSimplestGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
@@ -92,8 +93,8 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object with one faction, one island, one region, and (if <code>addUnit</code>)
-   * one unit.
+   * Creates a GameData object with one faction, one island, one region, and (if
+   * <code>addUnit</code>) one unit.
    */
   public GameData createSimplestGameData(String aGameName, int round, boolean addUnit,
       boolean postProcess) throws Exception {
@@ -175,8 +176,8 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln -
-   * (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
+   * Creates a GameData object of the specified type where all units have Hiebwaffen 4 (+3), Segeln
+   * - (-3), Magie 4, Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(String aGameName, int round, boolean addUnit)
       throws Exception {
@@ -530,6 +531,7 @@ public class GameDataBuilder {
     ship.setRegion(region);
     ship.setType(data.getRules().getShipType(type));
     ship.setSize(size);
+    ship.setCapacity(ship.getShipType().getCapacity() * 100);
 
     region.addShip(ship);
     data.addShip(ship);
@@ -598,21 +600,27 @@ public class GameDataBuilder {
     this.gameName = gameName;
   }
 
-  /**
-   * Add the unit to the building. If it is the first unit, make it building owner.
-   *
-   * @param unit
-   * @param building
-   */
-  public void addUnitToBuilding(Unit unit, Building building) {
-    unit.setBuilding(building);
-    if (building.getUnits().size() == 1) {
-      building.setOwner(unit);
-      building.setOwnerUnit(unit);
-    }
-  }
-
   public static void setNullResources(boolean setNull) {
     Resources.setNullResource(setNull);
   }
+
+  /**
+   * Adds a unit to a building or ship and makes it the owner if
+   *
+   * @param unit
+   * @param uc
+   */
+  public void addTo(Unit unit, UnitContainer uc) {
+    if (uc instanceof Building) {
+      unit.setBuilding((Building) uc);
+    } else if (uc instanceof Ship) {
+      unit.setShip((Ship) uc);
+    } else
+      throw new RuntimeException(uc + " is neither building nor ship.");
+    if (uc.units().size() == 1) {
+      uc.setOwner(unit);
+      uc.setOwnerUnit(unit);
+    }
+  }
+
 }

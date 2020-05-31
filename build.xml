@@ -2,17 +2,21 @@
 	<description>
     This is the ANT compile script for magellan. This script helps you
     to compile a distributable version of magellan.
-    
+
     Please call one of the following public targets:
       - distribute
+      - print_version
+      - run_tests
+      - test_and_distribute
       - javadoc (not implemented yet)
-  </description>
+	</description>
 
 	<property name="VERSION.MAJOR"         value="2"/>
-	<property name="VERSION.MINOR"         value="0"/>
-	<property name="VERSION.SUB"           value="7"/>
+	<property name="VERSION.MINOR"         value="1"/>
+	<property name="VERSION.SUB"           value="0"/>
+	<!-- possible values include stable, rc, and betaX -->
+	<property name="VERSION.POST"           value="beta8"/>
 
-	<property name="VERSION"               value="${VERSION.MAJOR}_${VERSION.MINOR}_${VERSION.SUB}"/>
 	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
 
 	<!-- Some properties -->
@@ -39,14 +43,15 @@
 	<!-- Compile Settings -->
 	<property name="debug"             value="on" />
 	<property name="optimize"          value="off" />
-	<property name="build.compiler"    value="javac1.7"/>
-	<property name="compile.target"    value="1.7"/>
+
+	<!-- -release includes -source -target -bootclasspath -->
+	<property name="compile.release"    value="11"/>
 	<property name="compile.encoding"  value="ISO-8859-1"/>
 
-        <!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
-        <presetdef name="javac">
-          <javac includeantruntime="false" />
-        </presetdef>
+	<!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
+	<presetdef name="my-javac">
+		<javac includeantruntime="false" encoding="${compile.encoding}"/>
+	</presetdef>
 
 	<path id="magellan.class.path">
 		<pathelement path="${java.class.path}/" />
@@ -70,6 +75,29 @@
 		<pathelement location="${classes}" />
 	</path>
 
+	<target name="update_version">
+		<property file=".build.number"/>
+		<property name="VERSION.FULL"       value="${VERSION.POINTED}-${build.number}.${VERSION.POST}"/>
+		<property name="VERSION.COMPAT"       value="${VERSION.POINTED} (build ${build.number})"/>
+
+		<script language="javascript">
+			project.setProperty('currentTime', new Date().getTime());
+		</script>
+
+		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
+			<filterset>
+				<filter token="VERSION" value="${VERSION.COMPAT}"/>
+				<filter token="SEMANTIC_VERSION" value="${VERSION.FULL}"/>
+				<filter token="BUILD_TIMESTAMP" value="${currentTime}"/>
+			</filterset>
+		</copy>
+		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	</target>
+
+	<target name="print_version" depends="update_version">
+		<echo message="${VERSION.FULL}" />
+	</target>
+
 	<!-- *************************************************************** -->
 	<!-- *                                                             * -->
 	<!-- *  This target compiles and packs the magellan library.       * -->
@@ -78,32 +106,25 @@
 	<target name="build_library">
 		<echo message="Compiling Library..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.library}/"
+		<my-javac srcdir="${src.library}/"
            destdir="${classes}"
            includes="**"
-           source="${compile.target}"
-           target="${compile.target}"
+           release="${compile.release}"
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
-		   memoryInitialSize="128m"
+           memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_library_jar" >
-		<!--
-		<antcall target="build_library">
-			<param name="build.number" value="${build.number}" />
-		</antcall>
--->
 		<echo message="Building Magellan Library JAR file" />
 
 		<!-- delete old library -->
@@ -128,14 +149,12 @@
 	<target name="build_client">
 		<echo message="Compiling Client..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.client}/magellan"
+		<my-javac srcdir="${src.client}/magellan"
            destdir="${classes}"
            includes="**"
-           source="${compile.target}"
-           target="${compile.target}"
+           release="${compile.release}"
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
@@ -145,23 +164,17 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_client_jar">
-		<!--
-		<antcall target="build_client">
-			<param name="build.number" value="${build.number}" />
-		</antcall>
-
 		<echo message="Building Magellan Client JAR file" />
--->
 		<!-- delete old library -->
 		<delete file="${release}/magellan-client.jar" failonerror="false" />
 
 		<copy file="${etc}/manifest.mf.template" tofile="${etc}/manifest.mf" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -182,14 +195,12 @@
 	<target name="build_plugins">
 		<echo message="Compiling PlugIns..." />
 
-		<!--		<antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.plugins}/magellan"
+		<my-javac srcdir="${src.plugins}/magellan"
            destdir="${classes}"
            includes="**"
-           source="${compile.target}"
-           target="${compile.target}"
+           release="${compile.release}"
            encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
@@ -199,15 +210,10 @@
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path"/>
-		</javac>
+		</my-javac>
 	</target>
 
 	<target name="build_plugins_jar">
-		<!--
-		<antcall target="build_plugins">
-			<param name="build.number" value="${build.number}" />
-		</antcall>
--->
 		<echo message="Building Magellan PlugIns JAR file" />
 
 		<!-- delete old library -->
@@ -249,24 +255,22 @@
 	<target name="build_test">
 		<echo message="Compiling tests..." />
 
-		<!--        <antcall target="clear-classes"/> -->
 		<mkdir dir="${classes}" />
 
-		<javac srcdir="${src.test}/"
-	           destdir="${classes}"
-	           includes="**"
-	           source="${compile.target}"
-	           target="${compile.target}"
-	           encoding="${compile.encoding}"
-	           optimize="${optimize}"
-	           fork="true"
-	           memoryInitialSize="128m"
-	           memoryMaximumSize="256m"
-	           debug="${debug}">
+		<my-javac srcdir="${src.test}/"
+			destdir="${classes}"
+			includes="**"
+			release="${compile.release}"
+			encoding="${compile.encoding}"
+			optimize="${optimize}"
+			fork="true"
+			memoryInitialSize="128m"
+			memoryMaximumSize="256m"
+			debug="${debug}">
 			<!--<compilerarg value="-Xlint:unchecked"/>-->
 			<!--<compilerarg value="-Xlint:deprecation"/>-->
 			<classpath refid="magellan.class.path.test"/>
-		</javac>
+		</my-javac>
 
 	</target>
 
@@ -301,11 +305,6 @@
 				<include name="*.ini"/>
 			</fileset>
 		</copy>
-		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED} (build ${build.number})"/>
-			</filterset>
-		</copy>
 
 		<mkdir dir="${release}/etc/images" />
 		<copy todir="${release}/etc/images" overwrite="true">
@@ -331,7 +330,7 @@
 		<mkdir dir="${release}/plugins" />
 		<echo file="${release}/plugins/README.txt" append="false">
     	This folder contains external plugins. Do not delete...Thanks.
-  	    </echo>
+		</echo>
 
 		<copy todir="${release}/" overwrite="true">
 			<fileset dir="${basedir}">
@@ -353,13 +352,9 @@
 	<!-- *  This target runs all the unit tests                        * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="run_tests" description="This target runs the unit tests.">
+	<target name="run_tests" description="This target runs the unit tests."
+	  		depends="update_version, build_library, build_client, build_plugins, build_test">
 
-		<antcall target="build_library" />
-		<antcall target="build_client" />
-		<antcall target="build_plugins" />
-
-		<antcall target="build_test" />
 		<mkdir dir="${junit.output.dir}" />
 
 		<echo message="Running all unit tests" />
@@ -370,7 +365,7 @@
 		</junit>
 		<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
-                <!-- E3CommandParser is not part of the release -->				   
+				<!-- E3CommandParser is not part of the release -->
 				<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java" />
 			</batchtest>
 
@@ -383,7 +378,6 @@
 				<filename name="default????*/**" />
 			</fileset>
 		</delete>
-		<!--        <antcall target="clear-classes"/> -->
 
 		<fail message="test failed" if="test.failure" />
 	</target>
@@ -393,38 +387,24 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application.">
+	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application."
+			depends="prepare_build, run_tests, build_jar_and_distribute">
+
+	</target>
+
+	<target name="increase_build_number">
 		<buildnumber file=".build.number"/>
+	</target>
 
-		<antcall target="clear-all"/>
+	<target name="prepare_build" depends="clear-all, increase_build_number, update_version">
 
-		<antcall target="run_tests" />
+	</target>
 
-		<antcall target="build_library_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_client_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_plugins_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_help">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="copy_release_data">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	<target name="build_jar_and_distribute" depends="build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data">
 
 		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -435,7 +415,7 @@
 			<arg value="-b"/>
 			<arg value="."/>
 			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.POINTED}.jar"/>
+			<arg value="magellan_v${VERSION.FULL}.jar"/>
 			<arg value="-k"/>
 			<arg value="standard"/>
 
@@ -448,13 +428,13 @@
 		</java>
 
 		<echo message="Creating ZIP Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
-		<zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
+		<delete file="${basedir}/magellan_v${VERSION.FULL}.zip" failonerror="false"/>
+		<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
 			<fileset dir="${release}" includes="**"/>
 		</zip>
 
 		<echo message="Creating MacOS Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
+		<delete file="${basedir}/magellan_v${VERSION.FULL}_macos.zip" failonerror="false"/>
 
 		<mkdir dir="${macos}/Magellan.app" />
 		<mkdir dir="${macos}/Magellan.app" />
@@ -471,7 +451,6 @@
 			<fileset dir="${release}/" includes="**"/>
 		</copy>
 
-		<antcall target="clear-all"/>
 	</target>
 
 	<!-- *************************************************************** -->
@@ -479,42 +458,23 @@
 	<!-- *  This target compiles and packs the whole magellan app.     * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="distribute" description=" This target compiles and packs the whole magellan application.">
-		<buildnumber file=".build.number"/>
+	<target name="distribute" description=" This target compiles and packs the whole magellan application."
+			depends="prepare_build, build_library, build_client, build_plugins, build_jar_and_distribute">
 
 		<antcall target="clear-all"/>
+	</target>
 
-		<antcall target="build_library" />
-
-		<antcall target="build_library_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_client" />
-
-		<antcall target="build_client_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_plugins" />
-
-		<antcall target="build_plugins_jar">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_help">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="copy_release_data">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	<!-- *************************************************************** -->
+	<!-- *                                                             * -->
+	<!-- *  This target just compiles the whole magellan app.     * -->
+	<!-- *                                                             * -->
+	<!-- *************************************************************** -->
+	<target name="distributeNoPack" description=" This target just compiles the whole magellan application."
+			depends="prepare_build, build_library, build_client, build_plugins, build_help, copy_release_data">
 
 		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
 			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
+				<filter token="VERSION" value="${VERSION.FULL}"/>
 				<filter token="BUILD" value="${build.number}"/>
 				<filter token="USER" value="${user.name}"/>
 			</filterset>
@@ -525,92 +485,7 @@
 			<arg value="-b"/>
 			<arg value="."/>
 			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.POINTED}.jar"/>
-			<arg value="-k"/>
-			<arg value="standard"/>
-
-			<classpath>
-				<pathelement path="${java.class.path}/" />
-				<fileset dir="${installer}/izpack/">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</java>
-
-		<echo message="Creating ZIP Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
-		<zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
-			<fileset dir="${release}" includes="**"/>
-		</zip>
-
-		<echo message="Creating MacOS Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.POINTED}_macos.zip" failonerror="false"/>
-
-		<mkdir dir="${macos}/Magellan.app" />
-		<mkdir dir="${macos}/Magellan.app" />
-		<mkdir dir="${macos}/Magellan.app/Contents" />
-		<copy file="${installer}/macos/PkgInfo" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
-		<copy file="${installer}/macos/Info.plist" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/MacOS" />
-		<copy file="${installer}/macos/JavaApplicationStub" todir="${macos}/Magellan.app/Contents/MacOS/" overwrite="yes"/>
-		<chmod dir="${macos}/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/Resources" />
-		<copy file="${installer}/macos/icon/Magellan.icns" todir="${macos}/Magellan.app/Contents/Resources/" overwrite="yes"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/Resources/Java" />
-		<copy todir="${macos}/Magellan.app/Contents/Resources/Java/" overwrite="true">
-			<fileset dir="${release}/" includes="**"/>
-		</copy>
-
-		<antcall target="clear-all" />
-
-	</target>
-
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the whole magellan app.     * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="distributeNoPack" description=" This target compiles and packs the whole magellan application.">
-		<buildnumber file=".build.number" />
-
-		<antcall target="clear-all"/>
-
-		<antcall target="build_library">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_client">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_plugins">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="build_help">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<antcall target="copy_release_data">
-			<param name="build.number" value="${build.number}"/>
-		</antcall>
-
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
-
-		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.POINTED}"/>
-				<filter token="BUILD" value="${build.number}"/>
-				<filter token="USER" value="${user.name}"/>
-			</filterset>
-		</copy>
-
-		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
-			<arg value="${installer}/izpack-install.xml"/>
-			<arg value="-b"/>
-			<arg value="."/>
-			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.POINTED}.jar"/>
+			<arg value="magellan_v${VERSION.FULL}.jar"/>
 			<arg value="-k"/>
 			<arg value="standard"/>
 

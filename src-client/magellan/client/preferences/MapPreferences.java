@@ -99,7 +99,6 @@ public class MapPreferences extends AbstractPreferencesAdapter implements
   }
 
   public void initPreferences() {
-    // TODO: implement it
     prefMapper.initPreferences();
   }
 

@@ -438,14 +438,12 @@ public class SelectionEvent extends TimeStampedEvent {
       return null;
     } else if (o instanceof Group) {
       Group old = (Group) o;
-      if (old != null) {
-        Faction f = old.getFaction();
-        if (f != null) {
-          Group converted = data.getFaction(f.getID()).getGroups().get(old.getID());
-          if (converted != null && converted.getName() != null
-              && converted.getName().equals(old.getName()))
-            return converted;
-        }
+      Faction f = old.getFaction();
+      if (f != null) {
+        Group converted = data.getFaction(f.getID()).getGroups().get(old.getID());
+        if (converted != null && converted.getName() != null
+            && converted.getName().equals(old.getName()))
+          return converted;
       }
       return null;
     } else if (o instanceof Border) {

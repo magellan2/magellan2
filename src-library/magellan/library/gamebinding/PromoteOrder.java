@@ -62,7 +62,7 @@ public class PromoteOrder extends SimpleOrder {
       return;
 
     int costs = 0;
-    for (Unit u : unit.getFaction().getUnits().values()) {
+    for (Unit u : unit.getFaction().units()) {
       if (!u.isSpy()) {
         costs += u.getModifiedPersons();
       }
@@ -74,11 +74,13 @@ public class PromoteOrder extends SimpleOrder {
 
     ItemType silverType = data.getRules().getItemType(EresseaConstants.I_USILVER);
 
-    List<UnitRelation> relations = eState.acquireItem(unit, silverType, costs, false, true, false, line, this);
+    List<UnitRelation> relations = eState.acquireItem(unit, silverType, costs, false, true, false,
+        line, this);
 
     MaintenanceRelation mRel =
-        new MaintenanceRelation(unit, MagellanFactory.createNullContainer(data), costs, silverType, Resources
-            .get("util.units.node.promotion"), "hero", line, false);
+        new MaintenanceRelation(unit, MagellanFactory.createNullContainer(data), costs, silverType,
+            Resources
+                .get("util.units.node.promotion"), "hero", line, false);
 
     for (UnitRelation rel : relations) {
       if (rel instanceof ReserveRelation) {

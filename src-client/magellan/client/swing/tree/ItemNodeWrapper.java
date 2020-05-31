@@ -25,7 +25,6 @@ import magellan.library.Unit;
 import magellan.library.utils.Resources;
 import magellan.library.utils.StringFactory;
 import magellan.library.utils.Units;
-import magellan.library.utils.Units.StatItem;
 
 /**
  * A wrapper for items. Created on 16. August 2001, 16:26

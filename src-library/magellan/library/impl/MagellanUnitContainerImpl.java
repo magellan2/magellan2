@@ -30,10 +30,8 @@ import magellan.library.Item;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
-import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
-import magellan.library.relation.RenameNamedRelation;
 import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.CastleType;
@@ -94,6 +92,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * A map storing all unknown tags for all UnitContainer objects.
    */
   private Map<String, String> tagMap = null;
+  private static Unit nullUnit = new NullUnit();
 
   /**
    * Creates a new UnitContainer object.
@@ -117,41 +116,25 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     this.owner = owner;
   }
 
+  public void setModifiedOwnerUnit(Unit newOwner) {
+    if (newOwner == null) {
+      newOwner = nullUnit;
+    }
+    getCache().modifiedOwner = newOwner;
+  }
+
   /**
-   * Tries to return the new owner. TODO: not yet fail-proof
+   * Tries to return the new owner.
    * 
-   * @return The unit that is going to be the new owner.
+   * @return The unit that is going to be the new owner, may be <code>null</code>.
+   * @see magellan.library.UnitContainer#getModifiedOwnerUnit()
    */
   public Unit getModifiedOwnerUnit() {
-    Unit oldOwner = getOwnerUnit();
-    if (oldOwner == null) {
-      for (EnterRelation rel : getRelations(EnterRelation.class))
-        return rel.source;
-      return null;
-    }
+    if (!hasCache() || getCache().modifiedOwner == null)
+      return getOwnerUnit();
 
-    if (oldOwner.getRelations(LeaveRelation.class).isEmpty()) {
-      // if the current owner does not leave container and gives command to a unit who will be on
-      // the ship, this is the new owner.
-      Unit newOwner = oldOwner;
-      List<ControlRelation> commands = oldOwner.getRelations(ControlRelation.class);
-      for (UnitRelation ur : commands) {
-        if (ur.source == oldOwner
-            && ((ControlRelation) ur).target.getModifiedShip() == oldOwner.getShip()) {
-          newOwner = ((ControlRelation) ur).target;
-        } else {
-          newOwner = null;
-        }
-      }
-      return newOwner;
-    } else {
-      for (ControlRelation rel : oldOwner.getRelations(ControlRelation.class)) {
-        if (rel.source == oldOwner && rel.target != null && rel.problem == null)
-          return rel.target;
-      }
-      // otherwise it's unclear
-      return null;
-    }
+    Unit maybeOwner = getCache().modifiedOwner;
+    return maybeOwner == nullUnit ? null : maybeOwner;
   }
 
   /**
@@ -296,9 +279,10 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.UnitContainer#modifiedUnits()
    */
   public Collection<Unit> modifiedUnits() {
-    if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
-      refreshModifiedUnits();
-    }
+
+    // if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
+    // refreshModifiedUnits();
+    // }
 
     if (hasCache() && (getCache().modifiedContainerUnits != null)) {
       if (getCache().modifiedContainerUnits.values() != null)
@@ -306,7 +290,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       else
         return Collections.emptyList();
     } else
-      return Collections.emptyList();
+      return Collections.unmodifiableCollection(units());
   }
 
   /**
@@ -325,19 +309,20 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public void clearRelations() {
     getRelations().clear();
-    invalidateCache();
+
+    invalidateCache(true);
   }
 
   /**
    * @see magellan.library.UnitContainer#getModifiedUnit(magellan.library.ID)
    */
   public Unit getModifiedUnit(ID key) {
-    if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
-      refreshModifiedUnits();
-    }
+    // if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
+    // refreshModifiedUnits();
+    // }
 
     if (getCache().modifiedContainerUnits == null)
-      return null;
+      return units.get(key);
 
     return getCache().modifiedContainerUnits.get(key);
   }
@@ -392,9 +377,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
               .info("UnitContainer.refreshModifiedUnits(): unit container " + this
                   + " has a relation associated that does not point to it!");
         }
-      } else if (!(rel instanceof RenameNamedRelation)) {
-        MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container "
-            + this + " contains a relation that is not a UnitContainerRelation object!");
       }
     }
   }
@@ -457,15 +439,26 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     }
 
     cache1.relations.add(rel);
-
-    invalidateCache();
+    invalidateCache(false);
 
   }
 
-  private void invalidateCache() {
+  private void invalidateCache(boolean reset) {
     if (hasCache()) {
-      getCache().modifiedName = null;
-      getCache().modifiedContainerUnits = null;
+      // reset reactively calculated (from relations) stuff
+      Cache cache1 = getCache();
+      cache1.modifiedName = null;
+      cache1.modifiedAmount = -1;
+      cache1.modifiedSize = -1;
+
+      if (reset) {
+        // reset proactively calculated stuff
+        if (cache1.modifiedContainerUnits != null) {
+          cache1.modifiedContainerUnits.clear();
+        }
+        cache1.modifiedContainerUnits = null;
+        cache1.modifiedOwner = null;
+      }
     }
   }
 
@@ -490,7 +483,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     if (hasCache() && (getCache().relations != null)) {
       if (getCache().relations.remove(rel)) {
         r = rel;
-        invalidateCache();
+        // FIXME do not invalidate every time
+        invalidateCache(false);
       }
     }
 
@@ -676,7 +670,36 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     getCache().orderEditor = editor;
   }
 
+  /**
+   * @see magellan.library.UnitContainer#getUnits()
+   */
   public Map<EntityID, Unit> getUnits() {
     return units;
+  }
+
+  /**
+   * @see magellan.library.UnitContainer#leave(magellan.library.Unit)
+   */
+  public boolean leave(Unit unit) {
+    Cache cache1 = createModifiedUnits();
+    Unit left = cache1.modifiedContainerUnits.remove(unit.getID());
+    return left != null;
+  }
+
+  private Cache createModifiedUnits() {
+    Cache cache1 = getCache();
+
+    if (cache1.modifiedContainerUnits == null) {
+      cache1.modifiedContainerUnits = units == null ? new Hashtable<EntityID, Unit>()
+          : new Hashtable<EntityID, Unit>(units);
+    }
+    return cache1;
+  }
+
+  public void enter(Unit unit) {
+    Cache cache1 = createModifiedUnits();
+    if (cache1.modifiedContainerUnits.containsKey(unit.getID()))
+      throw new RuntimeException("Unit " + unit + " tries to enter " + this + " twice.");
+    cache1.modifiedContainerUnits.put(unit.getID(), unit);
   }
 }

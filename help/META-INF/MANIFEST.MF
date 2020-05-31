@@ -1,3 +1,3 @@
 Manifest-Version: 1.0
-Package-Source: http://magellan-client.sourceforge.net/
+Package-Source: https://magellan2.github.io/
 

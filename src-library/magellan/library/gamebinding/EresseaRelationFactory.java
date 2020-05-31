@@ -16,7 +16,6 @@ package magellan.library.gamebinding;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -30,6 +29,7 @@ import java.util.Set;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Order;
@@ -52,6 +52,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -71,35 +72,37 @@ public class EresseaRelationFactory implements RelationFactory {
   /** Order priority */
   public static final int P_BETRETE = 701;
   /** Order priority */
-  public static final int P_VERLASSE = 801;
+  public static final int P_GIB_KOMMANDO = 901;
   /** Order priority */
-  public static final int P_ATTACKIERE = 901;
+  public static final int P_VERLASSE = 1001;
   /** Order priority */
-  public static final int P_RESERVIERE = 1001;
+  public static final int P_ATTACKIERE = 1201;
   /** Order priority */
-  public static final int P_FOLGE = 1301;
+  public static final int P_RESERVIERE = 1301;
   /** Order priority */
-  public static final int P_GIB = 1401;
+  public static final int P_FOLGE = 1401;
   /** Order priority */
-  public static final int P_REKRUTIERE = 1601;
+  public static final int P_GIB = 1501;
   /** Order priority */
-  public static final int P_BEFOERDERE = 1701;
+  public static final int P_REKRUTIERE = 1701;
   /** Order priority */
-  public static final int P_LEHRE = 2001;
+  public static final int P_BEFOERDERE = 1801;
   /** Order priority */
-  public static final int P_FAHRE = 2598;
+  public static final int P_LEHRE = 2301;
   /** Order priority */
-  public static final int P_TRANSPORTIERE = 2599;
+  public static final int P_FAHRE = 2898;
   /** Order priority */
-  public static final int P_NACH = 2600;
+  public static final int P_TRANSPORTIERE = 2899;
   /** Order priority */
-  public static final int P_BEWACHE = 2701;
+  public static final int P_NACH = 2900;
+  /** Order priority */
+  public static final int P_BEWACHE = 3001;
 
   /** Order priority */
-  public static final int P_BUILDING_MAINTENANCE = 1801;
+  public static final int P_BUILDING_MAINTENANCE = 2001;
 
   /** Order priority */
-  public static final int P_UNIT_MAINTENANCE = 3201;
+  public static final int P_UNIT_MAINTENANCE = 3501;
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
@@ -316,9 +319,10 @@ public class EresseaRelationFactory implements RelationFactory {
       }
     }
     // use array to save memory while sorting, because Collections.sort() makes a copy
-    OrderInfo[] orders = new OrderInfo[count];
 
-    count = 0;
+    UnitOrdering orders = new UnitOrdering();
+    orders.reset(count);
+
     for (Unit u : r.units()) {
       int line = 0;
       for (Order o : u.getOrders2()) {
@@ -326,7 +330,7 @@ public class EresseaRelationFactory implements RelationFactory {
         // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
         // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
         // } else {
-        orders[count++] = new OrderInfo(o, getPriority(o), u, ++line);
+        orders.add(o, getPriority(o), u, ++line);
         // }
       }
 
@@ -345,23 +349,26 @@ public class EresseaRelationFactory implements RelationFactory {
     }
     r.clearRelations();
 
-    Arrays.sort(orders);
-    EresseaExecutionState state = new EresseaExecutionState(r.getData());
+    orders.sort(r.units());
+    // Arrays.sort(orders);
+    EresseaExecutionState state = new EresseaExecutionState(r.getData(), orders);
     boolean bmExecuted = false, umExecuted = false, resExecuted = false;
-    for (OrderInfo o : orders) {
-      if (!bmExecuted && o.priority > P_BUILDING_MAINTENANCE) {
+    for (; orders.hasNext(); orders.consume()) {
+      if (!bmExecuted && orders.getPriority() > P_BUILDING_MAINTENANCE) {
         BuildingMaintenanceOrder.execute(r, state, r.getData());
         bmExecuted = true;
       }
-      if (!umExecuted && o.priority > P_UNIT_MAINTENANCE) {
+      if (!umExecuted && orders.getPriority() > P_UNIT_MAINTENANCE) {
         UnitMaintenanceOrder.execute(r, state, r.getData());
         umExecuted = true;
       }
-      if (o.priority == P_RESERVIERE && !resExecuted) {
+      if (orders.getPriority() == P_RESERVIERE && !resExecuted) {
         ReserveOwnOrder.execute(r, state, r.getData());
         resExecuted = true;
       }
-      o.order.execute(state, data, o.unit, o.line);
+      Order o = orders.getOrder();
+      o.setProblem(null);
+      o.execute(state, data, orders.getUnit(), orders.getLine());
     }
     if (!bmExecuted) {
       BuildingMaintenanceOrder.execute(r, state, r.getData());
@@ -478,9 +485,12 @@ public class EresseaRelationFactory implements RelationFactory {
       return P_RESERVIERE;
     else if (order instanceof FollowUnitOrder)
       return P_FOLGE;
-    else if (order instanceof GiveOrder)
+    else if (order instanceof GiveOrder) {
+      if (((GiveOrder) order).getType() != null && ((GiveOrder) order).getType().equals(
+          EresseaConstants.OC_CONTROL))
+        return P_GIB_KOMMANDO;
       return P_GIB;
-    else if (order instanceof RecruitmentOrder)
+    } else if (order instanceof RecruitmentOrder)
       return P_REKRUTIERE;
     else if (order instanceof PromoteOrder)
       return P_BEFOERDERE;
@@ -518,12 +528,18 @@ public class EresseaRelationFactory implements RelationFactory {
     private Collection<ItemType> herbTypes;
     private GameData data;
     private Map<Unit, Map<StringID, Integer>> reserves;
+    private UnitOrdering orders;
+
+    public EresseaExecutionState(GameData data) {
+      this(data, null);
+    }
 
     /**
      * @param data
      */
-    public EresseaExecutionState(GameData data) {
+    public EresseaExecutionState(GameData data, UnitOrdering orders) {
       this.data = data;
+      this.orders = orders;
     }
 
     /**
@@ -798,6 +814,54 @@ public class EresseaRelationFactory implements RelationFactory {
       return map.get(itemID);
     }
 
+    public void leave(Unit unit, UnitContainer leftUC) {
+      if (unit == null || leftUC == null)
+        throw new NullPointerException();
+      Unit oldOwner = leftUC.getModifiedOwnerUnit();
+
+      unit.enter(null);
+
+      if (unit.equals(oldOwner)) {
+        updateOwner(leftUC, unit);
+      }
+    }
+
+    private Unit updateOwner(UnitContainer leftUC, Unit lastOwner) {
+      Unit newOwner = null;
+      Faction lastFaction = lastOwner.getFaction();
+      for (Unit u : leftUC.modifiedUnits()) {
+        if (Units.isAllied(lastFaction, u.getFaction(), EresseaConstants.A_GUARD)) {
+          newOwner = u;
+          break;
+        } else if (newOwner == null) {
+          newOwner = u;
+        }
+      }
+      leftUC.setModifiedOwnerUnit(newOwner);
+      return newOwner;
+    }
+
+    public void enter(Unit unit, UnitContainer newUC) {
+      if (unit == null || newUC == null)
+        throw new NullPointerException();
+
+      Unit lastUnit = null;
+      for (Unit u : data.getUnits()) {
+        if (u.getModifiedUnitContainer() == newUC) {
+          lastUnit = u;
+        }
+      }
+
+      if (lastUnit != unit && lastUnit != null) {
+        orders.insert(unit, lastUnit);
+      }
+      unit.enter(newUC);
+      // newUC.enter(unit);
+
+      if (newUC.getModifiedOwnerUnit() == null) {
+        newUC.setModifiedOwnerUnit(unit);
+      }
+    }
   }
 
 }

@@ -194,8 +194,6 @@ public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResour
   public void testGetHandlers() {
     List<OrderHandler> list = getParser().getHandlers(new OrderToken("a"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 2);
     for (OrderHandler handler : list) {
       assertTrue(handler.getClass().equals(AttackReader.class)
@@ -203,13 +201,9 @@ public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResour
     }
     list = getParser().getHandlers(new OrderToken("arbei"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 1);
     list = getParser().getHandlers(new OrderToken("aga"));
     assertTrue(list != null);
-    if (list == null)
-      return;
     assertTrue(list.size() == 0);
   }
 

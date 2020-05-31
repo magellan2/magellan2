@@ -26,25 +26,19 @@ package magellan.client.preferences;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.MapperPanel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
-public class MinimapPreferences extends JPanel implements PreferencesAdapter, ActionListener {
+public class MinimapPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private JSlider sldZoom;
-  private JComboBox cmbDisplayMode;
   private JCheckBox autoScale;
   private PreferencesAdapter rendererPreferences;
 
@@ -56,26 +50,6 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
   public MinimapPreferences(MapperPanel source) {
     this.source = source;
     rendererPreferences = source.getMinimap().getPreferencesAdapter();
-
-    // display mode combo box
-    String items[] = new String[5];
-    items[0] = Resources.get("mapperpanel.prefs.minimapitems.terrain");
-    items[1] = Resources.get("mapperpanel.prefs.minimapitems.politics");
-    items[2] = Resources.get("mapperpanel.prefs.minimapitems.allfactions");
-    items[3] = Resources.get("mapperpanel.prefs.minimapitems.trustlevel");
-    items[4] = Resources.get("mapperpanel.prefs.minimapitems.trustlevelguard");
-    cmbDisplayMode = new JComboBox(items);
-    cmbDisplayMode.setSelectedIndex(source.getMinimapMode());
-
-    JLabel lblDisplayMode = new JLabel(Resources.get("mapperpanel.prefs.lbl.minimapoptions"));
-    lblDisplayMode.setLabelFor(cmbDisplayMode);
-    lblDisplayMode.setHorizontalTextPosition(SwingConstants.CENTER);
-
-    // // color synching button
-    // JButton btnSyncColors = new
-    // JButton(Resources.get("mapperpanel.prefs.lbl.synccolors.caption"));
-    // btnSyncColors.setActionCommand("mapperpanel.prefs.lbl.synccolors.caption");
-    // btnSyncColors.addActionListener(this);
 
     // zoom slider
     sldZoom = new JSlider(1, 26, 10);
@@ -96,14 +70,16 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
             .isAutoScaling());
 
     // panel grouping minimap stuff
-    setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("mapperpanel.prefs.border.minimap")));
+    // setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+    // .get("mapperpanel.prefs.border.minimap")));
 
-    setLayout(new GridBagLayout());
+    // setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
 
-    JPanel scalePanel = new JPanel(new GridBagLayout());
-    scalePanel.setBorder(new TitledBorder(Resources.get("mapperpanel.prefs.border.zoom")));
+    // JPanel scalePanel = new JPanel(new GridBagLayout());
+    // scalePanel.setBorder(new TitledBorder(Resources.get("mapperpanel.prefs.border.zoom")));
+    JPanel scalePanel = addPanel(Resources.get("mapperpanel.prefs.border.zoom"),
+        new GridBagLayout());
 
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
@@ -135,25 +111,27 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
     c.weighty = 0;
     scalePanel.add(autoScale, c);
 
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 0;
-    c.gridwidth = 4;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 0.1;
-    c.weighty = 1;
-    this.add(scalePanel, c);
+    addComponent(rendererPreferences.getComponent());
 
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridx = 0;
-    c.gridy = 1;
-    c.gridwidth = 4;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 0.1;
-    c.weighty = 1;
-    this.add(rendererPreferences.getComponent(), c);
+    // c.anchor = GridBagConstraints.CENTER;
+    // c.gridx = 0;
+    // c.gridy = 0;
+    // c.gridwidth = 4;
+    // c.gridheight = 1;
+    // c.fill = GridBagConstraints.HORIZONTAL;
+    // c.weightx = 0.1;
+    // c.weighty = 1;
+    // this.add(scalePanel, c);
+    //
+    // c.anchor = GridBagConstraints.CENTER;
+    // c.gridx = 0;
+    // c.gridy = 1;
+    // c.gridwidth = 4;
+    // c.gridheight = 1;
+    // c.fill = GridBagConstraints.HORIZONTAL;
+    // c.weightx = 1;
+    // c.weighty = 1;
+    // this.add(rendererPreferences.getComponent(), c);
 
   }
 
@@ -177,7 +155,6 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
   public void initPreferences() {
     sldZoom.setValue(source.getMinimapScale());
     autoScale.setSelected(source.isAutoScaling());
-    cmbDisplayMode.setSelectedIndex(source.getMinimapMode());
 
     rendererPreferences.initPreferences();
   }
@@ -200,14 +177,4 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
     source.getMinimapComponent().repaint(100);
   }
 
-  /**
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand() == null)
-      return;
-    if (e.getActionCommand().equals("mapperpanel.prefs.lbl.synccolors.caption")) {
-      source.synchronizeMinimap();
-    }
-  }
 }

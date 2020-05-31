@@ -20,11 +20,11 @@ import java.util.Map;
 
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
-import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.UnitRelation;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
@@ -37,17 +37,18 @@ import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 public class Cache {
   private Collection<CacheHandler> handlers = null;
 
+  // units and containers
+
   /** used in Unit and UnitContainer for modified name */
   public String modifiedName = null;
 
-  /** used in swing.completion.* classes per unit */
-  public CacheableOrderEditor orderEditor = null;
-
-  // used in swing.map.RegionImageCellRenderer per region
-  // public int fogOfWar = -1;
-
   /** used in Unit and UnitContainer for relations between or to units */
   public List<UnitRelation> relations = null;
+
+  // units
+
+  /** used in swing.completion.* classes per unit */
+  public CacheableOrderEditor orderEditor = null;
 
   /**
    * used in Unit for skills after person transfers and recruiting
@@ -57,37 +58,23 @@ public class Cache {
    */
   public Map<StringID, Skill> modifiedSkills = null;
 
-  /** DOCUMENT-ME */
+  /** unit items */
   public Map<StringID, Item> modifiedItems = null;
-
-  /** @deprecated currently unused */
-  @Deprecated
-  public int unitWeight = -1;
-
-  /** @deprecated currently unused */
-  @Deprecated
-  public int modifiedUnitWeight = -1;
 
   /** number of persons after orders */
   public int modifiedPersons = -1;
-
-  /** used for amount of ships in a fleet */
-  public int modifiedAmount = -1;
-
-  /** used for size ships in a fleet */
-  public int modifiedSize = -1;
-
-  /**
-   * The expected combat status at beginning next turn acording to actual orders If cache is not
-   * calculated, status is EresseaConstants.CS_INIT;
-   */
-  public int modifiedCombatStatus = EresseaConstants.CS_INIT;
 
   /** guard status after orders */
   public int modifiedGuard = -1;
 
   /**
-   * The expected unaided - status at beginning next turn acording to actual orders cache status is
+   * The expected combat status at beginning next turn according to actual orders If cache is not
+   * calculated, status is EresseaConstants.CS_INIT;
+   */
+  public int modifiedCombatStatus = EresseaConstants.CS_INIT;
+
+  /**
+   * The expected unaided - status at beginning next turn according to actual orders cache status is
    * detected with modifiedUnaidedValidated
    */
   public boolean modifiedUnaided = false;
@@ -98,38 +85,35 @@ public class Cache {
   public boolean modifiedUnaidedValidated = false;
 
   /**
+   * Used in Unit (FIXME(pavkovic): right now used in PathCellRenderer) to store movement
+   * information extracted from travelThru (-Ship) and faction messages
+   */
+  public List<CoordinateID> movementPath = null;
+
+  public Boolean movementPathIsPassive = null;
+
+  public CoordinateID destination;
+
+  /**     */
+  public UnitContainer modifiedContainer;
+
+  // containers
+
+  /** used for amount of ships in a fleet */
+  public int modifiedAmount = -1;
+
+  /** used for size ships in a fleet */
+  public int modifiedSize = -1;
+
+  /**
    * used in UnitContainer !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IMPORTANT:
    * do not modify this thing (except for assignments) since it may point to the UnitContainer.units
    * map!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */
   public Map<EntityID, Unit> modifiedContainerUnits = null;
 
-  /**
-   * Used in Region for creating a list of Items of priviliged factions in the region
-   *
-   * @deprecated replaced by method in Units
-   */
-  @Deprecated
-  public Map<ID, Item> regionItems = null;
-
-  /**
-   * Used in Region for creating a list of Items of all factions in the region
-   *
-   * @deprecated replaced by method in Units
-   */
-  @Deprecated
-  public Map<ID, Item> allRegionItems = null;
-
-  /**
-   * Used in Unit (FIXME(pavkovic): right now used in PathCellRenderer) to store movement
-   * information extracted from travelThru (-Ship) and faction messages
-   */
-  public List<CoordinateID> movementPath = null;
-
-  /** DOCUMENT-ME */
-  public Boolean movementPathIsPassive = null;
-
-  public CoordinateID destination;
+  /**  */
+  public Unit modifiedOwner;
 
   /** */
   public Cache() {
@@ -185,28 +169,22 @@ public class Cache {
       modifiedItems = null;
     }
 
-    unitWeight = -1;
-    modifiedUnitWeight = -1;
     modifiedPersons = -1;
     modifiedAmount = -1;
     modifiedSize = -1;
+    if (modifiedContainerUnits != null) {
+      modifiedContainerUnits.clear();
+    }
     modifiedContainerUnits = null;
     modifiedCombatStatus = EresseaConstants.CS_INIT;
     modifiedUnaidedValidated = false;
     modifiedGuard = -1;
 
-    if (regionItems != null) {
-      regionItems.clear();
-      regionItems = null;
-    }
-
-    if (allRegionItems != null) {
-      allRegionItems.clear();
-      allRegionItems = null;
-    }
-
     movementPath = null;
     movementPathIsPassive = null;
     destination = null;
+
+    modifiedOwner = null;
+    modifiedContainer = null;
   }
 }

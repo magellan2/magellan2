@@ -410,7 +410,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
   private void delAllSigns() {
     if (JOptionPane.showConfirmDialog(this, Resources
         .get("context.mapcontextmenu.delsigns.confirm.message"), Resources
-        .get("context.mapcontextmenu.delsigns.confirm.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            .get("context.mapcontextmenu.delsigns.confirm.title"),
+        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       for (Region region2 : data.getRegions()) {
         (region2).clearSigns();
       }
@@ -445,9 +446,10 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     Iterator<String> it = src.getAllTooltipDefinitions().iterator();
 
     while (it.hasNext()) {
-      String ttName = it.next();
-      String tip = it.next();
-      String s = ttName + ": " + tip;
+      String[] tip = new String[2];
+      tip[0] = it.next();
+      tip[1] = it.next();
+      String s = tip[0] + ": " + tip[1];
 
       if (s.length() > 25) {
         s = s.substring(0, 23) + "...";
@@ -578,7 +580,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     boolean found = false;
 
     for (Bookmark h : data.getBookmarks()) {
-      if (h.getObject() == region || h.getObject().equals(region.getCoordinate())) {
+      if (h.getObject() == region || h.getObject().equals(region)) {
         found = true;
         data.removeBookmark(h.getObject());
         break;
@@ -618,7 +620,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
         if (obj == null)
           return;
 
-        source.setTooltipDefinition(obj.toString());
+        String[] tip = (String[]) obj;
+        source.setTooltipDefinition(tip[0], tip[1]);
       }
     }
   }

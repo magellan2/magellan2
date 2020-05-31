@@ -18,6 +18,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.util.Vector;
 
 import magellan.client.MagellanContext;
 import magellan.library.CoordinateID;
@@ -33,7 +34,7 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
 
   protected abstract Color getSingleColor(Region r);
 
-  protected abstract Color[] getColor(Region r);
+  protected abstract void getColor(Vector<Color> colors, Region r);
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
@@ -65,17 +66,18 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
     return Mapper.PLANE_REGION;
   }
 
+  Vector<Color> colorBuffer = new Vector<Color>(1);
+
   /**
    * Paints the specified region.
    */
   protected void paintRegion(Graphics g, Polygon p, Region r) {
-    Color colors[] = getColor(r);
+    getColor(colorBuffer, r);
 
-    if ((colors == null) || (colors.length < 2)) {
-      Color color = null;
-
-      if ((colors != null) && (colors.length > 0)) {
-        color = colors[0];
+    if (colorBuffer.size() < 2) {
+      Color color;
+      if (colorBuffer.size() == 1) {
+        color = colorBuffer.get(0);
       } else {
         color = getSingleColor(r);
       }
@@ -100,7 +102,7 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
           j++;
         } while (j < jmax);
 
-        g.setColor(colors[(((i - bounds.x) * colors.length) / bounds.width)]);
+        g.setColor(colorBuffer.get((((i - bounds.x) * colorBuffer.size()) / bounds.width)));
         g.drawLine(i, j, i, j + (bounds.height - (2 * (j - bounds.y))));
       }
     }

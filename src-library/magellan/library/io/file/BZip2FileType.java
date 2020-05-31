@@ -57,8 +57,10 @@ public class BZip2FileType extends FileType {
       int magic3 = fis.read();
       int magic4 = fis.read();
 
-      if ((magic3 != 'B') || (magic4 != 'Z'))
+      if ((magic3 != 'B') || (magic4 != 'Z')) {
+        fis.close();
         throw new IOException("File " + filename + " is missing bzip2 header BZ.");
+      }
 
       CopyFile.copyStreams(new CBZip2InputStream(new BufferedInputStream(fis)),
           new BufferedOutputStream(new FileOutputStream(tmpfile)));

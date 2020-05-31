@@ -1218,6 +1218,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("range")) {
         shipType.setRange(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("rangeformula")) {
+        shipType.setRangeFormula(sc.argv[0]);
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("captainlevel")) {
         shipType.setCaptainSkillLevel(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
@@ -2515,6 +2518,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Prozent")
           && (ship.getType() != null)) {
+        // deprecated
         ship.setSize((ship.getShipType().getMaxSize() * Integer.parseInt(sc.argv[0])) / 100);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Schaden")) {

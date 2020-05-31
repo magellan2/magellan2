@@ -1375,4 +1375,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    */
   public boolean isDetailsKnown();
 
+  /**
+   * Enters the new unit container. Also removes the unit from its old container and adds it to the
+   * modified units of the new container.
+   *
+   * @param newUC
+   */
+  public void enter(UnitContainer newUC);
+
 }

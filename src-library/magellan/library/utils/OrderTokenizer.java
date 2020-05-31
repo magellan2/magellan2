@@ -304,7 +304,11 @@ public class OrderTokenizer {
 
     while ((c = in.read()) != -1) {
       if ((c != ' ') && (c != '\t')) {
-        in.unread(c);
+        if (c == '\\') {
+          in.unread(c);
+        } else {
+          in.unread(c);
+        }
         break;
       }
     }

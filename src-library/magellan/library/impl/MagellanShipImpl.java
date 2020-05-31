@@ -14,7 +14,9 @@
 package magellan.library.impl;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import magellan.library.EntityID;
@@ -29,6 +31,7 @@ import magellan.library.relation.ShipTransferRelation;
 import magellan.library.rules.ShipType;
 import magellan.library.utils.Cache;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -106,6 +109,10 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   private int speed = -1;
 
+  private List<Ship> ships;
+  private HashSet<EntityID> shipIds;
+  private Ship parent;
+
   /**
    * Sets the region this ship is in and notifies region about it.
    *
@@ -150,11 +157,12 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     if (capacity != -1)
       return capacity;
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
-        .getCapacity() * 100 * amount);
+        .getCapacity() * 100 * getAmount());
   }
 
   /**
-   * Returns the expected / prjected maximum capacity with respect to damages of the ship in silver.
+   * Returns the expected / projected maximum capacity with respect to damages of the ship in
+   * silver.
    *
    * @return Returns the expected / projected maximum capacity with respect to damages of the ship
    *         in silver
@@ -164,7 +172,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   }
 
   /**
-   * Returns the maximimum capacity with respect to damages of the ship in GE if the undamaged
+   * Returns the maximum capacity with respect to damages of the ship in GE if the undamaged
    * capacity was <code>maxCapacity</code>.
    *
    * @param maxCapacity The capacity is calculated relative to this capacity
@@ -273,7 +281,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * damage and remaing capacity are shown, too.
    *
    * @param printExtended Whether to return a more detailed description
-   * @return A strig representation of this ship
+   * @return A string representation of this ship
    */
   public String toString(boolean printExtended) {
     final StringBuffer sb = new StringBuffer();
@@ -297,7 +305,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
       }
       sb.append(getType());
 
-      final int nominalShipSize = getShipType().getMaxSize() * amount;
+      final int nominalShipSize = Units.getNominalSize(this);
       final int modifiedNominalShipSize = getShipType().getMaxSize() * getModifiedAmount();
 
       if (size != nominalShipSize) {
@@ -518,41 +526,33 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * units have been processed since it may be modified by transfer orders.
    */
   public int getModifiedAmount() {
+    Cache cache1 = getCache();
 
-    if (getOwner() == null)
-      return getAmount();
-
-    final Cache cache1 = getOwner().getCache();
     if (cache1.modifiedAmount == -1) {
       cache1.modifiedAmount = getAmount();
       for (ShipTransferRelation tr : getShipTransferRelations()) {
-        if (getOwner().equals(tr.source)) {
+        if (equals(tr.ship)) {
           cache1.modifiedAmount -= tr.amount;
         } else {
           cache1.modifiedAmount += tr.amount;
         }
       }
-
     }
 
     return cache1.modifiedAmount;
   }
 
   /**
-   * Returns the number of Ships in this fleet as it would be after the orders of this and other
-   * units have been processed since it may be modified by transfer orders.
+   * Returns the size of this convoy as it would be after the orders of this and other units have
+   * been processed since it may be modified by transfer orders.
    */
   public int getModifiedSize() {
-
-    if (getOwner() == null)
-      return getSize();
-
-    final Cache cache1 = getOwner().getCache();
+    Cache cache1 = getCache();
     if (cache1.modifiedSize == -1) {
       cache1.modifiedSize = getSize();
       for (ShipTransferRelation tr : getShipTransferRelations()) {
-        int sizeAmount = Math.round((tr.amount * tr.ship.getSize() / tr.ship.getAmount()));
-        if (getOwner().equals(tr.source)) {
+        int sizeAmount = tr.amount * tr.ship.getSize() / tr.ship.getAmount();
+        if (equals(tr.ship)) {
           cache1.modifiedSize -= sizeAmount;
         } else {
           cache1.modifiedSize += sizeAmount;
@@ -569,15 +569,68 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @return a collection of ShipTransferRelation objects.
    */
   public List<ShipTransferRelation> getShipTransferRelations() {
-    if (getOwner() == null) {
-
-      final List<ShipTransferRelation> ret2 = new LinkedList<ShipTransferRelation>();
-      return ret2;
-    } else {
-      final List<ShipTransferRelation> ret = getOwner().getRelations(ShipTransferRelation.class);
-      return ret;
-    }
-
+    return getRelations(ShipTransferRelation.class);
   }
 
+  public List<Ship> getTempShips() {
+    if (ships == null)
+      return Collections.emptyList();
+    return Collections.unmodifiableList(ships);
+  }
+
+  public Ship createTempShip() {
+    if (getParent() != null)
+      return getParent().createTempShip();
+    if (ships == null) {
+      ships = new ArrayList<Ship>(3);
+      shipIds = new HashSet<EntityID>(3);
+    }
+
+    EntityID targetId = EntityID.createEntityID(-getID().intValue(), data.base);
+    for (int id = targetId.intValue(); shipIds.contains(targetId); --id) {
+      targetId = EntityID.createEntityID(id, data.base);
+    }
+
+    MagellanShipImpl tempShip = new MagellanShipImpl(targetId, data);
+    tempShip.setParent(this);
+
+    tempShip.setName("TEMP SHIP " + targetId);
+    tempShip.setType(getShipType());
+    tempShip.setShoreId(getShoreId());
+    tempShip.setMaxPersons(getMaxPersons());
+    tempShip.setSpeed(getSpeed());
+    tempShip.setDamageRatio(getDamageRatio());
+
+    tempShip.setCapacity(0);
+    tempShip.setCargo(0);
+    tempShip.setSize(0);
+    tempShip.setAmount(0);
+
+    // data.addShip(tempShip);
+    // tempShip.setRegion(ship.getRegion());
+    tempShip.region = getRegion();
+
+    ships.add(tempShip);
+    shipIds.add(tempShip.getID());
+    return tempShip;
+  }
+
+  private void setParent(MagellanShipImpl parent) {
+    if (parent.getParent() != null)
+      throw new RuntimeException("Temp ship with temp ships " + parent);
+    this.parent = parent;
+  }
+
+  private Ship getParent() {
+    return parent;
+  }
+
+  @Override
+  public void clearRelations() {
+    super.clearRelations();
+    if (ships != null) {
+      ships.clear();
+      shipIds.clear();
+    }
+  }
 }

@@ -34,10 +34,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -123,8 +125,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
   private CollapsePanel cPanel;
   private RegionOverviewSkillPreferences skillSort;
   private List<PreferencesAdapter> subAdapters;
-  private JList useList;
-  private JList elementsList;
+  private JList<String> useList;
+  private JList<String> elementsList;
+  private ButtonGroup whichSkillToUse;
 
   /**
    * Creates a new EMapOverviewPreferences object.
@@ -179,7 +182,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("emapoverviewpanel.prefs.treeStructure.available")));
 
-    DefaultListModel elementsListModel = new DefaultListModel();
+    DefaultListModel<String> elementsListModel = new DefaultListModel<String>();
     elementsListModel.add(TreeHelper.FACTION, Resources
         .get("emapoverviewpanel.prefs.treeStructure.element.faction"));
     elementsListModel.add(TreeHelper.GUISE_FACTION, Resources
@@ -210,7 +213,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         "emapoverviewpanel.prefs.treeStructure.element.taggable",
         new Object[] { CRParser.TAGGABLE_STRING5 }));
 
-    elementsList = new JList(elementsListModel);
+    elementsList = new JList<String>(elementsListModel);
 
     JScrollPane pane = new JScrollPane(elementsList);
     elementsPanel.add(pane, BorderLayout.CENTER);
@@ -220,8 +223,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("emapoverviewpanel.prefs.treeStructure.use")));
 
-    useList = new JList();
+    useList = new JList<String>();
     useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
     pane = new JScrollPane(useList);
     c.gridheight = 4;
     usePanel.add(pane, c);
@@ -238,14 +242,14 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     up.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int pos = useList.getSelectedIndex();
-        DefaultListModel model = (DefaultListModel) useList.getModel();
+        DefaultListModel<String> model = (DefaultListModel<String>) useList.getModel();
 
         if (pos == 0)
           return;
 
-        Object o = model.elementAt(pos);
+        String element = model.elementAt(pos);
         model.remove(pos);
-        model.insertElementAt(o, pos - 1);
+        model.insertElementAt(element, pos - 1);
         useList.setSelectedIndex(pos - 1);
       }
     });
@@ -257,14 +261,14 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     down.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int pos = useList.getSelectedIndex();
-        DefaultListModel model = (DefaultListModel) useList.getModel();
+        DefaultListModel<String> model = (DefaultListModel<String>) useList.getModel();
 
         if (pos == (model.getSize() - 1))
           return;
 
-        Object o = model.elementAt(pos);
+        String element = model.elementAt(pos);
         model.remove(pos);
-        model.insertElementAt(o, pos + 1);
+        model.insertElementAt(element, pos + 1);
         useList.setSelectedIndex(pos + 1);
       }
     });
@@ -296,12 +300,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     JButton right = new JButton("  -->  ");
     right.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        Object selection[] = elementsList.getSelectedValues();
-        DefaultListModel model = (DefaultListModel) useList.getModel();
+        DefaultListModel<String> model = (DefaultListModel<String>) useList.getModel();
 
-        for (int i = 0; i < selection.length; i++) {
-          if (!model.contains(selection[i])) {
-            model.add(model.getSize(), selection[i]);
+        for (String element : elementsList.getSelectedValuesList()) {
+          if (!model.contains(element)) {
+            model.add(model.getSize(), element);
           }
         }
       }
@@ -313,10 +316,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     JButton left = new JButton("  <--  ");
     left.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        DefaultListModel model = (DefaultListModel) useList.getModel();
-        Object selection[] = useList.getSelectedValues();
+        DefaultListModel<String> model = (DefaultListModel<String>) useList.getModel();
 
-        for (Object element : selection) {
+        for (String element : useList.getSelectedValuesList()) {
           model.removeElement(element);
         }
       }
@@ -331,33 +333,27 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     rdbSortUnitsUnsorted = new JRadioButton(Resources.get("emapoverviewpanel.prefs.reportorder"));
     rdbSortUnitsUnsorted.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        skillSort.setEnabled(false);
-        useBestSkill.setEnabled(false);
-        useTopmostSkill.setEnabled(false);
+        updateButtonGroups();
       }
     });
 
     rdbSortUnitsSkills = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyskills"));
     rdbSortUnitsSkills.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        skillSort.setEnabled(true);
-        useBestSkill.setEnabled(true);
-        useTopmostSkill.setEnabled(true);
+        updateButtonGroups();
       }
     });
 
     useBestSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usebestskill"));
     useTopmostSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usetopmostskill"));
 
-    ButtonGroup whichSkillToUse = new ButtonGroup();
+    whichSkillToUse = new ButtonGroup();
     whichSkillToUse.add(useBestSkill);
     whichSkillToUse.add(useTopmostSkill);
     rdbSortUnitsNames = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbynames"));
     rdbSortUnitsNames.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        skillSort.setEnabled(false);
-        useBestSkill.setEnabled(false);
-        useTopmostSkill.setEnabled(false);
+        updateButtonGroups();
       }
     });
 
@@ -474,7 +470,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " "
             + TreeHelper.GROUP);
 
-    DefaultListModel model2 = new DefaultListModel();
+    DefaultListModel<String> model2 = new DefaultListModel<String>();
 
     for (StringTokenizer tokenizer = new StringTokenizer(criteria); tokenizer.hasMoreTokens();) {
       String s = tokenizer.nextToken();
@@ -508,9 +504,22 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
         "skills").equals("names"));
+    updateButtonGroups();
 
     // this is strictly not necessary
     skillSort.initPreferences();
+  }
+
+  private void updateButtonGroups() {
+    boolean enabled = rdbSortUnitsSkills.isSelected();
+    Enumeration<AbstractButton> elements = whichSkillToUse.getElements();
+    for (; elements.hasMoreElements();) {
+      AbstractButton button = elements.nextElement();
+      button.setEnabled(enabled);
+      button.setEnabled(enabled);
+      button.setEnabled(enabled);
+    }
+    skillSort.setEnabled(enabled);
   }
 
   /**
@@ -569,12 +578,12 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     settings.setProperty("EMapOverviewPanel.useBestSkill", String
         .valueOf(useBestSkill.isSelected()));
 
-    DefaultListModel useListModel = (DefaultListModel) useList.getModel();
+    DefaultListModel<String> useListModel = (DefaultListModel<String>) useList.getModel();
     StringBuffer definition = new StringBuffer("");
 
-    DefaultListModel elementsListModel = (DefaultListModel) elementsList.getModel();
+    DefaultListModel<String> elementsListModel = (DefaultListModel<String>) elementsList.getModel();
     for (int i = 0; i < useListModel.getSize(); i++) {
-      String s = (String) useListModel.getElementAt(i);
+      String s = useListModel.getElementAt(i);
 
       int pos = elementsListModel.indexOf(s);
       definition.append(pos).append(" ");
@@ -764,7 +773,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     /**
      * Update ui
-     * 
+     *
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) {

@@ -144,7 +144,8 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
   public abstract String[] getText(Region r, Rectangle rect);
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.HexCellRenderer#init(magellan.library.GameData,
+   *      java.awt.Graphics, java.awt.Rectangle)
    */
   @Override
   public void init(GameData data, Graphics g, Rectangle offset) {

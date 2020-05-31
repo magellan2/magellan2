@@ -26,7 +26,7 @@ package magellan.library.utils.mapping;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
-import magellan.library.StringID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Score;
 
@@ -44,15 +44,16 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
       CoordinateID mapping) {
 
     int maxTerrainMismatches =
-        (int) (Math.max(fromData.getRegions().size(), toData.getRegions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
+        (int) (Math.max(fromData.getRegions().size(), toData.getRegions().size())
+            * TerrainMappingEvaluator.PERCENT_MISMATCHES);
 
-    RegionType forestTerrain = fromData.getRules().getRegionType(StringID.create("Wald"));
-    RegionType plainTerrain = fromData.getRules().getRegionType(StringID.create("Ebene"));
-    RegionType oceanTerrain = fromData.getRules().getRegionType(StringID.create("Ozean"));
-    RegionType glacierTerrain = fromData.getRules().getRegionType(StringID.create("Gletscher"));
+    RegionType forestTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_FOREST);
+    RegionType plainTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_PLAIN);
+    RegionType oceanTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_OCEAN);
+    RegionType glacierTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_GLACIER);
     RegionType activeVolcanoTerrain =
-        fromData.getRules().getRegionType(StringID.create("Aktiver Vulkan"));
-    RegionType volcanoTerrain = fromData.getRules().getRegionType(StringID.create("Vulkan"));
+        fromData.getRules().getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO);
+    RegionType volcanoTerrain = fromData.getRules().getRegionType(EresseaConstants.RT_VOLCANO);
 
     int mismatches = 0;
     int score = 0;
@@ -115,15 +116,19 @@ public class TerrainMappingEvaluator extends MappingEvaluator {
                   score--;
                 } else {
                   if (!(((forestTerrain != null) && (plainTerrain != null) && ((forestTerrain
-                      .equals(region.getType()) && plainTerrain.equals(sameRegion.getType())) || (plainTerrain
-                      .equals(region.getType()) && forestTerrain.equals(sameRegion.getType()))))
+                      .equals(region.getType()) && plainTerrain.equals(sameRegion.getType()))
+                      || (plainTerrain
+                          .equals(region.getType()) && forestTerrain.equals(sameRegion.getType()))))
                       || ((oceanTerrain != null) && (glacierTerrain != null) && ((oceanTerrain
-                          .equals(region.getType()) && glacierTerrain.equals(sameRegion.getType())) || (glacierTerrain
-                          .equals(region.getType()) && oceanTerrain.equals(sameRegion.getType())))) || ((activeVolcanoTerrain != null)
-                      && (volcanoTerrain != null) && ((activeVolcanoTerrain
-                      .equals(region.getType()) && volcanoTerrain.equals(sameRegion.getType())) || (volcanoTerrain
-                      .equals(region.getType()) && activeVolcanoTerrain
-                      .equals(sameRegion.getType())))))) {
+                          .equals(region.getType()) && glacierTerrain.equals(sameRegion.getType()))
+                          || (glacierTerrain
+                              .equals(region.getType()) && oceanTerrain.equals(sameRegion
+                                  .getType())))) || ((activeVolcanoTerrain != null)
+                                      && (volcanoTerrain != null) && ((activeVolcanoTerrain
+                                          .equals(region.getType()) && volcanoTerrain.equals(
+                                              sameRegion.getType())) || (volcanoTerrain
+                                                  .equals(region.getType()) && activeVolcanoTerrain
+                                                      .equals(sameRegion.getType())))))) {
                     mismatches++;
                     score--;
                   }

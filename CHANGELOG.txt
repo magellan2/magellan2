@@ -1,72 +1,77 @@
-2019-05-06 / Build 701 - stm (stm2@users.sourceforge.net)
-	* switched to java 11, new magellan version 2.1.0
+2020-05-30
+    * implemented new build system at github
+    * introduced full semantic versioning major.minor.revision-build.type
+    * fixed backslash parsing in CR strings
 
-2019-05-06 / Build 699 - stm (stm2@users.sourceforge.net)
-        * ATR/ARR preferences rewrite
-        * added ship range calculation for dragon ships
+2020-05-06 / Build 701 - stm (stm2@users.sourceforge.net)
+    * switched to java 11, new magellan version 2.1.0
 
-2019-05-01 / Build 698 - stm (stm2@users.sourceforge.net)
-	* E3CommandParser: JShell fix, improved BerufBotschafter
+2020-05-06 / Build 699 - stm (stm2@users.sourceforge.net)
+    * ATR/ARR preferences rewrite
+    * added ship range calculation for dragon ships
 
-2019-05-06 / Build 697 - stm (stm2@users.sourceforge.net)
-	* implemented convoys
+2020-05-01 / Build 698 - stm (stm2@users.sourceforge.net)
+    * E3CommandParser: JShell fix, improved BerufBotschafter
 
-2019-02-08 / Build 696 - stm (stm2@users.sourceforge.net)
-	* ExtendedCommands: switched from BeanShell to JShell, improving performance and reducing dependencies
+2020-05-06 / Build 697 - stm (stm2@users.sourceforge.net)
+    * implemented convoys
 
-2019-02-03 / Build 694 - stm (stm2@users.sourceforge.net)
-	* fixed bugs 409 and 415 (unit sorting preferences and rules for other games)
+2020-02-08 / Build 696 - stm (stm2@users.sourceforge.net)
+    * ExtendedCommands: switched from BeanShell to JShell, improving performance and reducing dependencies
 
-2019-02-01 / Build 691 - stm (stm2@users.sourceforge.net)
-	* new L&F default (Nimbus)
+2020-02-03 / Build 694 - stm (stm2@users.sourceforge.net)
+    * fixed bugs 409 and 415 (unit sorting preferences and rules for other games)
+
+2020-02-01 / Build 691 - stm (stm2@users.sourceforge.net)
+    * new L&F default (Nimbus)
 
 2019-12-31 / Build 688 - Fiete (sf@fietefietz.de)
-	* BugFix: comments ending mage spell orders rising errors
+    * BugFix: comments ending mage spell orders rising errors
 
 2019-12-24 / Build 687 - Fiete (sf@fietefietz.de)
-	* simple support for fleets: BugFix in MergeGameData (forgot the ship.Amount there)
+    * simple support for fleets: BugFix in MergeGameData (forgot the ship.Amount there)
 
 2019-11-26 / Build 686 - Fiete (sf@fietefietz.de)
-	* simple support for fleets: GIVE abcd X SHIP (OrderParser, OrderCompletion, CRReader, CRWriter, DetailsPanel)
+    * simple support for fleets: GIVE abcd X SHIP (OrderParser, OrderCompletion, CRReader, CRWriter, DetailsPanel)
 
 2019-08-24 / Build 683 - Fiete (sf@fietefietz.de)
-	* introduced new ShipType Galeone to E2 (EmapDetails), new rule-entry: minSailorLevel
+    * introduced new ShipType Galeone to E2 (EmapDetails), new rule-entry: minSailorLevel
 
 2019-08-17 / Build 682 - Fiete (sf@fietefietz.de)
-	* BugFix in EresseaMovementEvaluator.getPayLoadOnFood for Trolls with units with 0 persons
+    * BugFix in EresseaMovementEvaluator.getPayLoadOnFood for Trolls with units with 0 persons
 
 2018-08-17 / Build 681 - Fiete (sf@fietefietz.de)
-	* http://eressea.dracones.de/magellanbugs/view.php?id=402 | Kapitänswechsel
+    * http://eressea.dracones.de/magellanbugs/view.php?id=402 | Kapitänswechsel
 
 2018-08-17 / Build 680 - Fiete (sf@fietefietz.de)
-	* http://eressea.dracones.de/magellanbugs/view.php?id=405 | Temp-Button mehrfach benutzen
+    * http://eressea.dracones.de/magellanbugs/view.php?id=405 | Temp-Button mehrfach benutzen
 
 2018-08-17 / Build 679 - Fiete (sf@fietefietz.de)
-	* http://eressea.dracones.de/magellanbugs/view.php?id=404 | Max. Einkommen replaced by "Unterhaltung", en-Version too
+    * http://eressea.dracones.de/magellanbugs/view.php?id=404 | Max. Einkommen replaced by "Unterhaltung", en-Version too
 
 2018-07-19 / Build 677 - Fiete (sf@fietefietz.de)
-	* fixed NPE in SignTextCellRenderer
-	* added region tag "mapline" to CR parser
+    * fixed NPE in SignTextCellRenderer
+    * added region tag "mapline" to CR parser
 
 2018-07-12 / Build 676 - stm (stm2@users.sourceforge.net)
-	* corrected last visited region
-	* RoutePlanner doesn't overwrite ATTACK
-	* work-around and stability fix for eressea bug #2457
-	* delete directory of deleted profiles
-	* fixed FillInsideAction (alias FillSelectionAction2)
-	* replaced deprecated registerKeyboardAction by getInputMap/getActionMap
+    * corrected last visited region
+    * RoutePlanner doesn't overwrite ATTACK
+    * work-around and stability fix for eressea bug #2457
+    * delete directory of deleted profiles
+    * fixed FillInsideAction (alias FillSelectionAction2)
+    * replaced deprecated registerKeyboardAction by getInputMap/getActionMap
 
 2018-06-10 / Build 671 - Fiete (sf@fietefietz.de)
-	* added another 5 new MessageTypeIDs in BattleAnalyzer
+    * added another 5 new MessageTypeIDs in BattleAnalyzer
 
 2018-05-28 / Build 670 - Fiete (sf@fietefietz.de)
-	* added another 3 new MessageTypeIDs in BattleAnalyzer
+    * added another 3 new MessageTypeIDs in BattleAnalyzer
 
 2018-05-14 / Build 669 - Fiete (sf@fietefietz.de)
-	* added Map - Selection - Fill 2
+    * added Map - Selection - Fill 2
 
 2017-12-06 / Build 668 - Fiete (sf@fietefietz.de)
-	* added another new MessageTypeID in BattleAnalyzer
+    * added another new MessageTypeID in BattleAnalyzer
 
 2017-12-21 / Build 669 - stm (stm2@users.sourceforge.net)
     * cumulative skill chart

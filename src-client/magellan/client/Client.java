@@ -1260,7 +1260,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             try {
               String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
                   Client.startWindow);
-              String currentVersion = VersionInfo.getVersion(tResourceDir);
+              String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
               if (!Utils.isEmpty(newestVersion)) {
                 Client.log.info("Newest Version on server: " + newestVersion);
                 Client.log.info("Current Version: " + currentVersion);
@@ -1380,7 +1380,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Client.log.info("resource directory: " + parameters.resourceDir);
     Client.log.info("settings directory: " + parameters.settingsDir);
 
-    String version = VersionInfo.getVersion(parameters.binDir);
+    String version = VersionInfo.getSemanticVersion(parameters.binDir);
     if (version == null) {
       version = VersionInfo.getVersion(parameters.resourceDir);
     }
@@ -2189,9 +2189,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       StringBuilder title2 = new StringBuilder();
       StringBuilder title3 = new StringBuilder();
 
-      String version = VersionInfo.getVersion(Client.getBinaryDirectory());
+      String version = VersionInfo.getSemanticVersion(Client.getBinaryDirectory());
       if (version == null) {
-        version = VersionInfo.getVersion(Client.getResourceDirectory());
+        version = VersionInfo.getSemanticVersion(Client.getResourceDirectory());
       }
 
       if (version != null) {

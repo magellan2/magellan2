@@ -80,15 +80,10 @@
 		<property name="VERSION.FULL"       value="${VERSION.POINTED}-${build.number}.${VERSION.POST}"/>
 		<property name="VERSION.COMPAT"       value="${VERSION.POINTED} (build ${build.number})"/>
 
-		<script language="javascript">
-			project.setProperty('currentTime', new Date().getTime());
-		</script>
-
 		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
 			<filterset>
 				<filter token="VERSION" value="${VERSION.COMPAT}"/>
 				<filter token="SEMANTIC_VERSION" value="${VERSION.FULL}"/>
-				<filter token="BUILD_TIMESTAMP" value="${currentTime}"/>
 			</filterset>
 		</copy>
 		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>

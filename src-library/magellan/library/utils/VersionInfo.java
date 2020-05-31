@@ -44,14 +44,18 @@ public class VersionInfo {
 
   private static final String DEFAULT_VERSION_URL = "https://magellan2.github.io/api/versions";
 
-  private static String Version = null;
-  private static boolean versionIsSet = false;
+  private static String Version;
+  private static String lastKey;
 
   /**
    * Gets the Version of this Instance.
    */
   public static String getVersion(File magellanDirectory) {
-    return getVersion(magellanDirectory, "VERSION");
+    return getVersion(magellanDirectory, PRE_2_1);
+  }
+
+  public static String getSemanticVersion(File magellanDirectory) {
+    return getVersion(magellanDirectory, POST_2_1);
   }
 
   public static int PRE_2_1 = 0;
@@ -65,11 +69,11 @@ public class VersionInfo {
   }
 
   protected static String getVersion(File magellanDirectory, String key) {
-    if (VersionInfo.versionIsSet)
+    if (key.equals(VersionInfo.lastKey))
       return VersionInfo.Version;
     if (magellanDirectory == null)
       return null;
-    VersionInfo.versionIsSet = true;
+    VersionInfo.lastKey = key;
     try {
       File versionFile = new File(magellanDirectory, "etc/VERSION");
       if (!versionFile.exists()) {
@@ -84,7 +88,6 @@ public class VersionInfo {
         }
       }
 
-      // ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream("etc/VERSION"));
       ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream(versionFile));
       VersionInfo.Version = bundle.getString(key);
       return VersionInfo.Version;

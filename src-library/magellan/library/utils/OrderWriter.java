@@ -193,7 +193,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
     if (writeTimeStamp) {
       writeCommentLine(stream, "TIMESTAMP " + getTimeStamp());
     }
-    writeCommentLine(stream, "Magellan Version " + VersionInfo.getVersion(null));
+    writeCommentLine(stream, "Magellan Version " + VersionInfo.getSemanticVersion(null));
 
     if (useChecker()) {
       if (addECheckComments) {
@@ -338,8 +338,9 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   protected void writeOrders(Collection<Order> cmds, BufferedWriter stream) throws IOException {
     for (Order cmd : cmds) {
       if (!cmd.isEmpty()
-          && ((removeSCComments && cmd.getToken(0).getText().startsWith(EresseaConstants.O_COMMENT)) || (removeSSComments && cmd
-              .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
+          && ((removeSCComments && cmd.getToken(0).getText().startsWith(EresseaConstants.O_COMMENT))
+              || (removeSSComments && cmd
+                  .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
         // consume
       } else {
         writeln(stream, cmd.getText());

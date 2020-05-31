@@ -51,7 +51,7 @@ public class VersionInfoTest extends MagellanTestWithResources {
     File rDir = new File(".");
     System.out.println(rDir.getAbsolutePath());
     String currentVersion = VersionInfo.getVersion(Resources.getResourceDirectory(), VersionInfo.POST_2_1);
-    String newVersion = "2.1.0";
+    String newVersion = "2.1.0-0.beta";
     Version a = new Version(currentVersion);
     Version b = new Version(newVersion);
     assertTrue(a.isNewer(b));

@@ -170,7 +170,7 @@ public class StartWindow extends JFrame {
     cont.add(text);
 
     // Fiete 20060911: trying to add Version info to start screen (bottom)
-    String version = VersionInfo.getVersion(magellanDir);
+    String version = VersionInfo.getSemanticVersion(magellanDir);
 
     if (version == null) {
       version = "version not available";

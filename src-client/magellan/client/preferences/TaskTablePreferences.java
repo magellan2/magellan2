@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
@@ -149,6 +149,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
       if (!problems.contains(p))
         return;
       String cat = p.getGroup();
+
       if (cat == null) {
         remove(root, p);
         problems.remove(p);
@@ -158,16 +159,17 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
         problems.remove(p);
         if (parent.getChildCount() == 0) {
           catNodes.remove(cat);
-          root.remove(parent);
+          model.removeNodeFromParent(parent);
         }
       }
-      model.nodeStructureChanged(root);
+      // model.nodeStructureChanged(root);
     }
 
     private void remove(DefaultMutableTreeNode parent, ProblemType p) {
       for (int i = 0; i < parent.getChildCount(); ++i) {
-        if (((DefaultMutableTreeNode) parent.getChildAt(i)).getUserObject().equals(p)) {
-          parent.remove(i);
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getChildAt(i);
+        if (child.getUserObject().equals(p)) {
+          model.removeNodeFromParent(child);
         }
       }
     }
@@ -316,9 +318,29 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     JButton left = new JButton("  <--  ");
     left.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
+        int first = -1, candidate = -1, previous = -1, last = -1, count = 0;
+        for (int i : ignoreList.getSelectionRows()) {
+          if (first < 0) {
+            first = i;
+          }
+          if (candidate < 0 && previous >= 0 && i > previous + 1) {
+            candidate = previous + 1 - count;
+          }
+          last = i;
+          previous = i;
+          count++;
+        }
+        if (candidate < 0 && last < ignoreList.getRowCount() - 1) {
+          candidate = last + 1 - count;
+        }
+        if (candidate < 0 && first > 0) {
+          candidate = first - 1;
+        }
+
         for (ProblemType p : ignoreList.getSelectedProblems()) {
           ignoreList.removeProblem(p);
         }
+        ignoreList.setSelectionInterval(candidate, candidate);
       }
     });
 

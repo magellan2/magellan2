@@ -25,8 +25,8 @@ jobs:
     - name: prepare
       run: |
         set -x
-        if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).*/\1/")
+        if [[ "${{ env.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
         else
           TYPE=stable
         fi
@@ -38,7 +38,7 @@ jobs:
 
     - name: trigger meta action
       run: |
-        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan-meta/dispatches \
+        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
           -H 'Accept: application/vnd.github.everst-preview+json' \
           -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
           --data '{
@@ -47,7 +47,7 @@ jobs:
               "ref" : "${{ github.ref }}",
               "sha": "${{ github.sha }}",
               "caller_repository" : "${{ github.repository }}",
-              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
+              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
               "tag" : "${{ env.TAG }}",
               "version" : "${{ env.VERSION }}",
               "type": "${{ env.TYPE }}" }}'

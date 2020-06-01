@@ -203,8 +203,6 @@ public class ShipRoutePlanner extends RoutePlanner {
    */
   protected static class ShipCosts implements RoutePlanner.Costs {
     private BuildingType harbour;
-    // private Ship ship;
-    private int costs;
     private int speed;
 
     public ShipCosts(Ship ship, int speed, BuildingType harbour) {
@@ -213,20 +211,20 @@ public class ShipRoutePlanner extends RoutePlanner {
       this.speed = speed;
     }
 
-    public void increase(Region region, Region region2) {
-      if (region2.getRegionType().isOcean() || Regions.containsBuilding(region2, harbour)) {
-        costs += 1;
-      } else {
-        costs = speed;
+    public boolean isExhausted(LinkedList<Region> curPath) {
+      Region lastR = null;
+      int costs = 0;
+      for (Region r : curPath) {
+        if (lastR != null) {
+          if (r.getRegionType().isOcean() || Regions.containsBuilding(r, harbour)) {
+            costs += 1;
+          } else {
+            costs = speed;
+          }
+        }
+        lastR = r;
       }
-    }
-
-    public void reset() {
-      costs = 0;
-    }
-
-    public boolean isExhausted() {
-      return costs >= speed;
+      return costs > speed;
     }
   }
 

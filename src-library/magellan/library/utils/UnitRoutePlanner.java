@@ -154,7 +154,7 @@ public class UnitRoutePlanner {
     // optionally find a return path
     List<Region> returnPath = null;
     if ((mode & RoutePlanner.MODE_RETURN) > 0) {
-      returnPath = Regions.getLandPath(data, destination, start, excludeMap, speed, speed);
+      returnPath = Regions.getLandPath(data, destination, start, excludeMap, speed, speedRoad);
       path.addAll(returnPath);
     }
 
@@ -186,8 +186,6 @@ public class UnitRoutePlanner {
   public static class LandCosts implements RoutePlanner.Costs {
 
     private Unit unit;
-    private boolean onlyStreets = true;
-    int steps = 0;
 
     /**
      * Creates costs for a unit on land.
@@ -198,23 +196,18 @@ public class UnitRoutePlanner {
       this.unit = unit;
     }
 
-    public void increase(Region region, Region region2) {
-      if (!Regions.isCompleteRoadConnection(region, region2)) {
-        onlyStreets = false;
+    public boolean isExhausted(LinkedList<Region> curPath) {
+      Region lastR = null;
+      boolean onlyStreets = true;
+      for (Region r : curPath) {
+        if (lastR != null) {
+          if (!Regions.isCompleteRoadConnection(lastR, r)) {
+            onlyStreets = false;
+          }
+        }
+        lastR = r;
       }
-      steps++;
-    }
-
-    /**
-     * @see magellan.library.utils.RoutePlanner.Costs#isExhausted()
-     */
-    public boolean isExhausted() {
-      return steps >= Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, onlyStreets));
-    }
-
-    public void reset() {
-      steps = 0;
-      onlyStreets = true;
+      return curPath.size() - 1 > Math.max(1, UnitRoutePlanner.getModifiedRadius(unit, onlyStreets));
     }
   }
 

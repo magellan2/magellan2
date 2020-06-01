@@ -34,7 +34,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
 
     Region region_1_0_gd2 = builder.addRegion(gd2, "1 0", "Region_1_0", "Ebene", 2);
     builder.addUnit(gd2, "Unit_2", region_1_0_gd2);
-    builder.addRoad(region_1_0_gd2, 1, 1, 100);
+    builder.addRoad(region_1_0_gd2, 1, 100);
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
@@ -57,7 +57,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd2 = builder.createSimpleGameData(351);
 
     Region r2 = gd2.getRegions().iterator().next();
-    builder.addRoad(r2, 1, 1, 100);
+    builder.addRoad(r2, 1, 100);
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
@@ -77,7 +77,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd2 = builder.createSimpleGameData(350, false);
 
     Region r1 = gd1.getRegions().iterator().next();
-    builder.addRoad(r1, 1, 1, 100);
+    builder.addRoad(r1, 1, 100);
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
     // WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
@@ -100,7 +100,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
 
     Region region_1_0_gd2 = builder.addRegion(gd2, "1 0", "Region_1_0", "Ebene", 2);
     builder.addUnit(gd2, "Unit_2", region_1_0_gd2);
-    builder.addRoad(region_1_0_gd2, 1, 1, 100);
+    builder.addRoad(region_1_0_gd2, 1, 100);
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
@@ -120,7 +120,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     builder.addUnit(gd1, "Unit_2", region_1_1_gd1);
 
     Region region_1_1_gd2 = builder.addRegion(gd2, "1 1", "Region_1_1", "Ebene", 3);
-    builder.addRoad(region_1_1_gd2, 1, 1, 100);
+    builder.addRoad(region_1_1_gd2, 1, 100);
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 
@@ -137,7 +137,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     GameData gd2 = builder.createSimpleGameData(350);
 
     Region region_1_1_gd1 = builder.addRegion(gd1, "1 1", "Region_1_1", "Ebene", 3);
-    builder.addRoad(region_1_1_gd1, 1, 1, 100);
+    builder.addRoad(region_1_1_gd1, 1, 100);
 
     Region region_1_1_gd2 = builder.addRegion(gd2, "1 1", "Region_1_1", "Ebene", 3);
     Unit u2 = builder.addUnit(gd2, "Unit_2", region_1_1_gd2);

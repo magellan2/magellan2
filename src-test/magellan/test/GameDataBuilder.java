@@ -58,6 +58,8 @@ public class GameDataBuilder {
   public static final String E3 = "E3";
   public static final String ATLANTIS = "Atlantis";
 
+  private static int maxId = 0;
+
   /**
    * Creates a report at round {@value #BASE_ROUND}.
    *
@@ -423,12 +425,12 @@ public class GameDataBuilder {
    * @param buildRatio
    * @return The new road
    */
-  public Border addRoad(Region region, int id, int direction, int buildRatio) {
+  public Border addRoad(Region region, int direction, int buildRatio) {
     // GRENZE 1
     // "Straﬂe";typ
     // 0;richtung
     // 100;prozent
-    final Border road = MagellanFactory.createBorder(IntegerID.create(id));
+    final Border road = MagellanFactory.createBorder(IntegerID.create(++maxId));
 
     road.setDirection(direction);
     // road.setDirectionName(region.getData().getGameSpecificStuff().getOrderChanger()

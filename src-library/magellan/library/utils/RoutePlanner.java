@@ -68,74 +68,80 @@ public class RoutePlanner {
     } else {
       localCommand = getOrderTranslation(EresseaConstants.OC_MOVE);
     }
-    StringBuilder order = new StringBuilder();
-    order.append(localCommand).append(" ");
 
     int size = orders.size();
 
-    String closing = ""; // saves whether a closing bracket must be added: "}"
+    StringBuilder order = new StringBuilder();
+    LinkedList<Region> curPath = new LinkedList<Region>();
+    int line = 0;
 
-    List<Region> curPath = new LinkedList<Region>();
-
+    Region lastRegion = null;
     // iterate through path
     for (Region region : path) {
-      curPath.add(region);
-
-      if (curPath.size() > 1) {
-        // add one movement order
-        String dir = Regions.getDirections(curPath);
-
-        if (dir != null) {
-          if (dir.length() == 0 || costs.isExhausted()) {
-            // begin new order
-            costs.reset();
-
-            if (useVorlage) {
-              // create Vorlage meta order
-              order.append(closing);
-              orders.add(order.toString());
-              order =
-                  new StringBuilder(EresseaConstants.O_PCOMMENT).append(" #after ").append(
-                      orders.size() - size).append(" { ").append(localCommand).append(" ");
-              closing = "}";
-            } else {
-              if ((mode & MODE_CONTINUOUS) > 0) { // FIXME
-                // insert PAUSE
-                order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
-              } else {
-                // add new NACH order as comment
-                orders.add(order.toString());
-                order =
-                    new StringBuilder(EresseaConstants.O_PCOMMENT).append(" ").append(localCommand)
-                        .append(" ");
-              }
-            }
-          } else {
-            costs.increase(curPath.get(curPath.size() - 2), curPath.get(curPath.size() - 1));
+      if (curPath.size() < 1) {
+        curPath.add(region);
+      } else {
+        curPath.add(region);
+        if (costs.isExhausted(curPath) || region == lastRegion) {
+          Region removed = null;
+          if (curPath.size() > 2) {
+            removed = curPath.removeLast();
+          }
+          getOrder(order, curPath, localCommand, mode, useVorlage, line, false);
+          if ((mode & MODE_CONTINUOUS) == 0 || useVorlage) {
+            orders.add(order.toString());
+            order.setLength(0);
+            ++line;
           }
 
-          order.append(dir).append(" ");
+          Region last = curPath.getLast();
+          curPath.clear();
+          curPath.add(last);
+          if (removed != null && removed != last) {
+            curPath.add(removed);
+          }
         }
-
-        curPath.remove(0);
       }
+      lastRegion = region;
     }
-
-    // add last order
-    if ((mode & MODE_CONTINUOUS) > 0) {
-      // add PAUSE at end
-      order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
-      if ((mode & MODE_STOP) > 0) {
-        order.append(getOrderTranslation(EresseaConstants.OC_PAUSE)).append(" ");
-      }
-      order.append(closing);
-      orders.add(order.toString());
-    } else {
-      order.append(closing);
+    if (curPath.size() > 1) {
+      getOrder(order, curPath, localCommand, mode, useVorlage, line++, true);
       orders.add(order.toString());
     }
 
     return orders.size() - size;
+  }
+
+  private static void getOrder(StringBuilder order, LinkedList<Region> curPath, String localCommand, int mode,
+      boolean useVorlage, int line, boolean last) {
+    int step = 0;
+    // for(Region r: curPath) {
+    // if (step==0) {
+    // start command
+    if (line == 0 && order.length() == 0) {
+      order.append(localCommand);
+    } else if (useVorlage) {
+      order.append(EresseaConstants.O_PCOMMENT).append(" #after ").append(line).append(" { ").append(localCommand);
+    } else if ((mode & MODE_CONTINUOUS) > 0) {
+      // order.append(" ").append(getOrderTranslation(EresseaConstants.OC_PAUSE));
+    } else {
+      // add new NACH order as comment
+      order.append(EresseaConstants.O_PCOMMENT).append(" ").append(localCommand);
+    }
+    // } else {
+    String dir = Regions.getDirections(curPath);
+    order.append(" ").append(dir);
+    // }
+    if ((mode & MODE_CONTINUOUS) > 0) {
+      // add PAUSE at end
+      order.append(" ").append(getOrderTranslation(EresseaConstants.OC_PAUSE));
+    }
+    if (last && (mode & MODE_STOP) > 0) {
+      order.append(" ").append(getOrderTranslation(EresseaConstants.OC_PAUSE));
+    }
+    if (useVorlage && line > 0) {
+      order.append(" }");
+    }
   }
 
   private static String getOrderTranslation(StringID orderId) {
@@ -147,20 +153,7 @@ public class RoutePlanner {
    * An abstract function that calculates route costs.
    */
   public interface Costs {
-    /**
-     * Set costs to zero, starting a new leg
-     */
-    public void reset();
-
-    /**
-     * Increase the costs after movement from region to region2.
-     */
-    public void increase(Region region, Region region2);
-
-    /**
-     * Return true if enough movement for one week has been added.
-     */
-    public boolean isExhausted();
+    public boolean isExhausted(LinkedList<Region> curPath);
   }
 
   /**
@@ -168,16 +161,8 @@ public class RoutePlanner {
    */
   public static class ZeroCosts implements Costs {
 
-    public void increase(Region region, Region region2) {
-      // no costs
-    }
-
-    public boolean isExhausted() {
+    public boolean isExhausted(LinkedList<Region> curPath) {
       return false;
-    }
-
-    public void reset() {
-      // nothing to do
     }
   }
 

@@ -95,6 +95,20 @@ jobs:
         value=$(json_escape "$value")
         echo "::set-env name=BODY::$value"
 
+    - name: prepare meta
+      run: |
+        set -x
+        if [[ "${{ env.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
+        else
+          TYPE=stable
+        fi
+        if [[ ! "$TYPE" =~ ^[a-zA-Z]+$ ]]; then
+          echo "invalid type $TYPE"
+          exit 1
+        fi
+        echo "::set-env name=TYPE::$TYPE"
+
     - name: Create release
       uses: meeDamian/github-release@2.0
       with:
@@ -104,7 +118,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
         tag: ${{ env.TAG }}
-        name: Stable Release v${{ env.VERSION }}
+        name: Release v${{ env.VERSION }} (${{ env.TYPE }})
         body: ${{ env.BODY }}
         gzip: folders
         files: >
@@ -115,20 +129,6 @@ jobs:
           VERSION
           magellan_v${{ env.VERSION }}.jar
           magellan_v${{ env.VERSION }}.zip
-
-    - name: prepare
-      run: |
-        set -x
-        if [[ "${{ env.TAG }}" =~ .*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-[0-9.]*\([a-zA-Z][a-zA-Z]*\).*/\1/")
-        else
-          TYPE=stable
-        fi
-        if [[ ! "$TYPE" =~ ^[a-zA-Z]+$ ]]; then
-          echo "invalid type $TYPE"
-          exit 1
-        fi
-        echo "::set-env name=TYPE::$TYPE"
 
 #    - name: trigger meta action
 #      run: |
@@ -143,4 +143,6 @@ jobs:
 #              "caller_repository" : "${{ github.repository }}",
 #              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
 #              "tag" : "${{ env.TAG }}",
+#              "version" : "${{ env.VERSION }}",
 #              "type": "${{ env.TYPE }}" }}'
+

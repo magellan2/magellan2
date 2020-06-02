@@ -22,7 +22,7 @@ jobs:
         VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )
         echo "::set-env name=VERSION::$VERSION"
 
-    - name: prepare
+    - name: prepare meta
       run: |
         set -x
         if [[ "${{ env.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
@@ -51,3 +51,4 @@ jobs:
               "tag" : "${{ env.TAG }}",
               "version" : "${{ env.VERSION }}",
               "type": "${{ env.TYPE }}" }}'
+

@@ -371,7 +371,7 @@ public class FileType {
 
       return encoding;
 
-    } catch (Exception exception) {
+    } catch (Throwable exception) {
       FileType.log.error(exception);
     }
     return null;

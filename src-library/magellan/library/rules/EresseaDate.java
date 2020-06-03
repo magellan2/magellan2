@@ -26,9 +26,9 @@ import magellan.library.utils.logging.Logger;
 public class EresseaDate extends Date {
   private static final Logger log = Logger.getInstance(EresseaDate.class);
   private static final String months_old[] = { "Januar", "Februar", "März", "April", "Mai", "Juni",
-    "Juli", "August", "September", "Oktober", "November", "Dezember" };
+      "Juli", "August", "September", "Oktober", "November", "Dezember" };
   private static final String months_new[] = { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer",
-    "Eiswind", "Schneebann", "Blütenregen", "Mond_der_milden_Winde", "Sonnenfeuer" };
+      "Eiswind", "Schneebann", "Blütenregen", "Mond_der_milden_Winde", "Sonnenfeuer" };
 
   private static final int EPOCH1_START = 0;
   private static final int EPOCH2_START = 184;
@@ -114,7 +114,7 @@ public class EresseaDate extends Date {
       String strDate = "";
 
       if (getEpoch() == 1) {
-        if (iDate<1) {
+        if (iDate < 1) {
           strDate = Resources.get("rules.eresseadate.invalid");
         } else {
           // first age
@@ -126,21 +126,21 @@ public class EresseaDate extends Date {
 
           case TYPE_LONG:
             strDate =
-            Resources.get("rules.eresseadate.epoch1.type_long",
-                EresseaDate.months_old[(iDate - 1) % 12], (((iDate - 1) / 12) + 1));
+                Resources.get("rules.eresseadate.epoch1.type_long",
+                    EresseaDate.months_old[(iDate - 1) % 12], (((iDate - 1) / 12) + 1));
             break;
 
           case TYPE_PHRASE:
             strDate =
-            Resources.get("rules.eresseadate.epoch1.type_long",
-                EresseaDate.months_old[(iDate - 1) % 12], (((iDate - 1) / 12) + 1));
+                Resources.get("rules.eresseadate.epoch1.type_long",
+                    EresseaDate.months_old[(iDate - 1) % 12], (((iDate - 1) / 12) + 1));
             break;
           }
         }
       } else if (getEpoch() >= 2) {
         // second and third age
         int iDate2 = getWeekFromStart();
-        if (iDate2<0) {
+        if (iDate2 < 0) {
           strDate = Resources.get("rules.eresseadate.invalid");
         } else {
 
@@ -155,7 +155,7 @@ public class EresseaDate extends Date {
           case Date.TYPE_SHORT: {
             strDate = Resources.get("rules.eresseadate.type_short", strWeek, strMonth, iYear);
           }
-          break;
+            break;
 
           case Date.TYPE_LONG: {
             // select one of three phrases at random
@@ -167,7 +167,7 @@ public class EresseaDate extends Date {
                 Resources.get("rules.eresseadate.type_long." + random, strWeekLong, strMonth, iYear,
                     strAge);
           }
-          break;
+            break;
 
           case TYPE_PHRASE: {
             int random = r.nextInt(3);
@@ -178,7 +178,7 @@ public class EresseaDate extends Date {
                 Resources.get("rules.eresseadate.type_phrase." + random, strWeekLong, strMonth,
                     iYear, strAge);
           }
-          break;
+            break;
 
           case TYPE_PHRASE_AND_SEASON: {
             int random = r.nextInt(3);
@@ -191,13 +191,13 @@ public class EresseaDate extends Date {
                 Resources.get("rules.eresseadate.type_phrase_season." + random, strWeekLong,
                     strMonth, iYear, strAge, strSeason);
           }
-          break;
+            break;
           }
         }
       }
       strDate = strDate.replaceAll("  ", " ");
       return strDate;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       log.error("illegal state", e);
       return iDate + "/" + epoch;
     }
@@ -308,7 +308,7 @@ public class EresseaDate extends Date {
     Resources.initStaticPaths(loadSettings(new File(".", "sandbox/de"), "magellan.ini"));
     Resources.getInstance().initialize(new File("."), "");
 
-    for (int i=1; i<24; ++i) {
+    for (int i = 1; i < 24; ++i) {
       EresseaDate date = new EresseaDate(i);
       System.out.println(date.toString(TYPE_SHORT));
       System.out.println(date.toString(TYPE_LONG));
@@ -320,8 +320,8 @@ public class EresseaDate extends Date {
     date.setEpoch(2);
     System.out.println(date.toString(TYPE_SHORT));
     System.out.println();
-    for (int i=1; i<50; ++i) {
-      date = new EresseaDate(182+i);
+    for (int i = 1; i < 50; ++i) {
+      date = new EresseaDate(182 + i);
       date.setEpoch(2);
       System.out.println(date.toString(TYPE_SHORT));
       System.out.println(date.toString(TYPE_LONG));

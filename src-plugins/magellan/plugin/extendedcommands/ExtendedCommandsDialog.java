@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.BorderLayout;
@@ -59,6 +59,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This is a dialog to edit the script/commands for a given unit. TODO Save dialog positions (size,
@@ -68,6 +69,8 @@ import magellan.library.utils.Resources;
  * @version 1.0, 11.09.2007
  */
 public class ExtendedCommandsDialog extends JDialog implements ActionListener, HyperlinkListener {
+  private static Logger log = Logger.getInstance(ExtendedCommandsDialog.class);
+
   private Client client = null;
   private BeanShellEditor scriptingArea = null;
   private JEditorPane help = null;
@@ -315,7 +318,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         pos--;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
+          log.error(exception);
         }
         forwardButton.setEnabled(true);
         if (pos == 0) {
@@ -331,7 +335,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         pos++;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
+          log.error(exception);
         }
         backwardButton.setEnabled(true);
         if (pos == history.size() - 1) {
@@ -350,8 +355,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
         }
-      } catch (Exception exc) {
-        // we do nothing here...
+      } catch (Throwable exception) {
+        log.error(exception);
       }
     }
   }
@@ -404,7 +409,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         if (!homeButton.isEnabled()) {
           homeButton.setEnabled(true);
         }
-      } catch (Exception exc) {
+      } catch (Throwable exception) {
+        log.error(exception);
       }
     }
   }
@@ -418,7 +424,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         c.getMethod("getDesktop").invoke(null);
       }
       return true;
-    } catch (Exception exception) {
+    } catch (Throwable exception) {
+      log.error(exception);
       return false;
     }
   }
@@ -471,7 +478,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       } else {
         help.setText("Unable to locate help files...");
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      log.error(e);
       help.setText("Unable to locate help files...\n" + e.getMessage());
     }
   }

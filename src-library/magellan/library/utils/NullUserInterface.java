@@ -130,7 +130,7 @@ public class NullUserInterface implements UserInterface {
   }
 
   @Override
-  public void showException(String message, String description, Exception exception) {
+  public void showException(String message, String description, Throwable exception) {
     throw new RuntimeException(exception);
   }
 

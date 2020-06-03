@@ -59,7 +59,7 @@ public abstract class AbstractPlugInLoader<T> {
       String path = null;
       try {
         path = URLDecoder.decode(url.getFile(), "UTF-8");
-      } catch (Exception exception) {
+      } catch (Throwable exception) {
         AbstractPlugInLoader.log.error("", exception);
         continue;
       }
@@ -178,7 +178,7 @@ public abstract class AbstractPlugInLoader<T> {
                   @SuppressWarnings("unchecked")
                   Class<T> c = (Class<T>) foundClass;
                   classes.add(c);
-                } catch (Exception exc) {
+                } catch (Throwable exc) {
                   AbstractPlugInLoader.log.error("cannot use " + foundClass.getName(), exc);
                 }
               }
@@ -210,7 +210,7 @@ public abstract class AbstractPlugInLoader<T> {
                 @SuppressWarnings("unchecked")
                 Class<T> c = (Class<T>) foundClass;
                 classes.add(c);
-              } catch (Exception exc) {
+              } catch (Throwable exc) {
                 AbstractPlugInLoader.log.error("cannot use " + foundClass.getName(), exc);
               }
               break;

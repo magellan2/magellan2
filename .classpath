@@ -13,7 +13,6 @@
 	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.1.jar" sourcepath="libsrc/commons-httpclient-3.1-src.zip"/>
 	<classpathentry kind="lib" path="lib/jfreechart.jar"/>
-	<classpathentry kind="lib" path="lib/jimi.jar"/>
 	<classpathentry kind="lib" path="lib/skins/kunststoff-2_0_2.jar" sourcepath="libsrc/kunststoff-2_0_2.zip"/>
 	<classpathentry kind="lib" path="lib/skins/liquidlnf-2.9.1.jar" sourcepath="libsrc/liquidlnf-2.9.1.zip"/>
 	<classpathentry kind="lib" path="lib/skins/looks-1.3b1.jar"/>

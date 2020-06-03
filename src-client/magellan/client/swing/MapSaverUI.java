@@ -20,22 +20,25 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JSlider;
 import javax.swing.filechooser.FileFilter;
 
-import magellan.client.Client;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
-
-import com.sun.jimi.core.Jimi;
-import com.sun.jimi.core.JimiWriter;
-import com.sun.jimi.core.options.JPGOptions;
 
 /**
  * presents an UI to save the map as an image.
@@ -316,37 +319,39 @@ public class MapSaverUI extends InternationalizedDialog {
                     .getText()), quality, imageType);
               }
             } catch (OutOfMemoryError oomError) {
+              try {
+                Thread.sleep(1000);
+              } catch (InterruptedException e) {
+                // doesn't matter
+              }
               MapSaverUI.log.error(oomError);
-              javax.swing.JOptionPane.showMessageDialog(Client.INSTANCE, Resources
-                  .get("mapsaverui.msg.outofmem.text"), Resources
-                  .get("mapsaverui.msg.outofmem.title"), javax.swing.JOptionPane.ERROR_MESSAGE);
-            } catch (Exception ex) {
-              ui.ready();
+              ui.showDialog(Resources.get("mapsaverui.msg.outofmem.title"),
+                  Resources.get("mapsaverui.msg.outofmem.text"), JOptionPane.ERROR_MESSAGE, JOptionPane.DEFAULT_OPTION);
+            } catch (Throwable ex) {
+              ui.showDialog(Resources.get("mapsaverui.msg.erroronsave.title"),
+                  Resources.get("mapsaverui.msg.erroronsave.text") + "\n" + Utils.cutString(ex.toString(), 100),
+                  JOptionPane.ERROR_MESSAGE, JOptionPane.DEFAULT_OPTION);
+              throw new RuntimeException(ex);
+            } finally {
               setVisible(false);
+              ui.ready();
               System.gc();
               dispose();
-              throw new RuntimeException(ex);
             }
-
-            ui.ready();
-            setVisible(false);
-            System.gc();
-            dispose();
-
           }
         }).start();
       }
-    } catch (Exception ex) {
-      MapSaverUI.log.error(ex);
-      javax.swing.JOptionPane.showMessageDialog(this, Resources
-          .get("mapsaverui.msg.erroronsave.text")
-          + ex.toString(), Resources.get("mapsaverui.msg.erroronsave.title"),
-          javax.swing.JOptionPane.ERROR_MESSAGE);
     } catch (OutOfMemoryError oomError) {
       MapSaverUI.log.error(oomError);
       javax.swing.JOptionPane.showMessageDialog(this,
           Resources.get("mapsaverui.msg.outofmem.text"), Resources
               .get("mapsaverui.msg.outofmem.title"), javax.swing.JOptionPane.ERROR_MESSAGE);
+    } catch (Throwable ex) {
+      MapSaverUI.log.error(ex);
+      javax.swing.JOptionPane.showMessageDialog(this,
+          Resources.get("mapsaverui.msg.erroronsave.text") + Utils.cutString(ex.toString(), 100),
+          Resources.get("mapsaverui.msg.erroronsave.title"),
+          javax.swing.JOptionPane.ERROR_MESSAGE);
     }
   }
 
@@ -420,7 +425,7 @@ public class MapSaverUI extends InternationalizedDialog {
           g2.dispose();
           g2 = null;
 
-          SaveAs(strOut, bimg, x, y, x + (y * iX) + 1, iX * iY, iSaveType, fQuality);
+          saveAs(strOut, bimg, x, y, x + (y * iX) + 1, iX * iY, iSaveType, fQuality);
         }
       }
 
@@ -468,60 +473,56 @@ public class MapSaverUI extends InternationalizedDialog {
   /**
    * This method saves the image in bimg to a file. Currently JPG and PNG is supported.
    */
-  private void SaveAs(String strOut, BufferedImage bimg, int x, int y, int iOf, int iMax,
+  private void saveAs(String strOut, BufferedImage bimg, int x, int y, int iOf, int iMax,
       int iSaveType, int fQuality) throws Exception {
+    String extension, type;
     switch (iSaveType) {
-    case SAVEAS_IMAGETYPE_JPEG: {
-      String strOutput;
-      String extension = ".jpg";
-
-      if (strOut.toLowerCase().endsWith(extension)) {
-        strOut = strOut.substring(0, strOut.length() - extension.length());
-      }
-
-      String coords = "_" + x + "_" + y;
-      if (strOut.endsWith(coords)) {
-        strOut = strOut.substring(0, strOut.length() - coords.length());
-      }
-
-      strOutput = strOut + coords + extension;
-
-      MapSaverUI.log.info(strOutput + " " + iOf + " of " + iMax);
-      FileOutputStream fos = new FileOutputStream(strOutput);
-
-      JimiWriter writer = Jimi.createJimiWriter("image/jpeg", fos);
-      JPGOptions options = new JPGOptions();
-      options.setQuality(fQuality);
-      writer.setOptions(options);
-
-      writer.setSource(bimg.getSource());
-      writer.putImage(fos);
-
-      fos.close();
-
+    case SAVEAS_IMAGETYPE_JPEG:
+      extension = ".jpg";
+      type = "jpg";
       break;
+    case SAVEAS_IMAGETYPE_PNG:
+      extension = ".png";
+      type = "png";
+      break;
+    default:
+      log.error("unknown image type " + iSaveType);
+      return;
     }
 
-    case SAVEAS_IMAGETYPE_PNG: {
-
-      String strOutput;
-      String extension = ".png";
-
-      if (strOut.toLowerCase().endsWith(extension)) {
-        strOut = strOut.substring(0, strOut.length() - extension.length());
-      }
-
-      String coords = "_" + x + "_" + y;
-      if (strOut.endsWith(coords)) {
-        strOut = strOut.substring(0, strOut.length() - coords.length());
-      }
-
-      strOutput = strOut + coords + extension;
-
-      Jimi.putImage("image/png", bimg.getSource(), strOutput);
-
-      break;
+    String strOutput;
+    if (strOut.toLowerCase().endsWith(extension)) {
+      strOut = strOut.substring(0, strOut.length() - extension.length());
     }
+
+    String coords = "_" + x + "_" + y;
+    if (strOut.endsWith(coords)) {
+      strOut = strOut.substring(0, strOut.length() - coords.length());
+    }
+
+    strOutput = strOut + coords + extension;
+
+    MapSaverUI.log.info(strOutput + " " + iOf + " of " + iMax);
+    FileOutputStream fos = null;
+    try {
+      fos = new FileOutputStream(strOutput);
+      File file = new File(strOutput);
+      if (!file.canWrite())
+        throw new IOException("cannot write to " + file.getAbsolutePath());
+      Iterator<ImageWriter> iw = ImageIO.getImageWritersByFormatName(type);
+      if (!iw.hasNext())
+        throw new RuntimeException("no writer for image type " + type);
+      ImageWriter writer = iw.next();
+      ImageWriteParam param = writer.getDefaultWriteParam();
+      param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+      param.setCompressionQuality(Math.min(1f, Math.max(0f, fQuality / 100.0f)));
+
+      writer.setOutput(ImageIO.createImageOutputStream(file));
+      writer.write(null, new IIOImage(bimg, null, null), param);
+    } finally {
+      if (fos != null) {
+        fos.close();
+      }
     }
   }
 }

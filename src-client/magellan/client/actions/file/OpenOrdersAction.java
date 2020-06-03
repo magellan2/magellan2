@@ -164,12 +164,12 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
           // postProcess in OrderReader
           client.setData(client.getData());
           client.setReportChanged(true);
-        } catch (Exception exc) {
+        } catch (Throwable exc) {
           OpenOrdersAction.log.error(exc);
           JOptionPane.showMessageDialog(client, Resources
               .get("actions.openordersaction.msg.fileordersopen.error.text")
               + exc.toString(), Resources
-              .get("actions.openordersaction.msg.fileordersopen.error.title"),
+                  .get("actions.openordersaction.msg.fileordersopen.error.title"),
               JOptionPane.ERROR_MESSAGE);
         } finally {
           ui.ready();
@@ -180,6 +180,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
   /*
    * (non-Javadoc)
+   * 
    * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {

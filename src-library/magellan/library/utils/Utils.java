@@ -32,11 +32,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import magellan.library.CoordinateID;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import magellan.library.CoordinateID;
 
 /**
  * Contains some useful methods...
@@ -556,6 +556,20 @@ public class Utils {
       }
     }
     return visitor.getResult();
+  }
+
+  /**
+   * Cut a string to at most maxLength characters.
+   * 
+   * @param string
+   * @param maxLength
+   */
+  public static String cutString(String string, int maxLength) {
+    if (string.length() <= maxLength)
+      return string;
+    StringBuilder builder = new StringBuilder(maxLength);
+    builder.append(string.substring(0, 80)).append("...").append(string.substring(string.length() - 17));
+    return builder.toString();
   }
 
 }

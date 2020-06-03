@@ -250,7 +250,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
     try {
       SwingUtilities.invokeAndWait(conf);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       ProgressBarUI.log.error(e);
     }
 
@@ -265,13 +265,13 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     Input input = new Input(strMessage, strTitle, values, initialSelection);
     try {
       SwingUtilities.invokeAndWait(input);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       ProgressBarUI.log.error(e);
     }
     return input.sResult;
   }
 
-  public void showException(String message, String description, Exception exception) {
+  public void showException(String message, String description, Throwable exception) {
     ErrorWindow ew =
         message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
             exception) : new ErrorWindow(message, description, exception);

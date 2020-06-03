@@ -2220,7 +2220,7 @@ public class CRWriter extends BufferedWriter {
       // writer is closed or writer could remain open in multi-threaded
       // execution.
       doWrite();
-    } catch (Exception exception) {
+    } catch (Throwable exception) {
       CRWriter.log.error(exception);
       ui.showException(Resources.get("crwriterdialog.exception"), null, exception);
     } finally {
@@ -2249,7 +2249,7 @@ public class CRWriter extends BufferedWriter {
           // writer is closed or writer could remain open in multi-threaded
           // execution.
           doWrite();
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
           CRWriter.log.error(exception);
           ui.showException(Resources.get("crwriterdialog.exception"), null, exception);
         } finally {

@@ -114,7 +114,7 @@ public class PreferencesDialog extends InternationalizedDialog {
     for (PreferencesFactory factory : prefAdapters) {
       try {
         addTab(factory.createPreferencesAdapter());
-      } catch (Exception e) {
+      } catch (Throwable e) {
         Logger.getInstance(this.getClass()).error("preferences dialog error", e);
       }
     }
@@ -139,7 +139,7 @@ public class PreferencesDialog extends InternationalizedDialog {
     if (isVisible) {
       try {
         initPreferences();
-      } catch (Exception e) {
+      } catch (Throwable e) {
         Logger.getInstance(this.getClass()).error("preferences dialog error", e);
       }
       dialogtree.showFirst();

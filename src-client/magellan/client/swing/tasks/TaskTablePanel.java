@@ -544,7 +544,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         } finally {
           try {
             progressUI.ready();
-          } catch (Exception e) {
+          } catch (Throwable e) {
             e.printStackTrace();
           }
         }

@@ -614,7 +614,7 @@ public class EventDispatcher implements EventDispatcherInterface {
                     + "ms for SELECTION-notify from " + event.getSource().getClass().getName()
                     + " in " + ((SelectionListener) o).getClass().getName());
               }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
@@ -639,7 +639,7 @@ public class EventDispatcher implements EventDispatcherInterface {
             eventsDispatched++;
             try {
               ((OrderConfirmListener) o).orderConfirmationChanged(e);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
@@ -665,7 +665,7 @@ public class EventDispatcher implements EventDispatcherInterface {
             eventsDispatched++;
             try {
               ((UnitOrdersListener) o).unitOrdersChanged(e);
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
 
@@ -699,7 +699,7 @@ public class EventDispatcher implements EventDispatcherInterface {
               } else if (e.getType() == TempUnitEvent.DELETING) {
                 l.tempUnitDeleting(e);
               }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
 
@@ -733,7 +733,7 @@ public class EventDispatcher implements EventDispatcherInterface {
                     + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName()
                     + " in " + ((GameDataListener) o).getClass().getName());
               }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
               EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }

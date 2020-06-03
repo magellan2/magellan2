@@ -99,7 +99,7 @@ public interface UserInterface {
    * @param description An explanatory text, may be <code>null</code>
    * @param exception
    */
-  public void showException(String message, String description, Exception exception);
+  public void showException(String message, String description, Throwable exception);
 
   /**
    * Opens a confirm dialog.

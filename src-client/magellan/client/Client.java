@@ -670,7 +670,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           }
         }
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
       Client.log.error(e);
     }
 
@@ -1284,7 +1284,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                   c.quit(false);
                 }
               }
-            } catch (Exception e) {
+            } catch (Throwable e) {
               log.error("Could not check version.", e);
             }
 
@@ -1481,7 +1481,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             Client.log.info("Client.main(): the specified files directory does not "
                 + "exist, is not a directory or is not writeable.");
           }
-        } catch (Exception e) {
+        } catch (Throwable e) {
           Client.log.error("Client.main(): the specified files directory is invalid.", e);
         }
       } else if (args[i].equals("-s") && (args.length > (i + 1))) {
@@ -1496,7 +1496,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             Client.log.info("Client.main(): the specified files directory does not "
                 + "exist, is not a directory or is not writeable.");
           }
-        } catch (Exception e) {
+        } catch (Throwable e) {
           Client.log.error("Client.main(): the specified files directory is invalid.", e);
         }
       } else if (args[i].equals("-p") && (args.length > (i + 1))) {
@@ -1787,7 +1787,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           .toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.info(exc);
       return null;
-    } catch (Exception exc) {
+    } catch (Throwable exc) {
       ui.ready();
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc
           .toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
@@ -2168,7 +2168,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     try {
       titleline = title.createTitle(getData(), showStatus, true);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       titleline = title.createTitle(getData(), showStatus, false);
       Client.log.error("createTitle failed!", e);
     }

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.BorderLayout;
@@ -43,6 +43,7 @@ import javax.swing.event.HyperlinkListener;
 
 import magellan.client.Client;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This is a dialog to display ExtendedCommands help
@@ -52,6 +53,7 @@ import magellan.library.utils.Resources;
  */
 public class HelpDock extends JPanel implements ActionListener, HyperlinkListener {
   public static final String IDENTIFIER = "ExtendedCommandsHelp";
+  private static Logger log = Logger.getInstance(HelpDock.class);
 
   private JEditorPane help = null;
   private JButton homeButton = null;
@@ -125,7 +127,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         pos--;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
+          log.error(exception);
         }
         forwardButton.setEnabled(true);
         if (pos == 0) {
@@ -141,7 +144,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         pos++;
         try {
           help.setPage(history.get(pos));
-        } catch (Exception exception) {
+        } catch (Throwable exception) {
+          log.error(exception);
         }
         backwardButton.setEnabled(true);
         if (pos == history.size() - 1) {
@@ -160,8 +164,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
         }
-      } catch (Exception exc) {
-        // we do nothing here...
+      } catch (Throwable exception) {
+        log.error(exception);
       }
     }
   }
@@ -181,7 +185,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         if (!homeButton.isEnabled()) {
           homeButton.setEnabled(true);
         }
-      } catch (Exception exc) {
+      } catch (Throwable exception) {
+        log.error(exception);
       }
     }
   }
@@ -195,7 +200,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         c.getMethod("getDesktop").invoke(null);
       }
       return true;
-    } catch (Exception exception) {
+    } catch (Throwable exception) {
+      log.error(exception);
       return false;
     }
   }
@@ -223,7 +229,8 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
       } else {
         help.setText("Unable to locate help files...");
       }
-    } catch (Exception e) {
+    } catch (Throwable e) {
+      log.error(e);
       help.setText("Unable to locate help files...\n" + e.getMessage());
     }
   }

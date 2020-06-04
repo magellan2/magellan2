@@ -87,7 +87,6 @@
     		</filterset>
     	</copy>
     	<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
-    	<echo message="new version is ${VERSION.FULL}" />
     </target>
 
     <target name="print_version" depends="update_version">

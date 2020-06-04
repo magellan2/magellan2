@@ -81,7 +81,7 @@ jobs:
           fi
         else
           echo "Warning, previous build not found for ${TAG}!"
-        fi3597329be019bd66bf0e44762f74611acec08184
+        fi
 
     - name: Build with ant
       run: ant -noinput -buildfile build.xml

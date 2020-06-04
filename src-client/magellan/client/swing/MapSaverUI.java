@@ -19,14 +19,16 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
@@ -49,7 +51,7 @@ import magellan.library.utils.logging.Logger;
 public class MapSaverUI extends InternationalizedDialog {
   private static final Logger log = Logger.getInstance(MapSaverUI.class);
 
-  private javax.swing.JComboBox cbFormat;
+  private javax.swing.JComboBox<String> cbFormat;
   private javax.swing.JButton btnCancel;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JRadioButton rbtnCount;
@@ -64,10 +66,10 @@ public class MapSaverUI extends InternationalizedDialog {
   private boolean lastWasCount = true;
   private Component outComponent;
 
-  /** DOCUMENT-ME */
+  /** Image type JPEG */
   public static final int SAVEAS_IMAGETYPE_JPEG = 0;
 
-  /** DOCUMENT-ME */
+  /** Image type PNG */
   public static final int SAVEAS_IMAGETYPE_PNG = 1;
 
   /**
@@ -79,7 +81,7 @@ public class MapSaverUI extends InternationalizedDialog {
 
     String strList[] = { "JPEG", "PNG" };
 
-    cbFormat.setModel(new DefaultComboBoxModel(strList));
+    cbFormat.setModel(new DefaultComboBoxModel<String>(strList));
     cbFormat.setSelectedIndex(0);
 
     btnGroup = new ButtonGroup();
@@ -95,7 +97,7 @@ public class MapSaverUI extends InternationalizedDialog {
   }
 
   private void initComponents() {
-    cbFormat = new javax.swing.JComboBox();
+    cbFormat = new javax.swing.JComboBox<String>();
     btnCancel = new javax.swing.JButton(Resources.get("mapsaverui.btn.cancel.caption"));
     jPanel1 = new javax.swing.JPanel();
     rbtnSize = new javax.swing.JRadioButton(Resources.get("mapsaverui.radio.size.caption"));
@@ -311,12 +313,22 @@ public class MapSaverUI extends InternationalizedDialog {
           public void run() {
 
             try {
+              String exists;
               if (rbtnCount.isSelected()) {
-                saveAs_SC(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY
-                    .getText()), quality, imageType);
+                exists = saveAs_SC(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY.getText()),
+                    quality, imageType, false);
+                if (exists != null && ui.confirm(Resources.get("mapsaverui.msg.fileexists.text", exists), "")) {
+                  saveAs_SC(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY
+                      .getText()), quality, imageType, true);
+                }
+
               } else {
-                saveAs(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY
-                    .getText()), quality, imageType);
+                exists = saveAs(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY.getText()),
+                    quality, imageType, false);
+                if (exists != null && ui.confirm(Resources.get("mapsaverui.msg.fileexists.text", exists), "")) {
+                  saveAs(ui, fileName, Integer.parseInt(textX.getText()), Integer.parseInt(textY.getText()), quality,
+                      imageType, true);
+                }
               }
             } catch (OutOfMemoryError oomError) {
               try {
@@ -383,8 +395,19 @@ public class MapSaverUI extends InternationalizedDialog {
     dispose();
   }
 
-  public void saveAs(UserInterface ui, String strOut, int iWidth, int iHeight, int fQuality,
-      int iSaveType) throws Exception {
+  /**
+   * Cut image into chunks of given width and height and save them to files "prefix_x_y.extension" of the given file
+   * type with the given quality. If overwrite is true, existing files are overwritten. Otherwise, an existing file name
+   * is returned or, if no file exists null is returned.
+   * 
+   * Supports {@link #SAVEAS_IMAGETYPE_JPEG} or {@link #SAVEAS_IMAGETYPE_PNG}.
+   *
+   * 
+   * @throws IOException on error while creating or writing files
+   * @throws OutOfMemoryError if heap memory is exceeded
+   */
+  public String saveAs(UserInterface ui, String prefix, int iWidth, int iHeight, int fQuality,
+      int iSaveType, boolean overwrite) throws OutOfMemoryError, IOException {
     int iX = 0;
     int iY = 0;
     BufferedImage bimg = new BufferedImage(iWidth, iHeight, BufferedImage.TYPE_INT_RGB);
@@ -405,7 +428,15 @@ public class MapSaverUI extends InternationalizedDialog {
 
     dim = null;
 
-    // int size = iX*iY;
+    if (!overwrite) {
+      for (int y = 0; y < iY; y++) {
+        for (int x = 0; x < iX; x++) {
+          File f = new File(getFileName(prefix, x, y, iSaveType));
+          if (f.exists())
+            return f.getName();
+        }
+      }
+    }
 
     try {
       for (int y = 0; y < iY; y++) {
@@ -425,34 +456,28 @@ public class MapSaverUI extends InternationalizedDialog {
           g2.dispose();
           g2 = null;
 
-          saveAs(strOut, bimg, x, y, x + (y * iX) + 1, iX * iY, iSaveType, fQuality);
+          saveAs(prefix, bimg, x, y, x + (y * iX) + 1, iX * iY, iSaveType, fQuality);
         }
       }
-
-      bimg.flush();
-      bimg = null;
-    } catch (OutOfMemoryError e) {
+    } finally {
       if (g2 != null) {
         g2.dispose();
         g2 = null;
       }
 
-      if (bimg != null) {
-        bimg.flush();
-      }
+      bimg.flush();
       bimg = null;
-
-      throw e;
     }
+    return null;
   }
 
   /**
-   * DOCUMENT-ME
+   * Cuts image into iCountX &times; iCountY pieces. Otherwise
    * 
-   * @throws Exception DOCUMENT-ME
+   * @see #saveAs_SC(UserInterface, String, int, int, int, int, boolean)
    */
-  public void saveAs_SC(UserInterface ui, String strOut, int iCountX, int iCountY, int fQuality,
-      int iSaveType) throws Exception {
+  public String saveAs_SC(UserInterface ui, String strOut, int iCountX, int iCountY, int fQuality,
+      int iSaveType, boolean overwrite) throws OutOfMemoryError, IOException {
     Dimension dim = new Dimension(outComponent.getBounds().width, outComponent.getBounds().height);
 
     int iWidth = ((int) dim.getWidth()) / iCountX;
@@ -467,22 +492,21 @@ public class MapSaverUI extends InternationalizedDialog {
       iHeight++;
     }
 
-    saveAs(ui, strOut, iWidth, iHeight, fQuality, iSaveType);
+    return saveAs(ui, strOut, iWidth, iHeight, fQuality, iSaveType, overwrite);
   }
 
   /**
    * This method saves the image in bimg to a file. Currently JPG and PNG is supported.
+   * 
    */
-  private void saveAs(String strOut, BufferedImage bimg, int x, int y, int iOf, int iMax,
-      int iSaveType, int fQuality) throws Exception {
-    String extension, type;
+  private void saveAs(String prefix, BufferedImage bimg, int x, int y, int iOf, int iMax,
+      int iSaveType, int fQuality) throws IOException, OutOfMemoryError {
+    String type;
     switch (iSaveType) {
     case SAVEAS_IMAGETYPE_JPEG:
-      extension = ".jpg";
       type = "jpg";
       break;
     case SAVEAS_IMAGETYPE_PNG:
-      extension = ".png";
       type = "png";
       break;
     default:
@@ -490,22 +514,11 @@ public class MapSaverUI extends InternationalizedDialog {
       return;
     }
 
-    String strOutput;
-    if (strOut.toLowerCase().endsWith(extension)) {
-      strOut = strOut.substring(0, strOut.length() - extension.length());
-    }
-
-    String coords = "_" + x + "_" + y;
-    if (strOut.endsWith(coords)) {
-      strOut = strOut.substring(0, strOut.length() - coords.length());
-    }
-
-    strOutput = strOut + coords + extension;
+    String strOutput = getFileName(prefix, x, y, iSaveType);
 
     MapSaverUI.log.info(strOutput + " " + iOf + " of " + iMax);
-    FileOutputStream fos = null;
+    ImageOutputStream fos = null;
     try {
-      fos = new FileOutputStream(strOutput);
       File file = new File(strOutput);
       if (!file.canWrite())
         throw new IOException("cannot write to " + file.getAbsolutePath());
@@ -517,13 +530,39 @@ public class MapSaverUI extends InternationalizedDialog {
       param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
       param.setCompressionQuality(Math.min(1f, Math.max(0f, fQuality / 100.0f)));
 
-      writer.setOutput(ImageIO.createImageOutputStream(file));
+      writer.setOutput(fos = ImageIO.createImageOutputStream(file));
       writer.write(null, new IIOImage(bimg, null, null), param);
     } finally {
       if (fos != null) {
         fos.close();
       }
     }
+  }
+
+  private String getFileName(String prefix, int x, int y, int iSaveType) {
+    String extension = "";
+    switch (iSaveType) {
+    case SAVEAS_IMAGETYPE_JPEG:
+      extension = ".jpg";
+      break;
+    case SAVEAS_IMAGETYPE_PNG:
+      extension = ".png";
+      break;
+    default:
+      log.error("unknown image type " + iSaveType);
+    }
+
+    if (prefix.endsWith(extension)) {
+      prefix = prefix.substring(0, prefix.length() - extension.length());
+    }
+
+    Pattern pattern = Pattern.compile("^(.*)(_[0-9]+_[0-9]+)$");
+    Matcher matcher = pattern.matcher(prefix);
+    if (matcher.matches()) {
+      prefix = matcher.group(1);
+    }
+    String coords = "_" + x + "_" + y;
+    return prefix + coords + extension;
   }
 }
 

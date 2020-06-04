@@ -5,7 +5,7 @@ start "Magellan" "%JAVA_HOME%\bin\javaw.exe" -Xmx400m -Xms400m -jar "magellan-cl
 goto eof
 
 :noJavaHome
-start javaw -Xmx400m -Xms400m -jar "magellan-client.jar" --help
+start javaw -Xmx400m -jar "magellan-client.jar" --help
 goto eof
 
 :eof

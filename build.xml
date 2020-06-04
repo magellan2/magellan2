@@ -1,5 +1,5 @@
 <project name="magellan" default="distribute">
-	<description>
+    <description>
     This is the ANT compile script for magellan. This script helps you
     to compile a distributable version of magellan.
 
@@ -9,101 +9,102 @@
       - run_tests
       - test_and_distribute
       - javadoc (not implemented yet)
-	</description>
+    </description>
 
-	<property name="VERSION.MAJOR"         value="2"/>
-	<property name="VERSION.MINOR"         value="1"/>
-	<property name="VERSION.SUB"           value="0"/>
-	<!-- possible values include stable, rc, and betaX -->
-	<property name="VERSION.POST"           value="beta8"/>
+    <property name="VERSION.MAJOR"         value="2"/>
+    <property name="VERSION.MINOR"         value="1"/>
+    <property name="VERSION.SUB"           value="0"/>
+    <!-- possible values include stable, rc, and betaX -->
+    <property name="VERSION.POST"           value="beta"/>
 
-	<property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
+    <property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
 
-	<!-- Some properties -->
-	<property name="src.library"       location="${basedir}/src-library"/>
-	<property name="src.client"        location="${basedir}/src-client"/>
-	<property name="src.plugins"       location="${basedir}/src-plugins"/>
-	<property name="src.test"          location="${basedir}/src-test"/>
-	<property name="classes"           location="${basedir}/classes"/>
-	<property name="help"              location="${basedir}/help"/>
-	<property name="etc"               location="${basedir}/etc"/>
-	<property name="doc"               location="${basedir}/doc"/>
-	<property name="javadoc.api"       location="${basedir}/doc/api"/>
-	<property name="lib"               location="${basedir}/lib"/>
-	<property name="lib_internal"      location="${basedir}/lib/internal"/>
-	<property name="bin"               location="${basedir}/bin"/>
-	<property name="release"           location="${basedir}/release"/>
-	<property name="sandbox"           location="${basedir}/sandbox"/>
-	<property name="installer"         location="${basedir}/installer"/>
-	<property name="macos"             location="${basedir}/macos"/>
+    <!-- Some properties -->
+    <property name="src.library"       location="${basedir}/src-library"/>
+    <property name="src.client"        location="${basedir}/src-client"/>
+    <property name="src.plugins"       location="${basedir}/src-plugins"/>
+    <property name="src.test"          location="${basedir}/src-test"/>
+    <property name="classes"           location="${basedir}/classes"/>
+    <property name="help"              location="${basedir}/help"/>
+    <property name="etc"               location="${basedir}/etc"/>
+    <property name="doc"               location="${basedir}/doc"/>
+    <property name="javadoc.api"       location="${basedir}/doc/api"/>
+    <property name="lib"               location="${basedir}/lib"/>
+    <property name="lib_internal"      location="${basedir}/lib/internal"/>
+    <property name="bin"               location="${basedir}/bin"/>
+    <property name="release"           location="${basedir}/release"/>
+    <property name="sandbox"           location="${basedir}/sandbox"/>
+    <property name="installer"         location="${basedir}/installer"/>
+    <property name="macos"             location="${basedir}/macos"/>
 
 
-	<property name="junit.output.dir" value="${basedir}/test/junit"/>
+    <property name="junit.output.dir" value="${basedir}/test/junit"/>
 
-	<!-- Compile Settings -->
-	<property name="debug"             value="on" />
-	<property name="optimize"          value="off" />
+    <!-- Compile Settings -->
+    <property name="debug"             value="on" />
+    <property name="optimize"          value="off" />
 
-	<!-- -release includes -source -target -bootclasspath -->
-	<property name="compile.release"    value="11"/>
-	<property name="compile.encoding"  value="ISO-8859-1"/>
+    <!-- -release includes -source -target -bootclasspath -->
+    <property name="compile.release"    value="11"/>
+    <property name="compile.encoding"  value="ISO-8859-1"/>
 
-	<!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
-	<presetdef name="my-javac">
-		<javac includeantruntime="false" encoding="${compile.encoding}"/>
-	</presetdef>
+    <!-- If you choose "true", then at least you know that your build classpath will include the Ant runtime. If you choose "false" then you are accepting the fact that the build behavior will change between older versions and 1.8+. -->
+    <presetdef name="my-javac">
+    	<javac includeantruntime="false" encoding="${compile.encoding}"/>
+    </presetdef>
 
-	<path id="magellan.class.path">
-		<pathelement path="${java.class.path}/" />
-		<fileset dir="${lib}">
-			<include name="**/*.jar" />
-			<exclude name="internal/*" />
-			<exclude name="javadocking.jar" />
-		</fileset>
-		<pathelement location="${release}/magellan-library.jar" />
-		<pathelement location="${release}/magellan-client.jar" />
-	</path>
+    <path id="magellan.class.path">
+    	<pathelement path="${java.class.path}/" />
+    	<fileset dir="${lib}">
+    		<include name="**/*.jar" />
+    		<exclude name="internal/*" />
+    		<exclude name="javadocking.jar" />
+    	</fileset>
+    	<pathelement location="${release}/magellan-library.jar" />
+    	<pathelement location="${release}/magellan-client.jar" />
+    </path>
 
-	<path id="magellan.class.path.test">
-		<pathelement path="${java.class.path}/" />
-		<fileset dir="${lib}">
-			<include name="**/*.jar" />
-			<exclude name="internal/*" />
-			<exclude name="javadocking.jar" />
-		</fileset>
-		<pathelement location="${lib_internal}/junit-4.10.jar" />
-		<pathelement location="${classes}" />
-	</path>
+    <path id="magellan.class.path.test">
+    	<pathelement path="${java.class.path}/" />
+    	<fileset dir="${lib}">
+    		<include name="**/*.jar" />
+    		<exclude name="internal/*" />
+    		<exclude name="javadocking.jar" />
+    	</fileset>
+    	<pathelement location="${lib_internal}/junit-4.10.jar" />
+    	<pathelement location="${classes}" />
+    </path>
 
-	<target name="update_version">
-		<property file=".build.number"/>
-		<property name="VERSION.FULL"       value="${VERSION.POINTED}-${build.number}.${VERSION.POST}"/>
-		<property name="VERSION.COMPAT"       value="${VERSION.POINTED} (build ${build.number})"/>
+    <target name="update_version">
+    	<property file=".build.number"/>
+    	<property name="VERSION.FULL"       value="${VERSION.POINTED}-${build.number}.${VERSION.POST}"/>
+    	<property name="VERSION.COMPAT"       value="${VERSION.POINTED} (build ${build.number})"/>
 
-		<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.COMPAT}"/>
-				<filter token="SEMANTIC_VERSION" value="${VERSION.FULL}"/>
-			</filterset>
-		</copy>
-		<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
-	</target>
+    	<copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
+    		<filterset>
+    			<filter token="VERSION" value="${VERSION.COMPAT}"/>
+    			<filter token="SEMANTIC_VERSION" value="${VERSION.FULL}"/>
+    		</filterset>
+    	</copy>
+    	<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+    	<echo message="new version is ${VERSION.FULL}" />
+    </target>
 
-	<target name="print_version" depends="update_version">
-		<echo message="${VERSION.FULL}" />
-	</target>
+    <target name="print_version" depends="update_version">
+    	<echo message="${VERSION.FULL}" />
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the magellan library.       * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="build_library">
-		<echo message="Compiling Library..." />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the magellan library.       * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="build_library">
+    	<echo message="Compiling Library..." />
 
-		<mkdir dir="${classes}" />
+    	<mkdir dir="${classes}" />
 
-		<my-javac srcdir="${src.library}/"
+    	<my-javac srcdir="${src.library}/"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -113,40 +114,40 @@
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
-			<!--<compilerarg value="-Xlint:unchecked"/>-->
-			<!--<compilerarg value="-Xlint:deprecation"/>-->
-			<classpath refid="magellan.class.path"/>
-		</my-javac>
-	</target>
+    		<!--<compilerarg value="-Xlint:unchecked"/>-->
+    		<!--<compilerarg value="-Xlint:deprecation"/>-->
+    		<classpath refid="magellan.class.path"/>
+    	</my-javac>
+    </target>
 
-	<target name="build_library_jar" >
-		<echo message="Building Magellan Library JAR file" />
+    <target name="build_library_jar" >
+    	<echo message="Building Magellan Library JAR file" />
 
-		<!-- delete old library -->
-		<delete file="${release}/magellan-library.jar" failonerror="false" />
+    	<!-- delete old library -->
+    	<delete file="${release}/magellan-library.jar" failonerror="false" />
 
-		<!-- JAR File erzeugen -->
-		<jar jarfile="${release}/magellan-library.jar" basedir="${classes}" includes="magellan/library/**">
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Specification-Title" value="Magellan Library [build ${build.number}]" />
-				<attribute name="Specification-Vendor" value="Magellan Development Team"/>
-			</manifest>
-		</jar>
+    	<!-- JAR File erzeugen -->
+    	<jar jarfile="${release}/magellan-library.jar" basedir="${classes}" includes="magellan/library/**">
+    		<manifest>
+    			<attribute name="Built-By" value="${user.name}" />
+    			<attribute name="Specification-Title" value="Magellan Library [build ${build.number}]" />
+    			<attribute name="Specification-Vendor" value="Magellan Development Team"/>
+    		</manifest>
+    	</jar>
 
-	</target>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the magellan client.        * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="build_client">
-		<echo message="Compiling Client..." />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the magellan client.        * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="build_client">
+    	<echo message="Compiling Client..." />
 
-		<mkdir dir="${classes}" />
+    	<mkdir dir="${classes}" />
 
-		<my-javac srcdir="${src.client}/magellan"
+    	<my-javac srcdir="${src.client}/magellan"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -156,43 +157,43 @@
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
-			<!--<compilerarg value="-Xlint:unchecked"/>-->
-			<!--<compilerarg value="-Xlint:deprecation"/>-->
-			<classpath refid="magellan.class.path"/>
-		</my-javac>
-	</target>
+    		<!--<compilerarg value="-Xlint:unchecked"/>-->
+    		<!--<compilerarg value="-Xlint:deprecation"/>-->
+    		<classpath refid="magellan.class.path"/>
+    	</my-javac>
+    </target>
 
-	<target name="build_client_jar">
-		<echo message="Building Magellan Client JAR file" />
-		<!-- delete old library -->
-		<delete file="${release}/magellan-client.jar" failonerror="false" />
+    <target name="build_client_jar">
+    	<echo message="Building Magellan Client JAR file" />
+    	<!-- delete old library -->
+    	<delete file="${release}/magellan-client.jar" failonerror="false" />
 
-		<copy file="${etc}/manifest.mf.template" tofile="${etc}/manifest.mf" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.FULL}"/>
-				<filter token="BUILD" value="${build.number}"/>
-				<filter token="USER" value="${user.name}"/>
-			</filterset>
-		</copy>
+    	<copy file="${etc}/manifest.mf.template" tofile="${etc}/manifest.mf" overwrite="yes">
+    		<filterset>
+    			<filter token="VERSION" value="${VERSION.FULL}"/>
+    			<filter token="BUILD" value="${build.number}"/>
+    			<filter token="USER" value="${user.name}"/>
+    		</filterset>
+    	</copy>
 
-		<!-- JAR File erzeugen -->
-		<jar jarfile="${release}/magellan-client.jar" basedir="${classes}" includes="magellan/client/**" manifest="${etc}/manifest.mf"/>
+    	<!-- JAR File erzeugen -->
+    	<jar jarfile="${release}/magellan-client.jar" basedir="${classes}" includes="magellan/client/**" manifest="${etc}/manifest.mf"/>
 
-		<delete file="${etc}/manifest.mf" failonerror="false" />
+    	<delete file="${etc}/manifest.mf" failonerror="false" />
 
-	</target>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the magellan plugin.        * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="build_plugins">
-		<echo message="Compiling PlugIns..." />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the magellan plugin.        * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="build_plugins">
+    	<echo message="Compiling PlugIns..." />
 
-		<mkdir dir="${classes}" />
+    	<mkdir dir="${classes}" />
 
-		<my-javac srcdir="${src.plugins}/magellan"
+    	<my-javac srcdir="${src.plugins}/magellan"
            destdir="${classes}"
            includes="**"
            release="${compile.release}"
@@ -202,352 +203,354 @@
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
            debug="${debug}">
-			<!--<compilerarg value="-Xlint:unchecked"/>-->
-			<!--<compilerarg value="-Xlint:deprecation"/>-->
-			<classpath refid="magellan.class.path"/>
-		</my-javac>
-	</target>
+    		<!--<compilerarg value="-Xlint:unchecked"/>-->
+    		<!--<compilerarg value="-Xlint:deprecation"/>-->
+    		<classpath refid="magellan.class.path"/>
+    	</my-javac>
+    </target>
 
-	<target name="build_plugins_jar">
-		<echo message="Building Magellan PlugIns JAR file" />
+    <target name="build_plugins_jar">
+    	<echo message="Building Magellan PlugIns JAR file" />
 
-		<!-- delete old library -->
-		<delete file="${release}/magellan-plugins.jar" failonerror="false" />
+    	<!-- delete old library -->
+    	<delete file="${release}/magellan-plugins.jar" failonerror="false" />
 
-		<!-- JAR File erzeugen -->
-		<jar jarfile="${release}/magellan-plugins.jar" basedir="${classes}" includes="magellan/plugin/**">
-			<manifest>
-				<attribute name="Built-By" value="${user.name}" />
-				<attribute name="Specification-Title" value="Magellan PlugIns [build ${build.number}]" />
-				<attribute name="Specification-Vendor" value="Magellan Development Team"/>
-			</manifest>
-		</jar>
+    	<!-- JAR File erzeugen -->
+    	<jar jarfile="${release}/magellan-plugins.jar" basedir="${classes}" includes="magellan/plugin/**">
+    		<manifest>
+    			<attribute name="Built-By" value="${user.name}" />
+    			<attribute name="Specification-Title" value="Magellan PlugIns [build ${build.number}]" />
+    			<attribute name="Specification-Vendor" value="Magellan Development Team"/>
+    		</manifest>
+    	</jar>
 
-	</target>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the magellan help files.    * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="build_help">
-		<echo message="Building Magellan Help JAR file" />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the magellan help files.    * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="build_help">
+    	<echo message="Building Magellan Help JAR file" />
 
-		<!-- delete old library -->
-		<delete file="${release}/magellan-help.jar" failonerror="false" />
+    	<!-- delete old library -->
+    	<delete file="${release}/magellan-help.jar" failonerror="false" />
 
-		<!-- JAR File erzeugen -->
-		<jar jarfile="${release}/magellan-help.jar" manifest="${help}/META-INF/MANIFEST.MF">
-			<fileset dir="${help}"/>
-		</jar>
-	</target>
+    	<!-- JAR File erzeugen -->
+    	<jar jarfile="${release}/magellan-help.jar" manifest="${help}/META-INF/MANIFEST.MF">
+    		<fileset dir="${help}"/>
+    	</jar>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the magellan library.       * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="build_test">
-		<echo message="Compiling tests..." />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the magellan library.       * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="build_test">
+    	<echo message="Compiling tests..." />
 
-		<mkdir dir="${classes}" />
+    	<mkdir dir="${classes}" />
 
-		<my-javac srcdir="${src.test}/"
-			destdir="${classes}"
-			includes="**"
-			release="${compile.release}"
-			encoding="${compile.encoding}"
-			optimize="${optimize}"
-			fork="true"
-			memoryInitialSize="128m"
-			memoryMaximumSize="256m"
-			debug="${debug}">
-			<!--<compilerarg value="-Xlint:unchecked"/>-->
-			<!--<compilerarg value="-Xlint:deprecation"/>-->
-			<classpath refid="magellan.class.path.test"/>
-		</my-javac>
+    	<my-javac srcdir="${src.test}/"
+    		destdir="${classes}"
+    		includes="**"
+    		release="${compile.release}"
+    		encoding="${compile.encoding}"
+    		optimize="${optimize}"
+    		fork="true"
+    		memoryInitialSize="128m"
+    		memoryMaximumSize="256m"
+    		debug="${debug}">
+    		<!--<compilerarg value="-Xlint:unchecked"/>-->
+    		<!--<compilerarg value="-Xlint:deprecation"/>-->
+    		<classpath refid="magellan.class.path.test"/>
+    	</my-javac>
 
-	</target>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *                                                             * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="copy_release_data">
-		<echo message="Copying application data to ${release}..." />
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *                                                             * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="copy_release_data">
+    	<echo message="Copying application data to ${release}..." />
 
-		<mkdir dir="${release}/lib" />
-		<copy todir="${release}/lib" overwrite="true">
-			<fileset dir="${lib}">
-				<include name="**"/>
-				<exclude name="internal/*" />
-				<exclude name="javadocking.jar"/>
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/lib" />
+    	<copy todir="${release}/lib" overwrite="true">
+    		<fileset dir="${lib}">
+    			<include name="**"/>
+    			<exclude name="internal/*" />
+    			<exclude name="javadocking.jar"/>
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/doc" />
-		<copy todir="${release}/doc" overwrite="true">
-			<fileset dir="${doc}">
-				<include name="**"/>
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/doc" />
+    	<copy todir="${release}/doc" overwrite="true">
+    		<fileset dir="${doc}">
+    			<include name="**"/>
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/etc" />
-		<copy todir="${release}/etc" overwrite="true">
-			<fileset dir="${etc}">
-				<include name="*.properties"/>
-				<include name="*.ini"/>
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/etc" />
+    	<copy todir="${release}/etc" overwrite="true">
+    		<fileset dir="${etc}">
+    			<include name="*.properties"/>
+    			<include name="*.ini"/>
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/etc/images" />
-		<copy todir="${release}/etc/images" overwrite="true">
-			<fileset dir="${etc}/images">
-				<include name="**" />
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/etc/images" />
+    	<copy todir="${release}/etc/images" overwrite="true">
+    		<fileset dir="${etc}/images">
+    			<include name="**" />
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/etc/rules" />
-		<copy todir="${release}/etc/rules" overwrite="true">
-			<fileset dir="${etc}/rules">
-				<include name="**" />
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/etc/rules" />
+    	<copy todir="${release}/etc/rules" overwrite="true">
+    		<fileset dir="${etc}/rules">
+    			<include name="**" />
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/etc/plugins" />
-		<copy todir="${release}/etc/plugins" overwrite="true">
-			<fileset dir="${etc}/plugins">
-				<include name="**" />
-			</fileset>
-		</copy>
+    	<mkdir dir="${release}/etc/plugins" />
+    	<copy todir="${release}/etc/plugins" overwrite="true">
+    		<fileset dir="${etc}/plugins">
+    			<include name="**" />
+    		</fileset>
+    	</copy>
 
-		<mkdir dir="${release}/plugins" />
-		<echo file="${release}/plugins/README.txt" append="false">
+    	<mkdir dir="${release}/plugins" />
+    	<echo file="${release}/plugins/README.txt" append="false">
     	This folder contains external plugins. Do not delete...Thanks.
-		</echo>
+    	</echo>
 
-		<copy todir="${release}/" overwrite="true">
-			<fileset dir="${basedir}">
-				<include name="CHANGELOG.txt"/>
-				<include name="COPYING.txt"/>
-				<include name="LICENSE.txt"/>
-				<include name="README.md"/>
-				<include name="RELEASENOTES.txt"/>
-			</fileset>
-			<fileset dir="${installer}">
-				<include name="*.bat"/>
-				<include name="*.sh"/>
-			</fileset>
-		</copy>
-	</target>
+    	<copy todir="${release}/" overwrite="true">
+    		<fileset dir="${basedir}">
+    			<include name="CHANGELOG.txt"/>
+    			<include name="COPYING.txt"/>
+    			<include name="LICENSE.txt"/>
+    			<include name="README.md"/>
+    			<include name="RELEASENOTES.txt"/>
+    		</fileset>
+    		<fileset dir="${installer}">
+    			<include name="*.bat"/>
+    			<include name="*.sh"/>
+    		</fileset>
+    	</copy>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target runs all the unit tests                        * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="run_tests" description="This target runs the unit tests."
-	  		depends="update_version, build_library, build_client, build_plugins, build_test">
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target runs all the unit tests                        * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="run_tests" description="This target runs the unit tests."
+      		depends="update_version, build_library, build_client, build_plugins, build_test">
 
-		<mkdir dir="${junit.output.dir}" />
+    	<mkdir dir="${junit.output.dir}" />
 
-		<echo message="Running all unit tests" />
+    	<echo message="Running all unit tests" />
 
-		<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
-			<test name="magellan.test.AFirstTest" todir="${junit.output.dir}" />
-			<classpath refid="magellan.class.path.test" />
-		</junit>
-		<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
-			<batchtest todir="${junit.output.dir}">
-				<!-- E3CommandParser is not part of the release -->
-				<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java" />
-			</batchtest>
+    	<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
+    		<test name="magellan.test.AFirstTest" todir="${junit.output.dir}" />
+    		<classpath refid="magellan.class.path.test" />
+    	</junit>
+    	<junit fork="yes" failureProperty="test.failure" printsummary="withOutAndErr">
+    		<batchtest todir="${junit.output.dir}">
+    			<!-- E3CommandParser is not part of the release -->
+    			<fileset dir="${src.test}" includes="**/*Test.java" excludes="**/E3CommandParserTest.java" />
+    		</batchtest>
 
-			<formatter type="brief" usefile="true" />
-			<classpath refid="magellan.class.path.test" />
-		</junit>
+    		<formatter type="brief" usefile="true" />
+    		<classpath refid="magellan.class.path.test" />
+    	</junit>
 
-		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${basedir}">
-				<filename name="default????*/**" />
-			</fileset>
-		</delete>
+    	<delete includeEmptyDirs="true" failonerror="false">
+    		<fileset dir="${basedir}">
+    			<filename name="default????*/**" />
+    		</fileset>
+    	</delete>
 
-		<fail message="test failed" if="test.failure" />
-	</target>
+    	<fail message="test failed" if="test.failure" />
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the whole magellan app.     * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="test_and_distribute" description=" This target compiles, tests and packs the whole magellan application."
-			depends="prepare_build, run_tests, build_jar_and_distribute">
+    <target name="increase_build_number">
+    	<buildnumber file=".build.number"/>
+    	<echo message="increased build number to ${build.number}" />
+    </target>
 
-	</target>
+    <target name="prepare_build" depends="clear-all, increase_build_number, update_version">
 
-	<target name="increase_build_number">
-		<buildnumber file=".build.number"/>
-	</target>
+    </target>
 
-	<target name="prepare_build" depends="clear-all, increase_build_number, update_version">
+    <target name="build_jar_and_distribute" depends="build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data">
 
-	</target>
+    	<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
+    		<filterset>
+    			<filter token="VERSION" value="${VERSION.FULL}"/>
+    			<filter token="BUILD" value="${build.number}"/>
+    			<filter token="USER" value="${user.name}"/>
+    		</filterset>
+    	</copy>
 
-	<target name="build_jar_and_distribute" depends="build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data">
+    	<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
+    		<arg value="${installer}/izpack-install.xml"/>
+    		<arg value="-b"/>
+    		<arg value="."/>
+    		<arg value="-o"/>
+    		<arg value="magellan_v${VERSION.FULL}.jar"/>
+    		<arg value="-k"/>
+    		<arg value="standard"/>
 
-		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.FULL}"/>
-				<filter token="BUILD" value="${build.number}"/>
-				<filter token="USER" value="${user.name}"/>
-			</filterset>
-		</copy>
+    		<classpath>
+    			<pathelement path="${java.class.path}/" />
+    			<fileset dir="${installer}/izpack/">
+    				<include name="**/*.jar" />
+    			</fileset>
+    		</classpath>
+    	</java>
 
-		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
-			<arg value="${installer}/izpack-install.xml"/>
-			<arg value="-b"/>
-			<arg value="."/>
-			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.FULL}.jar"/>
-			<arg value="-k"/>
-			<arg value="standard"/>
+    	<echo message="Creating ZIP Distribution"/>
+    	<delete file="${basedir}/magellan_v${VERSION.FULL}.zip" failonerror="false"/>
+    	<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
+    		<fileset dir="${release}" includes="**"/>
+    	</zip>
 
-			<classpath>
-				<pathelement path="${java.class.path}/" />
-				<fileset dir="${installer}/izpack/">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</java>
+    	<echo message="Creating MacOS Distribution"/>
+    	<delete file="${basedir}/magellan_v${VERSION.FULL}_macos.zip" failonerror="false"/>
 
-		<echo message="Creating ZIP Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.FULL}.zip" failonerror="false"/>
-		<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
-			<fileset dir="${release}" includes="**"/>
-		</zip>
+    	<mkdir dir="${macos}/Magellan.app" />
+    	<mkdir dir="${macos}/Magellan.app" />
+    	<mkdir dir="${macos}/Magellan.app/Contents" />
+    	<copy file="${installer}/macos/PkgInfo" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+    	<copy file="${installer}/macos/Info.plist" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
+    	<mkdir dir="${macos}/Magellan.app/Contents/MacOS" />
+    	<copy file="${installer}/macos/JavaApplicationStub" todir="${macos}/Magellan.app/Contents/MacOS/" overwrite="yes"/>
+    	<chmod dir="${macos}/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
+    	<mkdir dir="${macos}/Magellan.app/Contents/Resources" />
+    	<copy file="${installer}/macos/icon/Magellan.icns" todir="${macos}/Magellan.app/Contents/Resources/" overwrite="yes"/>
+    	<mkdir dir="${macos}/Magellan.app/Contents/Resources/Java" />
+    	<copy todir="${macos}/Magellan.app/Contents/Resources/Java/" overwrite="true">
+    		<fileset dir="${release}/" includes="**"/>
+    	</copy>
 
-		<echo message="Creating MacOS Distribution"/>
-		<delete file="${basedir}/magellan_v${VERSION.FULL}_macos.zip" failonerror="false"/>
+    </target>
 
-		<mkdir dir="${macos}/Magellan.app" />
-		<mkdir dir="${macos}/Magellan.app" />
-		<mkdir dir="${macos}/Magellan.app/Contents" />
-		<copy file="${installer}/macos/PkgInfo" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
-		<copy file="${installer}/macos/Info.plist" todir="${macos}/Magellan.app/Contents/" overwrite="yes"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/MacOS" />
-		<copy file="${installer}/macos/JavaApplicationStub" todir="${macos}/Magellan.app/Contents/MacOS/" overwrite="yes"/>
-		<chmod dir="${macos}/Magellan.app/Contents/MacOS" perm="ugo+rx" includes="**"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/Resources" />
-		<copy file="${installer}/macos/icon/Magellan.icns" todir="${macos}/Magellan.app/Contents/Resources/" overwrite="yes"/>
-		<mkdir dir="${macos}/Magellan.app/Contents/Resources/Java" />
-		<copy todir="${macos}/Magellan.app/Contents/Resources/Java/" overwrite="true">
-			<fileset dir="${release}/" includes="**"/>
-		</copy>
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target compiles and packs the whole magellan app.     * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="distribute" description=" This target compiles, tests and packs the whole magellan application."
+            depends="prepare_build, run_tests, build_jar_and_distribute">
 
-	</target>
+    	<antcall target="clear-all"/>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target compiles and packs the whole magellan app.     * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="distribute" description=" This target compiles and packs the whole magellan application."
-			depends="prepare_build, build_library, build_client, build_plugins, build_jar_and_distribute">
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target just compiles and packs.                       * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="quick_build" description=" This target compiles and packs the whole magellan application."
+    		depends="prepare_build, build_library, build_client, build_plugins, build_jar_and_distribute">
 
-		<antcall target="clear-all"/>
-	</target>
+    	<antcall target="clear-all"/>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *                                                             * -->
-	<!-- *  This target just compiles the whole magellan app.     * -->
-	<!-- *                                                             * -->
-	<!-- *************************************************************** -->
-	<target name="distributeNoPack" description=" This target just compiles the whole magellan application."
-			depends="prepare_build, build_library, build_client, build_plugins, build_help, copy_release_data">
+    <!-- *************************************************************** -->
+    <!-- *                                                             * -->
+    <!-- *  This target just compiles the whole magellan app.     * -->
+    <!-- *                                                             * -->
+    <!-- *************************************************************** -->
+    <target name="distributeNoPack" description=" This target just compiles the whole magellan application."
+    		depends="prepare_build, build_library, build_client, build_plugins, build_help, copy_release_data">
 
-		<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
-			<filterset>
-				<filter token="VERSION" value="${VERSION.FULL}"/>
-				<filter token="BUILD" value="${build.number}"/>
-				<filter token="USER" value="${user.name}"/>
-			</filterset>
-		</copy>
+    	<copy file="${installer}/izpack-install.template.xml" tofile="${installer}/izpack-install.xml" encoding="${compile.encoding}" overwrite="yes">
+    		<filterset>
+    			<filter token="VERSION" value="${VERSION.FULL}"/>
+    			<filter token="BUILD" value="${build.number}"/>
+    			<filter token="USER" value="${user.name}"/>
+    		</filterset>
+    	</copy>
 
-		<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
-			<arg value="${installer}/izpack-install.xml"/>
-			<arg value="-b"/>
-			<arg value="."/>
-			<arg value="-o"/>
-			<arg value="magellan_v${VERSION.FULL}.jar"/>
-			<arg value="-k"/>
-			<arg value="standard"/>
+    	<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
+    		<arg value="${installer}/izpack-install.xml"/>
+    		<arg value="-b"/>
+    		<arg value="."/>
+    		<arg value="-o"/>
+    		<arg value="magellan_v${VERSION.FULL}.jar"/>
+    		<arg value="-k"/>
+    		<arg value="standard"/>
 
-			<classpath>
-				<pathelement path="${java.class.path}/" />
-				<fileset dir="${installer}/izpack/">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</java>
+    		<classpath>
+    			<pathelement path="${java.class.path}/" />
+    			<fileset dir="${installer}/izpack/">
+    				<include name="**/*.jar" />
+    			</fileset>
+    		</classpath>
+    	</java>
 
-	</target>
+    </target>
 
 
-	<!-- *************************************************************** -->
-	<!-- *    CREATE JAVADOC                                           * -->
-	<!-- *************************************************************** -->
-	<target name="doc" description="==> Creates the JavaDocs">
-		<echo message="Running JavaDoc" />
-		<javadoc encoding="${compile.encoding}" packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
-			<classpath refid="magellan.class.path" />
-			<link href="http://docs.oracle.com/javase/6/docs/api/" />
-			<fileset dir="${basedir}">
-				<include name="**/*.java"/>
-				<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
+    <!-- *************************************************************** -->
+    <!-- *    CREATE JAVADOC                                           * -->
+    <!-- *************************************************************** -->
+    <target name="doc" description="==> Creates the JavaDocs">
+    	<echo message="Running JavaDoc" />
+    	<javadoc encoding="${compile.encoding}" packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" locale="de_DE">
+    		<classpath refid="magellan.class.path" />
+    		<link href="http://docs.oracle.com/javase/6/docs/api/" />
+    		<fileset dir="${basedir}">
+    			<include name="**/*.java"/>
+    			<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
              if you need javadoc for src-test, please investigate! -->
-				<exclude name="src-test/**"/>
-				<exclude name="src-internal/**"/>
-				<!-- does this do anything at all? -->
-				<exclude name="magellan/test/**"/>
-				<exclude name="magellan/client/**"/>
-			</fileset>
-		</javadoc>
-	</target>
+    			<exclude name="src-test/**"/>
+    			<exclude name="src-internal/**"/>
+    			<!-- does this do anything at all? -->
+    			<exclude name="magellan/test/**"/>
+    			<exclude name="magellan/client/**"/>
+    		</fileset>
+    	</javadoc>
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *    CLEAR CLASSES                                            * -->
-	<!-- *************************************************************** -->
-	<target name="clear-directory" >
-		<!-- cleaning classes directory by creating&deleting and creating it -->
-		<echo message="Cleaning ${dir} folder"/>
-		<mkdir dir="${dir}" />
-		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${dir}" includes="**" />
-		</delete>
-		<mkdir dir="${dir}" />
-	</target>
+    <!-- *************************************************************** -->
+    <!-- *    CLEAR CLASSES                                            * -->
+    <!-- *************************************************************** -->
+    <target name="clear-directory" >
+    	<!-- cleaning classes directory by creating&deleting and creating it -->
+    	<echo message="Cleaning ${dir} folder"/>
+    	<mkdir dir="${dir}" />
+    	<delete includeEmptyDirs="true" failonerror="false">
+    		<fileset dir="${dir}" includes="**" />
+    	</delete>
+    	<mkdir dir="${dir}" />
+    </target>
 
-	<!-- *************************************************************** -->
-	<!-- *     CLEAR ALL                                               * -->
-	<!-- *************************************************************** -->
-	<target name="clear-all">
-		<antcall target="clear-directory">
-			<param name="dir" value="${classes}"/>
-		</antcall>
-		<antcall target="clear-directory">
-			<param name="dir" value="${release}"/>
-		</antcall>
-		<antcall target="clear-directory">
-			<param name="dir" value="${macos}"/>
-		</antcall>
+    <!-- *************************************************************** -->
+    <!-- *     CLEAR ALL                                               * -->
+    <!-- *************************************************************** -->
+    <target name="clear-all">
+    	<antcall target="clear-directory">
+    		<param name="dir" value="${classes}"/>
+    	</antcall>
+    	<antcall target="clear-directory">
+    		<param name="dir" value="${release}"/>
+    	</antcall>
+    	<antcall target="clear-directory">
+    		<param name="dir" value="${macos}"/>
+    	</antcall>
 
-		<echo message="Cleaning default"/>
-		<delete includeEmptyDirs="true" failonerror="false">
-			<fileset dir="${basedir}" includes="default-??????*/**"/>
-			<fileset dir="${basedir}" includes="default??????*/**"/>
-		</delete>
-	</target>
+    	<echo message="Cleaning default"/>
+    	<delete includeEmptyDirs="true" failonerror="false">
+    		<fileset dir="${basedir}" includes="default-??????*/**"/>
+    		<fileset dir="${basedir}" includes="default??????*/**"/>
+    	</delete>
+    </target>
 
 </project>

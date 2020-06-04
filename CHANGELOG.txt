@@ -1,4 +1,9 @@
-2020-05-30
+2020-05-30/ Build 716 - stm (stm2@users.sourceforge.net)
+    * fixed bug #410 (RoutePlanner)
+    * added Fantasya rules file
+    * fixed map saver
+
+2020-05-30 / Build 713 - stm (stm2@users.sourceforge.net)
     * implemented new build system at github
     * introduced full semantic versioning major.minor.revision-build.type
     * fixed backslash parsing in CR strings

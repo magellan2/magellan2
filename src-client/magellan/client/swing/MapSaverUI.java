@@ -520,7 +520,8 @@ public class MapSaverUI extends InternationalizedDialog {
     ImageOutputStream fos = null;
     try {
       File file = new File(strOutput);
-      if (!file.canWrite())
+      if ((file.exists() && !file.canWrite()) || file.isDirectory() || (!file.exists() && !file.getParentFile()
+          .canWrite()))
         throw new IOException("cannot write to " + file.getAbsolutePath());
       Iterator<ImageWriter> iw = ImageIO.getImageWritersByFormatName(type);
       if (!iw.hasNext())

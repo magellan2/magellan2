@@ -205,6 +205,7 @@ public class ScannerTest {
 
   @Test
   public void testEscapedString() throws IOException {
+    // "backs\\\\back\\quote\"single\'done" -> backs\\back\quote"single'done
     Scanner sc = getScanner("\"backs\\\\\\\\back\\\\quote\\\"single\\'done\"");
     sc.getNextToken();
 

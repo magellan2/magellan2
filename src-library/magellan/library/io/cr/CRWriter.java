@@ -166,23 +166,9 @@ public class CRWriter extends BufferedWriter {
   private String escapeQuotes(String text) {
     if (text == null) {
       CRWriter.log.warn("CRWriter.escapeQuotes(): argument 'text' is null");
-
       return null;
     }
-
-    StringBuffer sb = new StringBuffer(text.length() + 2);
-
-    for (int i = 0; i < text.length(); i++) {
-      char c = text.charAt(i);
-
-      if (c == '"') {
-        sb.append('\\');
-      }
-
-      sb.append(c);
-    }
-
-    return sb.toString();
+    return text.replace("\\", "\\\\").replace("\"", "\\\"");
   }
 
   /**

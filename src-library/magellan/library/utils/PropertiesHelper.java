@@ -312,6 +312,20 @@ public class PropertiesHelper {
   public static final String BOOKMARKMANAGER_LASTFILE = "Bookmarkmanager.lastFile";
 
   /**
+   * Property type String (version number): current version number
+   * 
+   * @deprecated replaced by {@link #SEMANTIC_VERSION}
+   */
+  @Deprecated
+  public static final String VERSION = "Client.Version";
+
+  /** Property type String (version number): current version number */
+  public static final String SEMANTIC_VERSION = "Client.SemanticVersion";
+
+  /** Property type String (semantic version number): last used version number */
+  public static final String LAST_VERSION = "Client.LastVersion";
+
+  /**
    * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that
    * value. If something goes wrong or the key couldn't be found the default value def
    * is returned.

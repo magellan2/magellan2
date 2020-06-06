@@ -347,6 +347,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param settingsDir The directory where the settings are situated
    * @param ask show the ask password dialog, used for testing only
    */
+  @SuppressWarnings("deprecation")
   protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask,
       File logFile) {
     Client.INSTANCE = this;
@@ -371,16 +372,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       fixSettings(settings);
 
-      lastSavedVersion = settings.getProperty("Client.Version");
+      lastSavedVersion = settings.getProperty("Client.SemanticVersion");
+      if (lastSavedVersion == null) {
+        lastSavedVersion = settings.getProperty(PropertiesHelper.VERSION);
+      }
       if (lastSavedVersion == null) {
         lastSavedVersion = "null";
       }
     }
     if (VersionInfo.getVersion(resourceDir) != null) {
-      settings.setProperty("Client.Version", VersionInfo.getVersion(resourceDir));
+      settings.setProperty(PropertiesHelper.VERSION, VersionInfo.getVersion(resourceDir));
+      settings.setProperty(PropertiesHelper.SEMANTIC_VERSION, VersionInfo.getSemanticVersion(resourceDir));
     }
     if (lastSavedVersion != null) {
-      settings.setProperty("Client.LastVersion", lastSavedVersion);
+      settings.setProperty(PropertiesHelper.LAST_VERSION, lastSavedVersion);
     }
 
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);

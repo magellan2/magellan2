@@ -29,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
@@ -64,6 +65,7 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Encoding;
+import magellan.library.utils.Locales;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -75,17 +77,26 @@ import magellan.library.utils.logging.Logger;
  * This class holds the commands for all units.
  * 
  * @author Thoralf Rickert
- * @version 1.0, 11.09.2007
  */
 public class ExtendedCommands {
 
+  /**
+   * Exception to indicate errors during script evaluation.
+   * 
+   * @author stm
+   */
   public static class JShellException extends Exception {
 
     private Snippet snippet;
     private SnippetEvent event;
     private String message;
     private Stream<Diag> diagnostics;
+    private StringBuilder source;
 
+    /**
+     * @param snippet
+     * @param diagnostics
+     */
     public JShellException(Snippet snippet, Stream<Diag> diagnostics) {
       super("Error in snippet: " + snippet.kind());
       message = "Error in snippet: " + snippet.kind();
@@ -93,6 +104,10 @@ public class ExtendedCommands {
       this.diagnostics = diagnostics;
     }
 
+    /**
+     * @param event
+     * @param diagnostics
+     */
     public JShellException(SnippetEvent event, Stream<Diag> diagnostics) {
       super();
       this.event = event;
@@ -116,48 +131,70 @@ public class ExtendedCommands {
       }
     }
 
+    /**
+     * @param message
+     * @param source
+     */
+    public JShellException(String message, StringBuilder source) {
+      this.message = message;
+      this.source = source;
+    }
+
     @Override
     public String getMessage() {
       return message;
     }
 
+    /**
+     * Returns a more verbose description. The result depends on the Shell implementation.
+     */
     public String getDescription() {
       final StringBuilder sb = new StringBuilder();
       if (diagnostics != null) {
-        diagnostics.forEach(new Consumer<Diag>() {
-          public void accept(Diag t) {
-            sb.append(t.toString()).append("\n");
-          }
-        });
-        if (sb.length() > 0) {
-          sb.insert(0, "DIAGNOSTICS\n");
-        }
+        descriptionFromDiagnostics(sb, event, diagnostics);
       }
+
       if (snippet != null) {
         sb.append("\nSNIPPET\n");
         sb.append(snippet.toString());
       } else if (event != null) {
-        sb.append("\nEVENT\n");//
-        sb.append(event.toString()); //
-        if (event.exception() != null) {
-          sb.append("\nEXCEPTION ");
-          if (event.exception() instanceof EvalException) {
-            sb.append(((EvalException) event.exception()).getExceptionClassName()).append("\n");
-            StringWriter writer = new StringWriter();
-            PrintWriter wwriter = new PrintWriter(writer);
-            event.exception().printStackTrace(wwriter);
-            sb.append(writer.toString());
-            wwriter.close();
-          } else {
-            sb.append(event.exception().getClass().getName()).append("\n");
-            sb.append(event.exception());
-          }
-        }
+        descriptionFromEvent(sb);
+      } else if (source != null) {
+        descriptionFromSource(sb);
       } else {
         sb.append("Unknown error");
       }
       return sb.toString();
     }
+
+    private void descriptionFromSource(StringBuilder sb) {
+      sb.append("\nSOURCE\n");
+      if (source.length() < 999) {
+        sb.append(source);
+      } else {
+        sb.append(source.substring(0, 300)).append("\n...\n").append(source.substring(source.length() - 300));
+      }
+    }
+
+    private void descriptionFromEvent(StringBuilder sb) {
+      sb.append("\nEVENT\n");//
+      sb.append(event.toString()); //
+      if (event.exception() != null) {
+        sb.append("\nEXCEPTION ");
+        if (event.exception() instanceof EvalException) {
+          sb.append(((EvalException) event.exception()).getExceptionClassName()).append("\n");
+          StringWriter writer = new StringWriter();
+          PrintWriter wwriter = new PrintWriter(writer);
+          event.exception().printStackTrace(wwriter);
+          sb.append(writer.toString());
+          wwriter.close();
+        } else {
+          sb.append(event.exception().getClass().getName()).append("\n");
+          sb.append(event.exception());
+        }
+      }
+    }
+
   }
 
   private static final Logger log = Logger.getInstance(ExtendedCommands.class);
@@ -260,6 +297,128 @@ public class ExtendedCommands {
     }
 
     return ok;
+  }
+
+  private static void descriptionFromDiagnostics(StringBuilder sb, SnippetEvent event, Stream<Diag> diagnostics) {
+    StringBuilder sbWarn = new StringBuilder(), sbErr = new StringBuilder();
+    final SourceLines sourceLines = SourceLines.create(event.snippet().source());
+    int[] counter = new int[2];
+    classify(sbWarn, sbErr, counter, sourceLines, diagnostics);
+    if (sbErr.length() > 0) {
+      sb.append(counter[0]).append(" ERRORS:\n");
+      sb.append(sbErr);
+    }
+    if (sbWarn.length() > 0) {
+      sb.append(counter[1]).append(" WARNINGS:\n").append(sbWarn);
+    }
+    if (sb.length() > 0) {
+      sb.insert(0, "DIAGNOSTICS\n");
+    }
+  }
+
+  private static class SourceLines {
+
+    private String source;
+    private long[] starts;
+    private String[] lines;
+
+    public int getLine(long position) {
+      if (starts == null) {
+        init();
+      }
+      int line = Arrays.binarySearch(starts, position);
+      if (line < 0) {
+        line = -(line + 2);
+      }
+      return line;
+    }
+
+    public int getColumn(long position) {
+      long start = starts[getLine(position)];
+      return (int) (position - start);
+    }
+
+    private void init() {
+      lines = source.split("(?<=\r?\n)");
+      starts = new long[lines.length + 1];
+      int lnr = 0;
+      long pos = 0;
+      for (String line : lines) {
+        starts[lnr++] = pos;
+        pos += line.length();
+      }
+      starts[lnr] = pos;
+      source = null;
+    }
+
+    public String getSourceLine(int lineNr) {
+      if (starts == null) {
+        init();
+      }
+      return lines[lineNr];
+    }
+
+    public static SourceLines create(String source) {
+      SourceLines result = new SourceLines();
+      result.source = source;
+      return result;
+    }
+
+  }
+
+  private static void classify(StringBuilder sbWarning, StringBuilder sbError, int[] counter, SourceLines sourceLines,
+      Stream<Diag> diagnosticStream) {
+    diagnosticStream.forEach(new Consumer<Diag>() {
+      public void accept(Diag dg) {
+        if (dg.getCode().contains(".err.")) {
+          counter[0]++;
+          if (sbError.length() < 2999) {
+            append(sbError, sourceLines, dg);
+          } else {
+            if (sbError.lastIndexOf("...") < sbError.length() - 5) {
+              sbError.append("...\n");
+            }
+          }
+        } else {
+          counter[1]++;
+          if (sbWarning.length() < 999 && sbError.length() < 2999) {
+            append(sbWarning, sourceLines, dg);
+          } else {
+            if (sbWarning.lastIndexOf("...") < sbWarning.length() - 5) {
+              sbWarning.append("...\n");
+            }
+          }
+        }
+      }
+    });
+  }
+
+  private static void append(StringBuilder sb, SourceLines sourceLines, Diag dg) {
+    sb.append(dg.getMessage(Locales.getGUILocale()));
+
+    int startLine = sourceLines.getLine(dg.getStartPosition()), posLine = sourceLines.getLine(dg.getPosition()),
+        endLine =
+            sourceLines.getLine(dg.getEndPosition());
+    int posCol = sourceLines.getColumn(dg.getPosition());
+    sb.append(String.format(" at %d:%d:%d\n", posLine + 1, posCol + 1, dg.getPosition() + 1));
+    if (endLine - startLine > 3) {
+      if (startLine != posLine) {
+        sb.append(sourceLines.getSourceLine(startLine)).append("...\n");
+      }
+      sb.append(sourceLines.getSourceLine(posLine));
+      if (endLine != posLine) {
+        sb.append("...\n").append(sourceLines.getSourceLine(endLine));
+      }
+    } else {
+      for (int l = startLine; l <= endLine; ++l) {
+        sb.append(sourceLines.getSourceLine(l));
+      }
+    }
+    if (sb.charAt(sb.length() - 1) != '\n') {
+      sb.append("\n---\n");
+    } else {
+      sb.append("---\n");
+    }
   }
 
   /**
@@ -501,16 +660,7 @@ public class ExtendedCommands {
     if (!hasCommands(unit))
       return;
 
-    StringBuilder script = new StringBuilder();
-    if (getLibrary() != null) {
-      script.append(getLibrary().getScript());
-    }
-    if (script.charAt(script.length() - 1) != '\n') {
-      script.append("\n");
-    }
-    script.append(getCommands(unit).getScript());
-
-    execute(script.toString(), world, unit, null);
+    executeWithLib(getCommands(unit), world, unit, null);
     if (client != null && isFireChangeEvent()) {
       client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
     }
@@ -523,6 +673,10 @@ public class ExtendedCommands {
     if (!hasCommands(container))
       return;
 
+    executeWithLib(getCommands(container), world, null, container);
+  }
+
+  private void executeWithLib(Script commands, GameData world, Unit unit, UnitContainer container) {
     StringBuilder script = new StringBuilder();
     if (getLibrary() != null) {
       script.append(getLibrary().getScript());
@@ -530,9 +684,8 @@ public class ExtendedCommands {
     if (script.charAt(script.length() - 1) != '\n') {
       script.append("\n");
     }
-    script.append(getCommands(container).getScript());
-
-    execute(script.toString(), world, null, container);
+    script.append(commands.getScript());
+    execute(script.toString(), world, unit, container);
   }
 
   /**
@@ -573,8 +726,7 @@ public class ExtendedCommands {
     public static UnitContainer container;
     public static Unit unit;
     public static ExtendedCommandsHelper helper;
-    public static DebugDock log;
-
+    public static DebugDock logDock;
   }
 
   protected void runExecute(final String script, final GameData world, final Unit unit,
@@ -595,21 +747,25 @@ public class ExtendedCommands {
   protected synchronized void runJShell(String script, GameData world, Unit unit,
       UnitContainer container, UserInterface ui, ExtendedCommandsHelper helper) {
     try {
-      final JShell sh = JShell.builder().executionEngine("local").build();
+      final JShell sh = JShell.builder().compilerOptions("-Xlint:all")
+          .executionEngine("local").build();
 
       RunHelper.world = world;
       RunHelper.container = container;
       RunHelper.unit = unit;
       RunHelper.helper = helper;
-      RunHelper.log = DebugDock.getInstance();
+      RunHelper.logDock = DebugDock.getInstance();
 
       StringBuilder incomplete = new StringBuilder();
+      CompletionInfo c = null;
       for (String line : script.split("[\r\n]+")) {
-        CompletionInfo c = sh.sourceCodeAnalysis().analyzeCompletion(line);
+        c = sh.sourceCodeAnalysis().analyzeCompletion(line);
         if (!c.completeness().equals(Completeness.EMPTY)) {
           incomplete.append(line).append("\n");
         }
       }
+      if (c != null && c.completeness().equals(Completeness.DEFINITELY_INCOMPLETE))
+        throw new JShellException("source is incomplete", incomplete);
 
       String remaining = script;
       boolean firstStatement = true;
@@ -640,11 +796,13 @@ public class ExtendedCommands {
         remaining = eval(sh, remaining);
       }
     } catch (JShellException e) {
+      // TODO
       if (client != null) {
         ErrorWindow errorWindow = new ErrorWindow(client, e.getMessage(), e.getDescription(), e);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
       } else {
+        log.error(e.getMessage());
         log.error(e.getDescription(), e);
       }
     } catch (Throwable throwable) {
@@ -654,6 +812,8 @@ public class ExtendedCommands {
         ErrorWindow errorWindow = new ErrorWindow(client, throwable.getMessage(), "", throwable);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
+      } else {
+        log.error(throwable.getMessage(), throwable);
       }
     } finally {
       if (isFireChangeEvent()) {
@@ -669,13 +829,16 @@ public class ExtendedCommands {
 
   private String eval(final JShell sh, String source) throws JShellException {
     CompletionInfo c = sh.sourceCodeAnalysis().analyzeCompletion(source);
-    List<SnippetEvent> evaluation = sh.eval(c.source());
+    List<SnippetEvent> evaluation = sh.eval(c.source() != null ? c.source() : source);
 
     for (SnippetEvent event : evaluation) {
+      // TODO do proper logging of warnings
       log.finer("eval: " + event.value() + "\n" + source);
       switch (event.status()) {
-      case REJECTED:
-        throw new JShellException(event, sh.diagnostics(event.snippet()));
+      case REJECTED: {
+        Stream<Diag> diags = sh.diagnostics(event.snippet());
+        throw new JShellException(event, diags);
+      }
       default:
         if (event.exception() != null)
           throw new JShellException(event, sh.diagnostics(event.snippet()));
@@ -684,17 +847,17 @@ public class ExtendedCommands {
     return c.remaining();
   }
 
-  private void defineGlobals(JShell sh) {
-    sh.eval(
+  private void defineGlobals(JShell sh) throws JShellException {
+    eval(sh,
         "magellan.library.GameData world = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.world;");
-    sh.eval(
+    eval(sh,
         "magellan.library.Unit unit = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.unit;");
-    sh.eval(
+    eval(sh,
         "magellan.library.UnitContainer container = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.container;");
-    sh.eval(
+    eval(sh,
         "magellan.plugin.extendedcommands.ExtendedCommandsHelper helper = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.helper;");
-    sh.eval(
-        "magellan.client.swing.DebugDock log = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.log;");
+    eval(sh,
+        "magellan.client.swing.DebugDock log = magellan.plugin.extendedcommands.ExtendedCommands.RunHelper.logDock;");
   }
 
   /**

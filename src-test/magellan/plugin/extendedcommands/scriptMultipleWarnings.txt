@@ -1,0 +1,65 @@
+import java.util.*;
+
+class A {
+	void x() {
+		List a = new LinkedList();
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+		a.add("123");
+	}
+	
+}

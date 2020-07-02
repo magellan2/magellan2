@@ -1,12 +1,14 @@
 package magellan.library;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import magellan.library.rules.GenericRules;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Test;
 
 /**
  * 
@@ -19,24 +21,24 @@ public class GameDataTest extends MagellanTestWithResources {
   public void isSameRoundWhenRoundsAreEqual() throws Exception {
     GameData gd1 = new GameDataBuilder().createSimpleGameData(SOME_ROUND);
     GameData gd2 = new GameDataBuilder().createSimpleGameData(SOME_ROUND);
-    assertThat(gd1.isSameRound(gd2), is(true));
+    assertTrue(gd1.isSameRound(gd2));
   }
 
   @Test
   public void isNotSameRoundWhenRoundsAreDifferent() throws Exception {
     GameData gd1 = new GameDataBuilder().createSimpleGameData(SOME_ROUND);
     GameData gd2 = new GameDataBuilder().createSimpleGameData(ANOTHER_ROUND);
-    assertThat(gd1.isSameRound(gd2), is(false));
+    assertFalse(gd1.isSameRound(gd2));
   }
 
   @Test
   public void dateIsInitializedWithEresseaRoundZero() {
-    assertThat(createEmptyGameData().getDate().getDate(), is(0));
+    assertEquals(0, createEmptyGameData().getDate().getDate());
   }
 
   @Test
   public void timestampIsInitialized() {
-    assertThat(createEmptyGameData().getTimestamp() > 0, is(true));
+    assertTrue(createEmptyGameData().getTimestamp() > 0);
   }
 
   private EmptyData createEmptyGameData() {

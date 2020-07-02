@@ -1,0 +1,21 @@
+import java.text.DateFormat;
+import java.util.*;
+
+import magellan.library.*;
+import magellan.library.rules.*;
+
+class ABC {
+
+   List<Item> aList;
+   
+   public void list(Unit u) {
+	   aList = new ArrayList<Item>();
+	   aList.add(new Item(helper.getItemType("Schwert"), 2));
+       System.out.println("***Happy: "+aList.get(0)+" = Schwert - null = " +unit);
+   }
+   
+}
+int i=0;
+
+ABC abc=new ABC();
+abc.list(unit);

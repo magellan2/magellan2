@@ -1,16 +1,15 @@
 package magellan.library;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import magellan.library.rules.GenericRules;
 import magellan.library.utils.Locales;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class EmptyDataTest extends MagellanTestWithResources {
   private static final Locale SOME_LOCALE = Locale.CANADA_FRENCH;
@@ -33,6 +32,6 @@ public class EmptyDataTest extends MagellanTestWithResources {
   @Test
   public void emptyDataGetsLocaleFromSourceGameData() {
     EmptyData target = new EmptyData(sourceGameData);
-    assertThat(target.getLocale(), is(SOME_LOCALE));
+    assertEquals(SOME_LOCALE, target.getLocale());
   }
 }

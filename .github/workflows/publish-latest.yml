@@ -90,10 +90,6 @@ jobs:
       id: changelog
       run: |
         value=$(cat doc/NIGHTLY.txt | iconv -f ISO-8859-1; echo -e '\n\n'; echo -e '\n## Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
-        json_escape () {
-          printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
-        }
-        value=$(json_escape "$value")
         echo "::set-env name=BODY::$value"
 
     - name: Publish git tag "vX.Y-latest"

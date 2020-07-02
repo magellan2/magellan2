@@ -1,79 +1,51 @@
 <html>
- <head>
-  <style type='text/css'>
-    <!--
-     body      { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; background-color: #ffffff; color: #000000;}
-     td        { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; background-color: #ffffff; color: #000000;}
-    -->
-  </style>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
- </head>
- <body>
-  <p>
-  <b>This is the editor environment of Extended Commands.</b>
-  </p>
-   <p>
-This text attempts to clarify the complex possibilities of this
-plugin. This editor is based on BeanShell and therefore similar to
-Java. There are classes and methods. The variables are more tipical.
-   </p>
-   <p>
-At the moment these work on the libraries for units and containers.
-The following global variables are available:
-</p>
-<ul>
-<li><a href="http://magellan.narabi.de/nightly-build/api/magellan/library/GameData.html"><tt>world</tt></a> - the most recently loaded report and all information connected
-with it (islands, regions, factions, etc.)</li>
-<li><a href="http://magellan.narabi.de/nightly-build/api/magellan/plugin/extendedcommands/ExtendedCommandsHelper.html"><tt>helper</tt></a> an auxiliary class with handy functions</li>
-</ul>
-<p>
-To be able to use additional classes from Java or Magellan, these have
-to be imported. This happens for example as follows:
-</p>
-<pre>
+<head>
+<style type='text/css'>
+<!--
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+td {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12pt;
+    background-color: #ffffff;
+    color: #000000;
+}
+-->
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+</head>
+<body>
+    <p>
+        <b>This is the editor environment of Extended Commands.</b>
+    </p>
+    <p>
+        This text attempts to clarify the complex possibilities of this plugin. This editor is based
+        on JShell and therefore similar to Java. There are classes and methods. The variables are
+        type safe. See the <a href="index.html">introduction into ExtendedCommands</a>.
+    </p>
+    <p>At the moment you are working on the library for all units and containers. The following
+        global variables are available:</p>
+    <ul>
+        <li><a href="../../../../doc/api/magellan/library/GameData.html">world</a> - the most
+            recently loaded report and all information connected with it (islands, regions,
+            factions, etc.)</li>
+        <li><a
+            href="../../../../doc/api/magellan/plugin/extendedcommands/ExtendedCommandsHelper.html">helper</a>
+            an auxiliary class with handy functions</li>
+    </ul>
+    <p>To be able to use additional classes from Java or Magellan, these have to be imported.
+        This happens for example as follows:</p>
+    <pre>
 import magellan.library.*;
 
 int getHorses(Region region) {
   return region.getHorses();
 }
 </pre>
-<p>
-The API for the individual classes is extensive. In principle one has
-control over all facets of Magellan and the most recently loaded
-report. In theory it is even possible to open custom windows, but this
-documentation will not go into that. For a deeper understanding of the
-API we recommend the following sites:
-<ul>
-  <li>Magellan Library<br/>
-    <a href="http://magellan.narabi.de/nightly-build/api/magellan/library/package-frame.html">magellan.library.*</a><br/>
-    Contains a lot of descriptions for the most common classes in Magellan.
-  </li>
-  <li>Magellan Rules<br/>
-    <a href="http://magellan.narabi.de/nightly-build/api/magellan/library/rules/package-frame.html">magellan.library.rules.*</a><br/>
-    Contains some defintions for the rules.
-  </li>
-  <li>Extended Commands Helper<br/>
-    <a href="http://magellan.narabi.de/nightly-build/api/magellan/plugin/extendedcommands/ExtendedCommandsHelper.html">Helper API</a><br/>
-    Contains all the method descriptions useful inside the helper tool.
-  </li>
-  <li>Magellan2 API (complete)<br/>
-<a href="http://magellan.narabi.de/nightly-build/api/overview-frame.html">http://magellan.narabi.de/nightly-build/api</a><br/>
-Documentation on all classes and possibilities of the Magellan client.
-The classes in magellan.library should prove especially interesting.
-</li>
-<li>Java 5 API<br/>
-<a href="http://java.sun.com/j2se/1.5.0/docs/api/overview-frame.html">http://java.sun.com/j2se/1.5.0/docs/api</a><br/>
-Documentation on the current Java environment. All these classes are
-at your disposal.
-</li>
-<li>BeanShell Syntax<br/>
-<a href="http://www.beanshell.org/manual/contents.html">http://www.beanshell.org/manual/contents.html</a><br/>
-Complete documentation on the possibilities of BeanShell.
-</li>
-</ul>
-</p>
-<p>
-More documentation to come...
-   </p>
- </body>
+</body>
 </html>

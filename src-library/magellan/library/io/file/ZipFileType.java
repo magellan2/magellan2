@@ -27,6 +27,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * TODO: ZipEntry may also be a "normal" FileType
  * 
@@ -95,6 +97,36 @@ public class ZipFileType extends FileType {
     return ret.toArray(new ZipEntry[] {});
   }
 
+  static class ZipFileIS extends InputStream {
+
+    InputStream delegate;
+    private ZipFile zip;
+    private boolean closeRequested;
+
+    public ZipFileIS(File filename, ZipEntry entry) throws IOException {
+      zip = new ZipFile(filename);
+      delegate = zip.getInputStream(entry);
+    }
+
+    @Override
+    public int read() throws IOException {
+      return delegate.read();
+    }
+
+    @Override
+    public void close() throws IOException {
+      if (closeRequested) {
+        Logger.getInstance(this.getClass()).warnOnce("attempted to close zip file " + this + " more than once.");
+      } else {
+        closeRequested = true;
+        super.close();
+        synchronized (this) {
+          zip.close();
+        }
+      }
+    }
+  }
+
   /**
    * @see magellan.library.io.file.FileType#createInputStream()
    */
@@ -104,7 +136,7 @@ public class ZipFileType extends FileType {
       // this means we cannot handle an input stream - this file doesn't exist yet
       return null;
 
-    InputStream is = new ZipFile(filename).getInputStream(zipentry);
+    InputStream is = new ZipFileIS(filename, zipentry);// ZipFile(filename).getInputStream(zipentry);
 
     if (is == null)
       throw new IOException("Cannot read zip entry '" + zipentry + "' in file '" + filename + "',");

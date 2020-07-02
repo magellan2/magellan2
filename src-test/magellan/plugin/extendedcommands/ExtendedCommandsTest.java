@@ -83,9 +83,6 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
 
       public void log(int aLevel, Object aObj, Throwable aThrowable) {
         String str = abstractlistener.getMessage(aLevel, aObj, aThrowable);
-        if (aThrowable != null) {
-          aThrowable.printStackTrace();
-        }
         logBuffer.append(str);
       }
     });
@@ -121,7 +118,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
   @Test
   public void testRejected() throws IOException {
     String log = runScript("Rejected");
-    assertMatches(".*variable x might not have been initialized.*at 3:4:27.*", log);
+    assertMatches(".*variable x might not have been initialized.*at 3:4:.*", log);
   }
 
   @Test
@@ -133,7 +130,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
   @Test
   public void testLongWarnings() throws IOException {
     String log = runScript("LongWarnings");
-    assertMatches(".*variable y might not have been initialized.*at 64:5:1044.*x=y;.*", log);
+    assertMatches(".*variable y might not have been initialized.*at 64:5:.*x=y;.*", log);
     assertMatches(".*\\.\\.\\..*", log);
   }
 

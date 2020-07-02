@@ -127,7 +127,7 @@ public class GameDataMerger {
     boolean sameRound = olderGD.isSameRound(newerGD);
     /**
      * - to be added CR is newer and contains trust level that were set by the user explicitly (or
-     * read from CR what means the same) -> take the trust levels out of the new CR<br />
+     * read from CR what means the same) &rarr; take the trust levels out of the new CR<br />
      * - to be added CR is older or of same age -> keep existing trust levels<br />
      * otherwise -> keep existing trust levels<br />
      */
@@ -1328,9 +1328,9 @@ public class GameDataMerger {
   /**
    * Transfers all available information from the current message to the new one. This is generally
    * a localization problem: if newMsg.text == null then newMsg=curMsg (also in case the locale is
-   * different) if curMsg.locale == newGD.local then newMsg=curMsg => if correct locale available
-   * use it => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
-   * is available in locale => you can notice this half localized msg because msg.locale=gm.locale,
+   * different) if curMsg.locale == newGD.local then newMsg=curMsg =&gt; if correct locale available
+   * use it =&gt; otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
+   * is available in locale =&gt; you can notice this half localized msg because msg.locale=gm.locale,
    * also msg.rerender=true
    *
    * @param curGD fully loaded game data

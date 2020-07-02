@@ -385,7 +385,7 @@ public abstract class AbstractOrderParser implements OrderParser {
 
   /**
    * Adds the specified handler for the specified command (and removes any previous handler for the
-   * command). The caller must make sure that {@link #getOrderTranslation(String)}(prefix, locale)
+   * command). The caller must make sure that {@link #getOrderTranslation(StringID)}(prefix, locale)
    * returns the localized command for any order language.
    *
    * @param prefix A command ID
@@ -451,7 +451,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Returns a collections of all command registered by {@link #addCommand(String, OrderHandler)}.
+   * Returns a collections of all command registered by {@link #addCommand(StringID, OrderHandler)}
    */
   protected Set<StringID> getCommands() {
     return commandMap.keySet();
@@ -714,7 +714,7 @@ public abstract class AbstractOrderParser implements OrderParser {
      * string is followed by space, it calls {@link #complete()}. The completions are then garnished
      * with quotes as specified by the do... methods.
      *
-     * @return {@link #checkInner()} && {@link #checkNext()}
+     * @return <code>{@link #checkInner()} &amp;&amp; {@link #checkNext()}</code>
      * @see AbstractOrderParser#getString(OrderToken)
      * @throws IllegalArgumentException If <code>!isString(token)</code>
      */
@@ -1189,7 +1189,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Same as {@link #isString(OrderToken, boolean) isString(OrderToken, false)}
+   * Same as {@link #isString(OrderToken, boolean, boolean) isString(OrderToken, false, true)}
    */
   protected boolean isString(OrderToken token) {
     return isString(token, false, true);

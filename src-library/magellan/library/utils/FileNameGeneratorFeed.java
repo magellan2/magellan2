@@ -36,7 +36,7 @@ public class FileNameGeneratorFeed {
    * 
    * @param round int round (from GameData)
    * @param faction String (Name of faction)
-   * @param factionnr String (Number of faction, in base36 -> String)
+   * @param factionnr String (Number of faction, in base36 &rarr; String)
    */
   public FileNameGeneratorFeed(int round, String faction, String factionnr) {
     this(round, faction, factionnr, null);
@@ -47,7 +47,7 @@ public class FileNameGeneratorFeed {
    * 
    * @param round int round (from GameData)
    * @param faction String (Name of faction)
-   * @param factionnr String (Number of faction, in base36 -> String)
+   * @param factionnr String (Number of faction, in base36 &rarr; String)
    * @param group String (Name of the selected Group - )
    */
   public FileNameGeneratorFeed(int round, String faction, String factionnr, String group) {

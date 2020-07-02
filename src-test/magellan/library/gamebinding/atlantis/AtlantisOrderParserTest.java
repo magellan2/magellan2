@@ -434,7 +434,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTestUtil {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.PayReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.GiveReader}
    */
   @Test
   public void testPayReader() {
@@ -460,7 +460,7 @@ public class AtlantisOrderParserTest extends AbstractOrderParserTestUtil {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtlantisOrderParser.TransferReader}.
+   * Test method for {@link magellan.library.gamebinding.atlantis.AtlantisOrderParser.GiveReader}.
    */
   @Test
   public void testTransferReader() {

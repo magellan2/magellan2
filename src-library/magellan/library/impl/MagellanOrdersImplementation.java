@@ -234,7 +234,7 @@ public class MagellanOrdersImplementation implements Orders {
   }
 
   /**
-   * @see java.util.List#toArray(T[])
+   * @see java.util.List#toArray(Object[])
    */
   public <T> T[] toArray(T[] a) {
     return orders.toArray(a);

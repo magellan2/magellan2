@@ -129,14 +129,14 @@ public abstract class ConstructibleType extends UnitContainerType {
   }
 
   /**
-   * Sets the maximum size. A value < 0 means that there is no maximum.
+   * Sets the maximum size. A value &lt; 0 means that there is no maximum.
    */
   public void setMaxSize(int m) {
     maxSize = m;
   }
 
   /**
-   * Returns the maximum size. A value < 0 means that there is no maximum.
+   * Returns the maximum size. A value &lt; 0 means that there is no maximum.
    */
   public int getMaxSize() {
     return maxSize;

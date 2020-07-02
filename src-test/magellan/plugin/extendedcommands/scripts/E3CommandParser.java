@@ -393,7 +393,7 @@ class E3CommandParser {
   public static boolean ADD_NOT_THERE_INFO = false;
 
   /**
-   * If this is > 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
+   * If this is &gt; 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
    * default)
    */
   public static int DEFAULT_SUPPLY_PRIORITY = 0;
@@ -923,7 +923,6 @@ class E3CommandParser {
   /**
    * Adds an error line.
    *
-   * @param line The current order line
    * @param hint
    */
   protected void addNewError(String hint) {
@@ -945,7 +944,6 @@ class E3CommandParser {
   /**
    * Adds an error line to new orders.
    *
-   * @param line The current order line
    * @param hint
    */
   protected void addNewWarning(String hint) {
@@ -963,7 +961,6 @@ class E3CommandParser {
   /**
    * Adds some statistic information to the orders of the first unit.
    *
-   * @param region
    */
   protected void collectStats() {
     int buildingScripts = 0;
@@ -1951,7 +1948,6 @@ class E3CommandParser {
    * <code>// $cript BerufBotschafter [minimum money] [Talent|command]</code> -- if we have at least
    * minimum money (default 100), learn skill or execute command<br />
    *
-   * @return
    */
   protected Collection<String> commandEmbassador(String[] tokens) {
     Skill skill = null;
@@ -2898,7 +2894,6 @@ class E3CommandParser {
    * @param need
    * @param min
    * @param reserves
-   * @param reserves
    */
   protected void reserveNeed(Need need, boolean min, Reserves reserves) {
     int amount = getNeedAmount(need, min);
@@ -3049,7 +3044,7 @@ class E3CommandParser {
    *          unit has no armor at all, <em>no</em> warning is issued.
    * @param sShield The desired shield. If <code>null</code>, a suitable shield is reserved. If the
    *          unit has no shield at all, <em>no</em> warning is issued.
-   * @param warnint Warnings for missing equipment are only issued if this is <code>true</code>.
+   * @param warning Warnings for missing equipment are only issued if this is <code>true</code>.
    */
   protected void soldier(Unit u, String sWeaponSkill, String sWeapon, String sShield,
       String sArmor, String warning) {

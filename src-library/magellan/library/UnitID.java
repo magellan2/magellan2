@@ -172,7 +172,7 @@ public class UnitID extends EntityID {
    * @param ascending if <code>true</code>, the current id is increased, otherwise decreased
    * @return the next int, that is bigger than the given one (or smaller if ascending==false) but
    *         consists only of decimal digits (interpreted in the given base). The result is also
-   *         &gt; 0 and &lt;= {@link IDBaseConverter#getMaxId(int)}
+   *         &gt; 0 and &le; {@link IDBaseConverter#getMaxId(int)}
    */
   protected static int getNextDecimalID(int current, int base, boolean ascending) {
     int result = current;

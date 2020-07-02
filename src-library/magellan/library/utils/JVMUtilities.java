@@ -79,7 +79,7 @@ public class JVMUtilities {
   }
 
   /**
-   * This function calls Component.setFocusableWindowState (in java >= 1.4) to keep GUI consistent
+   * This function calls Component.setFocusableWindowState (in java &ge; 1.4) to keep GUI consistent
    * with java 1.3.x
    */
   public static final void setFocusableWindowState(Window aObj, boolean aFlag) {
@@ -120,7 +120,7 @@ public class JVMUtilities {
       | JVMUtilities.MAXIMIZED_HORIZ;
 
   /**
-   * This function calls Frame.getExtendedState (in java >= 1.4) to keep GUI consistent with java
+   * This function calls Frame.getExtendedState (in java &ge; 1.4) to keep GUI consistent with java
    * 1.3.x
    */
   public static final int getExtendedState(Frame aObj) {
@@ -148,7 +148,7 @@ public class JVMUtilities {
   }
 
   /**
-   * This function calls Frame.setExtendedState (in java >= 1.4) to keep GUI consistent with java
+   * This function calls Frame.setExtendedState (in java &ge; 1.4) to keep GUI consistent with java
    * 1.3.x
    */
   public static final boolean setExtendedState(Frame aObj, int state) {

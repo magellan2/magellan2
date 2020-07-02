@@ -196,7 +196,7 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns <code>true</code> iff this unit's orders contain
-   * {@link AbstractInspector#getSuppressUnitComment(ProblemType)}. Sub-classes should overwrite
+   * {@link AbstractInspector#getSuppressUnitComment(Problem)}. Sub-classes should overwrite
    * this to add more sophisticated ignoring of errors.
    *
    * @param u

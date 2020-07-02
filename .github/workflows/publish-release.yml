@@ -110,7 +110,7 @@ jobs:
         echo "::set-env name=TYPE::$TYPE"
 
     - name: Create release
-      uses: meeDamian/github-release@v2.0.1
+      uses: meeDamian/github-release@2.0
       with:
         draft: true
         prerelease: false

@@ -2354,7 +2354,7 @@ public class Regions {
   }
 
   /**
-   * Returns true if the line segment (x1,y1)->(x2,y2) "almost" intersects (x3,y3)->(x4,y4). This
+   * Returns true if the line segment (x1,y1)&rarr;(x2,y2) "almost" intersects (x3,y3)&rarr;(x4,y4). This
    * method may report line segments as intersecting that are just very close (closer than EPSILON).
    *
    * @param x1

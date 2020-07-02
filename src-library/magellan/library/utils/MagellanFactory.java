@@ -300,9 +300,9 @@ public abstract class MagellanFactory {
   /**
    * Transfers all available information from the current message to the new one. This is generally
    * a localization problem: if newMsg.text == null then newMsg=curMsg (also in case the locale is
-   * different) if curMsg.locale == newGD.local then newMsg=curMsg => if correct locale available
-   * use it => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
-   * is available in locale => you can notice this half localized msg because msg.locale=gm.locale,
+   * different) if curMsg.locale == newGD.local then newMsg=curMsg =&gt; if correct locale available
+   * use it =&gt; otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
+   * is available in locale =&gt; you can notice this half localized msg because msg.locale=gm.locale,
    * also msg.rerender=true
    *
    * @param curGD fully loaded game data
@@ -610,7 +610,7 @@ public abstract class MagellanFactory {
     }
 
     /**
-     * es all standard guarding units seems to have 1 -> tax is alleways triggered. Deactivating it.
+     * es all standard guarding units seems to have 1 &rarr; tax is alleways triggered. Deactivating it.
      * if((iFlags & Unit.GUARDFLAG_TAX) != 0) { strFlags += (", " +
      * Resources.get("unit.guard.tax")); }
      */

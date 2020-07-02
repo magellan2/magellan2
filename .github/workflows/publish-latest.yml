@@ -90,10 +90,6 @@ jobs:
       id: changelog
       run: |
         value=$(cat doc/NIGHTLY.txt | iconv -f ISO-8859-1; echo -e '\n\n'; echo -e '\n## Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
-        json_escape () {
-          printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
-        }
-        value=$(json_escape "$value")
         echo "::set-env name=BODY::$value"
 
     - name: Publish git tag "vX.Y-latest"
@@ -120,7 +116,7 @@ jobs:
         echo "::set-env name=TYPE::$TYPE"
 
     - name: Create release
-      uses: meeDamian/github-release@v2.0.1
+      uses: meeDamian/github-release@escaping
       with:
         prerelease: true
         allow_override: true
@@ -128,7 +124,8 @@ jobs:
         commitish: master
         tag: ${{ env.TAG }}
         name: Pre-Release  v${{ env.VERSION }}
-        body: ${{ env.BODY }}
+        body: |
+          ${{ env.BODY }}
         gzip: folders
         files: >
           LICENSE.txt

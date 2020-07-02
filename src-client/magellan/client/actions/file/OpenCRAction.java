@@ -24,7 +24,7 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
- * This action is called, if the user chooses the menu File > Open. This class loads a new CR into
+ * This action is called, if the user chooses the menu File &gt; Open. This class loads a new CR into
  * Magellan.
  * 
  * @author Andreas
@@ -42,7 +42,7 @@ public class OpenCRAction extends MenuAction {
   }
 
   /**
-   * Called when the file->open menu is selected in order to open a certain cr file. Displays a file
+   * Called when the file&rarr;open menu is selected in order to open a certain cr file. Displays a file
    * chooser and loads the selected cr file.
    */
   @Override

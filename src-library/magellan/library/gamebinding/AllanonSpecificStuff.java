@@ -56,7 +56,6 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   }
 
   /**
-   * @param factory
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   @Override

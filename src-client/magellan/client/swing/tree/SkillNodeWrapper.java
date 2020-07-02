@@ -84,7 +84,7 @@ public class SkillNodeWrapper extends DefaultNodeWrapper implements CellObject2,
   }
 
   /**
-   * Return "Skillname Level|- (+|-change) [points -> nextlevelpoints  {turns to learn }] ..."
+   * Return "Skillname Level|- (+|-change) [points &rarr; nextlevelpoints  {turns to learn }] ..."
    */
   @Override
   public String toString() {

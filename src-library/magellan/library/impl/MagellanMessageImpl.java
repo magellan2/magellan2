@@ -33,7 +33,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * A class for representing a message.
  * <p>
- * The new format of messages in Eressea CR versions >= 41 made it necessary to reconsider this
+ * The new format of messages in Eressea CR versions &ge; 41 made it necessary to reconsider this
  * class. Mainly, messages can now have an id and attributes.
  * </p>
  * <p>
@@ -375,7 +375,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   }
 
   /**
-   * This checks if Messages are of new style (CR version >= 41 with id). But the id is not an
+   * This checks if Messages are of new style (CR version &ge; 41 with id). But the id is not an
    * identifying characteristica.
    */
   private boolean isComplexEquals(MagellanMessageImpl o) {

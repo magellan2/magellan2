@@ -27,6 +27,10 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -34,9 +38,6 @@ import magellan.library.gamebinding.EresseaMapMetric;
 import magellan.library.gamebinding.MapMetric;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  * Tests for the direction class
@@ -69,7 +70,7 @@ public class DirectionTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDir()}.
+   * Test method for {@link magellan.library.utils.Direction#getDirCode()}.
    */
   @Test
   public void testGetDir() {
@@ -84,7 +85,7 @@ public class DirectionTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link magellan.library.utils.Direction#toDirection(magellan.library.CoordinateID, magellan.library.CoordinateID)}
+   * {@link magellan.library.gamebinding.MapMetric#getDirection(magellan.library.CoordinateID, magellan.library.CoordinateID)}
    * .
    */
   @Test
@@ -103,7 +104,7 @@ public class DirectionTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link magellan.library.utils.Direction#toDirection(magellan.library.Region, magellan.library.Region)}
+   * {@link magellan.library.gamebinding.MapMetric#getDirection(magellan.library.Region, magellan.library.Region)}
    * .
    */
   @Test
@@ -166,7 +167,7 @@ public class DirectionTest extends MagellanTestWithResources {
   // }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#toDirection(int)}.
+   * Test method for {@link magellan.library.gamebinding.MapMetric#toDirection(int)}.
    */
   @Test
   public void testToDirectionInt() {
@@ -196,7 +197,7 @@ public class DirectionTest extends MagellanTestWithResources {
 
   /**
    * Test method for
-   * {@link magellan.library.utils.Direction#toCoordinate(magellan.library.utils.Direction)}.
+   * {@link magellan.library.utils.Direction#toCoordinate()}.
    */
   @Test
   public void testToCoordinateDirection() {
@@ -246,8 +247,8 @@ public class DirectionTest extends MagellanTestWithResources {
   // }
 
   /**
-   * Test method for
-   * {@link magellan.library.utils.Direction#getDifference(magellan.library.utils.Direction)}.
+   * Test method for {@link magellan.library.gamebinding.MapMetric#getDifference(Direction, Direction)}
+   * 
    */
   @Test
   public void testGetDifferenceDirection() {
@@ -255,7 +256,7 @@ public class DirectionTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDifference(int)}.
+   * Test method for {@link magellan.library.gamebinding.MapMetric#getDifference(Direction, Direction)}.
    */
   @Test
   public void testGetDifferenceInt() {
@@ -299,7 +300,7 @@ public class DirectionTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link magellan.library.utils.Direction#getDirections()}.
+   * Test method for {@link magellan.library.gamebinding.MapMetric#getDirections()}.
    */
   @Test
   public void testGetDirections() {
@@ -312,13 +313,13 @@ public class DirectionTest extends MagellanTestWithResources {
   @Test
   public void testSpiralPattern() {
     final StringBuilder builder = new StringBuilder();
-    Utils.spiralPattern(CoordinateID.create(0, 0), 2, new Utils.SpiralVisitor() {
+    Utils.spiralPattern(CoordinateID.create(0, 0), 2, new Utils.SpiralVisitor<CoordinateID>() {
       public boolean visit(CoordinateID c, int distance) {
         builder.append(c.toString(",")).append(" ");
         return false;
       }
 
-      public Object getResult() {
+      public CoordinateID getResult() {
         return null;
       }
     });

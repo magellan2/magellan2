@@ -433,7 +433,8 @@ class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
   /**
    * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int,java.net.InetAddress,int)
    */
-  public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort) throws IOException, UnknownHostException {
+  public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort) throws IOException,
+      UnknownHostException {
 
     return getSSLContext().getSocketFactory().createSocket(host, port, clientHost, clientPort);
   }
@@ -441,20 +442,21 @@ class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
   /**
    * Attempts to get a new socket connection to the given host within the given time limit.
    * <p>
-   * To circumvent the limitations of older JREs that do not support connect timeout a controller thread is executed. The controller thread attempts to create a new socket within the given limit of
-   * time. If socket constructor does not return until the timeout expires, the controller terminates and throws an {@link ConnectTimeoutException}
+   * To circumvent the limitations of older JREs that do not support connect timeout a controller thread is executed.
+   * The controller thread attempts to create a new socket within the given limit of
+   * time. If socket constructor does not return until the timeout expires, the controller terminates and throws an
+   * {@link ConnectTimeoutException}
    * </p>
    *
    * @param host the host name/IP
    * @param port the port on the host
-   * @param clientHost the local host name/IP to bind the socket to
-   * @param clientPort the port on the local machine
    * @param params {@link HttpConnectionParams Http connection parameters}
    * @return Socket a new socket
    * @throws IOException if an I/O error occurs while creating the socket
    * @throws UnknownHostException if the IP address of the host cannot be determined
    */
-  public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort, final HttpConnectionParams params) throws IOException, UnknownHostException,
+  public Socket createSocket(final String host, final int port, final InetAddress localAddress, final int localPort,
+      final HttpConnectionParams params) throws IOException, UnknownHostException,
       ConnectTimeoutException {
     if (params == null)
       throw new IllegalArgumentException("Parameters may not be null");
@@ -482,7 +484,8 @@ class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
   /**
    * @see SecureProtocolSocketFactory#createSocket(java.net.Socket,java.lang.String,int,boolean)
    */
-  public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException, UnknownHostException {
+  public Socket createSocket(Socket socket, String host, int port, boolean autoClose) throws IOException,
+      UnknownHostException {
     return getSSLContext().getSocketFactory().createSocket(socket, host, port, autoClose);
   }
 
@@ -515,14 +518,14 @@ class EasyX509TrustManager implements X509TrustManager {
   }
 
   /**
-   * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String authType)
+   * @see javax.net.ssl.X509TrustManager#checkClientTrusted(X509Certificate[],String)
    */
   public void checkClientTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
     standardTrustManager.checkClientTrusted(certificates, authType);
   }
 
   /**
-   * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String authType)
+   * @see javax.net.ssl.X509TrustManager#checkServerTrusted(X509Certificate[],String)
    */
   public void checkServerTrusted(X509Certificate[] certificates, String authType) throws CertificateException {
     if ((certificates != null) && (certificates.length == 1)) {

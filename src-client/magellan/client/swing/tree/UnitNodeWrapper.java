@@ -353,7 +353,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     // Fiete Test: temps, die gefaellt werden..haben geburtstag
     // Fiete removed 20060911 (creator wishes to use the icon for the item only
     /**
-     * if (u.getPersons()==0 && u.getModifiedPersons()>0){ names.add(new GraphicsElement(null, null,
+     * if (u.getPersons()==0 && u.getModifiedPersons()&gt;0){ names.add(new GraphicsElement(null, null,
      * "geburtstag")); }
      */
 

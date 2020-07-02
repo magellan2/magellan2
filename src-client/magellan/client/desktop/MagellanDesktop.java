@@ -87,7 +87,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public static final String ECHECK_IDENTIFIER = "ECHECK";
   /** Name of the MESSAGES component */
   public static final String MESSAGES_IDENTIFIER = "MESSAGES";
-  /** Name of the NAME&DESCRIPTION component */
+  /** Name of the NAME&amp;DESCRIPTION component */
   public static final String NAMEDESCRIPTION_IDENTIFIER = "NAME&DESCRIPTION";
   /** Name of the NAME component */
   public static final String NAME_IDENTIFIER = "NAME";
@@ -103,7 +103,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public static final String OVERVIEW_IDENTIFIER = "OVERVIEW";
   /** Name of the HISTORY component */
   public static final String HISTORY_IDENTIFIER = "HISTORY";
-  /** Name of the OVERVIEW&HISTORY component */
+  /** Name of the OVERVIEW&amp;HISTORY component */
   public static final String OVERVIEWHISTORY_IDENTIFIER = "OVERVIEW&HISTORY";
   /** Name of the TASKS component */
   public static final String TASKS_IDENTIFIER = "TASKS";

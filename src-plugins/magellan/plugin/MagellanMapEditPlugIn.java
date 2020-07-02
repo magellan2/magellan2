@@ -274,7 +274,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
   }
 
   /**
-   * kein Eintrag in Plugins -> no return here
+   * kein Eintrag in Plugins &rarr; no return here
    * 
    * @see magellan.client.extern.MagellanPlugIn#getMenuItems()
    */
@@ -284,7 +284,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
   }
 
   /**
-   * kein Eintrag -> kein Name
+   * kein Eintrag &rarr; kein Name
    * 
    * @see magellan.client.extern.MagellanPlugIn#getName()
    */

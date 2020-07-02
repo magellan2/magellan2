@@ -26,7 +26,7 @@ public class E3AConstants extends EresseaConstants {
   /** Order constant ALLIANCE */
   public static final StringID OC_ALLIANCE = StringID.create("ALLIANCE");
   /**
-   * ALLIANZ AUSSTOSSEN <partei-nr> -- eine Partei aus der Allianz ausschließen (nur für den
+   * ALLIANZ AUSSTOSSEN &lt;partei-nr&gt; -- eine Partei aus der Allianz ausschließen (nur für den
    * Administrator).
    */
   public static final String OS_ALLIANCE_KICK = "ALLIANCE_KICK";
@@ -37,7 +37,7 @@ public class E3AConstants extends EresseaConstants {
   /** Order constant ALLIANCE_LEAVE */
   public static final StringID OC_ALLIANCE_LEAVE = StringID.create("ALLIANCE_LEAVE");
   /**
-   * ALLIANZ KOMMANDO <partei-nr> -- eine andere Partei zum Administrator machen (nur für den
+   * ALLIANZ KOMMANDO &lt;partei-nr&gt; -- eine andere Partei zum Administrator machen (nur für den
    * Administrator).
    */
   public static final String OS_ALLIANCE_COMMAND = "ALLIANCE_COMMAND";
@@ -48,14 +48,14 @@ public class E3AConstants extends EresseaConstants {
   /** Order constant ALLIANCE_NEW */
   public static final StringID OC_ALLIANCE_NEW = StringID.create("ALLIANCE_NEW");
   /**
-   * ALLIANZ EINLADEN <partei-nr> -- eine andere Partei in dieser Runde ins Bündnis einladen (nur
+   * ALLIANZ EINLADEN &lt;partei-nr&gt; -- eine andere Partei in dieser Runde ins Bündnis einladen (nur
    * Administratoren).
    */
   public static final String OS_ALLIANCE_INVITE = "ALLIANCE_INVITE";
   /** Order constant ALLIANCE_INVITE */
   public static final StringID OC_ALLIANCE_INVITE = StringID.create("ALLIANCE_INVITE");
   /**
-   * ALLIANZ BEITRETEN <allianz-nr> -- einer anderen Allianz beitreten (wenn sie eine Einladung in
+   * ALLIANZ BEITRETEN &lt;allianz-nr&gt; -- einer anderen Allianz beitreten (wenn sie eine Einladung in
    * der gleichen Runde erhält).
    */
   public static final String OS_ALLIANCE_JOIN = "ALLIANCE_JOIN";

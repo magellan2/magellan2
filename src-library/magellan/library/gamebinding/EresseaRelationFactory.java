@@ -238,7 +238,7 @@ public class EresseaRelationFactory implements RelationFactory {
    * <tt>from</tt>. Note: The parameter <code>from</code> is ignored by this implementation!
    *
    * @param u The unit
-   * @param from The line of the <code>unit</code>'s orders where to start. Must be > 0
+   * @param from The line of the <code>unit</code>'s orders where to start. Must be &gt; 0
    * @return null
    * @deprecated
    */

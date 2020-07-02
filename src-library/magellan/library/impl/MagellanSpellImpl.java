@@ -24,7 +24,7 @@ import magellan.library.utils.SpellSyntax;
 import magellan.library.utils.logging.Logger;
 
 /**
- * Container class for a spell based on its representation in a cr version >= 42.
+ * Container class for a spell based on its representation in a cr version &ge; 42.
  */
 public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private static final Logger log = Logger.getInstance(MagellanSpellImpl.class);
@@ -296,15 +296,15 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     case 'm':
       sb.append(Resources.get("spell.combat.short"));
       break;
-      // spell.normal = Normaler Zauber
+    // spell.normal = Normaler Zauber
     case 'r':
       sb.append(Resources.get("spell.normal.short"));
       break;
-      // spell.postcombat = Postkampfzauber
+    // spell.postcombat = Postkampfzauber
     case 's':
       sb.append(Resources.get("spell.postcombat.short"));
       break;
-      // spell.precombat = Präkampfzauber
+    // spell.precombat = Präkampfzauber
     case 'e':
       sb.append(Resources.get("spell.precombat.short"));
       break;
@@ -373,7 +373,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     // in mantis Pyanfar suggested:
     /**
      * Vorschlag: Der Magellan sollte das aus den im CR vermerktenAurakosten ablesen, "1 1;Aura"
-     * heisst 1 Aura pro stufe => also variabel "50 0;Aura" heisst 50 Aura Festkosten => also nicht
+     * heisst 1 Aura pro stufe =&gt; also variabel "50 0;Aura" heisst 50 Aura Festkosten =&gt; also nicht
      * variabel...
      */
     // and maybe we can use this kwowledge for open problems to we

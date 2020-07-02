@@ -364,8 +364,8 @@ public class PathCellRenderer extends ImageCellRenderer {
    * Scale all images this renderer uses to a certain scale factor.
    * 
    * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
-   *          images to their original size). Must be > 0.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   *          images to their original size). Must be &gt; 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   @Override
   public void scale(float scaleFactor) {

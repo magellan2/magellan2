@@ -37,7 +37,7 @@ public class RepaintAction extends MenuAction {
   }
 
   /**
-   * Called when the extras->repaint menu is selected.
+   * Called when the extras&rarr;repaint menu is selected.
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {

@@ -21,7 +21,7 @@ import magellan.library.IntegerID;
 import magellan.library.utils.Direction;
 
 /**
- * Container class for a region border based on its representation in a cr version > 45.
+ * Container class for a region border based on its representation in a cr version &gt; 45.
  */
 public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Border {
   /**

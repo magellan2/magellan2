@@ -546,7 +546,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Change scale of the minimap.
    *
    * @param scale A value greater than 1. Larger scale means larger regions.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   public void setMinimapScale(int scale) {
     if (scale <= 0)

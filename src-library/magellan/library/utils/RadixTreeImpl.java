@@ -609,7 +609,7 @@ public class RadixTreeImpl<T> implements MapRadixTree<T> {
 
   /**
    * Complete the a prefix to the point where ambiguity starts. Example: If a tree contain "blah1",
-   * "blah2" complete("b") -> return "blah"
+   * "blah2" complete("b") &rarr; return "blah"
    * 
    * @param prefix The prefix we want to complete
    * @return The unambiguous completion of the string.

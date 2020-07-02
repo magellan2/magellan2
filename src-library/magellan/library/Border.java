@@ -16,7 +16,7 @@ package magellan.library;
 import java.util.List;
 
 /**
- * Container class for a region border based on its representation in a cr version > 45.
+ * Container class for a region border based on its representation in a cr version &gt; 45.
  */
 public interface Border extends Identifiable {
   /** @deprecated should use EresseaConstants */

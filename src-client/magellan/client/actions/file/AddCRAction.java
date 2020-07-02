@@ -53,7 +53,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
   }
 
   /**
-   * Called when the file->add menu is selected in order to add a certain cr file to current game
+   * Called when the file&rarr;add menu is selected in order to add a certain cr file to current game
    * data. Displays a file chooser and adds the selected cr file to the current game data.
    */
   @Override

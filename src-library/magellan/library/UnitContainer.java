@@ -106,9 +106,6 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * 
    * @return The current owner of the UnitContainer or <code>null</code>.
    */
-  /**
-   * @return
-   */
   public Unit getOwner();
 
   /**

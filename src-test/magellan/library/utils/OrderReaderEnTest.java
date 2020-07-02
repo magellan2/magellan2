@@ -29,9 +29,6 @@ import magellan.library.utils.logging.Logger;
 
 public class OrderReaderEnTest extends OrderReaderTest {
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
   public static void setUpBeforeClass() {
     defaultLocale = EN_LOCALE;

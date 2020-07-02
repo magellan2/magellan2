@@ -159,8 +159,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * a flag which indicates if this region is ocean with a neighboring not-ocean region used for
-   * better pathfindung for ships -1 -> not computed yet 0 -> either no ozean or no neighboring land
-   * 1 -> ozean and neighboring land
+   * better pathfindung for ships -1 &rarr; not computed yet 0 &rarr; either no ozean or no neighboring land
+   * 1 &rarr; ozean and neighboring land
    */
   private int ozeanWithCoast = -1;
 
@@ -168,9 +168,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private String visibility = null;
 
   /**
-   * The Integer is an BitMap representing the info, if neighboriing regions are ozean or not
-   * BitMask 1: dir = 0 BitMask 2: dir = 1 BitMask 4: dir = 2 .... Bit = 1 -> there is land! Bit = 0
-   * -> there is ozean!
+   * The Integer is an BitMap representing the info. See magellan.library.Region#getCoastBitMap()
    */
   private Integer coastBitMask = null;
 
@@ -370,13 +368,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * 0..very poor - no info (->visibility=null)<br />
-   * 1..neighbour<br />
-   * 2..lighthouse<br />
-   * 3..travel<br />
-   * 4..qualified unit in region (->visibility=null)
-   *
-   * @param vis
+   * @see magellan.library.Region#setVisibility(magellan.library.Region.Visibility)
    */
   public void setVisibility(Visibility vis) {
     if (vis == Visibility.NULL || vis == Visibility.UNIT) {
@@ -1192,7 +1184,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Used for replacers..showing coordinates of region
+   * @see magellan.library.Region#getCoordX()
    */
   public int getCoordX() {
     CoordinateID myCID = getCoordinate();
@@ -1200,7 +1192,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Used for replacers..showing coordinates of region
+   * @see magellan.library.Region#getCoordY()
    */
   public int getCoordY() {
     CoordinateID myCID = getCoordinate();

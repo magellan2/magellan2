@@ -58,8 +58,8 @@ public interface MapCellRenderer {
   /**
    * Tells the renderer that it should re-adjust the scale factor it uses for rendering.
    * 
-   * @param scaleFactor The new factor. Must be > 0.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   * @param scaleFactor The new factor. Must be &gt; 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   public void scale(float scaleFactor);
 

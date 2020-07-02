@@ -31,7 +31,7 @@ public final class Umlaut {
 
   /**
    * Expand all umlauts in a string. Note that uppercase umlauts are converted to mixed case
-   * expansions (Ä -> Ae).
+   * expansions (Ä &rarr; Ae).
    */
   public static String convertUmlauts(String string) {
     return Umlaut.recode(string, Umlaut.UMLAUTS, Umlaut.EXPANSIONS);

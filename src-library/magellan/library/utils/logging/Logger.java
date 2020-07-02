@@ -214,15 +214,11 @@ public class Logger {
    */
   public void log(int aLevel, Object aObj, Throwable aThrowable) {
     if (Logger.verboseLevel >= aLevel) {
-      if (Logger.logListeners.isEmpty()) {
+      for (LogListener l : Logger.logListeners) {
+        l.log(aLevel, aObj, aThrowable);
+      }
+      if (Logger.activateDefaultLogListener) {
         Logger.DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
-      } else {
-        for (LogListener l : Logger.logListeners) {
-          l.log(aLevel, aObj, aThrowable);
-        }
-        if (Logger.activateDefaultLogListener) {
-          Logger.DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
-        }
       }
     }
   }

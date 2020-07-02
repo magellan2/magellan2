@@ -425,7 +425,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * Parse message blocks as can be found in cr versions >= 41. This function evaluates only two
+   * Parse message blocks as can be found in cr versions &ge; 41. This function evaluates only two
    * special message attributes. These are the ";type" and ";rendered" attributes, which are
    * directly accessible in the <tt>Message</tt> object as type and text. If there is no MessageType
    * object for this type of message, a stub MessageType object is created and added to world.
@@ -2033,7 +2033,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * Accesses unit.persons which must be > 0 and just adds new skills, existing skills are not
+   * Accesses unit.persons which must be &gt; 0 and just adds new skills, existing skills are not
    * deleted.
    *
    * @throws IOException if the scanner throws an IOException

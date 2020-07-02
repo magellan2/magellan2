@@ -1095,7 +1095,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addItem(data, unit2, "Silber", 15000);
     builder.addItem(data, unit, "Pferd", 2);
     builder.addSkill(unit, "Reiten", 1);
-    
+
     unit.clearOrders();
     unit2.clearOrders();
     // unit.addOrder("// $cript Benoetige FUSS Pferd");
@@ -2735,7 +2735,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
-   * Test method for {@link E3CommandParser#reserveNeed(Need, boolean)} .
+   * Test method for {@link E3CommandParser#reserveNeed(Need, boolean, Reserves)} .
    */
   @Test
   public final void testReserveNeed() {

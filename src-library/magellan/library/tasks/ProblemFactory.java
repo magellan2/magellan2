@@ -51,12 +51,12 @@ public class ProblemFactory {
    *          {@link Problem.Severity#ERROR}
    * @param region A region where the problem occurs
    * @param owner The unit responsible for this problem or <code>null</code>. If
-   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   *          <code>line &ge; 0 </code>, it refers to an order of this unit.
    * @param faction The faction this problem belongs to or <code>null</code>
    * @param object The object that this problem criticizes
    * @param inspector The Inspector that reported this problem
    * @param message The message text of the problem
-   * @param line The line number in the orders of owner where the problem occured or -1 if no such
+   * @param line The line number in the orders of owner where the problem occurred or -1 if no such
    *          order can be identified. The first line is line 1!
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Region region,
@@ -72,7 +72,7 @@ public class ProblemFactory {
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
-   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   *          <code>line &ge; 0 </code>, it refers to an order of this unit.
    * @param inspector
    * @param line The line number in the orders of owner where the problem occurred or -1 if no such
    *          order can be identified. The first line is line 1!
@@ -90,7 +90,7 @@ public class ProblemFactory {
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
-   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   *          <code>line &ge; 0 </code>, it refers to an order of this unit.
    * @param inspector
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, Unit unit,
@@ -114,7 +114,7 @@ public class ProblemFactory {
       UnitContainer container, Inspector inspector, int line) {
     return new SimpleProblem(severity, type, container.getOwner() == null ? null : container
         .getOwner().getRegion(), container.getOwner(), container.getOwner() == null ? null
-        : container.getOwner().getFaction(), container, inspector, type.getMessage(), line);
+            : container.getOwner().getFaction(), container, inspector, type.getMessage(), line);
   }
 
   /**
@@ -146,7 +146,7 @@ public class ProblemFactory {
    * @param severity
    * @param type
    * @param unit The unit responsible for this problem or <code>null</code>. If
-   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   *          <code>line &ge; 0 </code>, it refers to an order of this unit.
    * @param inspector
    * @param message
    * @param line The line number in the orders of owner where the problem occured or -1 if no such

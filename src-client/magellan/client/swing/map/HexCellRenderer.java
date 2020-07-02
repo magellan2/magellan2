@@ -105,8 +105,8 @@ public abstract class HexCellRenderer implements MapCellRenderer {
   /**
    * Scales the used cell geometry object.
    * 
-   * @param scaleFactor The new factor. Must be > 0.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   * @param scaleFactor The new factor. Must be &gt; 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   public void scale(float scaleFactor) {
     if (scaleFactor <= 0)

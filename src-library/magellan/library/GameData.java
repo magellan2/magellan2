@@ -994,7 +994,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * This method sets the current Temp ID with respect to the possible max value of the current
-   * base. The value also has to be >= -1
+   * base. The value also has to be &ge; -1
    * 
    * @param newTempID Temp ID
    */
@@ -1004,7 +1004,7 @@ public abstract class GameData implements Cloneable, Addeable {
 
   /**
    * This method interprets the string as a number in the {@link #base} and sets the current Temp ID
-   * with respect to the possible max value of the current base. The value also has to be >= -1
+   * with respect to the possible max value of the current base. The value also has to be &ge; -1
    * 
    * @param s Temp ID
    */

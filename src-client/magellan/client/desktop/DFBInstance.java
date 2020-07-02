@@ -366,7 +366,7 @@ public class DFBInstance implements DockingFrameworkBuilder {
   }
 
   /**
-   * Updates all Docking Layouts in the Desktop>Layout menu by removing them and recreate the list
+   * Updates all Docking Layouts in the Desktop--Layout menu by removing them and recreate the list
    * of available docking layouts.
    */
   public void updateLayoutMenu() {

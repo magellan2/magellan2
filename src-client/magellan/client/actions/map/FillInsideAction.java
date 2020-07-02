@@ -18,7 +18,7 @@ import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Direction;
 
 /**
- * Adds all regions "inside" the current selection. -> in each of the 6 directions a region in the
+ * Adds all regions "inside" the current selection. -&gt; in each of the 6 directions a region in the
  * current selection is found within 300 regions
  *
  * @author Fiete Fietz

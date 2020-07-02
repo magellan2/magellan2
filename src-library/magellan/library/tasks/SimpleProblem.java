@@ -36,7 +36,7 @@ public class SimpleProblem implements Problem {
    *          {@link Problem.Severity#ERROR}
    * @param region A region where the problem occurs
    * @param owner The unit responsible for this problem or <code>null</code>. If
-   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   *          <code>line &ge; 0 </code>, it refers to an order of this unit.
    * @param faction The faction this problem belongs to or <code>null</code>
    * @param object The object that this problem criticizes
    * @param inspector The Inspector that reported this problem

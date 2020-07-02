@@ -145,7 +145,6 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   /**
-   * @param factory
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
   public OrderChanger getOrderChanger() {

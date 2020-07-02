@@ -67,7 +67,9 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
   /**
    * Creates a new BasicRegionPanel object.
    *
-   * @param gameData
+   * @param d
+   * @param data
+   * @param p
    */
   public BasicRegionPanel(EventDispatcher d, GameData data, Properties p) {
     super(d, data, p);

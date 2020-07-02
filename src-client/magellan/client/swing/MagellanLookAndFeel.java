@@ -130,7 +130,8 @@ public class MagellanLookAndFeel {
    * implementations.
    */
   public static Map<String, ? extends LookAndFeel> getLookAndFeels() {
-    if (MagellanLookAndFeel.lafCache == null || 1 + 1 == 2) {
+    // if (MagellanLookAndFeel.lafCache == null )
+    {
       Map<String, LookAndFeel> lookAndFeels =
           new Hashtable<String, LookAndFeel>();
 
@@ -205,12 +206,12 @@ public class MagellanLookAndFeel {
         constructor = c.getConstructor();
 
         try {
-        if (!constructor.trySetAccessible())
-         return;
+          if (!constructor.trySetAccessible())
+            return;
         } catch (NoSuchMethodError e) {
           // must be pre java 9, this is fine
         }
-        
+
         Object lafO = constructor.newInstance();
 
         if (lafO instanceof LookAndFeel) {

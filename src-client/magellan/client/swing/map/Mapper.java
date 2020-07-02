@@ -1288,8 +1288,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Sets the scale or zoom factor. This value is a real factor, i.e. 1.0 means that the components
    * are painted according to the values supplied by the underlying CellGeometry object.
    *
-   * @param scaleFactor The new factor. Must be > 0.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   * @param scaleFactor The new factor. Must be &gt; 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   public void setScaleFactor(float scaleFactor) {
     if (scaleFactor <= 0 || Float.isInfinite(scaleFactor))

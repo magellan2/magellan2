@@ -386,9 +386,11 @@ public class EresseaOrderChanger implements OrderChanger {
   }
 
   /**
+   * Returns if this is an order that is generally a long order, but short in this special case.
+   * 
    * @param rOrder
    * @param orderLocale
-   * @return
+   * 
    * @deprecated should use {@link #isLongOrder(Order)}
    */
   @Deprecated

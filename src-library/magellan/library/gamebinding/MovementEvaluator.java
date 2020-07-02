@@ -99,7 +99,7 @@ public interface MovementEvaluator {
    *          two successive elements of the path are the same region, this is interpreted as a
    *          PAUSE, which always ends a turn. See {@link Unit#getModifiedMovement()}.
    * @return The number of regions, the unit may move on this path. The result is always
-   *         <code><= path.size()-1</code>.
+   *         <code>&le; path.size()-1</code>.
    * @throws IllegalArgumentException if the unit is not in the first path region or the path is not
    *           continuous
    */
@@ -116,7 +116,7 @@ public interface MovementEvaluator {
    *          If two successive elements of the path are the same region, this is interpreted as a
    *          PAUSE, which always ends a turn. See {@link Unit#getModifiedMovement()}.
    * @return The number of regions, the unit may move on this path. The result is always
-   *         <code><= path.size()-1</code>.
+   *         <code>&le; path.size()-1</code>.
    * @throws IllegalArgumentException if the unit is not in the first path region or the path is not
    *           continuous
    */

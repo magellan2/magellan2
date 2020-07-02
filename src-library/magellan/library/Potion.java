@@ -16,7 +16,7 @@ package magellan.library;
 import java.util.Collection;
 
 /**
- * Container class for a potion based on its representation in a cr version >= 42.
+ * Container class for a potion based on its representation in a cr version &ge; 42.
  */
 public interface Potion extends Described {
   /**

@@ -31,10 +31,10 @@ import magellan.library.utils.Sorted;
  * </p>
  * <p>
  * Note 2: If the subcomparator is not consistent with this comparator, this can lead to wrong
- * results! For example, if this comparator returns compare(o2, o3) < 0 and is undefined on other
- * both (o1, o3) and (o1, o2), and the subcomparator returns compare(o1, o2) < 0 and compare(o3, o1)
- * < 0, then it is impossible to predict if a sorting algorithm might return the ordering (o1, o2,
- * o3) or (o3, o1, o2), or (o2, o3, o1).
+ * results! For example, if this comparator returns <code>compare(o2, o3) < 0</code> and is undefined on other
+ * both (o1, o3) and (o1, o2), and the subcomparator returns <code>compare(o1, o2) < 0</code> and
+ * <code>compare(o3, o1) < 0</code>, then it is impossible to predict if a sorting algorithm might return the ordering
+ * (o1, o2, o3) or (o3, o1, o2), or (o2, o3, o1).
  * </p>
  */
 public class SortIndexComparator<T extends Sorted> implements Comparator<T> {

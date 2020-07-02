@@ -110,7 +110,6 @@ public abstract class AbstractReportParser implements ReportParser {
    * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
    *
    * @param value
-   * @return
    */
   protected String originTranslateRegions(String value) {
     final StringBuffer result = new StringBuffer();
@@ -143,7 +142,7 @@ public abstract class AbstractReportParser implements ReportParser {
    * and replaces them. This is not completely fool-proof!
    *
    * @param value Usually a message text which might contain coordinates
-   * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
+   * @see magellan.library.utils.transformation.ReportTransformer#transform(CoordinateID)
    */
   protected String originTranslate(String value) {
     final StringBuffer result = new StringBuffer();

@@ -636,7 +636,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Inits base UI things: # frame icon # window event things # fonts # repaint shortcut # L&F
+   * Inits base UI things: # frame icon # window event things # fonts # repaint shortcut # L&amp;F
    */
   protected void initUI() {
     Image iconImage = Client.getApplicationIcon();
@@ -1183,7 +1183,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * START & END Code
+   * START &amp; END Code
    */
   public static void main(String args[]) {
     try {

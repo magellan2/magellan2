@@ -41,39 +41,13 @@ public interface Region extends UnitContainer, Selectable {
   static final String VIS_STR_BATTLE = "battle";
 
   /**
-   * 0..very poor - no info (->visibility=null)<br />
-   * 1..neighbour<br />
-   * 2..lighthouse<br />
-   * 3..travel<br />
-   * 4..qualified unit in region (->visibility=null)
+   * 0: very poor - no info (&rarr;visibility=null)<br />
+   * 1: neighbour<br />
+   * 2: lighthouse<br />
+   * 3: travel<br />
+   * 4: qualified unit in region (&rarr;visibility=null)
    */
   public static class Visibility {
-
-    // as enum:
-    // /**
-    // * ..very poor - no info (->visibility=null)<br />
-    // */
-    // NULL,
-    // // /**
-    // // * ..for toroidal worlds
-    // // */
-    // // WRAP,
-    // /**
-    // * ..neighbour
-    // */
-    // NEIGHBOR,
-    // /**
-    // * ..lighthouse
-    // */
-    // LIGHTHOUSE,
-    // /**
-    // * ..travel
-    // */
-    // TRAVEL,
-    // /**
-    // * ..qualified unit in region (->visibility=null)
-    // */
-    // UNIT;
 
     // as class:
     private int vis;
@@ -85,35 +59,35 @@ public interface Region extends UnitContainer, Selectable {
     }
 
     /**
-     * 0..very poor - no info (->visibility=null)<br />
+     * 0: very poor - no info (&rarr;visibility=null)<br />
      */
     public static final Visibility NULL = new Visibility(0, "NULL");
     /**
-     * 1..neighbour
+     * 1: neighbour
      */
     public static final Visibility NEIGHBOR = new Visibility(1, "NEIGHBOR");
     /**
-     * 2..lighthouse
+     * 2: lighthouse
      */
     public static final Visibility LIGHTHOUSE = new Visibility(2, "LIGHTHOUSE");
     /**
-     * 3..travel
+     * 3: travel
      */
     public static final Visibility TRAVEL = new Visibility(3, "TRAVEL");
     /**
-     * 4..this also exists, but I'm not sure what it does
+     * 4: this also exists, but I'm not sure what it does
      */
     public static final Visibility FAR = new Visibility(4, "FAR");
     /**
-     * 5..qualified unit in region (->visibility=null)
+     * 5: qualified unit in region (&rarr;visibility=null)
      */
     public static final Visibility UNIT = new Visibility(5, "UNIT");
     /**
-     * 6..this also exists, but I'm not sure what it does
+     * 6: this also exists, but I'm not sure what it does
      */
     public static final Visibility BATTLE = new Visibility(6, "BATTLE");
     /**
-     * 7..for toroidal worlds
+     * 7: for toroidal worlds
      */
     public static final Visibility WRAP = new Visibility(7, "WRAP");
 
@@ -225,21 +199,22 @@ public interface Region extends UnitContainer, Selectable {
   public void setVisibilityString(String vis);
 
   /**
-   * Represents the quality of the visibility as an int value. 0..very poor - no info
-   * (->visibility=null)<br />
-   * 1..neighbour <br />
-   * 2..lighthouse <br />
-   * 3..travel <br />
-   * 4..qualified unit in region (->visibility=null)
+   * Represents the quality of the visibility as an int value.<br />
+   * 0: very poor - no info
+   * (&rarr;visibility=null)<br />
+   * 1: neighbour <br />
+   * 2: lighthouse <br />
+   * 3: travel <br />
+   * 4: qualified unit in region (&rarr;visibility=null)
    */
   public Visibility getVisibility();
 
   /**
-   * 0..very poor - no info (->visibility=null) <br />
-   * 1..neighbour <br />
-   * 2..lighthouse <br />
-   * 3..travel <br />
-   * 4..qualified unit in region (->visibility=null)
+   * 0: very poor - no info (&rarr;visibility=null) <br />
+   * 1: neighbour <br />
+   * 2: lighthouse <br />
+   * 3: travel <br />
+   * 4: qualified unit in region (&rarr;visibility=null)
    * 
    * @param v
    */
@@ -534,12 +509,12 @@ public interface Region extends UnitContainer, Selectable {
   public int getOceanWithCoast();
 
   /**
-   * Used for replacers..showing coordinates of region
+   * x-part of the coordinates
    */
   public int getCoordX();
 
   /**
-   * Used for replacers..showing coordinates of region
+   * y-part of the coordinates
    */
   public int getCoordY();
 
@@ -1028,29 +1003,25 @@ public interface Region extends UnitContainer, Selectable {
   public void setActive(boolean isActive);
 
   /**
-   * The returned integer is an BitMap representing the info, if neighboring regions are ozean or
-   * not-<br />
+   * The returned integer is an BitMap representing the info, if neighboring regions are ocean or
+   * not:<br />
    * BitMask 1: dir = 0<br />
    * BitMask 2: dir = 1<br />
-   * BitMask 4: dir = 2 ....<br />
+   * BitMask 4: dir = 2<br />
+   * ...<br />
+   * BitMask 32: dir = 5 <br />
    * BitMask 64: random bit 1 (for variable effects like ice)<br />
    * BitMask 128: random bit 2<br />
-   * Bit = 1 -> there is land!<br />
-   * Bit = 0 -> there is ozean!
+   * Bit = 1 &rarr; there is land!<br />
+   * Bit = 0 &rarr; there is ocean!
    * 
    * @return an Integer as BitMap
    */
   public Integer getCoastBitMap();
 
   /**
-   * The given integer is an BitMap representing the info, if neighboring regions are ozean or not.<br />
-   * BitMask 1: dir = 0<br />
-   * BitMask 2: dir = 1<br />
-   * BitMask 4: dir = 2 ....<br />
-   * BitMask 64: random bit 1 (for variable effects like ice)<br />
-   * BitMask 128: random bit 2<br />
-   * Bit = 1 -> there is land!<br />
-   * Bit = 0 -> there is ozean!
+   * The given integer is an BitMap representing the info, if neighboring regions are ocean or not. See
+   * {@link #getCoastBitMap()}.
    * 
    * @param bitMap an Integer as BitMap
    */
@@ -1064,7 +1035,7 @@ public interface Region extends UnitContainer, Selectable {
   /**
    * Returns the unique regionID generated by the eressea-server. Note that this is no longer
    * necessarily unique, due to wrap around effects! Real region IDs (from the server) should be
-   * >=0. Invented region IDs can be <0.
+   * &ge;0. Invented region IDs can be &lt;0.
    */
   public long getUID();
 

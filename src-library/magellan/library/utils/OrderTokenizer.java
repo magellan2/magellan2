@@ -41,7 +41,7 @@ public class OrderTokenizer {
 
   enum TYPE {
     NONE, EXCLAM, AT, MEAT
-  };
+  }
 
   private TYPE prefix;
 

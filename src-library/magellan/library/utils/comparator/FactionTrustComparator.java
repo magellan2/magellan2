@@ -76,7 +76,7 @@ public class FactionTrustComparator implements Comparator<Faction> {
    * @param o2
    * @return the difference of <tt>o2</tt>'s and <tt>o1</tt>'s trust level values. If this is 0 and
    *         a sub-comparator is specified, the result of that sub-comparator's comparison is
-   *         returned. Unknown values are evaluated as > 0.
+   *         returned. Unknown values are evaluated as &gt; 0.
    */
   public int compare(Faction o1, Faction o2) {
     // owner faction should always be first

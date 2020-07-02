@@ -101,25 +101,25 @@ public class BoxTransformer implements ReportTransformer {
 
     /**
      * Returns the maximum x value for this box. Note that this does not mean that all coordinate in
-     * the box have x<getMaxx.
+     * the box have x &lt; getMaxx.
      */
     public abstract int getMaxx();
 
     /**
      * Returns the minimum x value for this box. Note that this does not mean that all coordinate in
-     * the box have x>getMinx.
+     * the box have x&gt;getMinx.
      */
     public abstract int getMinx();
 
     /**
      * Returns the minimum y value for this box. Note that this does not mean that all coordinate in
-     * the box have y>getMiny.
+     * the box have y&gt;getMiny.
      */
     public abstract int getMiny();
 
     /**
      * Returns the maximum y value for this box. Note that this does not mean that all coordinate in
-     * the box have y<getMaxy.
+     * the box have y&lt;getMaxy.
      */
     public abstract int getMaxy();
 

@@ -37,7 +37,7 @@ public final class StringFactory {
     return StringFactory.sf;
   }
 
-  private Map<String, String> strings = new HashMap<String, String>();
+  private Map<String, String> strings = new HashMap<String, String>(); // new WeakHashMap<String, String>();
   private int oldSize = 10;
 
   /**

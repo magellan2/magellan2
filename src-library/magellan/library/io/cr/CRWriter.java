@@ -173,7 +173,7 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Remove quotes from text and replace blanks whithin the quoted section with ~ characters. ("a
-   * \"b c\"" -> "a b~c")
+   * \"b c\"" &rarr; "a b~c")
    *
    * @param text the string to be modified.
    * @return the resulting string.
@@ -2424,8 +2424,8 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Change the quote escape behaviour of this CRWriter. Tilde escapes look like: 'a "b c"' -> 'a
-   * b~c', whereas a backslash escape works like this: 'a "b c"' -> 'a \"b c\"'
+   * Change the quote escape behaviour of this CRWriter. Tilde escapes look like: 'a "b c"' &rarr; 'a
+   * b~c', whereas a backslash escape works like this: 'a "b c"' &rarr; 'a \"b c\"'
    *
    * @param bool if <tt>true</tt>, escape quoted parts of any string written to the underlying
    *          stream with tildes. If <tt>false</tt>, use backslash character to escape the quotation

@@ -20,7 +20,7 @@ import magellan.library.rules.ItemType;
 import magellan.library.utils.SpellSyntax;
 
 /**
- * Container class for a spell based on its representation in a cr version >= 42.
+ * Container class for a spell based on its representation in a cr version &ge; 42.
  */
 public interface Spell extends Described, Localized, Selectable {
 

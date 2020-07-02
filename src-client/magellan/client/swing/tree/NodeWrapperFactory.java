@@ -537,10 +537,11 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   /**
+   * Create a node for an item category with explicit name.
+   * 
    * @param category
    * @param amount
    * @param catName
-   * @return
    */
   public ItemCategoryNodeWrapper createItemNodeWrapper(ItemCategory category, int amount,
       String catName) {
@@ -589,7 +590,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * @param icons may be <code>null</code>
    */
   public SimpleNodeWrapper
-  createSimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
+      createSimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icons);
     init(snw, NodeWrapperFactory.SIMPLE);
 

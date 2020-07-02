@@ -192,8 +192,8 @@ public class CellGeometry {
   /**
    * Set a scale factor to be used for all calculations of cell positions and sizes.
    * 
-   * @param scaleFactor The new factor. Must be > 0.
-   * @throws IllegalArgumentException if scaleFactor <= 0.
+   * @param scaleFactor The new factor. Must be &gt; 0.
+   * @throws IllegalArgumentException if scaleFactor &le; 0.
    */
   public void setScaleFactor(float scaleFactor) {
     validateScaleFactor(scaleFactor, true);

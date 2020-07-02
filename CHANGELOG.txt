@@ -1,5 +1,6 @@
 2020-07-02/ Build 719 - stm (stm2@users.sourceforge.net)
     * improved testing and output of ExtendedCommands
+    * added api doc
 
 2020-05-30/ Build 716 - stm (stm2@users.sourceforge.net)
     * fixed bug #410 (RoutePlanner)

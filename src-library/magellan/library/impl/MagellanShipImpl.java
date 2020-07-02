@@ -54,7 +54,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   // -1 = every direction
 
   /**
-   * The size of this ship. While the ship is being built, size &lt;= getType().getMaxSize() is
+   * The size of this ship. While the ship is being built, size &le; getType().getMaxSize() is
    * true. After the ship is finished, size equals getType().getMaxSize().
    */
   protected int size = -1;
@@ -71,7 +71,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   protected int deprecatedLoad = -1;
 
   /**
-   * The maximum payload of this ship in GE. 0 &lt;= capacity &lt;= getType().getCapacity() if the
+   * The maximum payload of this ship in GE. 0 &le; capacity &le; getType().getCapacity() if the
    * ship is damaged.
    *
    * @deprecated replaced by capacity
@@ -83,12 +83,12 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   protected int cargo = -1;
 
   /**
-   * The maximum payload of this ship in silver. 0 &lt;= capacity &lt;= getType().getCapacity() if
+   * The maximum payload of this ship in silver. 0 &le; capacity &le; getType().getCapacity() if
    * the ship is damaged.
    */
   protected int capacity = -1;
 
-  /** The maximum capacity for persons &lt;=getType().getMaxPersons() */
+  /** The maximum capacity for persons &le;getType().getMaxPersons() */
   protected int maxPersons = -1;
 
   /** number of ships in a fleet (Eressea since CR - Version 67 (ca 12/2019) */

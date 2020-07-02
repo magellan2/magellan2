@@ -15,6 +15,7 @@ package magellan.library.utils;
 
 import java.util.Arrays;
 
+import magellan.library.Rules;
 import magellan.library.rules.OrderType;
 import magellan.library.utils.logging.Logger;
 
@@ -257,7 +258,8 @@ public class OrderToken {
    * used by the eressea game server.
    *
    * @deprecated use proper unit locale
-   * @see Rules#getOrder(String), {@link OrderType#getName()}
+   * @see Rules#getOrder(String)
+   * @see OrderType#getName()
    */
   @Deprecated
   public boolean equalsLocalToken(String strKeyword) {

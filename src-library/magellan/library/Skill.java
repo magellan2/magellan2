@@ -258,7 +258,7 @@ public class Skill {
   }
 
   /**
-   * Sets the level of the skill to <code>l</code>. A level < 0 indicates a skill that was present in
+   * Sets the level of the skill to <code>l</code>. A level &lt; 0 indicates a skill that was present in
    * the last round but is lost now.
    *
    * @param l

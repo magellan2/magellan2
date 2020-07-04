@@ -90,6 +90,9 @@ jobs:
       id: changelog
       run: |
         value=$(cat doc/NIGHTLY.txt | iconv -f ISO-8859-1; echo -e '\n\n'; echo -e '\n## Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n' )
+        value="${value//'%'/'%25'}"
+        value="${value//$'\n'/'%0A'}"
+        value="${value//$'\r'/'%0D'}"
         echo "::set-env name=BODY::$value"
 
     - name: Publish git tag "vX.Y-latest"
@@ -116,7 +119,7 @@ jobs:
         echo "::set-env name=TYPE::$TYPE"
 
     - name: Create release
-      uses: meeDamian/github-release@escaping
+      uses: meeDamian/github-release@2.0
       with:
         prerelease: true
         allow_override: true

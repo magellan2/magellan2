@@ -89,10 +89,9 @@ jobs:
       id: changelog
       run: |
         value=$(cat RELEASENOTES.txt | iconv -f ISO-8859-1)
-        json_escape () {
-          printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))[1:-1]'
-        }
-        value=$(json_escape "$value")
+        value="${value//'%'/'%25'}"
+        value="${value//$'\n'/'%0A'}"
+        value="${value//$'\r'/'%0D'}"
         echo "::set-env name=BODY::$value"
 
     - name: prepare meta

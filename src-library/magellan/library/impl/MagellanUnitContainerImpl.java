@@ -156,7 +156,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   /**
    * Returns all the items this container possesses.
    * 
-   * @return a collection of Item objects.
+   * @see magellan.library.UnitContainer#getItems()
    */
   public Collection<Item> getItems() {
     if (items != null && items.values() != null)

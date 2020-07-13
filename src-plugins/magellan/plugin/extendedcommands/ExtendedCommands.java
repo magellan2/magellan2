@@ -188,7 +188,7 @@ public class ExtendedCommands {
           event.exception().printStackTrace(wwriter);
           sb.append(writer.toString());
           wwriter.close();
-        } else {
+        } else { // UnresolvedReferenceException ...
           sb.append(event.exception().getClass().getName()).append("\n");
           sb.append(event.exception());
         }

@@ -1,0 +1,13 @@
+import java.text.DateFormat;
+import java.util.*;
+
+import magellan.library.*;
+import magellan.library.rules.*;
+
+void ABC() {
+
+   A a;
+   
+}
+
+ABC();

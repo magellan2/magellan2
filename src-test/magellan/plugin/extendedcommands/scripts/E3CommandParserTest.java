@@ -613,6 +613,22 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB f 50 Myrrhe", unit, 3);
   }
 
+  @Test
+  public final void testCommandBenoetigeNumber() {
+    // Faction faction2 = builder.addFaction(data, "otto", "Others", "Menschen", 0);
+    // Unit unit2 = builder.addUnit(data, "t", "Transporter", unit.getFaction(), unit.getRegion());
+    // Unit unit3 = builder.addUnit(data, "f", "Transporter", faction2, unit.getRegion());
+
+    // builder.addItem(data, unit, "Myrrhe", 60);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Versorge 99");
+    unit.addOrder("// $cript BenoetigeFremd ffffffff 50 Myrrhe");
+
+    parser.execute(unit.getFaction());
+    assertError("Fehler", unit, 3);
+  }
+
   /**
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
@@ -2293,7 +2309,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.addOrder("// $cript Handel 100 ALLES Talent");
     parser.execute(unit.getFaction());
     assertOrder("// $cript Handel 100 ALLES Talent", unit, 1);
-    assertError("Kein Handel möglich", unit, 2);
+    assertError("kein Handel möglich", unit, 2);
     assertEquals(3, unit.getOrders2().size());
 
     // test missing skill and silver
@@ -3041,4 +3057,12 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   }
 
+  @Test
+  public final void testCommandUeberwacheNumber() {
+    builder.addFaction(data, "otto", "Others", "Menschen", 0);
+    unit.addOrder("// $cript Erlaube otto 1 vwxyzabc");
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertError("Ungültige Einheitennummer", unit, 3);
+  }
 }

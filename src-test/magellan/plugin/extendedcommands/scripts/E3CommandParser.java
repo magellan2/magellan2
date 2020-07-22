@@ -1051,117 +1051,121 @@ class E3CommandParser {
       queue.add(o.getText());
       while (!queue.isEmpty()) {
         currentOrder = queue.poll();
-        String[] tokens = detectScriptCommand(currentOrder);
-        if (tokens == null) {
-          // add order if
-          if (shallClear(currentOrder)) {
-            addNewOrder(COMMENTOrder + " " + currentOrder, true);
-          } else {
-            addNewOrder(currentOrder, false);
-          }
-          currentOrder = null;
-        } else {
-          // as of Java 7 the first character of an integer may be a '+' sign
-          boolean repeat = true;
-          while (tokens != null && !tokens[0].startsWith("+") && repeat) {
-            try {
-              Integer.parseInt(tokens[0]);
-              String[] nextOrders = commandRepeat(tokens);
-              if (nextOrders == null) {
-                currentOrder = null;
-                tokens = null;
-              } else {
-                currentOrder = nextOrders.length > 0 ? nextOrders[0] : "";
-                tokens = detectScriptCommand(currentOrder);
-                if (tokens == null) {
-                  addNewOrder(currentOrder, true);
-                  currentOrder = null;
-                }
-                for (int i = 1; i < nextOrders.length; ++i) {
-                  queue.add(nextOrders[i]);
-                }
-              }
-            } catch (NumberFormatException e) {
-              repeat = false;
-              // not a repeating order
-            }
-          }
-          if (tokens != null) {
-            // System.out.println(o);
-            String command = tokens[0];
-            if (command.startsWith("+")) {
-              commandWarning(tokens);
-              setChangedOrders(true);
-            } else if (command.equals("KrautKontrolle")) {
-              commandControl(tokens);
-              setChangedOrders(true);
-            } else if (command.equals("auto")) {
-              commandAuto(tokens);
+        try {
+          String[] tokens = detectScriptCommand(currentOrder);
+          if (tokens == null) {
+            // add order if
+            if (shallClear(currentOrder)) {
+              addNewOrder(COMMENTOrder + " " + currentOrder, true);
             } else {
-              // order remains
               addNewOrder(currentOrder, false);
-
-              if (command.equals("Loeschen")) {
-                commandClear(tokens);
-              } else if (command.equals("GibWenn")) {
-                commandGiveIf(tokens);
-              } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
-                commandNeed(tokens);
-              } else if (command.equals("Versorge")) {
-                commandSupply(tokens);
-              } else if (command.equals("Kapazitaet")) {
-                commandCapacity(tokens);
-              } else if (command.equals("BerufDepotVerwalter")) {
-                commandDepot(tokens);
-              } else if (command.equals("Soldat")) {
-                commandSoldier(tokens);
-              } else if (command.equals("Lerne")) {
-                commandLearn(tokens);
-              } else if (command.equals("BerufBotschafter")) {
-                Collection<String> commands = commandEmbassador(tokens);
-                Collections.reverse((List<?>) commands);
-                for (String newOrder : commands) {
-                  queue.addFirst(newOrder);
-                }
-                setChangedOrders(true);
-              } else if (command.equals("Ueberwache")) {
-                commandMonitor(tokens);
-              } else if (command.equals("Erlaube") || command.equals("Verlange")) {
-                commandAllow(tokens);
-              } else if (command.equals("Ernaehre")) {
-                commandEarn(tokens);
-              } else if (command.equals("Handel")) {
-                commandTrade(tokens);
-              } else if (command.equals("Steuermann")) {
-                if (tokens.length < 3) {
-                  addNewError("zu wenige Argumente");
-                } else {
-                  commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
-                      String.valueOf(DEFAULT_PRIORITY + 10) });
-                  setConfirm(currentUnit, false);
-                }
-              } else if (command.equals("Mannschaft")) {
-                if (tokens.length < 3) {
-                  addNewError("zu wenige Argumente");
-                } else {
-                  commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
-                  setConfirm(currentUnit, true);
-                }
-              } else if (command.equals("Quartiermeister")) {
-                commandQuartermaster(tokens);
-              } else if (command.equals("Sammler")) {
-                commandCollector(tokens);
-              } else if (command.equals("RekrutiereMax")) {
-                commandRecruit(tokens);
-              } else if (command.equals("Kommentar")) {
-                commandComment(tokens);
-              } else {
-                addNewError("unbekannter Befehl: " + command);
-              }
             }
             currentOrder = null;
+          } else {
+            // as of Java 7 the first character of an integer may be a '+' sign
+            boolean repeat = true;
+            while (tokens != null && !tokens[0].startsWith("+") && repeat) {
+              try {
+                Integer.parseInt(tokens[0]);
+                String[] nextOrders = commandRepeat(tokens);
+                if (nextOrders == null) {
+                  currentOrder = null;
+                  tokens = null;
+                } else {
+                  currentOrder = nextOrders.length > 0 ? nextOrders[0] : "";
+                  tokens = detectScriptCommand(currentOrder);
+                  if (tokens == null) {
+                    addNewOrder(currentOrder, true);
+                    currentOrder = null;
+                  }
+                  for (int i = 1; i < nextOrders.length; ++i) {
+                    queue.add(nextOrders[i]);
+                  }
+                }
+              } catch (NumberFormatException e) {
+                repeat = false;
+                // not a repeating order
+              }
+            }
+            if (tokens != null) {
+              // System.out.println(o);
+              String command = tokens[0];
+              if (command.startsWith("+")) {
+                commandWarning(tokens);
+                setChangedOrders(true);
+              } else if (command.equals("KrautKontrolle")) {
+                commandControl(tokens);
+                setChangedOrders(true);
+              } else if (command.equals("auto")) {
+                commandAuto(tokens);
+              } else {
+                // order remains
+                addNewOrder(currentOrder, false);
 
+                if (command.equals("Loeschen")) {
+                  commandClear(tokens);
+                } else if (command.equals("GibWenn")) {
+                  commandGiveIf(tokens);
+                } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
+                  commandNeed(tokens);
+                } else if (command.equals("Versorge")) {
+                  commandSupply(tokens);
+                } else if (command.equals("Kapazitaet")) {
+                  commandCapacity(tokens);
+                } else if (command.equals("BerufDepotVerwalter")) {
+                  commandDepot(tokens);
+                } else if (command.equals("Soldat")) {
+                  commandSoldier(tokens);
+                } else if (command.equals("Lerne")) {
+                  commandLearn(tokens);
+                } else if (command.equals("BerufBotschafter")) {
+                  Collection<String> commands = commandEmbassador(tokens);
+                  Collections.reverse((List<?>) commands);
+                  for (String newOrder : commands) {
+                    queue.addFirst(newOrder);
+                  }
+                  setChangedOrders(true);
+                } else if (command.equals("Ueberwache")) {
+                  commandMonitor(tokens);
+                } else if (command.equals("Erlaube") || command.equals("Verlange")) {
+                  commandAllow(tokens);
+                } else if (command.equals("Ernaehre")) {
+                  commandEarn(tokens);
+                } else if (command.equals("Handel")) {
+                  commandTrade(tokens);
+                } else if (command.equals("Steuermann")) {
+                  if (tokens.length < 3) {
+                    addNewError("zu wenige Argumente");
+                  } else {
+                    commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
+                        String.valueOf(DEFAULT_PRIORITY + 10) });
+                    setConfirm(currentUnit, false);
+                  }
+                } else if (command.equals("Mannschaft")) {
+                  if (tokens.length < 3) {
+                    addNewError("zu wenige Argumente");
+                  } else {
+                    commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
+                    setConfirm(currentUnit, true);
+                  }
+                } else if (command.equals("Quartiermeister")) {
+                  commandQuartermaster(tokens);
+                } else if (command.equals("Sammler")) {
+                  commandCollector(tokens);
+                } else if (command.equals("RekrutiereMax")) {
+                  commandRecruit(tokens);
+                } else if (command.equals("Kommentar")) {
+                  commandComment(tokens);
+                } else {
+                  addNewError("unbekannter Befehl: " + command);
+                }
+              }
+              currentOrder = null;
+
+            }
           }
+        } catch (Throwable t) {
+          addNewError("Fehler bei der Ausführung von '" + currentOrder + "'");
         }
       }
     }
@@ -1599,7 +1603,7 @@ class E3CommandParser {
       return;
     if (unit == null) {
       if (sOther == null) {
-        addNewError("need unit token");
+        addNewError("Einheitennummer fehlt");
         return;
       }
       unit = findUnit(sOther);
@@ -2092,7 +2096,11 @@ class E3CommandParser {
         }
       } else {
         for (int i = 2; i < tokens.length; ++i) {
-          set.add(UnitID.createUnitID(tokens[i], world.base));
+          try {
+            set.add(UnitID.createUnitID(tokens[i], world.base));
+          } catch (NumberFormatException exc) {
+            addNewError("Ungültige Einheitennummer " + tokens[i]);
+          }
         }
       }
     }
@@ -2235,7 +2243,7 @@ class E3CommandParser {
     int totalVolume = 0;
 
     if (buyAmount > 0 && (volume <= 0 || buyGood == null)) {
-      addNewError("Kein Handel möglich");
+      addNewError("kein Handel möglich");
     }
 
     LinkedList<String> orders = new LinkedList<String>();
@@ -2790,7 +2798,7 @@ class E3CommandParser {
       transferList.remove(index);
     }
     if (-delta > getMulti(transfersMap, transfer.getTarget(), transfer.getItem())) {
-      addNewError("invalid transfer");
+      addNewError("ungültiger Transfer " + transfer);
     }
     increaseMulti(transfersMap, transfer.getTarget(), transfer.getItem(), delta);
     changeCapacity(transfer.getUnit(), transfer.getTarget(), transfer.getItem(), delta);

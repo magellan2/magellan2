@@ -149,7 +149,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
   @Test
   public void testUnresolved() throws IOException {
     String log = runScript("Unresolved");
-    assertMatches(".*unresolvedx references.*ABC\\(\\).*void ABC\\(\\).*", log);
+    assertMatches(".*unresolved references.*ABC\\(\\).*void ABC\\(\\).*", log);
   }
 
 }

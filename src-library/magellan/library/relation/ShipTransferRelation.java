@@ -23,6 +23,7 @@ public class ShipTransferRelation extends TransferRelation {
   /** the transferred ship / fleet */
   public Ship ship;
   private Ship targetShip;
+  private int newDamage;
 
   /**
    * Creates a new object.
@@ -32,10 +33,11 @@ public class ShipTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param ship The transferred ship/fleet
    * @param line The line in the source's orders
+   * @param newDamage
    */
   public ShipTransferRelation(Unit source, Unit target, int amount, Ship ship, Ship targetShip,
-      int line) {
-    this(source, source, target, amount, ship, targetShip, line);
+      int line, int newDamage) {
+    this(source, source, target, amount, ship, targetShip, line, newDamage);
   }
 
   /**
@@ -47,15 +49,17 @@ public class ShipTransferRelation extends TransferRelation {
    * @param amount The amount to transfer
    * @param ship The transferred ship/fleet
    * @param line The line in the source's orders
+   * @param newDamage
    */
   public ShipTransferRelation(Unit origin, Unit source, Unit target, int amount, Ship ship,
       Ship targetShip,
-      int line) {
+      int line, int newDamage) {
     super(origin, source, target, amount, line);
     if (ship == null || targetShip == null)
       throw new NullPointerException();
     this.ship = ship;
     this.targetShip = targetShip;
+    this.newDamage = newDamage;
   }
 
   /**
@@ -71,5 +75,9 @@ public class ShipTransferRelation extends TransferRelation {
     super.add();
     ship.addRelation(this);
     targetShip.addRelation(this);
+  }
+
+  public int getDamage() {
+    return newDamage;
   }
 }

@@ -141,7 +141,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder(getOrderTranslation(EresseaConstants.OC_WORK));
     checkOrder("ARBEITE");
     checkOrder("arbeite");
-    checkOrder("AR");
+    checkOrder("ARB");
     checkOrder("ARBEITE ;");
     checkOrder("arbeitene", false);
     checkOrder("ARBEISE", false);
@@ -1251,6 +1251,20 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("ZEIGEN Schwert");
     checkOrder("ZERSTÖREN");
     checkOrder("ZÜCHTEN KRÄUTER");
+  }
+
+  /**
+  *
+  */
+  @Test
+  public void testTwoLetterKeywords() {
+    // DEFAULT is the only order starting with D, but orders must have 3 letters
+    assertEquals(1, getParser().getHandlers(new OrderToken("D")).size());
+    assertEquals(1, getParser().getCommandTrie().searchPrefix("d", Integer.MAX_VALUE).size());
+    checkOrder("DE ARBEITE", false);
+    checkOrder("DEF ARBEITE", true);
+    checkOrder("NA NO", false);
+    checkOrder("NAC O", true);
   }
 
   // /**

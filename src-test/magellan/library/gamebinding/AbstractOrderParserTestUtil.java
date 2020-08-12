@@ -166,7 +166,7 @@ public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResour
    */
   @Test
   public void testRead() {
-    checkOrder("AR");
+    checkOrder("ARB");
     checkOrder(""); // FIXME ???!!!
     checkOrder("A", false);
   }

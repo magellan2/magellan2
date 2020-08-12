@@ -433,6 +433,11 @@ public class EresseaConstants extends GameConstants {
   /** Order constant ITEMPOOL */
   public static final StringID OC_ITEMPOOL = StringID.create("ITEMPOOL");
 
+  /** Order constant LANGUAGE */
+  public static final String O_LANGUAGE = "LANGUAGE";
+  /** Order constant LANGUAGE */
+  public static final StringID OC_LANGUAGE = StringID.create("LANGUAGE");
+
   /** Order constant LEARN */
   public static final String O_LEARN = "LEARN";
   /** Order constant LEARN */

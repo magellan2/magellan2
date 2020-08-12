@@ -180,22 +180,27 @@ ORDER "TEACH"
 "LEHREN";locale_de
 "TEACH";locale_en
 
+ORDER "LANGUAGE"
+"SPRACHE Sprache";syntax
+"SPRACHE";locale_de
+"LANGUAGE";locale_en
+
 ORDER "LEARN"
 "LERNE Talent [1]";syntax
 "LERNE";locale_de
 "LERNEN";locale_de
 "LEARN";locale_en
 
+ORDER "LOCALE"
+"LOCALE Sprache";syntax
+"LOCALE";locale_de
+"LOCALE";locale_en
+1;internal
+
 ORDER "SUPPLY"
 "LIEFERE (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
 "LIEFERE";locale_de
 "SUPPLY";locale_en
-
-ORDER "LOCALE"
-"LOCALE";syntax
-"LOCALE";locale_de
-"LOCALE";locale_en
-1;internal
 
 ORDER "MAKE"
 "MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax

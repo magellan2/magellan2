@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -100,8 +101,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
         new EresseaOrderParser(data, (EresseaOrderCompleter) getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
-    assertSame(62, localParser.getCommands().size());
-    assertSame(62, localParser.getHandlers().size());
+    assertSame(63, localParser.getCommands().size());
+    assertSame(63, localParser.getHandlers().size());
   }
 
   @Test
@@ -713,6 +714,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   @Test
   public void testLocaleReader() {
     // this is a valid order, but not /inside/ a unit
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LOCALE) + " de", false);
     checkOrder(getOrderTranslation(EresseaConstants.OC_LOCALE), false);
   }
 
@@ -997,6 +999,19 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("SPIONIERE 123 123", false);
     checkOrder("SPIONIERE", false);
     checkOrder("SPIONIERE ALLES", false);
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SpracheReader}.
+   */
+  @Test
+  public void testSpracheReader() {
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LANGUAGE) + " \"de\"");
+    checkOrder("SPRACHE en");
+    checkOrder("Sprache \"de\"");
+    checkOrder("SPRACHE", false);
+    checkOrder("SPRACHE en de", false);
+    checkOrder("SPRACHE 1", false);
   }
 
   /**

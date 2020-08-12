@@ -161,6 +161,11 @@ ORDER "CONTACT"
 "KONTAKTIEREN";locale_de
 "CONTACT";locale_en
 
+ORDER "LANGUAGE"
+"SPRACHE Sprache";syntax
+"SPRACHE";locale_de
+"LANGUAGE";locale_en
+
 ORDER "LEARN"
 "LERNE Talent [1]";syntax
 "LERNE";locale_de

@@ -103,6 +103,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 
     // the if clause is not always correct, but should usually be okay
     if (!isLimitCompletions()) {
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY), " "));
+    } else {
       Building building = getUnit().getModifiedBuilding();
       if (building == null) {
         building = getUnit().getBuilding();

@@ -99,6 +99,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
     addCheckedCommand(EresseaConstants.OC_BUY, new KaufeReader(this));
     addCheckedCommand(EresseaConstants.OC_CONTACT, new KontaktiereReader(this));
     addCheckedCommand(EresseaConstants.OC_TEACH, new LehreReader(this));
+    addCheckedCommand(EresseaConstants.OC_LANGUAGE, new LanguageReader(this));
     addCheckedCommand(EresseaConstants.OC_LEARN, new LerneReader(this));
     addCheckedCommand(EresseaConstants.OC_SUPPLY, new GibReader(this));
 
@@ -147,6 +148,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
   protected void addCheckedCommand(StringID prefix, OrderHandler reader) {
     if (getRules().getOrder(prefix) != null) {
       addCommand(prefix, reader);
+    } else {
+      log.warn("unknown command " + prefix);
     }
   }
 
@@ -1938,6 +1941,32 @@ public class EresseaOrderParser extends AbstractOrderParser {
       if (shallComplete(token, t)) {
         getCompleter().cmpltLehre(
             token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP)));
+      }
+      return retVal;
+    }
+  }
+
+  // ************* LANGUAGE
+  protected class LanguageReader extends OrderHandler {
+    public LanguageReader(OrderParser parser) {
+      super(parser);
+    }
+
+    @Override
+    protected boolean readIt(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+
+      if (isString(t)) {
+        retVal = readFinalString(t);
+      } else {
+        unexpected(t);
+      }
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltLocale();
       }
       return retVal;
     }

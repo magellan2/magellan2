@@ -24,13 +24,18 @@
 package magellan.library.io.cr;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import magellan.library.utils.logging.LogListener;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Tests for {@link Scanner}.
@@ -117,6 +122,35 @@ public class ScannerTest {
 
   }
 
+  /**
+   * 
+   */
+  @Before
+  public void setUp() {
+    logContent.setLength(0);
+  }
+
+  final StringBuilder logContent = new StringBuilder();
+
+  private void setupLog() {
+    Logger.setLevel(Logger.WARN);
+    Logger.addLogListener(new LogListener() {
+      public void log(int aLevel, Object aObj, Throwable aThrowable) {
+        logContent.append(aObj);
+      }
+    });
+  }
+
+  private void assertLog(String content) {
+    if (content == null) {
+      assertEquals("", logContent.toString());
+    } else if (content.length() == 0) {
+      assertNotEquals("", logContent.toString());
+    } else {
+      assertEquals(content, logContent.toString());
+    }
+  }
+
   @Test
   public void testInitial() throws IOException {
     Scanner sc = getScanner("");
@@ -182,34 +216,42 @@ public class ScannerTest {
 
   @Test
   public void testStringTag() throws IOException {
+    setupLog();
     Scanner sc = getScanner("\"123\";Hodor");
     sc.getNextToken();
     assertState(sc, new ScannerState().setArgc(2).setArgv0("123").setArgv1("Hodor").setString0(true));
+    assertLog(null);
   }
 
   @Test
   public void testString() throws IOException {
+    setupLog();
     Scanner sc = getScanner("\"abc123\"");
     sc.getNextToken();
     assertState(sc, new ScannerState().setArgc(1).setArgv0("abc123").setString0(true));
+    assertLog(null);
   }
 
   @Test
   public void testBotchedString() throws IOException {
+    setupLog();
     Scanner sc = getScanner("\"abc123\nxyz"); // error; should be \"abc123\"\nxyz, probably
     sc.getNextToken();
     assertState(sc, new ScannerState().setArgc(0)); // could be argv[0]==abc123 too
     sc.getNextToken();
     assertState(sc, new ScannerState().setArgc(1).setArgv0("xyz").setLine(2));
+    assertLog("Error parsing line 1: \"abc123");
   }
 
   @Test
   public void testEscapedString() throws IOException {
-    // "backs\\\\back\\quote\"single\'done" -> backs\\back\quote"single'done
-    Scanner sc = getScanner("\"backs\\\\\\\\back\\\\quote\\\"single\\'done\"");
+    setupLog();
+    // "backs\\\\back\\quote\"single\\'done" -> backs\\back\quote"single\'done
+    Scanner sc = getScanner("\"backs\\\\\\\\back\\\\quote\\\"single\\\\'done\"");
     sc.getNextToken();
 
     assertState(sc, new ScannerState().setArgc(1).setArgv0("backs\\\\back\\quote\"single\\'done").setString0(true));
+    assertLog(null);
   }
 
   @Test
@@ -220,12 +262,23 @@ public class ScannerTest {
   }
 
   @Test
+  public void testNoEscapeSingleQuote() throws IOException {
+    setupLog();
+    Scanner sc = getScanner("\"DEFAULT \\'ARBEITE\\'\"");
+    sc.getNextToken();
+    assertState(sc, new ScannerState().setArgc(1).setArgv0("DEFAULT \\'ARBEITE\\'").setString0(true));
+    assertLog("Wrong escape in line 1: \"DEFAULT \\'ARBEITE\\'\"");
+  }
+
+  @Test
   public void testWrongEscapedString() throws IOException {
+    setupLog();
     // error; should be \"\\\\bc\" or \"abc\"
     Scanner sc = getScanner("\"a\\bc\"");
     sc.getNextToken();
 
     assertState(sc, new ScannerState().setArgc(1).setArgv0("a\\bc").setString0(true));
+    assertLog("Wrong escape in line 1: \"a\\bc\"");
   }
 
   private void assertState(Scanner sc, ScannerState state) {

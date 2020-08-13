@@ -15,9 +15,10 @@
 	<property name="VERSION.MINOR" value="1" />
 	<property name="VERSION.SUB" value="0" />
 	<!-- possible values include stable, rc, and betaX -->
-	<property name="VERSION.POST" value="beta" />
+	<property name="VERSION.POST" value="rc" />
 
-	<property name="VERSION.POINTED" value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}" />
+	<property name="VERSION.POINTED"
+	          value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}" />
 
 	<!-- Some properties -->
 	<property name="src.library" location="${basedir}/src-library" />

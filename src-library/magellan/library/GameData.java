@@ -536,7 +536,7 @@ public abstract class GameData implements Cloneable, Addeable {
    */
   public void addOldUnit(Unit newUnit) {
     if (oldUnitsView().containsKey(newUnit.getID()))
-      throw new IllegalArgumentException(newUnit + " already exists");
+      return;
 
     oldUnitsView().put(newUnit.getID(), newUnit);
   }

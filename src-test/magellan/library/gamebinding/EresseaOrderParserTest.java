@@ -1162,6 +1162,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("ZÜCHTE 2 3", false);
     checkOrder("ZÜCHTE Flachwurz 2", false);
     checkOrder("ZÜCHTE Flachwurz", false);
+    checkOrder("ZÜCHTE 2 Pferde", false);
   }
 
   /**

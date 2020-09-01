@@ -71,6 +71,8 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
 
   protected List<OrderWriterPlugIn> plugins = new ArrayList<OrderWriterPlugIn>();
 
+  private List<String> errors;
+
   /**
    * Creates a new OrderWriter object extracting the orders of faction f's units and writing them to
    * the stream w.
@@ -93,6 +95,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   public OrderWriter(GameData g, Faction f, String echeckOpts) {
     world = g;
     faction = f;
+    errors = new ArrayList<String>(2);
 
     setECheckOptions(echeckOpts);
   }
@@ -101,6 +104,8 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
    * Creates a new OrderWriter.
    */
   public OrderWriter() {
+    errors = new ArrayList<String>(2);
+
     setECheckOptions(null);
   }
 
@@ -122,6 +127,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
    */
   @Override
   public synchronized int write(BufferedWriter stream) throws IOException {
+    errors.clear();
     if (world == null) {
       log.warn("no game data");
       return 0;
@@ -342,10 +348,14 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
               || (removeSSComments && cmd
                   .getToken(0).getText().startsWith(EresseaConstants.O_PCOMMENT)))) {
         // consume
-      } else {
+      } else if (check(cmd)) {
         writeln(stream, cmd.getText());
       }
     }
+  }
+
+  protected boolean check(Order cmd) {
+    return true;
   }
 
   protected void writeFooter(BufferedWriter stream) throws IOException {
@@ -529,4 +539,13 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
       plugins.remove(plugin);
     }
   }
+
+  public List<String> getErrors() {
+    return errors;
+  }
+
+  protected void addError(String string) {
+    errors.add(string);
+  }
+
 }

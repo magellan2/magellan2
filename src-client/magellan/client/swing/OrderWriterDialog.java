@@ -1468,7 +1468,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
       }
 
-      result = new Object[] { writtenUnits, allUnits, faction };
+      result = new Object[] { writtenUnits, allUnits, faction, cw.getErrors() };
+      if (cw.getErrors().size() > 0) {
+        StringBuilder errMsg = new StringBuilder(Resources.get("orderwriterdialog.msg.erroronsave.text"));
+        int i = 0;
+        for (String error : cw.getErrors()) {
+          errMsg.append("\n").append(error);
+          if (++i > 3) {
+            errMsg.append("\n...");
+            break;
+          }
+        }
+        JOptionPane.showMessageDialog(this, errMsg, Resources.get("orderwriterdialog.msg.erroronsave.title"),
+            JOptionPane.WARNING_MESSAGE);
+
+      }
     } catch (IOException ioe) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       JOptionPane.showMessageDialog(this, Resources.get("orderwriterdialog.msg.erroronsave.text") + ioe.toString(),

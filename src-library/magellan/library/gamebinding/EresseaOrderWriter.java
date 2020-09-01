@@ -10,20 +10,26 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Locale;
+
+import magellan.library.Order;
 import magellan.library.utils.OrderWriter;
+import magellan.library.utils.Resources;
 
 /**
  * @author Thoralf Rickert
@@ -33,6 +39,8 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   private static final EresseaOrderWriter instance = new EresseaOrderWriter();
   /** Current ECheck version */
   public static final String ECHECKVERSION = "4.3.2";
+  private Collection<String> forbidden;
+  private Locale locale;
 
   /**
    * 
@@ -70,6 +78,29 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   @Override
   public String getCheckerDefaultParameter() {
     return " -s -l -w4 -v" + EresseaOrderWriter.ECHECKVERSION;
+  }
+
+  /**
+   * @see magellan.library.utils.OrderWriter#check(magellan.library.Order)
+   */
+  @Override
+  protected boolean check(Order cmd) {
+    for (String token : getForbiddenTokens())
+      if (cmd.getToken(0).equalsToken(token)) {
+        addError(Resources.get("orderwriter.invalid", cmd.getText()));
+      }
+    return true;
+  }
+
+  private Collection<String> getForbiddenTokens() {
+    if (forbidden == null || locale != getLocale()) {
+      forbidden = new ArrayList<String>(3);
+      forbidden.add(getOrderTranslation(EresseaConstants.OC_ERESSEA));
+      forbidden.add(getOrderTranslation(EresseaConstants.OC_FACTION));
+      forbidden.add(getOrderTranslation(EresseaConstants.OC_NEXT));
+      locale = getLocale();
+    }
+    return forbidden;
   }
 
 }

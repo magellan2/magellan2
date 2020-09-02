@@ -1855,9 +1855,27 @@ public class EresseaOrderParser extends AbstractOrderParser {
   }
 
   // ************* KONTAKTIERE
-  protected class KontaktiereReader extends UnitOrderHandler {
+  protected class KontaktiereReader extends OrderHandler {
+    private StringID type;
+    private UnitID target;
+
     public KontaktiereReader(OrderParser parser) {
       super(parser);
+    }
+
+    @Override
+    protected void init(OrderToken token, String text) {
+      order = new UnitArgumentOrder(getTokens(), text, target);
+    }
+
+    @Override
+    public SimpleOrder getOrder() {
+      if (target != null) {
+        UnitArgumentOrder uorder = (UnitArgumentOrder) order;
+        uorder.target = target;
+        return uorder;
+      } else
+        return order;
     }
 
     @Override
@@ -1865,23 +1883,52 @@ public class EresseaOrderParser extends AbstractOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      OrderToken t = getNextToken();
+      OrderToken t = getNextToken(), t0 = token;
+      type = null;
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        type = EresseaConstants.OC_UNIT;
+        t0 = t;
+        t = getNextToken();
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        type = EresseaConstants.OC_FACTION;
+        t0 = t;
+        t = getNextToken();
+      } else {
+        // type = EresseaConstants.OC_UNIT;
+      }
 
-      if (isID(t.getText()) == true) {
-        retVal = readKontaktiereUID(t);
+      retVal = readKontaktiereUnitFaction(t0, t);
+
+      if (shallComplete(token, t)) {
+        getCompleter().cmpltKontaktiere(type);
+      }
+      return retVal;
+    }
+
+    protected boolean readKontaktiereUnitFaction(OrderToken token, OrderToken t) {
+      boolean retVal = false;
+
+      if (isID(t.getText(), type != EresseaConstants.OC_FACTION)) {
+        retVal = readKontaktiereID(t);
       } else {
         unexpected(t);
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltKontaktiere();
+        getCompleter().cmpltKontaktiere(type);
       }
       return retVal;
     }
 
-    protected boolean readKontaktiereUID(OrderToken token) {
+    protected boolean readKontaktiereID(OrderToken token) {
       token.ttype = OrderToken.TT_ID;
-      target = UnitID.createUnitID(token.getText(), getData().base);
+      if (type == EresseaConstants.OC_UNIT) {
+        target = UnitID.createUnitID(token.getText(), getData().base);
+      } else {
+        target = null;
+      }
 
       return checkNextFinal();
     }

@@ -669,9 +669,14 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    */
   @Test
   public void testKontaktiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.OC_CONTACT) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CONTACT) + " " + getOrderTranslation(EresseaConstants.OC_UNIT)
+        + " 123");
+    checkOrder("KONTAKTIERE EINHEIT a");
+    checkOrder("KONTAKTIERE EINHEIT TEMP a");
+    checkOrder("KONTAKTIERE PARTEI x");
     checkOrder("KONTAKTIERE a");
     checkOrder("KONTAKTIERE TEMP a");
+    checkOrder("KONTAKTIERE PARTEI TEMP x", false);
     checkOrder("KONTAKTIERE abc def", false);
     checkOrder("KONTAKTIERE", false);
     checkOrder("KONTAKTIERE \"abc\"", false);

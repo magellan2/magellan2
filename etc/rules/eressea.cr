@@ -169,7 +169,7 @@ ORDER "BUY"
 "BUY";locale_en
 
 ORDER "CONTACT"
-"KONTAKTIERE u1";syntax
+"KONTAKTIERE (EINHEIT)|(FACTION) u1";syntax
 "KONTAKTIERE";locale_de
 "KONTAKTIEREN";locale_de
 "CONTACT";locale_en
@@ -338,7 +338,7 @@ ORDER "ORIGIN"
 "ORIGIN";locale_en
 
 ORDER "FORGET"
-"VERGESSE Talent";syntax
+"VERGISS Talent";syntax
 "VERGISS";locale_de
 "VERGESSEN";locale_de
 "FORGET";locale_en

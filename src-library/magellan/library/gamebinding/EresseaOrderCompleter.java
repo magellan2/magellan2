@@ -1041,11 +1041,22 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NOT), ""));
   }
 
-  /** Add completions for command Kontaktiere. */
-  public void cmpltKontaktiere() {
-    final Alliance alliance =
-        new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
-    addNotAlliedUnits(alliance, "");
+  /**
+   * Add completions for command Kontaktiere.
+   * 
+   * @param type 0 for not decided, 1 for unit, 2 for faction
+   */
+  public void cmpltKontaktiere(StringID type) {
+    if (type == null) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+    } else if (type == EresseaConstants.OC_UNIT) {
+      final Alliance alliance =
+          new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
+      addNotAlliedUnits(alliance, "");
+    } else if (type == EresseaConstants.OC_FACTION) {
+      addOtherFactions(" ", 0, false);
+    }
   }
 
   /** Add completions for command Lehre. */

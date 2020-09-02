@@ -8,8 +8,8 @@
 # Zeilenumbrüche mit \n erzeugen
 ############################################################################
 
-CAPTION, ECheck (Version %s, %s), Zug-Checker für Eressea - Freeware!\n\nBenutzung: %s -Pgame [Optionen] Befehlsdatei\n\n
-PATH,   -Ppfad  Pfadangabe für die Zusatzdateien; das Spiel %s und das Locale %s wird angehängt
+CAPTION, ECheck (Version %s, %s), Zug-Checker für Eressea - Freeware!\n\nBenutzung: %s [Optionen] Befehlsdatei\n\n
+PATH,   -Ppfad  Pfadangabe für die Zusatzdateien; das Locale %s wird angehängt
 TEXT,   -Rgame  Zusatzdateien aus Unterverzeichnis game einlesen; Standardeinstellung: e2
 TEXT,   -       Verwendet stdin anstelle einer Eingabedatei.
 TEXT,   -b      unterdrückt Warnungen und Fehler (brief)
@@ -36,7 +36,10 @@ TEXT,   -noxxx  Keine xxx-Warnungen. xxx kann sein:
 TEXT,      ship   Einheit steuert Schiff und hat evtl. kein Kommando
 TEXT,      route  kein Check auf zyklisches ROUTE
 TEXT,      lost   Einheit verliert Silber und Gegenstände
-TEXT,   -w[n]   Warnungen der Stufe n (default: 4=alle Warnungen)
+TEXT,   -w[n]   Warnungen der Stufe n (default: 4)
+TEXT,        1  hauptsächlich Syntaxfehler
+TEXT,        4  fast alle Warnungen
+TEXT,        5  Lehrer/Schüler
 TEXT,   -x      Zeilenzählung ab PARTEI statt Dateianfang
 TEXT,   -Lloc   Stellt Locale loc ein
 TEXT,   -vm.l   Mainversion.Level - für Test, ob richtige ECheck-Version

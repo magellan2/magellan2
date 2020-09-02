@@ -38,7 +38,6 @@ CANTMAKETHAT, This cannot be made
 CANTREADFILE, Can't read file '%s'\n
 CANTRENAMEOBJECT, This object cannot be renamed
 CHECKYOURORDERS, \nPlease check if you have sent in your orders properly.\nKeep in mind that orders must not be sent as HTML, word-documents\nor attachments.\n
-CLAIMWHAT, CLAIM what?
 COMBATSPELLSET, combat magic set
 DELIVERYTO, ; Delivery to
 DESTROYNOSTREET, only DESTROY or DESTROY ROAD are allowed
@@ -62,12 +61,12 @@ FACTION0USED, Faction 0 used
 FACTIONINVALID, Faction "%s" invalid
 FACTIONMISSING, Faction missing
 FACTIONS, factions
+FACTION, faction
 FOLLOW, FOLLOW UNIT xx, FOLLOW SHIP xx or FOLLOW
 FOUNDERROR, There was one error
 FOUNDERRORS, There were %d errors
-FOUNDORDERS, Found orders for faction %s.
+FOUNDORDERS, Found orders for faction %s.\n
 GIVEWHAT, Give what?
-HINTNOVERSION, Hint:  You didn't supply an ECheck version (-v%s)\n\n
 INTERNALCHECK, <internal check>
 INVALIDEMAIL, invalid email address
 ISCOMBATSPELL, "%s" is \nombat magic
@@ -75,6 +74,7 @@ ISUSEDIN2REGIONS, "TEMPORARY %s" is used in region %d,%d and region %d,%d (line 
 ISNOTCOMBATSPELL, ~no
 ITEM, item
 LINETOOLONG, Line too long
+LOCALEMISMATCH, Locales '%s' of ECheck and '%s' of the orders do not match
 LONGCOMBATNOLONGORDER, Longer combats exclude long orders
 LONGORDERMISSING, Unit %s hasn't got a long order
 MAGIC, Magic
@@ -85,8 +85,6 @@ MISSFILEITEM, items
 MISSFILESKILL, skills
 MISSFILEDIR, directions
 MISSFILEMSG, messages
-MISSINGALLIANCENUMBER, Missing alliance number
-MISSINGALLIANCEPARAMETER, Missing alliance action
 MISSINGQUOTES, Missing "
 MISSINGDISGUISEPARAMETERS, DISGUISE without parameters
 MISSINGEND, TEMPORARY %s lacks closing END
@@ -96,6 +94,7 @@ MISSINGNUMRECRUITS, Number of recruits missing
 MISSINGOFFER, Missing offer
 MISSINGPARAMETERS, LEVEL or REGION missing
 MISSINGPASSWORD, Missing password
+MISSINGSTART, ERESSEA faction-no "Password" not found or accidental NEXT!
 MISSINGUNITNUMBER, Missing unit number
 MOVENOTPOSSIBLEWITHPAUSE, MOVE and PAUSE cannot be combined
 MSGTO, MESSAGE TO FACTION, MESSAGE TO UNIT or MESSAGE TO REGION
@@ -106,12 +105,14 @@ NOFIND, FIND has been replaced by OPTION ADDRESSES
 NOLUXURY, No luxury
 NORMALUNITSONLY, %s is possible with normal units only
 NOSEND, SEND has been renamed into OPTION
+NOSPACEHERE, Space not allowed here
 NOTEMPNUMBER, No TEMPORARY number
 NOTEXECUTED, Isn't carried out by any unit
 NOTEXT, No text
 NOTFOUND, not found
 NTOOBIG, figure too big
 NUMBER0SENSELESS, Number 0 doesn't make sense
+NUMBEREXPECTED, Number expected
 NUMBERNOTPOSSIBLE, Number is not possible here
 NUMCASTLEMISSING, Number of castle missing
 NUMLUXURIESMISSING, Number of luxuries missing
@@ -122,11 +123,9 @@ ORDERNUMBER, NUMBER SHIP, NUMBER CASTLE, NUMBER FACTION or NUMBER UNIT
 ORDERSOK, The orders look good.\n
 ORDERSREAD, \nOrders have been read for %d %s and %d %s.\n
 PASSWORDCLEARED, Password cleared
-PASSWORDMSG1, Incorrect password
+PASSWORDMSG1, Incorrect passowrd
 PASSWORDMSG2, \n\n  ****  A T T E N T I O N !  ****\n\n  ****  Password missing!  ****\n\n
 PASSWORDMSG3, ~** ERROR!! **
-PAYNOTNOT, PAY without NOT makes no sense
-PLANTPARAMETER, PLANT what?
 POST, post-
 PRE, pre-
 PROCESSINGFILE, Processing file '%s'.
@@ -141,7 +140,7 @@ RESTARTMSG, RESTART found!
 RIDESWRONGUNIT, Unit %s is carried by unit %s but rides with 
 ROUTENOTCYCLIC, ROUTE is not cyclic; (%d,%d) -> (%d,%d)
 ROUTESTARTSWITHPAUSE, ROUTE starts with PAUSE
-SCHOOLCHOSEN, School "%s" chosen
+SCHOOLCHOSEN, School "%s" chosen.\n
 SEARCHPATHIS, Search path is
 SILVERPOOL, Silver pool is active.
 SORT, SORT BEFORE or BEHIND <unit>
@@ -151,9 +150,12 @@ TEACHWHO, Teach who?
 TEMPHASNTPERSONS, Unit TEMPORARY %s hasn't got men and hasn't recruited anyone
 TEMPNOTTEMP, Unit TEMPORARY %s hasn't been generated with MAKE TEMPORARY
 TEMPUNITSCANTRESERVE, TEMPORARY units can't use RESERVE! Use GIVE instead!
+TEMPUNITSCANTGIVE, TEMPORARY units can't use GIVE, it happens before MAKE!
 TEXTTOOLONG, Text too long (max. %d)
-TOOMANYPARAMETERS, Too many parameters
 THERE, There 
+TOOMANYPARAMETERS, Too many parameters
+UNIT, unit
+UNITS, units
 UNIT0NOTPOSSIBLE, Unit 0/Peasants not possible here
 UNIT0USED, Unit 0 used
 UNITALREADYHAS, Unit %s already has a 
@@ -177,7 +179,6 @@ UNITNEEDSTEACHERS, Unit \nould make use of %d more teachers
 UNITNOTONSHIPBUTONSHIP, Unit %s may be on ship %s instead of ship %s
 UNITNOTPOSSIBLEHERE, Unit "%s" is not possible here
 UNITONSHIPHASMOVED, Unit %s on ship %s has already moved
-UNITS, units
 UNRECOGNIZEDDIRECTION, Unrecognized direction
 UNRECOGNIZEDOBJECT, Unrecognized object
 UNRECOGNIZEDOPTION, Unrecognized option
@@ -190,7 +191,6 @@ UNRECOGNIZEDSKILL, Unrecognized skill
 UNRECOGNIZEDSPELL, Unrecognized spell
 USED1, Used 1 instead
 USEEMAIL, Please set email with EMAIL
-USEWHAT, Use what?
 USINGUNITINSTEAD, Using unit 
 WARNINGS, ~%d warnings.
 WARNINGLEVEL, warning level %d.\n

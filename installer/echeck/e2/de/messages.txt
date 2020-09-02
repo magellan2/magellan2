@@ -14,8 +14,8 @@
 
 0PERSONSLEARN, Einheit %s hat 0 Personen und wird von Einheit 
 0PERSONSTEACH, Einheit %s hat 0 Personen und lehrt Einheit 
-1ATTACKPERUNIT, Pro Einheit muß ein ATTACKIERE-Befehl gegeben werden
-1CARRYPERUNIT, Pro Einheit muß ein TRANSPORTIERE-Befehl gegeben werden
+1ATTACKPERUNIT, Pro Einheit muss ein ATTACKIERE-Befehl gegeben werden
+1CARRYPERUNIT, Pro Einheit muss ein TRANSPORTIERE-Befehl gegeben werden
 1PERSONPERMAGEUNIT, Magiereinheiten dürfen nur eine Person haben
 ACTIVATED, ~aktiviert.
 ALREADYUSEDINLINE, "TEMP %s" wurde in Zeile %d schon gebraucht
@@ -37,10 +37,9 @@ CANTMAINTAINBUILDING, Einheit %s kann ein Gebäude nicht erhalten, es fehlen noc
 CANTMAKETHAT, Sowas kann man nicht machen
 CANTREADFILE, Kann Datei '%s' nicht lesen\n
 CANTRENAMEOBJECT, Objekt kann nicht umbenannt werden
-CHECKYOURORDERS, \nBitte überprüfe, ob Du die Befehle korrekt eingesandt hast.\nBeachte dabei besonders, daß die Befehle nicht als HTML, Word-Dokument\noder als Attachment (Anlage) eingeschickt werden dürfen.\n
-CLAIMWHAT, BEANSPRUCHE was?
+CHECKYOURORDERS, \nBitte überprüfe, ob du die Befehle korrekt eingesandt hast.\nBeachte dabei besonders, dass die Befehle nicht als HTML, Word-Dokument\noder als Attachment (Anlage) eingeschickt werden dürfen.\n
 COMBATSPELLSET, Kampfzauber gesetzt
-DELIVERYTO, ; Zustellung an 
+DELIVERYTO, ; Zustellung an
 DESTROYNOSTREET, nur ZERSTOERE oder ZERSTOERE STRASSE sind erlaubt
 DIRECTION, <richtung>
 DISCOVERED, ~entdeckt.\n
@@ -53,21 +52,21 @@ ERRORHELP, Helfe-Status falsch
 ERRORINLINE, Fehler in Zeile
 ERRORLEVELPARAMETERS, Fehler bei STUFE-Parameter
 ERRORNAMEFOREIGN, BENENNE FREMD nicht mit %s
-ERROROPINION, Nummer der Meinung muß größer 0 sein
+ERROROPINION, Nummer der Meinung muss größer 0 sein
 ERRORREGION, REGION fehlerhaft
 ERRORREGIONPARAMETER, Fehler bei REGION-Parameter
 ERRORSPELLSYNTAX, [ ] und  < >  dürfen nicht mit eingegeben werden!
-ERRORSURVEY, Nummer der Umfrage muß größer 0 sein
+ERRORSURVEY, Nummer der Umfrage muss größer 0 sein
 FACTION0USED, Partei 0 verwendet
 FACTIONINVALID, Partei "%s" ungültig
 FACTIONMISSING, Partei fehlt
 FACTIONS, Parteien
+FACTION, Partei
 FOLLOW, FOLGE EINHEIT xx, FOLGE SCHIFF xx oder FOLGE
 FOUNDERROR, Es wurde ein Fehler
 FOUNDERRORS, Es wurden %d Fehler
 FOUNDORDERS, Befehle für Partei %s gefunden.\n
 GIVEWHAT, Was übergeben?
-HINTNOVERSION, Hinweis: es wurde keine ECheck-Version angegeben (-v%s)\n\n
 INTERNALCHECK, <interner Check>
 INVALIDEMAIL, Ungültige eMail-Adresse
 ISCOMBATSPELL, "%s" ist %sein Kampfzauber
@@ -75,6 +74,7 @@ ISUSEDIN2REGIONS, "TEMP %s" wird in Region %d,%d und Region %d,%d (Zeile %d) geb
 ISNOTCOMBATSPELL, k
 ITEM, Gegenstand
 LINETOOLONG, Zeile zu lang
+LOCALEMISMATCH, Locales '%s' von ECheck und '%s' der Befehle passen nicht zusammen
 LONGCOMBATNOLONGORDER, Längere Kämpfe schließen den langen Befehl aus
 LONGORDERMISSING, Einheit %s hat keinen langen Befehl bekommen
 MAGIC, Magie
@@ -85,8 +85,6 @@ MISSFILEITEM, Gegenstände
 MISSFILESKILL, Talente
 MISSFILEDIR, Richtungen
 MISSFILEMSG, Meldungen
-MISSINGALLIANCENUMBER, Keine Allianznummer
-MISSINGALLIANCEPARAMETER, Fehlende Allianzaktion
 MISSINGQUOTES, Fehlende "
 MISSINGDISGUISEPARAMETERS, TARNE ohne Parameter
 MISSINGEND, TEMP-Einheit %s wird nicht durch ENDE abgeschlossen
@@ -96,9 +94,10 @@ MISSINGNUMRECRUITS, Anzahl Rekruten fehlt
 MISSINGOFFER, Geldgebot fehlt
 MISSINGPARAMETERS, Parameter STUFE oder REGION fehlt
 MISSINGPASSWORD, Kein Passwort angeben
+MISSINGSTART, ERESSEA partei-nummer "Passwort" fehlt oder versehentliches NAECHSTER!
 MISSINGUNITNUMBER, Keine Einheitsnummer
 MOVENOTPOSSIBLEWITHPAUSE, NACH geht nicht mit PAUSE
-MSGTO, BOTSCHAFT AN PARTEI, BOTSCHAFT AN EINHEIT oder BOTSCHAFT AN REGION
+MSGTO, BOTSCHAFT PARTEI, BOTSCHAFT EINHEIT oder BOTSCHAFT REGION
 NAMECONTAINSBRACKETS, Namen dürfen keine Klammern enthalten
 NEEDBOTHCOORDINATES, Beide Koordinaten müssen angegeben werden
 NOCARRIER, Kann zu transportierende Einheit nicht ermitteln
@@ -106,12 +105,14 @@ NOFIND, FINDE wurde gegen OPTION ADRESSEN ersetzt
 NOLUXURY, Kein Luxusgut
 NORMALUNITSONLY, %s geht nur mit normalen Einheiten
 NOSEND, SENDE wurde in OPTION umbenannt
+NOSPACEHERE, Leerzeichen hier nicht erlaubt
 NOTEMPNUMBER, Keine TEMP-Nummer
 NOTEXECUTED, Wird von keiner Einheit ausgeführt
 NOTEXT, Kein Text
 NOTFOUND, nicht gefunden
 NTOOBIG, Zahl zu groß
-NUMBER0SENSELESS, Anzahl 0 ergibt keinen Sinn
+NUMBER0SENSELESS, Anzahl 0 macht keinen Sinn
+NUMBEREXPECTED, Zahl erwartet
 NUMBERNOTPOSSIBLE, Anzahl hier nicht möglich
 NUMCASTLEMISSING, Nummer der Burg fehlt
 NUMLUXURIESMISSING, Anzahl Luxusgüter fehlt
@@ -125,8 +126,6 @@ PASSWORDCLEARED, Passwort gelöscht
 PASSWORDMSG1, Nicht das korrekte Passwort eingesetzt
 PASSWORDMSG2, \n\n  ****  A C H T U N G !  ****\n\n  ****  Passwort fehlt!  ****\n\n
 PASSWORDMSG3, ~** FEHLER!! ** 
-PAYNOTNOT, BEZAHLE ohne NICHT ergibt keinen Sinn
-PLANTPARAMETER, PFLANZE was?
 POST, Post-
 PRE, Prä-
 PROCESSINGFILE, Verarbeite Datei '%s'.
@@ -134,14 +133,14 @@ QUITMSG, Achtung! STIRB gegeben! Die Partei wird aufgelöst!
 RECRUITCOSTSSET, Rekrutierungskosten auf %d Silber gesetzt, 
 REGIONMISSSILVER, Das Silber in %s (%d,%d) reicht evtl. nicht zum Leben; es fehlen %d Silber.
 RESEARCHHERBSONLY, Es gibt nur FORSCHE KRÄUTER
-RESERVE0SENSELESS, RESERVIERE 0 xxx ergibt keinen Sinn
+RESERVE0SENSELESS, RESERVIERE 0 xxx macht keinen Sinn
 RESERVEDTOOMUCH, In %s (%d,%d) wurde mehr Silber reserviert (%d) als vorhanden (%d).
 RESERVEWHAT, RESERVIERE was?
 RESTARTMSG, NEUSTART befohlen!
 RIDESWRONGUNIT, Einheit %s wird von Einheit %s transportiert, fährt aber mit 
 ROUTENOTCYCLIC, ROUTE ist kein Kreis; (%d,%d) -> (%d,%d)
 ROUTESTARTSWITHPAUSE, ROUTE beginnt mit PAUSE
-SCHOOLCHOSEN, Magiegebiet '%s' gewählt
+SCHOOLCHOSEN, Magiegebiet '%s' gewählt.\n
 SEARCHPATHIS, Suchpfad ist
 SILVERPOOL, Silberpool aktiviert.
 SORT, SORTIERE VOR oder HINTER <einheit>
@@ -150,10 +149,13 @@ TEACHED, ~gelehrt.
 TEACHWHO, Wen lehren?
 TEMPHASNTPERSONS, Einheit TEMP %s hat nicht rekrutiert und keine Personen bekommen
 TEMPNOTTEMP, Einheit TEMP %s wurde nicht mit MACHE TEMP generiert
-TEMPUNITSCANTRESERVE, TEMP-Einheiten können nichts reservieren! Bitte GIB benutzen
+TEMPUNITSCANTRESERVE, TEMP-Einheiten können nichts reservieren! Bitte GIB benutzen!
+TEMPUNITSCANTGIVE, TEMP-Einheiten können nichts übergebenen! Befehlsreihenfolge beachten!
 TEXTTOOLONG, Text zu lang (max. %d)
-TOOMANYPARAMETERS, Zu viele Argumente
 THERE, Es 
+TOOMANYPARAMETERS, Zu viele Parameter
+UNIT, Einheit
+UNITS, Einheiten
 UNIT0NOTPOSSIBLE, Einheit 0 bzw. Bauern geht hier nicht
 UNIT0USED, Einheit 0 verwendet
 UNITALREADYHAS, Einheit %s hat schon einen 
@@ -177,7 +179,6 @@ UNITNEEDSTEACHERS, Einheit %s kann noch %d Lehrer gebrauchen.
 UNITNOTONSHIPBUTONSHIP, Einheit %s ist evtl. nicht auf Schiff %s sondern auf Schiff %s
 UNITNOTPOSSIBLEHERE, Einheit '%s' geht hier nicht
 UNITONSHIPHASMOVED, Einheit %s auf Schiff %s hat sich schon bewegt
-UNITS, Einheiten
 UNRECOGNIZEDDIRECTION, Richtung nicht erkannt
 UNRECOGNIZEDOBJECT, Objekt nicht erkannt
 UNRECOGNIZEDOPTION, Option unbekannt
@@ -190,7 +191,6 @@ UNRECOGNIZEDSKILL, Talent nicht erkannt
 UNRECOGNIZEDSPELL, Zauberspruch nicht erkannt
 USED1, Stattdessen 1 benutzt
 USEEMAIL, eMail bitte mit EMAIL setzen
-USEWHAT, Benutze was?
 USINGUNITINSTEAD, Benutze stattdessen Einheit 
 WARNINGS, ~%d Warnungen
 WARNINGLEVEL, Warning Level %d.\n

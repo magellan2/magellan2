@@ -18,7 +18,7 @@ Ausdauer
 Bogenschießen
 Katapultbedienung
 Reiten
-Taktik, 200
+Taktik, 500
 Bergbau
 Burgenbau
 Holzfällen
@@ -41,4 +41,3 @@ Stangenwaffen
 Schiffbau
 
 # Weitere Talente können beliebig eingefügt werden.
-

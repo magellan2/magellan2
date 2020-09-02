@@ -14,7 +14,7 @@ endurance
 bow
 catapult
 riding
-tactics, 200
+tactics, 500
 mining
 masonry
 forestry
@@ -36,4 +36,3 @@ polearm
 shipcraft
 
 # additional talents can be added at will
-

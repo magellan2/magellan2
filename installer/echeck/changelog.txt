@@ -1,0 +1,23 @@
+Echeck Version 4.4.4
+
+4.4.4
+
+- LERNE AUTO
+
+4.4
+
+- Fehlende Gegenstände nachgetragen
+- BENENNE ALIANZ
+- Bug 2349, Übersetzungsfehler 
+- Bug 2352, Crash bei mehreren Parteien
+
+4.3.2
+
+- BENUTZE <anzahl>
+- Waffenloser Kampf
+
+4.2.1
+
+- kleinere Speicherfehler mit valgrind behoben [enno]
+- Bugfix: SORT AFTER, not SORT BEHIND [enno]
+

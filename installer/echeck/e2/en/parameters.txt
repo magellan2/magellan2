@@ -7,7 +7,7 @@
 #############################################################################
 
 ALL,    All
-EACH,    Each
+EACH, Each
 PEASANTS, Peasants
 CASTLE,   Castle
 BUILDING, Building
@@ -19,12 +19,8 @@ AGGRESSIVE, aggressive
 DEFENSIVE,  defensive
 CONTROL,  Control
 HERBS,    Herbs
+TREES,  Trees
 NOT,    Not
-
-NEXT,   Next
-# ^^  this is no command for ECheck, but a parameter
-
-FACTION,  Eressea
 FACTION,  Faction
 PERSON,   Men
 REGION,   Region
@@ -43,10 +39,7 @@ LEVEL,    Level
 HORSES,   Horses
 FOREIGN,  foreign
 NUMBER,   Number
-SEED,        Seed
-MALLORNSEED, Mallorn Seed
-# ^^ PLANT
-LOCALE,   Locale
 
 BEFORE, before
 AFTER, after
+AUTO, auto

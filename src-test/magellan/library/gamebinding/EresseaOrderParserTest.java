@@ -700,6 +700,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("LERNE Hiebwaffen 500"); // costs
     checkOrder("LERNE Magie \"Gwyrrd\"");
     checkOrder("LERNE Waffenloser~Kampf");
+    checkOrder("LERNE AUTO Hiebwaffen", true);
+    checkOrder("LERNE AUTO", false);
+    checkOrder("LERNE AUTO Hiebwaffen 500", false);
     checkOrder("LERNE", false);
     checkOrder("LERNE foo", false);
     checkOrder("LERNE Waffenloser Kampf", false);

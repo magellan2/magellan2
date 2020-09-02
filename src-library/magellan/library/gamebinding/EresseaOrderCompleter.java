@@ -1055,6 +1055,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command Lerne. */
   public void cmpltLerne() {
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_AUTO), " "));
     addSkills();
   }
 

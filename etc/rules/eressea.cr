@@ -186,7 +186,7 @@ ORDER "LANGUAGE"
 "LANGUAGE";locale_en
 
 ORDER "LEARN"
-"LERNE Talent [1]";syntax
+"LERNE (Talent [1])|(AUTO Talent)";syntax
 "LERNE";locale_de
 "LERNEN";locale_de
 "LEARN";locale_en

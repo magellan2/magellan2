@@ -1974,6 +1974,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
   // ************* LERNE
   protected class LerneReader extends OrderHandler {
+    private boolean all;
+
     public LerneReader(OrderParser parser) {
       super(parser);
     }
@@ -1997,6 +1999,11 @@ public class EresseaOrderParser extends AbstractOrderParser {
       getOrder().setLong(true);
       OrderToken t = getNextToken();
 
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_AUTO))) {
+        t.ttype = OrderToken.TT_KEYWORD;
+        getOrder().setAuto(true);
+        t = getNextToken();
+      }
       if (isString(t) && token.followedBySpace()) {
         retVal = new StringChecker(false, false, true, false) {
           SkillType skill = null;
@@ -2036,16 +2043,16 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = token;
 
-      if (isNumeric(t.getText()) == true) {
+      if (!getOrder().isAuto() && isNumeric(t.getText()) == true) {
         retVal = readFinalNumber(t);
-      } else if (isString(t) && !isEoC(t)
+      } else if (!getOrder().isAuto() && isString(t) && !isEoC(t)
           && skill.equals(getRules().getSkillType(EresseaConstants.S_MAGIE))) {
         retVal = readFinalString(t);
       } else {
         retVal = checkFinal(t);
       }
 
-      if (shallComplete(token, t)) {
+      if (!getOrder().isAuto() && shallComplete(token, t)) {
         getCompleter().cmpltLerneTalent(skill);
       }
       return retVal;

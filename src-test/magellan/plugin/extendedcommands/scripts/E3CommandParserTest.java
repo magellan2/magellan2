@@ -393,6 +393,15 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript 1 1 // $cript +1 bla", unit, 1);
     assertWarning("bla", unit, 2);
+
+    unit.clearOrders();
+    unit.deleteAllTags();
+    unit.addOrder("// $cript 1 $cript Benoetige 1 Silber");
+
+    parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("; $cript Benoetige 1 Silber", unit, 1);
+    assertWarning("braucht 1 mehr Silber", unit, 2);
   }
 
   /**

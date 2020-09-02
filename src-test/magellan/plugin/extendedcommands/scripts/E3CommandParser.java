@@ -1270,6 +1270,9 @@ class E3CommandParser {
       int period = 0;
       int length = Integer.MAX_VALUE;
       int textIndex = 1;
+
+      setChangedOrders(true);
+
       if (tokens.length >= 2) {
         try {
           period = Integer.parseInt(tokens[1]);

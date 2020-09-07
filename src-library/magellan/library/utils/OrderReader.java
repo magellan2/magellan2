@@ -33,6 +33,7 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderReader;
+import magellan.library.impl.NullUnit;
 import magellan.library.rules.GenericRules;
 import magellan.library.utils.logging.Logger;
 
@@ -72,7 +73,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
 
     if (data == null) {
       OrderReader.log
-      .info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
+          .info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
       data = new CompleteData(new GenericRules());
     }
 
@@ -362,13 +363,14 @@ public abstract class OrderReader implements GameSpecificOrderReader {
           // currentUnit.setFaction(faction);
           //
           // data.addUnit(currentUnit);
+          currentUnit = new NullUnit();
           status.unknownUnits++;
         } else {
           if (currentUnit.isOrdersConfirmed() && doNotOverwriteConfirmedOrders) {
             // we have a unit with confirmed orders and no OK for
             // changing anything
             // feature request #296, Fiete
-            currentUnit = null;
+            currentUnit = new NullUnit();
             status.confirmedUnitsNotOverwritten++;
           } else {
             /*
@@ -390,7 +392,7 @@ public abstract class OrderReader implements GameSpecificOrderReader {
           currentUnit.setOrdersConfirmed(autoConfirm);
         }
       } else {
-        currentUnit = null;
+        currentUnit = new NullUnit();
       }
     }
   }

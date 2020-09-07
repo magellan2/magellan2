@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -539,7 +540,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   protected static List<String> getAllSetNames(Properties localSettings, String propKey) {
-    List<String> allSets = new LinkedList<String>();
+    List<String> allSets = new ArrayList<String>();
     StringTokenizer s =
         new StringTokenizer(
             localSettings.getProperty(propKey + PropertiesHelper.ADVANCEDSHAPERENDERER_S_SETS, ""),

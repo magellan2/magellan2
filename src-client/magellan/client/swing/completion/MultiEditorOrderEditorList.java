@@ -36,6 +36,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -1098,16 +1099,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       f = null;
     }
 
-    List<Unit> l = new LinkedList<Unit>(r.units());
+    boolean filter = f != null || !isEditAllFactions();
+    List<Unit> l = new ArrayList<Unit>(filter ? 0 : r.units().size());
 
-    for (Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
-      Unit u = iter.next();
-
-      if (!(isEditAllFactions() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))
-          || (f != null && !f.equals(u.getFaction()))) {
-        iter.remove();
+    for (Unit u : r.units()) {
+      if ((isEditAllFactions() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))
+          && (f == null || f.equals(u.getFaction()))) {
+        l.add(u);
       }
     }
+
     loadEditors(l);
   }
 

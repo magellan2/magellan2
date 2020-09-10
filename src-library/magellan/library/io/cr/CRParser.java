@@ -100,6 +100,7 @@ import magellan.library.utils.transformation.TwoLevelTransformer;
  * Parser for cr-files.
  */
 public class CRParser extends AbstractReportParser implements RulesIO, GameDataIO {
+  @SuppressWarnings("hiding")
   protected static final Logger log = Logger.getInstance(CRParser.class);
 
   /** These special tags are used by TreeHelper and are therefore reserved. */
@@ -441,6 +442,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       // read message attributes
       sc.getNextToken(); // skip MESSAGE xx
 
+      String section = null;
       while (!sc.eof && !sc.isBlock) {
         if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("type")) {
           final IntegerID typeID = IntegerID.create(sc.argv[0]);
@@ -456,6 +458,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           msg.setText(originTranslate(sc.argv[0]));
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("toolacknowledged")) {
           msg.setAcknowledged(sc.argv[0].equals("1"));
+        } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("section")) {
+          section = sc.argv[0];
         } else if (sc.argc == 2) {
           if (msg.getAttributes() == null) {
             msg.setAttributes(CollectionFactory.<String, String> createSyncOrderedMap(4));
@@ -486,6 +490,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         sc.getNextToken();
       }
 
+      if (section != null && msg.getMessageType() != null && msg.getMessageType().getSection() == null) {
+        msg.getMessageType().setSection(section);
+      }
       if (list == null) {
         list = new ArrayList<Message>();
       }
@@ -2761,7 +2768,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseHotSpot(GameData data) throws IOException {
-    final IntegerID id = IntegerID.create(sc.argv[0].substring(8));
+    // final IntegerID id = IntegerID.create(sc.argv[0].substring(8));
     // HotSpots have been replaced by Bookmarks
     log.warn("replacing obsolete HOTSPOT by bookmark");
     BookmarkBuilder bookmark = MagellanFactory.createBookmark();

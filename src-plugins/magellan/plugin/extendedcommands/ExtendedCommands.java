@@ -833,7 +833,7 @@ public class ExtendedCommands {
 
     for (SnippetEvent event : evaluation) {
       // TODO do proper logging of warnings
-      log.finer("eval: " + event.value() + "\n" + source);
+      log.finest("eval: " + event.value() + "\n" + source);
       switch (event.status()) {
       case REJECTED: {
         Stream<Diag> diags = sh.diagnostics(event.snippet());

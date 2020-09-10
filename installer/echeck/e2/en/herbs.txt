@@ -7,7 +7,6 @@
 # Comments start with a #; empty lines are allowed.
 #############################################################################
 
-
 flatroot;           flatroots
 tangy temerity;     tangy temerities
 owlsgaze;           owlsgazes

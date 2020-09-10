@@ -134,22 +134,22 @@ public class JECheck extends Reader {
         // continue
       }
 
+      // the loop is left when the process has terminated
+      // termination is indicated by the exitValue() method
+      // throwing no IllegalStateException
+      try {
+        p.exitValue();
+        break;
+      } catch (IllegalThreadStateException e) {
+        //
+      }
+
       // bail out if ECheck runs for longer than 20 secs
       if ((System.currentTimeMillis() - start) > 20000) {
         p.destroy();
         JECheck.log.warn("JECheck.JECheck(): echeck was terminated since it ran for too long");
 
         break;
-      }
-
-      // the loop is left when the process has terminated
-      // termination is indicated by the exitValue() method
-      // throwing no IllegalStateException
-      try {
-        p.exitValue();
-
-        break;
-      } catch (IllegalThreadStateException e) {
       }
     }
 
@@ -308,97 +308,106 @@ public class JECheck extends Reader {
     String line = null;
     int errors = -1;
     int warnings = -1;
-
     boolean error = false;
+    String fakeMessage = "-" + JECheck.FIELD_SEP + "-1" + JECheck.FIELD_SEP + String.valueOf(ECheckMessage.MESSAGE)
+        + JECheck.FIELD_SEP;
 
-    line = JECheck.getLine(in);
-
-    if (line == null)
-      throw new java.text.ParseException("ECheck output is empty", 0);
-
-    //
-    // 2002.05.05 pavkovic: some more documentation:
-    // for echeck <= 4.1.4, the first line looked like
-    // <filename>|<version>|<date><filename>:<faction>:<factionid>
-    // That is ok for the code below.
-    // In newer versions, the first two lines look like
-    // <filename>|<version>|<date>
-    // <filename>:<faction>:<factionid>
-    // To fake the old behaviour we simulate the "first"-line of echeck <= 4.1.4
-    //
-
-    // 2006.08.30 fiete: echeck may produce error messages....
-    // we will try to just skip these messages
-    // actuel example with version 4.3.2-3:
-    // Fehler in Datei meldungen.txt Zeile 13: `BEHIND'
-    // Error in file meldungen.txt line 13: `BEHIND'
-    // yes, both languages
-
-    while (line.startsWith("Fehler") || line.startsWith("Error")) {
+    try {
       line = JECheck.getLine(in);
-    }
 
-    if (line.indexOf(":faction:") == -1) {
-      line += JECheck.getLine(in);
-    }
+      if (line == null)
+        throw new java.text.ParseException("ECheck output is empty", 0);
 
-    /* parse header <filename>:faction:<factionid> */
-    StringTokenizer tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
+      //
+      // 2002.05.05 pavkovic: some more documentation:
+      // for echeck <= 4.1.4, the first line looked like
+      // <filename>|<version>|<date><filename>:<faction>:<factionid>
+      // That is ok for the code below.
+      // In newer versions, the first two lines look like
+      // <filename>|<version>|<date>
+      // <filename>:<faction>:<factionid>
+      // To fake the old behaviour we simulate the "first"-line of echeck <= 4.1.4
+      //
 
-    if (tokenizer.countTokens() == 4) {
-      tokenizer.nextToken();
+      // 2006.08.30 fiete: echeck may produce error messages....
+      // we will try to just skip these messages
+      // actuel example with version 4.3.2-3:
+      // Fehler in Datei meldungen.txt Zeile 13: `BEHIND'
+      // Error in file meldungen.txt line 13: `BEHIND'
+      // yes, both languages
 
-      if (!tokenizer.nextToken().equalsIgnoreCase("version")) {
-        error = true;
-      }
-    } else {
-      error = true;
-    }
-
-    /* check for error in header */
-    if (error)
-      throw new java.text.ParseException("The header of the ECheck output seems to be corrupt: "
-          + line, 0);
-
-    /* parse messages */
-    line = JECheck.getLine(in);
-
-    while (line != null) {
-      tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
-
-      if (tokenizer.countTokens() >= 4) {
-        ECheckMessage msg = new ECheckMessage(line);
-        msgs.add(msg);
-      } else {
-        break;
+      while (line.startsWith("Fehler") || line.startsWith("Error")) {
+        line = JECheck.getLine(in);
       }
 
-      line = JECheck.getLine(in);
-    }
+      if (line.indexOf(":faction:") == -1) {
+        line += JECheck.getLine(in);
+      }
 
-    if (line == null)
-      throw new java.text.ParseException("The ECheck output seems to miss a footer", 0);
+      /* parse header <filename>:faction:<factionid> */
+      StringTokenizer tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
 
-    /* parse footer */
-    if (tokenizer.countTokens() == 3) {
-      tokenizer.nextToken();
+      if (tokenizer.countTokens() == 4) {
+        tokenizer.nextToken();
 
-      if (tokenizer.nextToken().equalsIgnoreCase("warnings")) {
-        warnings = Integer.parseInt(tokenizer.nextToken());
+        if (!tokenizer.nextToken().equalsIgnoreCase("version")) {
+          error = true;
+        }
       } else {
         error = true;
       }
 
+      /* check for error in header */
+      if (error)
+        throw new java.text.ParseException("The header of the ECheck output seems to be corrupt: "
+            + line, 0);
+
+      /* parse messages */
       line = JECheck.getLine(in);
 
-      if (line != null) {
+      while (line != null) {
         tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
 
-        if (tokenizer.countTokens() == 3) {
-          tokenizer.nextToken();
+        if (tokenizer.countTokens() >= 4) {
+          ECheckMessage msg = new ECheckMessage(line);
+          msgs.add(msg);
+        } else {
+          break;
+        }
 
-          if (tokenizer.nextToken().equalsIgnoreCase("errors")) {
-            errors = Integer.parseInt(tokenizer.nextToken());
+        line = JECheck.getLine(in);
+      }
+
+      if (line == null) {
+        if (msgs.size() > 0) {
+          msgs.add(new ECheckMessage(fakeMessage + Resources.get("jecheck.msg.nofooter")));
+        } else
+          throw new java.text.ParseException("The ECheck output seems to miss a footer", 0);
+      }
+
+      /* parse footer */
+      if (tokenizer.countTokens() == 3) {
+        tokenizer.nextToken();
+
+        if (tokenizer.nextToken().equalsIgnoreCase("warnings")) {
+          warnings = Integer.parseInt(tokenizer.nextToken());
+        } else {
+          error = true;
+        }
+
+        line = JECheck.getLine(in);
+
+        if (line != null) {
+          tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
+
+          if (tokenizer.countTokens() == 3) {
+            tokenizer.nextToken();
+
+            if (tokenizer.nextToken().equalsIgnoreCase("errors")) {
+              errors = Integer.parseInt(tokenizer.nextToken());
+            } else {
+              error = true;
+            }
           } else {
             error = true;
           }
@@ -408,19 +417,10 @@ public class JECheck extends Reader {
       } else {
         error = true;
       }
-    } else {
-      error = true;
+
+    } finally {
+      in.close();
     }
-
-    if (error)
-      throw new java.text.ParseException("The footer in the ECheck output seems to be corrupt: "
-          + line, 0);
-
-    in.close();
-
-    if ((errors == -1) || (warnings == -1))
-      throw new java.text.ParseException(
-          "Unable to determine number of ECheck errors and warnings in ECheck summary.", 0);
 
     int errorsFound = 0;
     int warningsFound = 0;
@@ -433,14 +433,27 @@ public class JECheck extends Reader {
       }
     }
 
-    if (errorsFound != errors)
-      throw new java.text.ParseException(
-          "The number of errors found does not match the summary information from ECheck.", 0);
-
-    if (warningsFound != warnings)
-      throw new java.text.ParseException(
-          "The number of warnings found does not match the summary information from ECheck.", 0);
-
+    if (error) {
+      if (msgs.size() > 0) {
+        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.badfooter.text", line)));
+      } else
+        throw new java.text.ParseException(Resources.get("echeckpanel.msg.badfooter.text", line), 0);
+    } else if ((errors == -1) || (warnings == -1)) {
+      if (msgs.size() > 0) {
+        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nowarnings.text")));
+      } else
+        throw new java.text.ParseException(Resources.get("echeckpanel.msg.nowarnings.text"), 0);
+    } else if (errorsFound != errors) {
+      if (msgs.size() > 0) {
+        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.noerrormatch.text")));
+      } else
+        throw new java.text.ParseException(Resources.get("echeckpanel.msg.noerrormatch.text"), 0);
+    } else if (warningsFound != warnings) {
+      if (msgs.size() > 0) {
+        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nowarningmatch.text")));
+      } else
+        throw new java.text.ParseException(Resources.get("echeckpanel.msg.nowarningmatch.text"), 0);
+    }
     return msgs;
   }
 
@@ -506,10 +519,10 @@ public class JECheck extends Reader {
     try {
       unitOrder =
           data.getGameSpecificStuff().getOrderChanger().getOrderO(EresseaConstants.OC_UNIT,
-              Locales.getOrderLocale(), new Object[] { true }).getText();
+              Locales.getOrderLocale()).getText();
       regionOrder =
           data.getGameSpecificStuff().getOrderChanger().getOrderO(EresseaConstants.OC_REGION,
-              Locales.getOrderLocale(), new Object[] { true }).getText();
+              Locales.getOrderLocale()).getText();
     } catch (RulesException e) {
       // orrder is null
     }
@@ -539,7 +552,7 @@ public class JECheck extends Reader {
 
           String token = tokenizer.nextToken();
 
-          if (unitOrder != null && unitOrder.startsWith(token)) {
+          if (unitOrder != null && unitOrder.startsWith(token) && tokenizer.hasMoreTokens()) {
             try {
               ID id = UnitID.createUnitID(tokenizer.nextToken(), data.base);
               Unit u = data.getUnit(id);
@@ -552,7 +565,7 @@ public class JECheck extends Reader {
             } catch (Exception e) {
               JECheck.log.error(e);
             }
-          } else if (regionOrder != null && regionOrder.startsWith(token)) {
+          } else if (regionOrder != null && regionOrder.startsWith(token) && tokenizer.hasMoreTokens()) {
             try {
               CoordinateID id = CoordinateID.parse(tokenizer.nextToken(), ",");
               Region r = data.getRegion(id);

@@ -16,9 +16,10 @@ sawmill
 stable
 monument
 dam
-caravanserai
+caravanserei
 tunnel
 tavern
+stonecircle
 marketplace
 guard tower
 guard house

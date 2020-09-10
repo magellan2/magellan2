@@ -1,3 +1,10 @@
+2020-08-13/ Build 726 - stm (stm2@users.sourceforge.net)
+    * added Help button for ExtCmds
+    * display damage after GIVE SHIP
+    * display convoys in faction stats
+    * order keywords must have 3 letters
+    * SPRACHE command
+
 2020-07-02/ Build 719 - stm (stm2@users.sourceforge.net)
     * improved testing and output of ExtendedCommands
     * added api doc

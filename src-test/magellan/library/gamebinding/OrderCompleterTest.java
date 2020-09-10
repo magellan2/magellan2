@@ -86,13 +86,13 @@ public class OrderCompleterTest extends MagellanTestWithResources {
   @Test
   public void testEmptyReader() {
     List<Completion> completions = completer.getCompletions(unit, "");
-    assertEquals(40, completions.size());
+    assertEquals(41, completions.size());
     assertTrue(completions.contains(new Completion("ARBEITE")));
     assertTrue(completions.contains(new Completion("ATTACKIERE", " ")));
     assertFalse(completions.contains(new Completion("UNTERHALTE", " ")));
 
     completions = completer.getCompletions(unit, "");
-    assertEquals(40, completions.size());
+    assertEquals(41, completions.size());
     assertTrue(completions.contains(new Completion("ARBEITE")));
     assertTrue(completions.contains(new Completion("ATTACKIERE", " ")));
     assertFalse(completions.contains(new Completion("UNTERHALTE", " ")));
@@ -102,10 +102,10 @@ public class OrderCompleterTest extends MagellanTestWithResources {
     assertTrue(completions.contains(new Completion("ARBEITE")));
 
     completions = completer.getCompletions(unit, "@");
-    assertEquals(40, completions.size());
+    assertEquals(41, completions.size());
 
     completions = completer.getCompletions(unit, "!");
-    assertEquals(40, completions.size());
+    assertEquals(41, completions.size());
   }
 
   /**

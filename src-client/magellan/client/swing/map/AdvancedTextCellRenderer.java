@@ -30,9 +30,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -361,18 +361,15 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     do {
       changed = false;
 
-      Iterator<String> it = buffer.iterator();
-      int index = 0;
+      ListIterator<String> it = buffer.listIterator();
 
       while (it.hasNext() && !changed) {
         String part = it.next();
 
         if (getWidth(part) > maxWidth) {
-          breakStringImpl(part, maxWidth, index);
+          breakStringImpl(part, maxWidth, it);
           changed = true;
         }
-
-        index++;
       }
     } while (changed);
 
@@ -385,7 +382,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     return strbuf;
   }
 
-  private void breakStringImpl(String part, int mw, int index) {
+  private void breakStringImpl(String part, int mw, ListIterator<String> it) {
     char chr[] = part.toCharArray();
     int len = chr.length;
 
@@ -396,8 +393,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     if (breakLines) {
       String first = new String(chr, 0, len);
       String rest = new String(chr, len, chr.length - len);
-      buffer.set(index, rest);
-      buffer.add(index, first);
+      it.set(first);
+      it.add(rest);
     } else {
       try {
         chr[len - 1] = '.';
@@ -408,7 +405,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       }
 
       part = new String(chr, 0, len);
-      buffer.set(index, part);
+      it.set(part);
     }
   }
 

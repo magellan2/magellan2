@@ -169,7 +169,7 @@ ORDER "BUY"
 "BUY";locale_en
 
 ORDER "CONTACT"
-"KONTAKTIERE u1";syntax
+"KONTAKTIERE (EINHEIT)|(FACTION) u1";syntax
 "KONTAKTIERE";locale_de
 "KONTAKTIEREN";locale_de
 "CONTACT";locale_en
@@ -180,22 +180,27 @@ ORDER "TEACH"
 "LEHREN";locale_de
 "TEACH";locale_en
 
+ORDER "LANGUAGE"
+"SPRACHE Sprache";syntax
+"SPRACHE";locale_de
+"LANGUAGE";locale_en
+
 ORDER "LEARN"
-"LERNE Talent [1]";syntax
+"LERNE (Talent [1])|(AUTO Talent)";syntax
 "LERNE";locale_de
 "LERNEN";locale_de
 "LEARN";locale_en
+
+ORDER "LOCALE"
+"LOCALE Sprache";syntax
+"LOCALE";locale_de
+"LOCALE";locale_en
+1;internal
 
 ORDER "SUPPLY"
 "LIEFERE (u1|0) ( 1 | (JE 2) | ALLES  Ding | PERSONEN ) | ALLES | KRÄUTER | KOMMANDO | EINHEIT";syntax
 "LIEFERE";locale_de
 "SUPPLY";locale_en
-
-ORDER "LOCALE"
-"LOCALE";syntax
-"LOCALE";locale_de
-"LOCALE";locale_en
-1;internal
 
 ORDER "MAKE"
 "MACHE [(TEMP u1 [Name]) | ([1] Ding [s1|b1]) | ([1] STRAßE Richtung)]";syntax
@@ -333,7 +338,7 @@ ORDER "ORIGIN"
 "ORIGIN";locale_en
 
 ORDER "FORGET"
-"VERGESSE Talent";syntax
+"VERGISS Talent";syntax
 "VERGISS";locale_de
 "VERGESSEN";locale_de
 "FORGET";locale_en

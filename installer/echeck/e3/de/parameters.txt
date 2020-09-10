@@ -10,7 +10,7 @@
 ############################################################################
 
 ALL,         Alles
-EACH,        Je
+EACH, Je
 PEASANTS,    Bauern
 CASTLE,      Burg
 BUILDING,    Gebäude
@@ -22,12 +22,8 @@ AGGRESSIVE,  aggressiv
 DEFENSIVE,   defensiv
 CONTROL,     Kommando
 HERBS,       Kräuter
+TREES,       Bäume
 NOT,         Nicht
-
-NEXT,        Nächster
-# ^^ muß hier als Parameter stehen!
-
-FACTION,     Eressea
 FACTION,     Partei
 PERSON,      Personen
 REGION,      Region
@@ -46,12 +42,13 @@ HORSES,      Pferde
 FOREIGN,     fremdes
 NUMBER,      Nummer
 # ^^ TARNE PARTEI NUMMER
-LOCALE,      Locale
-ALLIANCE,    Allianz
+
+BEFORE,      vor
+AFTER,       hinter
+ALLIANCE,    allianz
 KICK,        Ausstoßen
 LEAVE,       Verlassen
 NEW,         Neu
 INVITE,      Einladen
 JOIN,        Beitreten
-BEFORE,      vor
-AFTER,       hinter
+AUTO, auto

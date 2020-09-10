@@ -14,6 +14,7 @@
 package magellan.library.impl;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -157,7 +158,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     if (capacity != -1)
       return capacity;
     return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
-        .getCapacity() * 100 * getAmount());
+        .getCapacity() * 100 * getAmount(), getDamageRatio() * 100);
   }
 
   /**
@@ -168,7 +169,18 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    *         in silver
    */
   public int getModifiedMaxCapacity() {
-    return (getMaxCapacity(getShipType().getCapacity() * 100 * getModifiedAmount()));
+    return getMaxCapacity(getShipType().getCapacity() * 100 * getModifiedAmount(), getModifiedDamageRatio100());
+  }
+
+  private int getModifiedDamageRatio100() {
+    int dr = damageRatio * 100;
+    for (ShipTransferRelation tr : getShipTransferRelations()) {
+      if (!equals(tr.ship)) {
+        dr = tr.getDamage();
+      }
+    }
+
+    return Math.max(0, Math.min(10000, dr));
   }
 
   /**
@@ -176,12 +188,13 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * capacity was <code>maxCapacity</code>.
    *
    * @param maxCapacity The capacity is calculated relative to this capacity
+   * @param damageRatio100
    * @return The max damaged capacity
    */
-  private int getMaxCapacity(int maxCapacity) {
+  private int getMaxCapacity(int maxCapacity, int damageRatio100) {
     // (int)(maxCapacity*(100-damageRatio)/100)
-    return new BigDecimal(maxCapacity).multiply(new BigDecimal(100 - damageRatio)).divide(
-        new BigDecimal(100), BigDecimal.ROUND_DOWN).intValue();
+    return new BigDecimal(maxCapacity).multiply(new BigDecimal(10000 - damageRatio100)).divide(
+        new BigDecimal(10000), RoundingMode.DOWN).intValue();
   }
 
   /**

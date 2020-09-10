@@ -9,9 +9,9 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -131,7 +131,7 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
     replacerMap = magellan.library.utils.replacers.ReplacerHelp.getDefaultReplacerFactory();
 
     if (rList == null) {
-      rList = new LinkedList<String>();
+      rList = new ArrayList<String>();
     }
 
     rList.clear();

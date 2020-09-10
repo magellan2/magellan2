@@ -36,6 +36,7 @@ public class LearnOrder extends SimpleOrder {
    * The name of the learned skill.
    */
   public String skillName;
+  private boolean auto;
 
   /**
    * @param tokens
@@ -45,4 +46,17 @@ public class LearnOrder extends SimpleOrder {
     super(tokens, text);
   }
 
+  /**
+   * Set for LERNE AUTO
+   */
+  public void setAuto(boolean auto) {
+    this.auto = auto;
+  }
+
+  /**
+   * Returns true if this is a LERNE AUTO order
+   */
+  public boolean isAuto() {
+    return auto;
+  }
 }

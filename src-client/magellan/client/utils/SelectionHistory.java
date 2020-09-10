@@ -72,7 +72,7 @@ public class SelectionHistory {
   /**
    * Number of entries in the history list.
    */
-  public static final int HISTORY_SIZE = 20;
+  public static final int HISTORY_SIZE = 42;
 
   private static EventHook eventHook = new EventHook();
   private static Bucket<SelectionEntry> history = new Bucket<SelectionEntry>(HISTORY_SIZE);

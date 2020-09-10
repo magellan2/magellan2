@@ -48,6 +48,8 @@ import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import magellan.library.Rules;
 import magellan.library.rules.OrderType;
@@ -200,24 +202,63 @@ public class Resources {
     if (result == null) {
       result = new StringBuilder();
     }
+    Set<String> keys1 = new HashSet<String>(), keys2 = new HashSet<String>();
     for (Enumeration<String> keys = firstBundle.getKeys(); keys.hasMoreElements();) {
-      String key = keys.nextElement();
-      boolean foundIt = false;
-      for (Enumeration<String> otherKeys = otherBundle.getKeys(); otherKeys.hasMoreElements()
-          && !foundIt;) {
-        String otherKey = otherKeys.nextElement();
-        if (key.equals(otherKey)) {
-          foundIt = true;
+      keys1.add(keys.nextElement());
+    }
+    for (Enumeration<String> keys = otherBundle.getKeys(); keys.hasMoreElements();) {
+      keys2.add(keys.nextElement());
+    }
+    boolean identical = true;
+    for (String key : compareSets(keys1, keys2).get(0)) {
+      result.append("key ").append(key).append(" in bundle ").append(l).append(
+          " not available in bundle ").append(l2).append("\n");
+      identical = false;
+    }
+    for (String key : compareSets(keys1, keys2).get(1)) {
+      result.append("key ").append(key).append(" in bundle ").append(l2).append(
+          " not available in bundle ").append(l).append("\n");
+      identical = false;
+    }
+    if (identical) {
+      for (Enumeration<String> keys = firstBundle.getKeys(); keys.hasMoreElements();) {
+        String key = keys.nextElement();
+        String val1 = firstBundle.getString(key), val2 = otherBundle.getString(key);
+        final String regex = "([{][0-9]+[}])";
+
+        final Matcher m1 = Pattern.compile(regex).matcher(val1);
+        final Matcher m2 = Pattern.compile(regex).matcher(val2);
+        Set<String> vars1 = new HashSet<String>(), vars2 = new HashSet<String>();
+        while (m1.find()) {
+          vars1.add(m1.group(0));
+        }
+        while (m2.find()) {
+          vars2.add(m2.group(0));
+        }
+        if (compareSets(vars1, vars2).get(0).size() > 0 || compareSets(vars1, vars2).get(1).size() > 0) {
+          result.append("value to key ").append(key).append(" in bundle ").append(l).append(
+              " '").append(val1).append("' does not match '").append(val2).append("' in bundle ")
+              .append(l2).append("\n");
         }
       }
-      if (!foundIt) {
-        result.append("key ").append(key).append(" in bundle ").append(l).append(
-            " not available in bundle ").append(l2).append("\n");
+    }
+    return result;
+  }
+
+  private List<Collection<String>> compareSets(Set<String> keys1, Set<String> keys2) {
+    List<Collection<String>> result = new ArrayList<Collection<String>>(2);
+    result.add(new LinkedList<String>());
+    result.add(new LinkedList<String>());
+
+    for (String k1 : keys1) {
+      if (!keys2.contains(k1)) {
+        result.get(0).add(k1);
       }
-      /*
-       * if (!otherBundle.containsKey(key)) { log.warn("key " + key + " in bundle " +
-       * firstBundle.getLocale() + " not available in bundle " + otherBundle.getLocale()); }
-       */
+    }
+    for (String k2 : keys2) {
+      if (!keys1.contains(k2)) {
+        result.get(1).add(k2);
+      }
     }
     return result;
   }

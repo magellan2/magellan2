@@ -10,12 +10,12 @@
 WORK,         Arbeiten
 ATTACK,       Attackieren
 STEAL,        Beklauen
-SIEGE,        Belagere
 NAME,         Benennen
 USE,          Benutzen
 DESCRIBE,     Beschreiben
 ENTER,        Betreten
 GUARD,        Bewachen
+PAY,          Bezahlen
 MESSAGE,      Botschaft
 END,          Ende
 RIDE,         Fahren
@@ -47,7 +47,7 @@ LEAVE,        Verlassen
 CAST,         Zaubere
 SHOW,         Zeigen
 DESTROY,      Zerstören
-FORGET,       Vergessen
+FORGET,       Vergiss
 DEFAULT,      Default
 COMMENT,      //
 ROUTE,        Route
@@ -56,18 +56,23 @@ BREED,        Züchten
 ORIGIN,       Ursprung
 EMAIL,        Email
 RESERVE,      Reservieren
-CLAIM, Beanspruchen
+CLAIM,        Beanspruchen
 BANNER,       Banner
 NUMBER,       Nummer
-SCHOOL,       Magiegebiet
 PIRACY,       Piraterie
 RESTART,      Neustart
 GROUP,        Gruppe
 SORT,         Sortieren
 PREFIX,       Präfix
-PROMOTION,    Beförderung
-CLAIM,        Beanspruchen
+PROMOTE,      Befördere
+LANGUAGE,     Sprache
+ORDERSTART,   Eressea
+ORDERSTART,   Partei
+NEXT,         Nächster
+LOCALE,       Locale
+UNIT,         Einheit
+REGION,       Region
 
-# SCHOOL      Schule -- nicht mehr gültig
 # NEXT, Nächster     ist KEIN BEFEHL für ECheck, sondern ein PARAMETER!
 # dies ist aus internen Gründen notwendig, also entsprechend dort eintragen
+

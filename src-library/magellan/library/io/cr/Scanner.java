@@ -141,7 +141,7 @@ public class Scanner {
 
           String str = line.substring(i, lastQuote);
           if (str.contains("\\")) {
-            if (str.matches(".*[\\\\][^\\\\\"].*")) {
+            if (str.matches(".*[^\\\\][\\\\][^\\\\\"].*")) {
               Scanner.log.warn("Wrong escape in line " + lnr + ": " + line);
             }
             str = Umlaut.replace(str, "\\\"", "\"");

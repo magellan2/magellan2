@@ -18,7 +18,7 @@ myrrh; myrrh, 5
 oil; oil, 3
 silk; silk, 6
 incense; incense, 4
-#
+
 iron; iron
 wood; wood
 stone; stones
@@ -29,17 +29,16 @@ sword; swords
 spear; spears
 crossbow; crossbows
 bow; bows
-#great bow; great bows
 mallorn spear; mallorn spears
+mallorn lance; mallorn lance
 mallorn crossbow; mallorn crossbows
-mallorn bow; mallorn bows;
-mallorn lance; mallorn lances
+mallorn bow; mallorn bows
+seed; seeds
+mallorn seed; mallorn seeds
 chainmail; chainmails
 platemail; platemails
 claymore; claymores
-#broadsword; broadswords
 axe; axes
-#
 elven bow; elven bows
 laen sword; laen swords
 laen shield; laen shields
@@ -49,20 +48,32 @@ shield; shields
 halberd; halberds
 lance; lances
 mallorn; mallorn
-ammunition; ammunition;
+mallorn seed; mallorn seeds
+ammunition; ammunition
 adamantium; adamantium
 adamantium axe; adamantium axes
 adamantium plate; adamantium plates
-
-seed; seeds
 rusty sword; rusty swords
+rusty claymore; rusty claymores
+rusty axe; rusty axes
+rusty halberd; rusty halberds
 rusty shield; rusty shields
-rusty halberd; rusty halberd
-rustychainmail; rustychainmail
-rustyplatemail; rustyplatemails
+rusty chainmail; rusty chainmails
+solar sail; solar sails
+snow globe; snow globes
+snowman; snowmen
+christmas tree; christmas trees
+stardust; stardust
+flaming sword; flaming swords
+runesword; runeswords
 amulet of true seeing; amulets of true seeing
-ring of invisibility;rings of invisibility
+ring of quick fingers; rings of quick fingers
 ring of power; rings of power
+ring of invisibility; rings of invisibility
+bag of conservation; bags of conservation
+magic bag; magic bags
+
+
 # Ok, these were the official items; you shouldn't change this list
 # if you count on the results of ECheck...
 # However, you can append additional items; no, I won't answer any

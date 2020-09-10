@@ -33,9 +33,9 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import magellan.client.Client;
+import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.MagellanDesktop;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -101,48 +101,51 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
     final JPanel north = new JPanel(new WrapLayout());
 
+    addButton(north,
+        "extended_commands.button.load.caption",
+        "etc/images/gui/actions/open.gif",
+        "extended_commands.button.load.tooltip",
+        "button.load");
+
+    addButton(north,
+        "extended_commands.button.execute.caption",
+        "etc/images/gui/actions/execute.gif",
+        "",
+        "button.execute");
+
+    addButton(north,
+        "extended_commands.button.save.caption",
+        "etc/images/gui/actions/save_edit.gif",
+        "",
+        "button.save");
+
+    addButton(north,
+        "extended_commands.button.saveall.caption",
+        "etc/images/gui/actions/saveas_edit.gif",
+        "",
+        "button.saveall");
+
+    addButton(north,
+        "extended_commands.button.help.caption",
+        "etc/images/gui/actions/help.gif",
+        "",
+        "button.help");
+
+    add(north, BorderLayout.NORTH);
+  }
+
+  private void addButton(JPanel north, String caption, String icon, String tooltip, String command) {
     JButton loadButton =
-        new JButton(Resources.get("extended_commands.button.load.caption"), MagellanImages
-            .getImageIcon("etc/images/gui/actions/open.gif"));
-    loadButton.setToolTipText(Resources.get("extended_commands.button.load.tooltip"));
+        new JButton(Resources.get(caption), MagellanImages
+            .getImageIcon(icon));
+    if (tooltip != null && tooltip.length() > 0) {
+      loadButton.setToolTipText(Resources.get(tooltip));
+    }
     loadButton.setRequestFocusEnabled(false);
-    loadButton.setActionCommand("button.load");
+    loadButton.setActionCommand(command);
     loadButton.addActionListener(this);
     loadButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
     north.add(loadButton);
-
-    JButton executeButton =
-        new JButton(Resources.get("extended_commands.button.execute.caption"), MagellanImages
-            .getImageIcon("etc/images/gui/actions/execute.gif"));
-    executeButton.setRequestFocusEnabled(false);
-    executeButton.setActionCommand("button.execute");
-    executeButton.addActionListener(this);
-    executeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    north.add(executeButton);
-
-    JButton saveButton =
-        new JButton(Resources.get("extended_commands.button.save.caption"), MagellanImages
-            .getImageIcon("etc/images/gui/actions/save_edit.gif"));
-    saveButton.setRequestFocusEnabled(false);
-    saveButton.setVerticalTextPosition(SwingConstants.CENTER);
-    saveButton.setHorizontalTextPosition(SwingConstants.LEADING);
-    saveButton.setActionCommand("button.save");
-    saveButton.addActionListener(this);
-    saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    north.add(saveButton);
-
-    JButton saveAllButton =
-        new JButton(Resources.get("extended_commands.button.saveall.caption"), MagellanImages
-            .getImageIcon("etc/images/gui/actions/saveas_edit.gif"));
-    saveAllButton.setRequestFocusEnabled(false);
-    saveAllButton.setVerticalTextPosition(SwingConstants.CENTER);
-    saveAllButton.setHorizontalTextPosition(SwingConstants.LEADING);
-    saveAllButton.setActionCommand("button.saveall");
-    saveAllButton.addActionListener(this);
-    saveAllButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    north.add(saveAllButton);
-
-    add(north, BorderLayout.NORTH);
   }
 
   /**
@@ -181,6 +184,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         saveTab(tab);
       }
       commands.save();
+    } else if (e.getActionCommand().equalsIgnoreCase("button.help")) {
+      DesktopEnvironment.requestFocus(HelpDock.IDENTIFIER);
     }
   }
 

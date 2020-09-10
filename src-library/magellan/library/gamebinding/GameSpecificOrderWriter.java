@@ -10,23 +10,24 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.List;
 
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -131,8 +132,13 @@ public interface GameSpecificOrderWriter {
   public void addOrderWriterPlugin(OrderWriterPlugIn plugin);
 
   /**
-   * You can use this method to rmove a OrderWriterPlugIn from the internal list of known
+   * You can use this method to remove a OrderWriterPlugIn from the internal list of known
    * OrderWriterPlugIns.
    */
   public void removeOrderWriterPlugIn(OrderWriterPlugIn plugin);
+
+  /**
+   * @return Localized error messages.
+   */
+  public List<String> getErrors();
 }

@@ -131,6 +131,11 @@ public class EresseaConstants extends GameConstants {
   /** Order constant AURA */
   public static final StringID OC_AURA = StringID.create("AURA");
 
+  /** Order constant AUTO */
+  public static final String O_AUTO = "AUTO";
+  /** Order constant AUTO */
+  public static final StringID OC_AUTO = StringID.create("AUTO");
+
   /** Order constant BANNER */
   public static final String O_BANNER = "BANNER";
   /** Order constant BANNER */
@@ -432,6 +437,11 @@ public class EresseaConstants extends GameConstants {
   public static final String O_ITEMPOOL = "ITEMPOOL";
   /** Order constant ITEMPOOL */
   public static final StringID OC_ITEMPOOL = StringID.create("ITEMPOOL");
+
+  /** Order constant LANGUAGE */
+  public static final String O_LANGUAGE = "LANGUAGE";
+  /** Order constant LANGUAGE */
+  public static final StringID OC_LANGUAGE = StringID.create("LANGUAGE");
 
   /** Order constant LEARN */
   public static final String O_LEARN = "LEARN";

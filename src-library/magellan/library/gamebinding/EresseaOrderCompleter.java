@@ -127,14 +127,17 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     // the if clause is not always correct, but should usually be okay
     if (!isLimitCompletions()) {
+      addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " " +
+          getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+    } else {
       Building building = getUnit().getModifiedBuilding();
       if (building == null) {
         building = getUnit().getBuilding();
       }
       Unit owner = building == null ? null : building.getOwnerUnit();
       if (getUnit().equals(owner)) {
-        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " "
-            + getOrderTranslation(EresseaConstants.OC_NOT) + " "));
+        addCompletion(new Completion(getOrderTranslation(EresseaConstants.OC_PAY) + " " +
+            getOrderTranslation(EresseaConstants.OC_NOT) + " "));
       }
     }
 
@@ -169,6 +172,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     if (hasSkills(unit, 2)) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_TEACH), " "));
     }
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_LANGUAGE) + " de"));
+
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_LEARN), " "));
     // removed: FF SUPPLY is not supported anymore...in eressea
     // completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SUPPLY),
@@ -1036,11 +1041,22 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NOT), ""));
   }
 
-  /** Add completions for command Kontaktiere. */
-  public void cmpltKontaktiere() {
-    final Alliance alliance =
-        new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
-    addNotAlliedUnits(alliance, "");
+  /**
+   * Add completions for command Kontaktiere.
+   * 
+   * @param type 0 for not decided, 1 for unit, 2 for faction
+   */
+  public void cmpltKontaktiere(StringID type) {
+    if (type == null) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT), " "));
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_FACTION), " "));
+    } else if (type == EresseaConstants.OC_UNIT) {
+      final Alliance alliance =
+          new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
+      addNotAlliedUnits(alliance, "");
+    } else if (type == EresseaConstants.OC_FACTION) {
+      addOtherFactions(" ", 0, false);
+    }
   }
 
   /** Add completions for command Lehre. */
@@ -1050,6 +1066,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /** Add completions for command Lerne. */
   public void cmpltLerne() {
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_AUTO), " "));
     addSkills();
   }
 

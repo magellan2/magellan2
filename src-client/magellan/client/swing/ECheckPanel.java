@@ -54,6 +54,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
+import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -92,16 +93,15 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   @Deprecated
   public static final String IDENTIFIER = MagellanDesktop.ECHECK_IDENTIFIER;
 
-  // private JTextField txtECheckEXE = null;
-  private JList lstMessages = null;
-  private JComboBox cmbFactions = null;
-  private JTextArea txtOutput = null;
-  private File orderFile = null;
-  private JComboBox usedOptions = new JComboBox();
+  private JList<ECheckMessage> lstMessages;
+  private JComboBox<Faction> cmbFactions;
+  private JTextArea txtOutput;
+  private File orderFile;
+  private JComboBox<String> usedOptions = new JComboBox<String>();
   private JTextField txtOptions = (JTextField) usedOptions.getEditor().getEditorComponent();
-  private JCheckBox chkConfirmedOnly = null;
-  private JCheckBox chkSelRegionsOnly = null;
-  private Collection<Region> regions = null;
+  private JCheckBox chkConfirmedOnly;
+  private JCheckBox chkSelRegionsOnly;
+  private Collection<Region> regions;
 
   // shortcuts
   private List<KeyStroke> shortcuts;
@@ -161,7 +161,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     shortcuts = new ArrayList<KeyStroke>(1);
 
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_DOWN_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
@@ -267,8 +267,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   @Override
   public void gameDataChanged(GameDataEvent e) {
     setGameData(e.getGameData());
@@ -293,7 +293,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     if (!exeFile.exists()) {
       JOptionPane.showMessageDialog(getRootPane(), Resources
           .get("echeckpanel.msg.echeckmissing.text"), Resources
-          .get("echeckpanel.msg.echeckmissing.title"), JOptionPane.ERROR_MESSAGE);
+              .get("echeckpanel.msg.echeckmissing.title"), JOptionPane.ERROR_MESSAGE);
 
       return;
     }
@@ -301,7 +301,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     try {
       ECheckMessage result = JECheck.getHelp(exeFile, settings);
       txtOutput.setText("");
-      lstMessages.setListData(new Object[] { result });
+      lstMessages.setListData(new ECheckMessage[] { result });
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -350,7 +350,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     if (!exeFile.exists()) {
       JOptionPane.showMessageDialog(getRootPane(), Resources
           .get("echeckpanel.msg.echeckmissing.text"), Resources
-          .get("echeckpanel.msg.echeckmissing.title"), JOptionPane.ERROR_MESSAGE);
+              .get("echeckpanel.msg.echeckmissing.title"), JOptionPane.ERROR_MESSAGE);
 
       return;
     }
@@ -365,7 +365,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         Object msgArgs[] = { JECheck.getRequiredVersion() };
         JOptionPane.showMessageDialog(getRootPane(), java.text.MessageFormat.format(Resources
             .get("echeckpanel.msg.wrongversion.text"), msgArgs), Resources
-            .get("echeckpanel.msg.wrongversion.title"), JOptionPane.ERROR_MESSAGE);
+                .get("echeckpanel.msg.wrongversion.title"), JOptionPane.ERROR_MESSAGE);
 
         return;
       }
@@ -373,7 +373,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       JOptionPane.showMessageDialog(getRootPane(), Resources
           .get("echeckpanel.msg.versionretrievalerror.text"), Resources
-          .get("echeckpanel.msg.versionretrievalerror.title"), JOptionPane.ERROR_MESSAGE);
+              .get("echeckpanel.msg.versionretrievalerror.title"), JOptionPane.ERROR_MESSAGE);
 
       return;
     }
@@ -383,11 +383,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       orderFile.delete();
     }
 
+    Writer stream = null;
     try {
       orderFile = File.createTempFile("orders", null);
 
       // apexo (Fiete) 20061205: if in properties, force ISO encoding
-      Writer stream = null;
       if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOrunEcheck", false)) {
         // new: force our default = ISO
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.ISO.toString());
@@ -422,6 +422,14 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       }
 
       return;
+    } finally {
+      if (stream != null) {
+        try {
+          stream.close();
+        } catch (IOException e) {
+          log.error(e);
+        }
+      }
     }
 
     // run ECheck and display the ECheck output
@@ -449,9 +457,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       } else {
         JOptionPane.showMessageDialog(getRootPane(), Resources
             .get("echeckpanel.msg.noecheckmessages.text"), Resources
-            .get("echeckpanel.msg.noecheckmessages.title"), JOptionPane.INFORMATION_MESSAGE);
+                .get("echeckpanel.msg.noecheckmessages.title"), JOptionPane.INFORMATION_MESSAGE);
       }
-      lstMessages.setListData(messages.toArray());
+      lstMessages.setListData(messages.toArray(new ECheckMessage[] {}));
     } catch (IOException e) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       JOptionPane.showMessageDialog(getRootPane(), Resources
@@ -485,8 +493,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   @Override
   public void quit() {
     if (dispatcher != null) {
@@ -503,26 +511,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   private Container getControlsPanel() {
     usedOptions.setEditable(true);
 
-    // JLabel lblECheckEXE = new JLabel(Resources.get("echeckpanel.lbl.echeck.caption"));
-    // lblECheckEXE.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.echeck.mnemonic").charAt(0));
-    // txtECheckEXE = new JTextField(settings.getProperty("JECheckPanel.echeckEXE", ""));
-    // txtECheckEXE.setEnabled(false);
-    // lblECheckEXE.setLabelFor(txtECheckEXE);
-
-    // JButton btnBrowse = new JButton("...");
-    // btnBrowse.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent e) {
-    // String exeFile = getFileName(txtECheckEXE.getText());
-    //
-    // if(exeFile != null) {
-    // txtECheckEXE.setText(exeFile);
-    // }
-    // }
-    // });
-
     JLabel lblFactions = new JLabel(Resources.get("echeckpanel.lbl.faction.caption"));
     lblFactions.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.faction.mnemonic").charAt(0));
-    cmbFactions = new JComboBox();
+    cmbFactions = new JComboBox<Faction>();
     lblFactions.setLabelFor(cmbFactions);
 
     for (Faction f : getGameData().getFactions()) {
@@ -659,12 +650,12 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   }
 
   private Container getMessagesPanel() {
-    lstMessages = new JList();
+    lstMessages = new JList<ECheckMessage>();
     lstMessages.setCellRenderer(new ECheckMessageRenderer());
     lstMessages.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          JECheck.ECheckMessage msg = (JECheck.ECheckMessage) lstMessages.getSelectedValue();
+          JECheck.ECheckMessage msg = lstMessages.getSelectedValue();
 
           if (msg == null || msg.getType() == ECheckMessage.MESSAGE)
             return;
@@ -675,7 +666,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
           } else {
             JOptionPane.showMessageDialog(ECheckPanel.this.getRootPane(), Resources
                 .get("echeckpanel.msg.messagetargetnotfound.text"), Resources
-                .get("echeckpanel.msg.messagetargetnotfound.title"),
+                    .get("echeckpanel.msg.messagetargetnotfound.title"),
                 JOptionPane.INFORMATION_MESSAGE);
           }
         }
@@ -762,7 +753,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     return options;
   }
 
-  private static final class ECheckMessageRenderer extends JPanel implements ListCellRenderer {
+  private static final class ECheckMessageRenderer extends JPanel implements ListCellRenderer<ECheckMessage> {
     private static javax.swing.border.Border focusedBorder = null;
     private static javax.swing.border.Border selectedBorder = null;
     private static javax.swing.border.Border plainBorder = null;
@@ -813,68 +804,65 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     }
 
     /**
-     * DOCUMENT-ME
      * 
      * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList,
      *      java.lang.Object, int, boolean, boolean)
      */
-    public Component getListCellRendererComponent(JList list, Object value, int index,
+    public Component getListCellRendererComponent(JList<? extends ECheckMessage> list, ECheckMessage m, int index,
         boolean isSelected, boolean cellHasFocus) {
-      try {
-        JECheck.ECheckMessage m = (JECheck.ECheckMessage) value;
+      if (isSelected) {
+        setBackground(ECheckMessageRenderer.selectedBackground);
+        txtMessage.setBackground(ECheckMessageRenderer.selectedBackground);
+        lblCaption.setForeground(ECheckMessageRenderer.selectedForeground);
+        txtMessage.setForeground(ECheckMessageRenderer.selectedForeground);
+      } else {
+        setBackground(ECheckMessageRenderer.textBackground);
+        txtMessage.setBackground(ECheckMessageRenderer.textBackground);
+        lblCaption.setForeground(ECheckMessageRenderer.textForeground);
+        txtMessage.setForeground(ECheckMessageRenderer.textForeground);
+      }
 
+      if (cellHasFocus) {
+        setBorder(ECheckMessageRenderer.focusedBorder);
+      } else {
         if (isSelected) {
-          setBackground(ECheckMessageRenderer.selectedBackground);
-          lblCaption.setForeground(ECheckMessageRenderer.selectedForeground);
-          txtMessage.setForeground(ECheckMessageRenderer.selectedForeground);
+          setBorder(ECheckMessageRenderer.selectedBorder);
         } else {
-          setBackground(ECheckMessageRenderer.textBackground);
-          lblCaption.setForeground(ECheckMessageRenderer.textForeground);
-          txtMessage.setForeground(ECheckMessageRenderer.textForeground);
+          setBorder(ECheckMessageRenderer.plainBorder);
         }
+      }
 
-        if (cellHasFocus) {
-          setBorder(ECheckMessageRenderer.focusedBorder);
+      if (m == null) {
+        lblCaption.setText("");
+        txtMessage.setText("");
+      } else {
+
+        if (m.getType() == JECheck.ECheckMessage.WARNING) {
+          lblCaption.setText(Resources.get("echeckpanel.celllbl.warning", new Object[] { m
+              .getLineNr() }));
+        } else if (m.getType() == JECheck.ECheckMessage.ERROR) {
+          lblCaption.setText(Resources.get("echeckpanel.celllbl.error", new Object[] { m
+              .getLineNr() }));
         } else {
-          if (isSelected) {
-            setBorder(ECheckMessageRenderer.selectedBorder);
-          } else {
-            setBorder(ECheckMessageRenderer.plainBorder);
-          }
-        }
-
-        if (m == null) {
           lblCaption.setText("");
-          txtMessage.setText("");
-        } else {
-
-          if (m.getType() == JECheck.ECheckMessage.WARNING) {
-            lblCaption.setText(Resources.get("echeckpanel.celllbl.warning", new Object[] { m
-                .getLineNr() }));
-          } else if (m.getType() == JECheck.ECheckMessage.ERROR) {
-            lblCaption.setText(Resources.get("echeckpanel.celllbl.error", new Object[] { m
-                .getLineNr() }));
-          } else {
-            lblCaption.setText("");
-          }
-
-          txtMessage.setText(m.getMessage());
         }
-      } catch (ClassCastException e) {
+
+        txtMessage.setText(m.getMessage());
       }
 
       return this;
     }
 
     private void applyUIDefaults() {
-      ECheckMessageRenderer.textForeground =
-          (Color) UIManager.getDefaults().get("Tree.textForeground");
-      ECheckMessageRenderer.textBackground =
-          (Color) UIManager.getDefaults().get("Tree.textBackground");
-      ECheckMessageRenderer.selectedForeground =
-          (Color) UIManager.getDefaults().get("Tree.selectionForeground");
-      ECheckMessageRenderer.selectedBackground =
-          (Color) UIManager.getDefaults().get("Tree.selectionBackground");
+      UIDefaults defaults = UIManager.getDefaults();
+      ECheckMessageRenderer.textForeground = Color.BLACK;
+      ECheckMessageRenderer.textForeground = (Color) defaults.get("Tree.textForeground");
+      ECheckMessageRenderer.textBackground = Color.WHITE;
+      ECheckMessageRenderer.textBackground = (Color) defaults.get("Tree.textBackground");
+      ECheckMessageRenderer.selectedForeground = Color.BLACK;
+      ECheckMessageRenderer.selectedForeground = (Color) defaults.get("Tree.selectionForeground");
+      ECheckMessageRenderer.selectedBackground = Color.WHITE;
+      ECheckMessageRenderer.selectedBackground = (Color) defaults.get("Tree.selectionBackground");
 
       // pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
       ECheckMessageRenderer.focusedBorder =

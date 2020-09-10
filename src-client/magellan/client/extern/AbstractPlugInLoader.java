@@ -14,7 +14,6 @@
 package magellan.client.extern;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.CharacterIterator;
@@ -220,12 +219,8 @@ public abstract class AbstractPlugInLoader<T> {
       } else {
         AbstractPlugInLoader.log.info("File not found: " + file);
       }
-    } catch (IOException ioe) {
-      AbstractPlugInLoader.log.info(ioe);
-    } catch (NoClassDefFoundError ncdfe) {
-      AbstractPlugInLoader.log.info(ncdfe);
-    } catch (ClassNotFoundException cnfe) {
-      AbstractPlugInLoader.log.info(cnfe);
+    } catch (Throwable ex) {
+      AbstractPlugInLoader.log.info(ex);
     }
 
     return classes;

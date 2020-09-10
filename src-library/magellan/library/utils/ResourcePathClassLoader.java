@@ -10,19 +10,20 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -297,22 +297,23 @@ public class ResourcePathClassLoader extends ClassLoader {
 
     try {
       InputStream stream = url.openStream();
-      List<Byte> buffer = new LinkedList<Byte>();
-      int read;
+      try {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
 
-      while ((read = stream.read()) != -1) {
-        buffer.add(new Byte((byte) read));
+        byte[] data = new byte[Math.max(4 * 1024, stream.available())];
+        while ((nRead = stream.read(data, 0, data.length)) != -1) {
+          buffer.write(data, 0, nRead);
+        }
+
+        buffer.flush();
+        byte[] buf = buffer.toByteArray();
+
+        return defineClass(name, buf, 0, buf.length);
+      } finally {
+        stream.close();
       }
-
-      stream.close();
-
-      byte buf[] = new byte[buffer.size()];
-
-      for (int i = 0; i < buffer.size(); i++) {
-        buf[i] = buffer.get(i).byteValue();
-      }
-      return defineClass(name, buf, 0, buf.length);
-    } catch (Exception exception) {
+    } catch (Throwable exception) {
       throw new ClassNotFoundException(exception.getMessage());
     }
   }

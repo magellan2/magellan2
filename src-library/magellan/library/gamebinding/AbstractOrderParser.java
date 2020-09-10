@@ -623,6 +623,10 @@ public abstract class AbstractOrderParser implements OrderParser {
         }
     }
 
+    if (t.getText().length() < 3) {
+      reader = emptyReader;
+    }
+
     reader.read(t, text);
     if (getCompleter() != null && !t.followedBySpace() && t.ttype != OrderToken.TT_PERSIST
         && t.ttype != OrderToken.TT_EXCLAM) {

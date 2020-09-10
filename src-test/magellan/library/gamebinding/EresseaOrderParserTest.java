@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -100,8 +101,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
         new EresseaOrderParser(data, (EresseaOrderCompleter) getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
-    assertSame(62, localParser.getCommands().size());
-    assertSame(62, localParser.getHandlers().size());
+    assertSame(63, localParser.getCommands().size());
+    assertSame(63, localParser.getHandlers().size());
   }
 
   @Test
@@ -141,7 +142,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder(getOrderTranslation(EresseaConstants.OC_WORK));
     checkOrder("ARBEITE");
     checkOrder("arbeite");
-    checkOrder("AR");
+    checkOrder("ARB");
     checkOrder("ARBEITE ;");
     checkOrder("arbeitene", false);
     checkOrder("ARBEISE", false);
@@ -668,9 +669,14 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    */
   @Test
   public void testKontaktiereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.OC_CONTACT) + " 123");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_CONTACT) + " " + getOrderTranslation(EresseaConstants.OC_UNIT)
+        + " 123");
+    checkOrder("KONTAKTIERE EINHEIT a");
+    checkOrder("KONTAKTIERE EINHEIT TEMP a");
+    checkOrder("KONTAKTIERE PARTEI x");
     checkOrder("KONTAKTIERE a");
     checkOrder("KONTAKTIERE TEMP a");
+    checkOrder("KONTAKTIERE PARTEI TEMP x", false);
     checkOrder("KONTAKTIERE abc def", false);
     checkOrder("KONTAKTIERE", false);
     checkOrder("KONTAKTIERE \"abc\"", false);
@@ -699,6 +705,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("LERNE Hiebwaffen 500"); // costs
     checkOrder("LERNE Magie \"Gwyrrd\"");
     checkOrder("LERNE Waffenloser~Kampf");
+    checkOrder("LERNE AUTO Hiebwaffen", true);
+    checkOrder("LERNE AUTO", false);
+    checkOrder("LERNE AUTO Hiebwaffen 500", false);
     checkOrder("LERNE", false);
     checkOrder("LERNE foo", false);
     checkOrder("LERNE Waffenloser Kampf", false);
@@ -713,6 +722,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   @Test
   public void testLocaleReader() {
     // this is a valid order, but not /inside/ a unit
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LOCALE) + " de", false);
     checkOrder(getOrderTranslation(EresseaConstants.OC_LOCALE), false);
   }
 
@@ -1000,6 +1010,19 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   }
 
   /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SpracheReader}.
+   */
+  @Test
+  public void testSpracheReader() {
+    checkOrder(getOrderTranslation(EresseaConstants.OC_LANGUAGE) + " \"de\"");
+    checkOrder("SPRACHE en");
+    checkOrder("Sprache \"de\"");
+    checkOrder("SPRACHE", false);
+    checkOrder("SPRACHE en de", false);
+    checkOrder("SPRACHE 1", false);
+  }
+
+  /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.StirbReader}.
    */
   @Test
@@ -1147,6 +1170,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("ZÜCHTE 2 3", false);
     checkOrder("ZÜCHTE Flachwurz 2", false);
     checkOrder("ZÜCHTE Flachwurz", false);
+    checkOrder("ZÜCHTE 2 Pferde", false);
   }
 
   /**
@@ -1251,6 +1275,20 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("ZEIGEN Schwert");
     checkOrder("ZERSTÖREN");
     checkOrder("ZÜCHTEN KRÄUTER");
+  }
+
+  /**
+  *
+  */
+  @Test
+  public void testTwoLetterKeywords() {
+    // DEFAULT is the only order starting with D, but orders must have 3 letters
+    assertEquals(1, getParser().getHandlers(new OrderToken("D")).size());
+    assertEquals(1, getParser().getCommandTrie().searchPrefix("d", Integer.MAX_VALUE).size());
+    checkOrder("DE ARBEITE", false);
+    checkOrder("DEF ARBEITE", true);
+    checkOrder("NA NO", false);
+    checkOrder("NAC O", true);
   }
 
   // /**

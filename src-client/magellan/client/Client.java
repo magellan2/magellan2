@@ -2939,21 +2939,35 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     String osName = System.getProperty("os.name");
     osName = osName.toLowerCase();
     if (osName.indexOf("windows") > -1) {
-      Client.log.info("new ini. windows OS detected. (" + osName + ")");
-      // we have a windows OS
-      // lets assume the location
-      File echeckFile = new File(new File(Client.getResourceDirectory(), "echeck"), "ECheck.exe");
+      Client.log.info("Windows OS detected (" + osName + ").");
+      addEcheckFile(settings, new String[] { "ECheck.exe", "echeck.exe" });
+    } else if (osName.indexOf("linux") > -1) {
+      Client.log.info("Linux OS detected (" + osName + ").");
+      addEcheckFile(settings, new String[] { "echeck" });
+    } else if (osName.indexOf("mac") > -1) {
+      Client.log.info("Mac OS detected (" + osName + ").");
+      addEcheckFile(settings, new String[] { "echeck.macos" });
+    } else {
+      Client.log.info("Unknown OS detected (" + osName + ").");
+    }
+  }
+
+  private static void addEcheckFile(Properties settings, String[] strings) {
+    File echeckFile = null;
+    for (String name : strings) {
+      echeckFile = new File(new File(Client.getResourceDirectory(), "echeck"), name);
       Client.log.info("checking for ECheck: " + echeckFile);
       if (echeckFile.exists()) {
-        // yep, we have an ECheck.exe here
-        // lets add to the properties
-        settings.setProperty("JECheckPanel.echeckEXE", echeckFile.toString());
-        Client.log.info("set echeckEXE to: " + echeckFile.toString());
+        break;
       } else {
-        Client.log.info("ECheck.exe not found");
+        echeckFile = null;
       }
+    }
+    if (echeckFile != null) {
+      settings.setProperty("JECheckPanel.echeckEXE", echeckFile.toString());
+      Client.log.info("set echeckEXE to: " + echeckFile.toString());
     } else {
-      Client.log.info("new ini. non - windows OS detected. (" + osName + ")");
+      Client.log.info("ECheck.exe not found");
     }
   }
 

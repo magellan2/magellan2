@@ -190,227 +190,17 @@ public class GiveOrder extends UnitArgumentOrder {
 
       if (!unit.equals(tUnit)) {
         if (type == EresseaConstants.OC_CONTROL) {
-          if (target.intValue() == 0) {
-            setError(unit, line, Resources.get("order.all.warning.zeronotallowed"));
-          } else {
-            UnitRelation rel = new ControlRelation(unit, zeroOrTarget, line);
-            UnitContainer uc = unit.getModifiedUnitContainer();
-            if (uc == null || uc.getModifiedOwnerUnit() != unit) {
-              // better warn too often than too rarely
-              rel.setWarning(Resources.get("order.give.warning.nocommand"),
-                  OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-            } else if (zeroOrTarget.getModifiedUnitContainer() == uc) {
-              uc.setModifiedOwnerUnit(zeroOrTarget);
-            } else {
-              setError(unit, line, Resources.get("order.give.warning.unitnotin", unit, uc));
-            }
-            rel.add();
-          }
+          transferControl(data, eState, unit, zeroOrTarget, line);
         } else if (type == EresseaConstants.OC_UNIT) {
-          if (target.intValue() == 0) {
-            setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
-          } else {
-            UnitRelation rel = new UnitTransferRelation(unit, zeroOrTarget, unit.getRace(), line);
-            rel.add();
-          }
+          transferUnit(data, eState, unit, zeroOrTarget, line);
         } else if (type == EresseaConstants.OC_MEN) {
-          PersonTransferRelation rel =
-              new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
-
-          if (all) {
-            rel.amount = unit.getModifiedPersons();
-          } else {
-            // if not, only transfer the minimum amount the unit has
-            rel.amount = Math.min(unit.getModifiedPersons(), amount);
-          }
-
-          rel.add();
+          transferPeople(data, eState, unit, zeroOrTarget, line);
         } else if (type == EresseaConstants.OC_SHIP) {
-
-          Ship ship = unit.getModifiedShip(), targetShip = zeroOrTarget.getModifiedShip();
-          if (ship == null || ship.getModifiedOwnerUnit() != unit) {
-            setWarning(unit, line, Resources.get("order.give.warning.ship.noship", unit));
-          } else {
-            if (ship.getModifiedAmount() < amount) {
-              setWarning(unit, line, Resources.get("order.give.warning.ship.toomany", unit));
-              amount = ship.getModifiedAmount();
-            }
-            if (amount <= 0) {
-              setWarning(unit, line, Resources.get("order.give.warning.ship.amount0"));
-            } else {
-              if (ship.getEffects() != null && !ship.getEffects().isEmpty()) {
-                setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
-              }
-              if (targetShip != null && targetShip.getEffects() != null && !targetShip.getEffects()
-                  .isEmpty()) {
-                setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
-              }
-              if (ship.getShipType().getRange() < 3) {
-                setWarning(unit, line, Resources.get("order.give.warning.ship.boat", ship));
-              }
-
-              if (zeroOrTarget == unit.getRegion().getZeroUnit()) {
-                targetShip = ship.createTempShip();
-                if (amount == ship.getModifiedAmount() && !unit.getRegion().getRegionType()
-                    .isLand()) {
-                  setWarning(unit, line, Resources.get("order.give.warning.ship.lastship"));
-                }
-              } else if (!zeroOrTarget.getFaction().equals(unit
-                  .getFaction())) {
-                setError(unit, line, Resources.get("order.give.warning.invalidunit", target));
-              } else if (zeroOrTarget.getModifiedShip() == null) {
-                // target enters new ship
-                targetShip = ship.createTempShip();
-                eState.enter(zeroOrTarget, targetShip);
-                // EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
-                // enter.add();
-              } else if (targetShip == ship) {
-                // unit on our ship
-                targetShip = ship.createTempShip();
-                eState.enter(zeroOrTarget, targetShip);
-
-                EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
-                enter.add();
-              } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
-                setError(unit, line, Resources.get("order.give.warning.ship.noship", zeroOrTarget));
-                targetShip = null;
-              }
-
-              if (targetShip != null) {
-                if (!targetShip.getShipType().equals(ship.getShipType())) {
-                  setError(unit, line, Resources.get("order.give.warning.shiptype", targetShip));
-                } else {
-                  boolean shoreWarning = false;
-                  if (ship.getShoreId() != targetShip.getShoreId() && ship.getShoreId() >= 0) {
-                    shoreWarning = true;
-                    setWarning(unit, line, Resources.get("order.give.warning.ship.wrongshore",
-                        getTranslation(ship.getShoreId(), data),
-                        getTranslation(targetShip.getShoreId(), data)));
-                  }
-                  if (!shoreWarning || targetShip.getShoreId() >= 0) {
-
-                    ShipTransferRelation rel =
-                        new ShipTransferRelation(unit, zeroOrTarget, -1, ship, targetShip, line);
-                    rel.amount = Math.min(ship.getModifiedAmount(), amount);
-                    rel.add();
-                    InterUnitRelation iur = new InterUnitRelation(unit, zeroOrTarget, line);
-                    iur.add();
-                    if (ship.getModifiedAmount() <= 0 && zeroOrTarget != unit.getRegion()
-                        .getZeroUnit()) {
-                      // last ship, transfer units
-                      ArrayList<Unit> left = new ArrayList<Unit>(ship.modifiedUnits());
-                      for (Unit u : left) {
-                        eState.leave(u, ship);
-                        eState.enter(u, targetShip);
-                        LeaveRelation leave = new LeaveRelation(u, ship, line, true);
-                        EnterRelation enter = new EnterRelation(u, targetShip, line);
-                        leave.add();
-                        enter.add();
-                      }
-                      left.clear();
-                    }
-                  }
-                }
-              }
-            }
-          }
+          transferShips(data, eState, unit, zeroOrTarget, line);
         } else if (type == EresseaConstants.OC_HERBS) {
-          // create relations for all herbs the unit carries
-          ItemCategory herbCategory = data.getRules().getItemCategory(StringID.create(("HERBS")));
-
-          if ((herbCategory != null)) {
-            for (ItemType i : eState.getHerbTypes()) {
-              if (unit.getItem(i) != null || unit.getModifiedItem(i) != null) {
-                // List<UnitRelation> relations = eState.giveItem(unit, tUnit, true, 0, i, line,
-                // this);
-                // for (UnitRelation rel : relations) {
-                // rel.add();
-                // }
-                List<UnitRelation> relations =
-                    eState.acquireItem(unit, i, 0, true, false, false, line, this);
-                for (UnitRelation rel : relations) {
-                  if (rel instanceof ReserveRelation) {
-                    UnitRelation ownRelation =
-                        new ItemTransferRelation(unit, zeroOrTarget,
-                            ((ReserveRelation) rel).amount, i, line, false);
-                    if (!(zeroOrTarget instanceof ZeroUnit)) {
-                      ReserveRelation targetRelation =
-                          new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
-                              i, line);
-                      targetRelation.add();
-                    }
-                    ownRelation.add();
-                  } else {
-                    rel.add();
-                  }
-                }
-              }
-            }
-          }
-
+          transferHerbs(data, eState, unit, zeroOrTarget, line);
         } else if (type == EresseaConstants.OC_GIVE) {
-          if (itemType != null) {
-            if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {
-              setWarning(unit, line, Resources.get("order.give.warning.invaliditem", itemType));
-            }
-
-            int requiredAmount =
-                all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
-            List<UnitRelation> relations =
-                eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
-            for (UnitRelation rel : relations) {
-              if (rel instanceof ReserveRelation) {
-                UnitRelation ownRelation =
-                    new ItemTransferRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
-                        itemType, line, false);
-                if (((ReserveRelation) rel).problem != null) {
-                  ownRelation.setWarning(Resources.get("order.give.warning.insufficient", itemType
-                      .toString()),
-                      OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-                }
-                ownRelation.add();
-                if (!(zeroOrTarget instanceof ZeroUnit)) {
-                  ReserveRelation targetRelation =
-                      new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
-                          itemType, line);
-                  targetRelation.add();
-                }
-              } else {
-                rel.add();
-              }
-            }
-          } else {
-            // in this case the order looks like:
-            // GIVE <unit id> ALLES<EOC>
-            if (all) {
-              for (Item i : unit.getModifiedItems()) {
-                // List<UnitRelation> relations =
-                // eState.giveItem(unit, tUnit, all, 0, i.getItemType(), line, this);
-                // for (UnitRelation rel : relations) {
-                // rel.add();
-                // }
-                List<UnitRelation> relations =
-                    eState.acquireItem(unit, i.getItemType(), 0, all, false, false, line, this);
-                for (UnitRelation rel : relations) {
-                  if (rel instanceof ReserveRelation) {
-                    UnitRelation ownRelation =
-                        new ItemTransferRelation(unit, zeroOrTarget,
-                            ((ReserveRelation) rel).amount, i.getItemType(), line, false);
-                    ownRelation.add();
-                    if (!(zeroOrTarget instanceof ZeroUnit)) {
-                      ReserveRelation targetRelation =
-                          new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount, i
-                              .getItemType(), line);
-                      targetRelation.add();
-                    }
-
-                  } else {
-                    rel.add();
-                  }
-                }
-              }
-            }
-          }
+          transferThings(data, eState, unit, zeroOrTarget, line);
         } else {
           setWarning(unit, line, Resources.get("order.give.warning.unknowntype"));
         }
@@ -419,6 +209,257 @@ public class GiveOrder extends UnitArgumentOrder {
       }
     } else {
       setWarning(unit, line, Resources.get("order.give.warning.invalidunit", target));
+    }
+  }
+
+  private void transferControl(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    if (target.intValue() == 0) {
+      setError(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+    } else {
+      UnitRelation rel = new ControlRelation(unit, zeroOrTarget, line);
+      UnitContainer uc = unit.getModifiedUnitContainer();
+      if (uc == null || uc.getModifiedOwnerUnit() != unit) {
+        // better warn too often than too rarely
+        rel.setWarning(Resources.get("order.give.warning.nocommand"),
+            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+      } else if (zeroOrTarget.getModifiedUnitContainer() == uc) {
+        uc.setModifiedOwnerUnit(zeroOrTarget);
+      } else {
+        setError(unit, line, Resources.get("order.give.warning.unitnotin", unit, uc));
+      }
+      rel.add();
+    }
+  }
+
+  private void transferUnit(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    if (target.intValue() == 0) {
+      setWarning(unit, line, Resources.get("order.all.warning.zeronotallowed"));
+    } else {
+      UnitRelation rel = new UnitTransferRelation(unit, zeroOrTarget, unit.getRace(), line);
+      rel.add();
+    }
+  }
+
+  private void transferPeople(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    PersonTransferRelation rel =
+        new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
+
+    if (all) {
+      rel.amount = unit.getModifiedPersons();
+    } else {
+      // if not, only transfer the minimum amount the unit has
+      rel.amount = Math.min(unit.getModifiedPersons(), amount);
+    }
+
+    rel.add();
+  }
+
+  private void transferShips(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    Ship ship = unit.getModifiedShip(), targetShip = zeroOrTarget.getModifiedShip();
+    if (ship == null || ship.getModifiedOwnerUnit() != unit) {
+      setWarning(unit, line, Resources.get("order.give.warning.ship.noship", unit));
+    } else {
+      if (ship.getModifiedAmount() < amount) {
+        setWarning(unit, line, Resources.get("order.give.warning.ship.toomany", unit));
+        amount = ship.getModifiedAmount();
+      }
+      if (amount <= 0) {
+        setWarning(unit, line, Resources.get("order.give.warning.ship.amount0"));
+      } else {
+        if (ship.getEffects() != null && !ship.getEffects().isEmpty()) {
+          setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
+        }
+        if (targetShip != null && targetShip.getEffects() != null && !targetShip.getEffects()
+            .isEmpty()) {
+          setWarning(unit, line, Resources.get("order.give.warning.ship.spell", ship));
+        }
+        if (ship.getShipType().getRange() < 3) {
+          setWarning(unit, line, Resources.get("order.give.warning.ship.boat", ship));
+        }
+
+        if (zeroOrTarget == unit.getRegion().getZeroUnit()) {
+          targetShip = ship.createTempShip();
+          if (amount == ship.getModifiedAmount() && !unit.getRegion().getRegionType()
+              .isLand()) {
+            setWarning(unit, line, Resources.get("order.give.warning.ship.lastship"));
+          }
+        } else if (!zeroOrTarget.getFaction().equals(unit
+            .getFaction())) {
+          setError(unit, line, Resources.get("order.give.warning.invalidunit", target));
+        } else if (zeroOrTarget.getModifiedShip() == null) {
+          // target enters new ship
+          targetShip = ship.createTempShip();
+          eState.enter(zeroOrTarget, targetShip);
+          // EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
+          // enter.add();
+        } else if (targetShip == ship) {
+          // unit on our ship
+          targetShip = ship.createTempShip();
+          eState.enter(zeroOrTarget, targetShip);
+
+          EnterRelation enter = new EnterRelation(zeroOrTarget, targetShip, line);
+          enter.add();
+        } else if (targetShip == null || targetShip.getModifiedOwnerUnit() != zeroOrTarget) {
+          setError(unit, line, Resources.get("order.give.warning.ship.noship", zeroOrTarget));
+          targetShip = null;
+        }
+
+        if (targetShip != null) {
+          if (!targetShip.getShipType().equals(ship.getShipType())) {
+            setError(unit, line, Resources.get("order.give.warning.shiptype", targetShip));
+          } else {
+            boolean shoreWarning = false;
+            if (ship.getShoreId() != targetShip.getShoreId() && ship.getShoreId() >= 0) {
+              shoreWarning = true;
+              setWarning(unit, line, Resources.get("order.give.warning.ship.wrongshore",
+                  getTranslation(ship.getShoreId(), data),
+                  getTranslation(targetShip.getShoreId(), data)));
+            }
+            if (!shoreWarning || targetShip.getShoreId() >= 0) {
+              amount = Math.min(ship.getModifiedAmount(), amount);
+              int damage = updateDamage(ship, targetShip, amount);
+              ShipTransferRelation rel = new ShipTransferRelation(unit, zeroOrTarget, amount, ship, targetShip, line,
+                  damage);
+              rel.add();
+              InterUnitRelation iur = new InterUnitRelation(unit, zeroOrTarget, line);
+              iur.add();
+              if (ship.getModifiedAmount() <= 0 && zeroOrTarget != unit.getRegion()
+                  .getZeroUnit()) {
+                // last ship, transfer units
+                ArrayList<Unit> left = new ArrayList<Unit>(ship.modifiedUnits());
+                for (Unit u : left) {
+                  eState.leave(u, ship);
+                  eState.enter(u, targetShip);
+                  LeaveRelation leave = new LeaveRelation(u, ship, line, true);
+                  EnterRelation enter = new EnterRelation(u, targetShip, line);
+                  leave.add();
+                  enter.add();
+                }
+                left.clear();
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private int updateDamage(Ship ship, Ship targetShip, int transferAmount) {
+    int damageFrom = getModifiedDamage100(ship);
+    int damageTo = getModifiedDamage100(targetShip);
+    int amountTo = targetShip.getModifiedAmount();
+    // round damage up
+    return 10000 - (int) (10000 -
+        (damageTo * amountTo + damageFrom * transferAmount) / (double) (transferAmount + amountTo));
+  }
+
+  private int getModifiedDamage100(Ship ship) {
+    int damage = ship.getDamageRatio() * 100;
+    for (ShipTransferRelation tr : ship.getRelations(ShipTransferRelation.class)) {
+      if (!ship.equals(tr.ship)) {
+        damage = tr.getDamage();
+      }
+    }
+    return damage;
+  }
+
+  private void transferHerbs(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    // create relations for all herbs the unit carries
+    ItemCategory herbCategory = data.getRules().getItemCategory(StringID.create(("HERBS")));
+
+    if ((herbCategory != null)) {
+      for (ItemType i : eState.getHerbTypes()) {
+        if (unit.getItem(i) != null || unit.getModifiedItem(i) != null) {
+          // List<UnitRelation> relations = eState.giveItem(unit, tUnit, true, 0, i, line,
+          // this);
+          // for (UnitRelation rel : relations) {
+          // rel.add();
+          // }
+          List<UnitRelation> relations =
+              eState.acquireItem(unit, i, 0, true, false, false, line, this);
+          for (UnitRelation rel : relations) {
+            if (rel instanceof ReserveRelation) {
+              UnitRelation ownRelation =
+                  new ItemTransferRelation(unit, zeroOrTarget,
+                      ((ReserveRelation) rel).amount, i, line, false);
+              if (!(zeroOrTarget instanceof ZeroUnit)) {
+                ReserveRelation targetRelation =
+                    new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                        i, line);
+                targetRelation.add();
+              }
+              ownRelation.add();
+            } else {
+              rel.add();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void transferThings(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
+    if (itemType != null) {
+      if (EresseaConstants.I_UPEASANT.equals(itemType.getID())) {
+        setWarning(unit, line, Resources.get("order.give.warning.invaliditem", itemType));
+      }
+
+      int requiredAmount =
+          all ? 0 : (each ? zeroOrTarget.getModifiedPersons() * amount : amount);
+      List<UnitRelation> relations =
+          eState.acquireItem(unit, itemType, requiredAmount, all, false, false, line, this);
+      for (UnitRelation rel : relations) {
+        if (rel instanceof ReserveRelation) {
+          UnitRelation ownRelation =
+              new ItemTransferRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                  itemType, line, false);
+          if (((ReserveRelation) rel).problem != null) {
+            ownRelation.setWarning(Resources.get("order.give.warning.insufficient", itemType
+                .toString()),
+                OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+          }
+          ownRelation.add();
+          if (!(zeroOrTarget instanceof ZeroUnit)) {
+            ReserveRelation targetRelation =
+                new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount,
+                    itemType, line);
+            targetRelation.add();
+          }
+        } else {
+          rel.add();
+        }
+      }
+    } else {
+      // in this case the order looks like:
+      // GIVE <unit id> ALLES<EOC>
+      if (all) {
+        for (Item i : unit.getModifiedItems()) {
+          // List<UnitRelation> relations =
+          // eState.giveItem(unit, tUnit, all, 0, i.getItemType(), line, this);
+          // for (UnitRelation rel : relations) {
+          // rel.add();
+          // }
+          List<UnitRelation> relations =
+              eState.acquireItem(unit, i.getItemType(), 0, all, false, false, line, this);
+          for (UnitRelation rel : relations) {
+            if (rel instanceof ReserveRelation) {
+              UnitRelation ownRelation =
+                  new ItemTransferRelation(unit, zeroOrTarget,
+                      ((ReserveRelation) rel).amount, i.getItemType(), line, false);
+              ownRelation.add();
+              if (!(zeroOrTarget instanceof ZeroUnit)) {
+                ReserveRelation targetRelation =
+                    new ReserveRelation(unit, zeroOrTarget, ((ReserveRelation) rel).amount, i
+                        .getItemType(), line);
+                targetRelation.add();
+              }
+
+            } else {
+              rel.add();
+            }
+          }
+        }
+      }
     }
   }
 

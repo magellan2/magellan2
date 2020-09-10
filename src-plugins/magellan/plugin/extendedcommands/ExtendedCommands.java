@@ -188,7 +188,7 @@ public class ExtendedCommands {
           event.exception().printStackTrace(wwriter);
           sb.append(writer.toString());
           wwriter.close();
-        } else {
+        } else { // UnresolvedReferenceException ...
           sb.append(event.exception().getClass().getName()).append("\n");
           sb.append(event.exception());
         }
@@ -833,7 +833,7 @@ public class ExtendedCommands {
 
     for (SnippetEvent event : evaluation) {
       // TODO do proper logging of warnings
-      log.finer("eval: " + event.value() + "\n" + source);
+      log.finest("eval: " + event.value() + "\n" + source);
       switch (event.status()) {
       case REJECTED: {
         Stream<Diag> diags = sh.diagnostics(event.snippet());

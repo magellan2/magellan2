@@ -16,6 +16,7 @@ package magellan.client.swing.tree;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -303,7 +304,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
 
   private List<GraphicsElement> createGraphicsElements(Unit u) {
     List<GraphicsElement> names = new LinkedList<GraphicsElement>();
-    List<Skill> skills = new LinkedList<Skill>();
+    List<Skill> skills = new ArrayList<Skill>();
 
     if (isShowingSkillIcons() && (u.getSkills() != null)) {
       boolean bool = isShowingSkillsLessThanOne();
@@ -335,7 +336,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
     List<Item> others = null;
 
     if (isShowingOtherIcons()) {
-      others = new LinkedList<Item>(u.getModifiedItems());
+      others = new ArrayList<Item>(u.getModifiedItems());
       // sort items by category
       Collections.sort(others, ItemCategoryComparator.getInstance());
     }
@@ -675,7 +676,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
   }
 
   private static class UnitNodeWrapperDrawPolicy extends DetailsNodeWrapperDrawPolicy implements
-  ContextChangeable, ActionListener {
+      ContextChangeable, ActionListener {
     /** Show additional icons */
     public static final int SHOW_ADDITIONAL = 0;
 
@@ -775,7 +776,7 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
           "prefs.categorized.2", "prefs.categorized.3", "prefs.categorized.4",
           "prefs.categorized.5", "prefs.categorized.6",
 
-      "prefs.showWarnings" }, 4, "tree.unitnodewrapper.");
+          "prefs.showWarnings" }, 4, "tree.unitnodewrapper.");
 
       // context menu
       contextMenu = new JMenu(Resources.get("tree.unitnodewrapper.prefs.title"));

@@ -1,4 +1,4 @@
-These are the additional files for ECheck V4 and above in English.
+These are the additonal files for ECheck V4 and above in english.
 
 The are are the following files:
 
@@ -22,7 +22,7 @@ ore more parts into the file
 
   - tokens.txt
 
-if you proceed them by special keywords. You can obtain the list of keywords
+if you preceed them by special keywords. You can obtain the list of keywords
 by using "echeck -hk".
 
 Further instructions are inside the files.

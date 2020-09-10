@@ -16,6 +16,7 @@ sawmill
 stable
 monument
 dam
-caravanserai
+caravanserei
 tunnel
 tavern
+stonecircle

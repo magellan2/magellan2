@@ -687,6 +687,53 @@ public class GiveOrderTest extends MagellanTestWithResources {
     // FIXME assertEquals(shipnw.getShoreId(), shipNone.getShoreId());
   }
 
+  /**
+   * 
+   */
+  @Test
+  public void testGiveDamagedShip() {
+    Unit unit2 = builder.addUnit(data, "two", "Other", unit.getFaction(), region0);
+    Unit unit3 = builder.addUnit(data, "thrm", "Other", unit.getFaction(), region0);
+    Unit unit4 = builder.addUnit(data, "too", "Other", unit.getFaction(), region0);
+
+    unit.clearOrders();
+    unit.addOrder("GIB two 1 SCHIFF");
+    unit3.addOrder("GIB too 1 SCHIFF");
+
+    Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
+    Ship ship2 = builder.addShip(data, region0, "conv", "Trireme", "Konvoi", 200);
+    ship.setDamageRatio(20);
+    ship2.setAmount(2);
+    Ship ship3 = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
+    Ship ship4 = builder.addShip(data, region0, "conv", "Trireme", "Konvoi", 200);
+    ship4.setAmount(2);
+    ship4.setDamageRatio(20);
+
+    // transfer ship from fleet to fleet
+    builder.addTo(unit, ship);
+    builder.addTo(unit2, ship2);
+    builder.addTo(unit3, ship3);
+    builder.addTo(unit4, ship4);
+
+    assertEquals(160000, ship.getModifiedMaxCapacity());
+    assertEquals(320000, ship4.getModifiedMaxCapacity());
+
+    process(region0);
+
+    assertEquals(3, ship2.getModifiedAmount());
+    assertEquals(400, ship2.getModifiedSize());
+    assertEquals(560000.0, ship2.getModifiedMaxCapacity(), 200);
+    assertTrue(560000 >= ship2.getModifiedMaxCapacity());
+    // assertEquals(6.67, ship2.getDamageRatio());
+
+    assertEquals(3, ship4.getModifiedAmount());
+    assertEquals(400, ship4.getModifiedSize());
+    assertEquals(520000.0, ship4.getModifiedMaxCapacity(), 400);
+    assertTrue(520000 >= ship4.getModifiedMaxCapacity());
+    // assertEquals(13.33, ship4.getDamageRatio());
+
+  }
+
   private void process(Region region) {
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region);

@@ -94,6 +94,11 @@ public class TeachInspector extends AbstractInspector {
       for (Order o : u2.getOrders2())
         if (o.getProblem() == null && o instanceof LearnOrder) {
           found = true;
+          if (((LearnOrder) o).isAuto()) {
+            problems.add(ProblemFactory.createProblem(Severity.WARNING,
+                TeachProblemTypes.NOTLEARNING.type, u, this,
+                Resources.get("tasks.teachinspector.notlearning.message3", u2), relation.line));
+          }
           SkillType skillType = getData().getRules().getSkillType(((LearnOrder) o).skillName);
           Skill ss = u2.getModifiedSkill(skillType);
           Skill ts = u.getModifiedSkill(skillType);

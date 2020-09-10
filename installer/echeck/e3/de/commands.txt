@@ -10,7 +10,6 @@
 ALLIANCE,     Allianz
 WORK,         Arbeiten
 ATTACK,       Attackieren
-SIEGE,        Belagere
 NAME,         Benennen
 USE,          Benutzen
 DESCRIBE,     Beschreiben
@@ -21,6 +20,7 @@ MESSAGE,      Botschaft
 END,          Ende
 RIDE,         Fahren
 FOLLOW,       Folgen
+RESEARCH,     Forschen
 GIVE,         Gib
 HELP,         Helfen
 FIGHT,        Kämpfen
@@ -30,7 +30,7 @@ STUDY,        Lernen
 MAKE,         Machen
 MOVE,         Nach
 PASSWORD,     Passwort
-PAY,          Bezahlen
+PLANT,        Pflanzen
 RECRUIT,      Rekrutieren
 REPORT,       Report
 OPTION,       Option
@@ -41,7 +41,7 @@ LEAVE,        Verlassen
 CAST,         Zaubere
 SHOW,         Zeigen
 DESTROY,      Zerstören
-FORGET,       Vergessen
+FORGET,       Vergiss
 DEFAULT,      Default
 COMMENT,      //
 ROUTE,        Route
@@ -49,7 +49,7 @@ BREED,        Züchten
 ORIGIN,       Ursprung
 EMAIL,        Email
 RESERVE,      Reservieren
-CLAIM, Beanspruchen
+CLAIM,        Beanspruchen
 BANNER,       Banner
 NUMBER,       Nummer
 PIRACY,       Piraterie
@@ -57,8 +57,15 @@ RESTART,      Neustart
 GROUP,        Gruppe
 SORT,         Sortieren
 PREFIX,       Präfix
-PROMOTION,    Beförderung
-CLAIM,        Beanspruchen
+PROMOTE,      Befördere
+LANGUAGE,     Sprache
+ORDERSTART,   Eressea
+ORDERSTART,   Partei
+NEXT,         Nächster
+LOCALE,       Locale
+UNIT,         Einheit
+REGION,       Region
 
 # NEXT, Nächster     ist KEIN BEFEHL für ECheck, sondern ein PARAMETER!
 # dies ist aus internen Gründen notwendig, also entsprechend dort eintragen
+

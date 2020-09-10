@@ -1126,7 +1126,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT
                           .getName()
                           + ": " + NumberFormat.getNumberInstance().format(upkeep.longValue()), bT
-                          .getName()));
+                              .getName()));
                   subNode.add(subSubNode);
                 }
               }
@@ -1143,7 +1143,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
                           curFaction == null ? Resources
                               .get("emapdetailspanel.node.unknownfaction") : curFaction.getName()
-                              + ": " + NumberFormat.getNumberInstance().format(alms.longValue()),
+                                  + ": " + NumberFormat.getNumberInstance().format(alms.longValue()),
                           "Silber"));
                   subNode.add(subSubNode);
                   // regions für diese Faction dazu
@@ -1272,9 +1272,23 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // Fiete 20060915: get rid of english icon names...using stringfactory to
       // get the orginal names
       String shipIconName = StringFactory.getFactory().intern(shipType.getID().toString());
-      subNode =
-          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName()
-              + ": " + ((List<?>) shipsCounter.get(shipType)).size(), shipIconName));
+      int shipCount = 0, convoyCount = 0;
+      for (Ship ship : shipsCounter.get(shipType)) {
+        shipCount += ship.getAmount();
+        if (ship.getAmount() > 1) {
+          convoyCount++;
+        }
+      }
+      if (convoyCount > 0 && shipsCounter.get(shipType).size() > 1) {
+        subNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName()
+                + ": " + Resources.get("factionstatspanel.node.shipcount",
+                    shipCount, shipsCounter.get(shipType).size(), convoyCount, shipsCounter.get(shipType).size()
+                        - convoyCount), shipIconName));
+      } else {
+        subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName()
+            + ": " + shipCount, shipIconName));
+      }
 
       currentNode.add(subNode);
 

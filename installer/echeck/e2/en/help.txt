@@ -7,9 +7,9 @@
 # use \n for newlines
 #############################################################################
 
-CAPTION, ECheck (version %s, %s), order file checker for Eressea - freeware!\n\nUsage:   %s -Pgame [options] orderfile\n\n
-PATH,   -Ppath  search path for the additional files; game %s and locale %s will be appended
-TEXT,   -Rgame  read files from directory game; default: e2
+CAPTION, ECheck (version %s, %s), order file checker for Eressea - freeware!\n\nUsage:   %s [options] orderfile\n\n
+PATH,   -Ppath  search path for the additional files; locale %s will be appended
+TEXT,   -Rgame  read files from subdirectory game; default: e2
 TEXT,   -       use stdin instead of an input file
 TEXT,   -b      suppress warnings and errors (brief)
 TEXT,   -q      do not expect hints regarding men/silver within [] after UNIT
@@ -35,7 +35,10 @@ TEXT,   -noxxx  no xxx warnings. xx can be:
 TEXT,      ship   unit steers a ship but may lack control
 TEXT,      route  do not check for cyclic ROUTE
 TEXT,      lost   unit loses silver and items
-TEXT,   -w[n]   warnings of level n (default:   4)
+TEXT,   -w[n]   warnings of level n (default: 4)
+TEXT,        1  mainly syntax errors
+TEXT,        4  almost all warnings
+TEXT,        5  teachers/students
 TEXT,   -x      line counting starts with FACTION
 TEXT,   -Lloc   select locale loc
 TEXT,   -vm.l   mainversion.level - to check for correct ECheck-Version

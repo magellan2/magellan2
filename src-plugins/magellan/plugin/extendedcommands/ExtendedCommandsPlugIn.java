@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.plugin.extendedcommands;
 
 import java.awt.Component;
@@ -189,6 +189,13 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     importMenu.setEnabled(false);
     menu.add(importMenu);
 
+    menu.addSeparator();
+
+    JMenuItem helpMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.help.title"));
+    helpMenu.setActionCommand(PlugInAction.HELP.getID());
+    helpMenu.addActionListener(this);
+    menu.add(helpMenu);
+
     return items;
   }
 
@@ -324,8 +331,15 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       ExtendedCommandsPlugIn.log.finer("import commands...");
       break;
     }
+    case HELP: {
+      ExtendedCommandsPlugIn.log.finer("Help...");
+      DesktopEnvironment.requestFocus(HelpDock.IDENTIFIER);
+      break;
+    }
     case UNKNOWN:
+    default:
       ExtendedCommandsPlugIn.log.warn("unknown command...");
+      break;
     }
   }
 

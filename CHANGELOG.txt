@@ -1,3 +1,8 @@
+2020-09-10/ Build 728 - stm (stm2@users.sourceforge.net)
+    * new ECheck version
+    * rule changes for ZÜCHTE, LERNE AUTO, KONTAKTIERE EINHEIT
+    * missing MESSAGETYPES and sections in new CR format
+
 2020-08-13/ Build 726 - stm (stm2@users.sourceforge.net)
     * added Help button for ExtCmds
     * display damage after GIVE SHIP

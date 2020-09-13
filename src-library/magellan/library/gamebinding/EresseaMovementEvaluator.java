@@ -25,7 +25,6 @@ import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
-import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.relation.MovementRelation;
@@ -91,7 +90,6 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *         horseback.
    */
   public int getPayloadOnHorse(Unit unit) {
-    int capacity = 0;
     int horses = getHorses(unit);
 
     if (horses <= 0)
@@ -100,32 +98,25 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     if (horses > getMaxHorsesRiding(unit))
       return MovementEvaluator.CAP_UNSKILLED;
 
-    int carts = 0;
-    Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
+    int carts = getCarts(unit);
 
-    if (i != null) {
-      carts = i.getAmount();
-    }
+    int towedCarts = Math.min(carts, horses / 2);
+    int capacity =
+        ((towedCarts * 100) + (horses * 20) - (carts - towedCarts) * 40) * 100
+            - (getRaceWeight(unit) * unit.getModifiedPersons());
 
-    int horsesWithoutCarts = horses - (carts * 2);
-
-    if (horsesWithoutCarts >= 0) {
-      capacity =
-          (((carts * 140) + (horsesWithoutCarts * 20)) * 100)
-              - (getRaceWeight(unit) * unit.getModifiedPersons());
-    } else {
-      int cartsWithoutHorses = carts - (horses / 2);
-      horsesWithoutCarts = horses % 2;
-      capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses
-              * 40))
-              * 100)
-              - (getRaceWeight(unit) * unit.getModifiedPersons());
-    }
     // Fiete 20070421 (Runde 519)
     // GOTS not active when riding! (tested)
     // return respectGOTS(unit, capacity);
     return capacity;
+  }
+
+  private int getCarts(Unit unit) {
+    Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
+
+    if (i != null)
+      return i.getAmount();
+    return 0;
   }
 
   protected int getMaxHorsesRiding(Unit unit) {
@@ -159,11 +150,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    */
   public int getPayloadOnFoot(Unit unit) {
     int capacity = 0;
-    int horses = getHorses(unit);
-
-    if (horses < 0) {
-      horses = 0;
-    }
+    int horses = Math.max(0, getHorses(unit));
 
     if (horses > getMaxHorsesWalking(unit))
       // too many horses
@@ -173,67 +160,21 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
 
     if (i != null) {
-      carts = i.getAmount();
+      carts = Math.max(0, i.getAmount());
     }
 
-    if (carts < 0) {
-      carts = 0;
-    }
-
-    int horsesWithoutCarts = 0;
-    int cartsWithoutHorses = 0;
-
-    int ridingSkill = 0;
-    {
-      Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
-
-      if (s != null) {
-        ridingSkill = s.getLevel();
-      }
-    }
-    if (ridingSkill == 0) {
-      // can't use carts!!!
-      horsesWithoutCarts = horses;
-      cartsWithoutHorses = carts;
-    } else if (carts > (horses / 2)) {
-      // too many carts
-      cartsWithoutHorses = carts - (horses / 2);
-    } else {
-      // too many horses (or exactly right number)
-      horsesWithoutCarts = horses - (carts * 2);
-    }
+    int pulledCarts = Math.min(carts, horses / 2);
 
     Race race = unit.getRace();
 
-    if ((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
-      capacity =
-          (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) - (cartsWithoutHorses
-              * 40))
-              * 100)
-              + (((int) ((race == null ? 10 : race.getCapacity()) * 100)) * unit
-                  .getModifiedPersons());
-    } else {
-      if (unit.getModifiedPersons() != 0) {
-        int horsesMasteredPerPerson = getMaxHorsesWalking(unit);
-        int trollsMasteringHorses = horses / horsesMasteredPerPerson;
-
-        if ((horses % horsesMasteredPerPerson) != 0) {
-          trollsMasteringHorses++;
-        }
-
-        int cartsTowedByTrolls =
-            Math.min((unit.getModifiedPersons() - trollsMasteringHorses) / 4, cartsWithoutHorses);
-        int trollsTowingCarts = cartsTowedByTrolls * 4;
-        int untowedCarts = cartsWithoutHorses - cartsTowedByTrolls;
-        capacity =
-            (((((carts - untowedCarts) * 140) + (horsesWithoutCarts * 20)) - (untowedCarts * 40))
-                * 100)
-                + (((int) (race.getCapacity() * 100)) * (unit.getModifiedPersons()
-                    - trollsTowingCarts));
-      } else {
-        capacity = 0;
-      }
+    if (race != null && race.getID().equals(EresseaConstants.R_TROLLE)) {
+      pulledCarts = Math.min(carts, pulledCarts + unit.getModifiedPersons() / 4);
     }
+
+    capacity = (pulledCarts * 100 +
+        horses * 20 -
+        (carts - pulledCarts) * 40) * 100
+        + (race == null ? 540 : (int) (race.getCapacity() * 100)) * unit.getModifiedPersons();
 
     return respectGOTS(unit, capacity);
   }

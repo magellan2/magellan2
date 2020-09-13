@@ -73,8 +73,7 @@ public class CRWriterTest {
     if (writer != null) {
       writer.close();
     }
-
-    assertEquals(string, strWriter.toString());
+    assertEquals(string.replace("\n", System.lineSeparator()), strWriter.toString());
   }
 
   private CRWriter setupWriter() {

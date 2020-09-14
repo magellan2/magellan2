@@ -1,20 +1,23 @@
-2020-09-10/ Build 728 - stm (stm2@users.sourceforge.net)
+2020-09-13 / Build 729 - stm (stm2@users.sourceforge.net)
+    * new movement rules for trolls and unskilled horses
+
+2020-09-10 / Build 728 - stm (stm2@users.sourceforge.net)
     * new ECheck version
     * rule changes for ZÜCHTE, LERNE AUTO, KONTAKTIERE EINHEIT
     * missing MESSAGETYPES and sections in new CR format
 
-2020-08-13/ Build 726 - stm (stm2@users.sourceforge.net)
+2020-08-13 / Build 726 - stm (stm2@users.sourceforge.net)
     * added Help button for ExtCmds
     * display damage after GIVE SHIP
     * display convoys in faction stats
     * order keywords must have 3 letters
     * SPRACHE command
 
-2020-07-02/ Build 719 - stm (stm2@users.sourceforge.net)
+2020-07-02 / Build 719 - stm (stm2@users.sourceforge.net)
     * improved testing and output of ExtendedCommands
     * added api doc
 
-2020-05-30/ Build 716 - stm (stm2@users.sourceforge.net)
+2020-05-30 / Build 716 - stm (stm2@users.sourceforge.net)
     * fixed bug #410 (RoutePlanner)
     * added Fantasya rules file
     * fixed map saver

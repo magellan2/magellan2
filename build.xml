@@ -580,6 +580,19 @@
 	<!-- *************************************************************** -->
 	<target name="doc" description="==> Creates the JavaDocs">
 		<echo message="Running JavaDoc" />
+		<jar jarfile="magellan-src.jar"
+		     basedir="${basedir}"
+		     includes="**/*.java">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Specification-Title"
+				           value="Magellan Sources [build ${build.number}]" />
+				<attribute name="Specification-Vendor"
+				           value="Magellan Development Team" />
+			</manifest>
+		</jar>
+
+
 		<javadoc encoding="${compile.encoding}"
 		         packagenames="magellan.*"
 		         destdir="${javadoc.api}"
@@ -590,6 +603,7 @@
 		         windowtitle="Magellan ${VERSION.POINTED}"
 		         doctitle="Magellan ${VERSION.POINTED}"
 		         maxmemory="256M"
+                 useexternalfile="Yes"
 		         locale="de_DE">
 			<classpath refid="magellan.class.path" />
 			<link href="https://docs.oracle.com/en/java/javase/11/docs/api/index.html" />
@@ -598,6 +612,7 @@
 				<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
              if you need javadoc for src-test, please investigate! -->
 				<exclude name="src-test/**" />
+                <exclude name="installer/**" />
 			</fileset>
 		</javadoc>
 	</target>

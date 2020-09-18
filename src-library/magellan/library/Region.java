@@ -1103,4 +1103,12 @@ public interface Region extends UnitContainer, Selectable {
    */
   public Set<Unit> getMaintained();
 
+  public int getEntertain();
+
+  public int getOldEntertain();
+
+  public void setEntertain(int parseInt);
+
+  public void setOldEntertain(int parseInt);
+
 }

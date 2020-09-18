@@ -1894,6 +1894,11 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
+      if (region.maxOldEntertain() > 0) {
+        write(region.maxOldEntertain() + ";letzteunterh");
+        newLine();
+      }
+
       if (region.getRecruits() > 0) {
         write(region.getRecruits() + ";Rekruten");
         newLine();

@@ -1073,7 +1073,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   /** Add completions for command LerneTalent. */
   public void cmpltLerneTalent(SkillType t) {
     if (getData() != null && getData().getRules() != null && t != null) {
-      final int cost = getSkillCost(t, unit);
+      final int cost = LearnOrder.getSkillCost(t, unit);
 
       if (cost > 0) {
         completions.add(new Completion(Integer.toString(cost)));
@@ -1085,70 +1085,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
             twoQuotes, "", Completion.DEFAULT_PRIORITY, 1));
       }
     }
-  }
-
-  /**
-   * Returns the learn cost for a specific skill.
-   *
-   * @param skillType the skill to be learned
-   * @return the cost to learn a skill for the given unit. If the unit has no persons the cost for
-   *         one person is returned.
-   */
-  @Override
-  public int getSkillCost(SkillType skillType, Unit someUnit) {
-    // int cost = 0;
-    int c2 = 0;
-
-    final Skill sk = someUnit.getSkill(skillType);
-    if (sk == null) {
-      c2 = skillType.getCost(1);
-    } else {
-      c2 = skillType.getCost(1 + sk.getLevel() - sk.getModifier(someUnit));
-    }
-
-    // if (skillType.getID().equals(EresseaConstants.S_TAKTIK)
-    // || skillType.getID().equals(EresseaConstants.S_KRAEUTERKUNDE)
-    // || skillType.getID().equals(EresseaConstants.S_ALCHEMIE)) {
-    // cost = 200;
-    // } else if (skillType.getID().equals(EresseaConstants.S_SPIONAGE)) {
-    // cost = 100;
-    // } else if (skillType.getID().equals(EresseaConstants.S_MAGIE)) {
-    // // get magiclevel without modifier
-    // int level = 0;
-    // final Skill skill = (someUnit != null) ? someUnit.getSkill(skillType) : null;
-    //
-    // if (skill != null && someUnit != null) {
-    // if (skill.noSkillPoints()) {
-    // level = skill.getLevel() - skill.getModifier(someUnit);
-    // } else {
-    // final int days = someUnit.getSkill(skillType).getPointsPerPerson();
-    // level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
-    // }
-    // }
-    //
-    // final int nextLevel = level + 1;
-    // cost = (int) (50 + ((50 * (1 + nextLevel) * (nextLevel)) / 2.0));
-    // }
-
-    if ((someUnit.getModifiedBuilding() != null)
-        && someUnit.getModifiedBuilding().getType().equals(
-            getData().getRules().getBuildingType(EresseaConstants.B_ACADEMY))) {
-      if (c2 == 0) {
-        // cost = 50;
-        c2 = 50;
-      } else {
-        // cost *= 2;
-        c2 *= 2;
-      }
-    }
-
-    // cost *= Math.max(1, someUnit.getModifiedPersons());
-    c2 *= Math.max(1, someUnit.getModifiedPersons());
-
-    // if (c2 != cost && getData().getGameSpecificStuff().getName().equalsIgnoreCase("eressea")) {
-    // EresseaOrderCompleter.log.error("assertion error getSkillCost()");
-    // }
-    return c2;
   }
 
   /** Add completions for command Liefere. */

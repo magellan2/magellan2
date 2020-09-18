@@ -38,7 +38,7 @@ import magellan.library.utils.logging.Logger;
 public class MaintenanceInspector extends AbstractInspector {
 
   public enum MaintenanceProblemTypes {
-    UNITSTARVING, BUILDINGMAINTENANCE, UNKNOWNDESTINATION;
+    UNITSTARVING, BUILDINGMAINTENANCE, LEARNCOSTS, UNKNOWNDESTINATION;
 
     public ProblemType type;
 
@@ -172,7 +172,7 @@ public class MaintenanceInspector extends AbstractInspector {
           SimpleProblem problem =
               ProblemFactory.createProblem(Severity.WARNING, MaintenanceProblemTypes.UNITSTARVING
                   .getType(), r, null, f, lastUnit, this, Resources.get(
-                  "tasks.maintenanceinspector.unitstarving.message", r2), -1);
+                      "tasks.maintenanceinspector.unitstarving.message", r2), -1);
           if (!checkIgnoreUnit(lastUnit, problem)) {
             // problems.add(ProblemFactory.createProblem(Severity.WARNING,
             // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));

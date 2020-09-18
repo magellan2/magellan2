@@ -2021,7 +2021,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
   // ************* LERNE
   protected class LerneReader extends OrderHandler {
-    private boolean all;
+
+    String skillName;
+    SkillType skillType;
+    Integer cost;
 
     public LerneReader(OrderParser parser) {
       super(parser);
@@ -2041,6 +2044,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
     @Override
     protected boolean readIt(OrderToken token) {
       boolean retVal = false;
+      skillName = null;
+      skillType = null;
+      cost = null;
       token.ttype = OrderToken.TT_KEYWORD;
 
       getOrder().setLong(true);
@@ -2053,7 +2059,6 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
       if (isString(t) && token.followedBySpace()) {
         retVal = new StringChecker(false, false, true, false) {
-          SkillType skill = null;
 
           @Override
           protected boolean checkInner() {
@@ -2062,9 +2067,9 @@ public class EresseaOrderParser extends AbstractOrderParser {
             if (getRules() == null)
               return openingToken.getText().length() > 0;
             // TODO localize
-            skill = getRules().getSkillType(content.replace('~', ' '));
-            getOrder().skillName = content;
-            return skill != null;
+            skillType = getRules().getSkillType(content.replace('~', ' '));
+            skillName = content;
+            return skillType != null;
           }
 
           @Override
@@ -2074,13 +2079,17 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
           @Override
           protected boolean checkNext() {
-            return skill != null && readLerneTalent(nextToken, skill);
+            return skillType != null && readLerneTalent(nextToken, skillType);
           }
 
         }.read(t);
       } else {
         unexpected(t);
       }
+
+      getOrder().skillName = skillName;
+      getOrder().skillType = skillType;
+      getOrder().cost = cost;
 
       return retVal;
     }
@@ -2092,6 +2101,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (!getOrder().isAuto() && isNumeric(t.getText()) == true) {
         retVal = readFinalNumber(t);
+        cost = Integer.parseInt(t.getText());
       } else if (!getOrder().isAuto() && isString(t) && !isEoC(t)
           && skill.equals(getRules().getSkillType(EresseaConstants.S_MAGIE))) {
         retVal = readFinalString(t);
@@ -2104,6 +2114,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
       return retVal;
     }
+
   }
 
   // ************* LOCALE

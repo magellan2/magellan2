@@ -171,13 +171,14 @@ public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResour
     checkOrder("A", false);
   }
 
-  protected void checkOrder(String string) {
-    checkOrder(string, true);
+  protected Order checkOrder(String string) {
+    return checkOrder(string, true);
   }
 
-  protected void checkOrder(String string, boolean result) {
+  protected Order checkOrder(String string, boolean result) {
     Order order = getParser().parse(string, getLocale());
     assertEquals("checking " + string, result, order.isValid());
+    return order;
   }
 
   protected void testLong(String string, boolean isLong) {

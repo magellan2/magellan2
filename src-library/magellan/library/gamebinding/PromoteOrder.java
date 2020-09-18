@@ -62,9 +62,11 @@ public class PromoteOrder extends SimpleOrder {
       return;
 
     int costs = 0;
-    for (Unit u : unit.getFaction().units()) {
-      if (!u.isSpy()) {
-        costs += u.getModifiedPersons();
+    if (unit.getFaction() != null) {
+      for (Unit u : unit.getFaction().units()) {
+        if (!u.isSpy()) {
+          costs += u.getModifiedPersons();
+        }
       }
     }
 
@@ -90,7 +92,7 @@ public class PromoteOrder extends SimpleOrder {
       }
       if (rel.problem != null) {
         mRel.warning = true;
-        mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
+        mRel.setWarning(Resources.get("order.promote.warning.silver"),
             MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
       }
     }

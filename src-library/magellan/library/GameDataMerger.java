@@ -1749,6 +1749,13 @@ public class GameDataMerger {
       resultRegion.setOldRecruits(curRegion.getOldRecruits());
     }
 
+    // same as with the old trees
+    if (newTurn && firstPass && curRegion.getEntertain() != -1) {
+      resultRegion.setOldEntertain(curRegion.getEntertain());
+    } else if (!newTurn && curRegion.getOldEntertain() != -1) {
+      resultRegion.setOldEntertain(curRegion.getOldEntertain());
+    }
+
     // *** Old luxury volume ****
     if (newTurn && firstPass && curRegion.maxLuxuries() != -1) {
       // current luxuries is a computed value...
@@ -1930,6 +1937,10 @@ public class GameDataMerger {
 
     if (curRegion.getRecruits() != -1) {
       resultRegion.setRecruits(curRegion.getRecruits());
+    }
+
+    if (curRegion.getEntertain() != -1) {
+      resultRegion.setEntertain(curRegion.getEntertain());
     }
 
     if (curRegion.getSilver() != -1) {

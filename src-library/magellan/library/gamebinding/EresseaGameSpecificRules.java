@@ -91,6 +91,8 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
    */
   public Integer getMaxEntertain(Region region) {
+    if (region.getEntertain() >= 0)
+      return region.getEntertain();
     return maxEntertain(region.getSilver());
   }
 
@@ -98,6 +100,8 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
    */
   public Integer getMaxOldEntertain(Region region) {
+    if (region.getOldEntertain() >= 0)
+      return region.getOldEntertain();
     return maxEntertain(region.getOldSilver());
   }
 

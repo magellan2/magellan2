@@ -130,28 +130,48 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * an orc faction gets a different value than factions of other races. Therefore there is a
    * getPeasantWage() method returning how much a peasant earns in this region depending on the
    * biggest castle.
+   * 
+   * @deprecated Use {@link #getWage()}, {@link #setWage(int)}
    */
+  @Deprecated
   public int wage = -1;
 
-  /** the wage persons have been able to earn in the past. */
+  /**
+   * the wage persons have been able to earn in the past.
+   * 
+   * @deprecated Use {@link #getOldWage()}, {@link #setOldWage(int)}
+   */
+  @Deprecated
   public int oldWage = -1;
 
-  /** DOCUMENT-ME */
+  private int entertain = -1;
+  private int oldEntertain = -1;
+
+  /** @deprecated Use {@link #getHerb()}, {@link #setHerb(ItemType)} */
+  @Deprecated
   public ItemType herb = null;
 
-  /** DOCUMENT-ME */
+  /** @deprecated Use {@link #getHerbAmount()}, {@link #setHerbAmount(String)} */
+  @Deprecated
   public String herbAmount = null;
 
-  /** Indicates that there are too many orcs in this region. */
+  /**
+   * Indicates that there are too many orcs in this region.
+   * 
+   * @deprecated Use {@link #isOrcInfested()}, {@link #setOrcInfested(boolean)}
+   */
+  @Deprecated
   public boolean orcInfested = false;
 
   // pavkovic 2002.05.13: for eressea CR-Version >= 64 we do interpret the
   // recruits tag
 
-  /** DOCUMENT-ME */
+  /** @deprecated {@link #getRecruits()}, {@link #setRecruits(int)} */
+  @Deprecated
   public int recruits = -1;
 
-  /** DOCUMENT-ME */
+  /** @deprecated {@link #getOldRecruits()}, {@link #setOldRecruits(int)} */
+  @Deprecated
   public int oldRecruits = -1;
 
   // fiete 2007.02.12: we add sign support - 2 lines allowed
@@ -859,6 +879,22 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       return peasants / 40; // 2.5 %
 
     return -1;
+  }
+
+  public int getEntertain() {
+    return entertain;
+  }
+
+  public void setEntertain(int value) {
+    entertain = value;
+  }
+
+  public int getOldEntertain() {
+    return oldEntertain;
+  }
+
+  public void setOldEntertain(int value) {
+    oldEntertain = value;
   }
 
   /**

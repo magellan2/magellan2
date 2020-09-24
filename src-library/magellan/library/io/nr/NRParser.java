@@ -601,11 +601,9 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
           messages.add(message = MagellanFactory.createMessage(line));
           Matcher objectMatcher = unitMessageLinePattern.matcher(line);
           if (objectMatcher.matches()) {
-            Map<String, String> attributes = new HashMap<String, String>();
-            attributes.put("unit", objectMatcher.group(2));
-            message.setAttributes(attributes);
+            message.setAttribute("unit", objectMatcher.group(2));
           }
-          message.setType(fallBackType);
+          message.setMessageType(fallBackType);
           nextLine(true, false);
         }
         nextLine(false, true);
@@ -773,7 +771,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     protected void parseShip() throws IOException {
-      // shipLine = "    " + object + "(,\\s+" + identifier + ")(.*)\\.";
+      // shipLine = " " + object + "(,\\s+" + identifier + ")(.*)\\.";
       currentShip =
           MagellanFactory.createShip(EntityID.createEntityID(lineMatcher.group(2), world.base),
               world);
@@ -798,7 +796,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     protected void parseBuilding() throws IOException {
-      // buildingLine = "   " + object + "(,\\s+size\\s+" + num + ")?(.*)\\.";
+      // buildingLine = " " + object + "(,\\s+size\\s+" + num + ")?(.*)\\.";
       currentBuilding =
           MagellanFactory.createBuilding(EntityID.createEntityID(lineMatcher.group(2), world.base),
               world);
@@ -820,7 +818,7 @@ public class NRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     private void parseUnit() throws ParseException, IOException {
-      // UNIT_LINE = "  *([*+-])\\s+" + OBJECT + "(,\\s+faction\\s+" + OBJECT + ")?([^.]*)([.!?])";
+      // UNIT_LINE = " *([*+-])\\s+" + OBJECT + "(,\\s+faction\\s+" + OBJECT + ")?([^.]*)([.!?])";
 
       try {
         currentUnit = getAddUnit(UnitID.createUnitID(lineMatcher.group(3), world.base), false);

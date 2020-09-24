@@ -1230,21 +1230,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
     ArrayList<Message> keepList = null;
     for (Message msg : msgList) {
-      if (msg.getAttributes() != null) {
-        // check whether the message belongs to one of the selected regions
-        // region related messages:
-        if (msgRegionAttributeNotInRegionList(data, msg, "region", regionList)
-            || msgRegionAttributeNotInRegionList(data, msg, "from", regionList)
-            || msgRegionAttributeNotInRegionList(data, msg, "to", regionList)) {
-          continue;
-        }
-        // unit related messages
-        if (msgUnitAttributeNotInRegionList(data, msg, "unit", regionList)
-            || msgUnitAttributeNotInRegionList(data, msg, "teacher", regionList)
-            || msgUnitAttributeNotInRegionList(data, msg, "student", regionList)
-            || msgUnitAttributeNotInRegionList(data, msg, "target", regionList)) {
-          continue;
-        }
+      // check whether the message belongs to one of the selected regions
+      // region related messages:
+      if (msgRegionAttributeNotInRegionList(data, msg, "region", regionList)
+          || msgRegionAttributeNotInRegionList(data, msg, "from", regionList)
+          || msgRegionAttributeNotInRegionList(data, msg, "to", regionList)) {
+        continue;
+      }
+      // unit related messages
+      if (msgUnitAttributeNotInRegionList(data, msg, "unit", regionList)
+          || msgUnitAttributeNotInRegionList(data, msg, "teacher", regionList)
+          || msgUnitAttributeNotInRegionList(data, msg, "student", regionList)
+          || msgUnitAttributeNotInRegionList(data, msg, "target", regionList)) {
+        continue;
       }
       // checks done, what left here should be kept
       if (keepList == null) {
@@ -1271,7 +1269,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private boolean msgUnitAttributeNotInRegionList(GameData data, Message msg, String tagName,
       Collection<Region> regionList) {
     boolean erg = false;
-    String value = msg.getAttributes().get(tagName);
+    String value = msg.getAttribute(tagName);
     if (value != null && value.indexOf(" ") < 0) {
       erg = true;
       String number = value;
@@ -1299,7 +1297,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private boolean msgRegionAttributeNotInRegionList(GameData data, Message msg, String tagName,
       Collection<Region> regionList) {
     boolean erg = false;
-    String value = msg.getAttributes().get(tagName);
+    String value = msg.getAttribute(tagName);
     if (value != null && value.indexOf(" ") > 0) {
       erg = true;
       String regionCoordinate = value;

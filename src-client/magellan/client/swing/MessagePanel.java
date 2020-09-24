@@ -169,20 +169,16 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
         while (msgs.hasNext()) {
           Message msg = msgs.next();
 
-          if (msg.getAttributes() != null) {
-            Iterator<String> iter = msg.getAttributes().values().iterator();
+          for (String key : msg.getAttributeKeys()) {
+            String attribute = msg.getAttribute(key);
+            CoordinateID c = CoordinateID.parse(attribute, ",");
 
-            while (iter.hasNext()) {
-              String attribute = iter.next();
-              CoordinateID c = CoordinateID.parse(attribute, ",");
+            if (c == null) {
+              c = CoordinateID.parse(attribute, " ");
+            }
 
-              if (c == null) {
-                c = CoordinateID.parse(attribute, " ");
-              }
-
-              if ((c != null) && (i.getRegion(c) != null)) {
-                sortedMessages.add(msg);
-              }
+            if ((c != null) && (i.getRegion(c) != null)) {
+              sortedMessages.add(msg);
             }
           }
         }
@@ -291,25 +287,17 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
       for (Faction f : getGameData().getFactions()) {
         if (f.getMessages() != null) {
-          Iterator<Message> msgs = f.getMessages().iterator();
+          for (Message msg : f.getMessages()) {
+            for (String key : msg.getAttributeKeys()) {
+              String attribute = msg.getAttribute(key);
+              CoordinateID c = CoordinateID.parse(attribute, ",");
 
-          while (msgs.hasNext()) {
-            Message msg = msgs.next();
+              if (c == null) {
+                c = CoordinateID.parse(attribute, " ");
+              }
 
-            if (msg.getAttributes() != null) {
-              Iterator<String> iter = msg.getAttributes().values().iterator();
-
-              while (iter.hasNext()) {
-                String attribute = iter.next();
-                CoordinateID c = CoordinateID.parse(attribute, ",");
-
-                if (c == null) {
-                  c = CoordinateID.parse(attribute, " ");
-                }
-
-                if ((c != null) && r.getID().equals(c)) {
-                  sortedMessages.add(msg);
-                }
+              if ((c != null) && r.getID().equals(c)) {
+                sortedMessages.add(msg);
               }
             }
           }
@@ -404,21 +392,18 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       while (msgs.hasNext()) {
         Message msg = msgs.next();
 
-        if (msg.getAttributes() != null) {
-          Iterator<String> iter = msg.getAttributes().values().iterator();
+        for (String key : msg.getAttributeKeys()) {
+          try {
+            int i = Integer.parseInt(msg.getAttribute(key));
 
-          while (iter.hasNext()) {
-            try {
-              int i = Integer.parseInt(iter.next());
-
-              // it would be cleaner to compare UnitID
-              // objects here but that's too expensive
-              if ((u.getID()).intValue() == i) {
-                node = new DefaultMutableTreeNode(msg);
-                parent.add(node);
-              }
-            } catch (NumberFormatException e) {
+            // it would be cleaner to compare UnitID
+            // objects here but that's too expensive
+            if ((u.getID()).intValue() == i) {
+              node = new DefaultMutableTreeNode(msg);
+              parent.add(node);
             }
+          } catch (NumberFormatException e) {
+            // ignore msg
           }
         }
       }
@@ -485,18 +470,15 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
           while (msgs.hasNext()) {
             Message msg = msgs.next();
 
-            if (msg.getAttributes() != null) {
-              Iterator<String> iter = msg.getAttributes().values().iterator();
+            for (String key : msg.getAttributeKeys()) {
+              try {
+                IntegerID id = IntegerID.create(msg.getAttribute(key));
 
-              while (iter.hasNext()) {
-                try {
-                  IntegerID id = IntegerID.create(iter.next());
-
-                  if (id.equals(uc.getID())) {
-                    sortedMessages.add(msg);
-                  }
-                } catch (NumberFormatException e) {
+                if (id.equals(uc.getID())) {
+                  sortedMessages.add(msg);
                 }
+              } catch (NumberFormatException e) {
+                // ignore message
               }
             }
           }
@@ -519,39 +501,40 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     node = new DefaultMutableTreeNode(m);
     parent.add(node);
 
-    if (m.getAttributes() != null) {
-      String value = m.getAttributes().get("unit");
+    String value = m.getAttribute("unit");
 
-      if (value != null) {
-        try {
-          int i = Integer.parseInt(value);
-          Unit u = getGameData().getUnit(UnitID.createUnitID(i, getGameData().base));
+    if (value != null) {
+      try {
+        int i = Integer.parseInt(value);
+        Unit u = getGameData().getUnit(UnitID.createUnitID(i, getGameData().base));
 
-          if (u != null) {
-            subNode = new DefaultMutableTreeNode(nodeFactory.createUnitNodeWrapper(u));
-            node.add(subNode);
-          }
-        } catch (NumberFormatException e) {
+        if (u != null) {
+          subNode = new DefaultMutableTreeNode(nodeFactory.createUnitNodeWrapper(u));
+          node.add(subNode);
         }
+      } catch (NumberFormatException e) {
+        // ignore message
+      }
+    }
+
+    for (String key : m.getAttributeKeys()) {
+      String val = m.getAttribute(key);
+      CoordinateID c = CoordinateID.parse(val, ",");
+
+      if (c == null) {
+        c = CoordinateID.parse(val, " ");
       }
 
-      for (String val : m.getAttributes().values()) {
-        CoordinateID c = CoordinateID.parse(val, ",");
+      if (c != null) {
+        Region r = getGameData().getRegion(c);
 
-        if (c == null) {
-          c = CoordinateID.parse(val, " ");
-        }
-
-        if (c != null) {
-          Region r = getGameData().getRegion(c);
-
-          if (r != null) {
-            subNode = new DefaultMutableTreeNode(nodeFactory.createRegionNodeWrapper(r));
-            node.add(subNode);
-          }
+        if (r != null) {
+          subNode = new DefaultMutableTreeNode(nodeFactory.createRegionNodeWrapper(r));
+          node.add(subNode);
         }
       }
     }
+
   }
 
   /**

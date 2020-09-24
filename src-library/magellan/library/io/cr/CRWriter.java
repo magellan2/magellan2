@@ -338,23 +338,21 @@ public class CRWriter extends BufferedWriter {
       newLine();
     }
 
-    if (msg.getAttributes() != null) {
-      for (String key : msg.getAttributes().keySet()) {
-        String value = msg.getAttributes().get(key);
+    for (String key : msg.getAttributeKeys()) {
+      String value = msg.getAttribute(key);
 
-        try {
-          Integer.parseInt(value);
+      try {
+        Integer.parseInt(value);
+        write(value + ";" + key);
+        newLine();
+      } catch (NumberFormatException e) {
+        CoordinateID c = CoordinateID.parse(value, " ");
+
+        if (c != null) {
           write(value + ";" + key);
           newLine();
-        } catch (NumberFormatException e) {
-          CoordinateID c = CoordinateID.parse(value, " ");
-
-          if (c != null) {
-            write(value + ";" + key);
-            newLine();
-          } else {
-            writeQuotedTag(value, key);
-          }
+        } else {
+          writeQuotedTag(value, key);
         }
       }
     }

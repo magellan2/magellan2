@@ -32,7 +32,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1341,41 +1340,32 @@ public class GameDataMerger {
    */
   public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg,
       ReportTransformer transformer) {
-    if ((curMsg.getAttributes() != null) && (curMsg.getAttributes().size() > 0)) {
-      if (newMsg.getAttributes() == null) {
-        newMsg.setAttributes(CollectionFactory.<String, String> createSyncOrderedMap(4));
+    for (String curKey : curMsg.getAttributeKeys()) {
+      String curValue = curMsg.getAttribute(curKey);
+      if (curKey.equalsIgnoreCase("type")) {
+        newMsg.setAttribute(curKey, curValue);
+      } else if (curKey.equalsIgnoreCase("rendered")) {
+        newMsg.setAttribute(curKey,
+            originTranslate(transformer, curValue));
       } else {
-        newMsg.getAttributes().clear();
-      }
+        CoordinateID coord = CoordinateID.parse(curValue, ",");
 
-      if (curMsg.getAttributes() != null) {
-        for (Entry<String, String> entry : curMsg.getAttributes().entrySet()) {
-          if (entry.getKey().equalsIgnoreCase("type")) {
-            newMsg.getAttributes().put(entry.getKey(), entry.getValue());
-          } else if (entry.getKey().equalsIgnoreCase("rendered")) {
-            newMsg.getAttributes().put(entry.getKey(),
-                originTranslate(transformer, entry.getValue()));
+        if (coord != null) {
+          final CoordinateID newCoord = transformer.transform(coord);
+          newMsg.setAttribute(curKey, newCoord.toString(","));
+        } else {
+          coord = CoordinateID.parse(curValue, " ");
+          if (coord != null) {
+            final CoordinateID newCoord = transformer.transform(coord);
+            newMsg.setAttribute(curKey, newCoord.toString(" ", true));
           } else {
-            CoordinateID coord = CoordinateID.parse(entry.getValue(), ",");
-
-            if (coord != null) {
-              final CoordinateID newCoord = transformer.transform(coord);
-              newMsg.getAttributes().put(entry.getKey(), newCoord.toString(","));
+            // check for ;regions
+            if (curKey.equalsIgnoreCase("regions")) {
+              // special dealing
+              newMsg.setAttribute(curKey,
+                  originTranslateRegions(transformer, curValue));
             } else {
-              coord = CoordinateID.parse(entry.getValue(), " ");
-              if (coord != null) {
-                final CoordinateID newCoord = transformer.transform(coord);
-                newMsg.getAttributes().put(entry.getKey(), newCoord.toString(" ", true));
-              } else {
-                // check for ;regions
-                if (entry.getKey().equalsIgnoreCase("regions")) {
-                  // special dealing
-                  newMsg.getAttributes().put(entry.getKey(),
-                      originTranslateRegions(transformer, entry.getValue()));
-                } else {
-                  newMsg.getAttributes().put(entry.getKey(), entry.getValue());
-                }
-              }
+              newMsg.setAttribute(curKey, curValue);
             }
           }
         }
@@ -1384,7 +1374,7 @@ public class GameDataMerger {
 
     // first update the message type - this was already localized
     if (curMsg.getMessageType() != null) {
-      newMsg.setType(newGD.getMsgType(curMsg.getMessageType().getID()));
+      newMsg.setMessageType(newGD.getMsgType(curMsg.getMessageType().getID()));
     }
 
     if (curMsg.getText() != null) {
@@ -1400,6 +1390,8 @@ public class GameDataMerger {
           // DURCHREISE), the best thing we can do is to copy the text anyway...
           newMsg.setText(originTranslate(transformer, curMsg.getText()));
         }
+        // FIXME type could be !=null and still have no rendered
+
         // otherwise we can render the text from the probably localized
         // messagetype
         /*

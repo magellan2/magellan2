@@ -66,7 +66,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
    */
-  public Map<String, String> attributes = null;
+  public Map<String, String> attributes;
 
   private boolean acknowledged;
 
@@ -101,6 +101,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   /**
    * Creates a new Message object.
    */
+  @SuppressWarnings("deprecation")
   public MagellanMessageImpl(Message msg) {
     this(msg.getID(), msg.getText(), msg.getMessageType(), msg.getAttributes());
   }
@@ -125,17 +126,24 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 
     this.type = type;
 
+    clearAttributes();
     if (attributes != null) {
-      this.attributes =
-          CollectionFactory.<String, String> createSyncOrderedMap((int) (attributes.size() / .7));
       this.attributes.putAll(attributes);
     }
+  }
+
+  private void clearAttributes() {
+    attributes =
+        CollectionFactory.<String, String> createSyncOrderedMap(attributes != null ? (attributes.size() + 1) : 2);
   }
 
   /**
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
+   * 
+   * @deprecated
    */
+  @Deprecated
   public Map<String, String> getAttributes() {
     return attributes;
   }
@@ -143,9 +151,39 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   /**
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
+   * 
+   * @deprecated
    */
+  @Deprecated
   public void setAttributes(Map<String, String> attributes) {
+    if (attributes == null) {
+      clearAttributes();
+      return;
+    }
+    // check that attributes are modifiable
+    String test = attributes.get("###test");
+    attributes.put("###test", "test");
+    attributes.remove("###test");
+    if (test != null) {
+      attributes.put("###test", test);
+    }
     this.attributes = attributes;
+  }
+
+  public String getAttribute(String key) {
+    return attributes.get(key);
+  }
+
+  public void setAttribute(String key, String value) {
+    attributes.put(key, value);
+  }
+
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>(attributes.keySet());
+  }
+
+  public void setMessageType(MessageType type) {
+    this.type = type;
   }
 
   /**
@@ -192,7 +230,9 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * Sets the <code>MessageType</code> of this message.
    *
    * @param type The new message type
+   * @deprecated
    */
+  @Deprecated
   public void setType(MessageType type) {
     this.type = type;
   }
@@ -410,41 +450,6 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   }
 
   /**
-   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
-   */
-  public void addAttribute(String key, String value) {
-    throw new RuntimeException("this method is not implemented");
-  }
-
-  /**
-   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
-   */
-  public boolean containsAttribute(String key) {
-    return false;
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttribute(java.lang.String)
-   */
-  public String getAttribute(String key) {
-    throw new RuntimeException("this method is not implemented");
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttributeKeys()
-   */
-  public List<String> getAttributeKeys() {
-    return new ArrayList<String>();
-  }
-
-  /**
-   * @see magellan.library.Addeable#getAttributeSize()
-   */
-  public int getAttributeSize() {
-    return 0;
-  }
-
-  /**
    * Returns an ID for this message. NOTE: This is not always unique, there are messages with
    * {@link #ambiguousID}.
    *
@@ -468,4 +473,5 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   public void setAcknowledged(boolean ack) {
     acknowledged = ack;
   }
+
 }

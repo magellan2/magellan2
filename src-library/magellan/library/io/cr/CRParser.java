@@ -453,7 +453,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
             world.addMsgType(mt);
           }
 
-          msg.setType(mt);
+          msg.setMessageType(mt);
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("rendered")) {
           msg.setText(originTranslate(sc.argv[0]));
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("toolacknowledged")) {
@@ -461,27 +461,23 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("section")) {
           section = sc.argv[0];
         } else if (sc.argc == 2) {
-          if (msg.getAttributes() == null) {
-            msg.setAttributes(CollectionFactory.<String, String> createSyncOrderedMap(4));
-          }
-
           CoordinateID coord = CoordinateID.parse(sc.argv[0], ",");
 
           if (coord != null) {
             final CoordinateID newCoord = originTranslate(coord);
-            msg.getAttributes().put(sc.argv[1], newCoord.toString(","));
+            msg.setAttribute(sc.argv[1], newCoord.toString(","));
           } else {
             coord = CoordinateID.parse(sc.argv[0], " ");
             if (coord != null) {
               final CoordinateID newCoord = originTranslate(coord);
-              msg.getAttributes().put(sc.argv[1], newCoord.toString(" ", true));
+              msg.setAttribute(sc.argv[1], newCoord.toString(" ", true));
             } else {
               // check for ;regions
               if (sc.argv[1].equalsIgnoreCase("regions")) {
                 // special dealing
-                msg.getAttributes().put(sc.argv[1], originTranslateRegions(sc.argv[0]));
+                msg.setAttribute(sc.argv[1], originTranslateRegions(sc.argv[0]));
               } else {
-                msg.getAttributes().put(sc.argv[1], sc.argv[0]);
+                msg.setAttribute(sc.argv[1], sc.argv[0]);
               }
             }
           }

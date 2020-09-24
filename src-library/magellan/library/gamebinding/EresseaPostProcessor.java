@@ -185,9 +185,9 @@ public class EresseaPostProcessor {
                 // a herb was found in a region
               case 1349776898: // xyz stellt fest, dass es hier viele Schneekristalle gibt
                 // a certain amount of herbs has been detected in a region
-                if ((message.getAttributes() != null)
-                    && message.getAttributes().containsKey("region")) {
-                  String str = message.getAttributes().get("region");
+
+                String str = message.getAttribute("region");
+                if (str != null) {
                   CoordinateID coord = CoordinateID.parse(str, ",");
 
                   if (coord == null) {
@@ -197,7 +197,7 @@ public class EresseaPostProcessor {
                   Region r = data.getRegion(coord);
 
                   if (r != null) {
-                    String value = message.getAttributes().get("herb");
+                    String value = message.getAttribute("herb");
 
                     if (value != null) {
                       ItemType type = data.getRules().getItemType(StringID.create(value), true);
@@ -206,7 +206,7 @@ public class EresseaPostProcessor {
 
                     if (((message.getMessageType().getID()).intValue()) == 1349776898) {
                       // a certain amount of herbs has been detected in a region
-                      String amount = message.getAttributes().get("amount");
+                      String amount = message.getAttribute("amount");
 
                       if (amount != null) {
                         r.setHerbAmount(amount);
@@ -223,8 +223,8 @@ public class EresseaPostProcessor {
                 // fix spy messages which lack the spy attribute (see Magellan bug #333 and Eressea
                 // bug #1604)
                 Unit spy = null;
-                String spyId = message.getAttributes().get("spy");
-                String targetId = message.getAttributes().get("target");
+                String spyId = message.getAttribute("spy");
+                String targetId = message.getAttribute("target");
                 if (spyId == null || targetId == null) {
                   EresseaPostProcessor.log.warn("spy message without spy or target: " + message);
                 } else {
@@ -232,13 +232,12 @@ public class EresseaPostProcessor {
                   // target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
                   if (spy != null && spy.getFaction() != null) {
                     for (Message msg2 : spy.getFaction().getMessages()) {
-                      if (msg2.getAttributes() != null && msg2.getAttributes().get(
-                          "target") != null) {
-                        if (targetId.equals(msg2.getAttributes().get("target"))) {
-                          if (msg2.getAttributes().get("spy") != null) {
-                            if (!spyId.equals(msg2.getAttributes().get("spy"))) {
+                      if (msg2.getAttribute("target") != null) {
+                        if (targetId.equals(msg2.getAttribute("target"))) {
+                          if (msg2.getAttribute("spy") != null) {
+                            if (!spyId.equals(msg2.getAttribute("spy"))) {
                               EresseaPostProcessor.log.warn("message " + message.getID()
-                                  + " seems to belong to " + msg2.getAttributes().get("spy")
+                                  + " seems to belong to " + msg2.getAttribute("spy")
                                   + " and " + spyId);
                             }
                           } else {
@@ -246,8 +245,7 @@ public class EresseaPostProcessor {
                             case 387085007: // Y gehört der Partei F an
                             case 467205397: // Y beherrscht ...
                             case 743495578: // Im Gepäck von Y sind ...
-                              msg2.getAttributes().put("spy",
-                                  String.valueOf(((IntegerID) spy.getID()).intValue()));
+                              msg2.setAttribute("spy", String.valueOf(((IntegerID) spy.getID()).intValue()));
                               break;
                             }
                           }

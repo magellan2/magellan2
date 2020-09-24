@@ -1016,8 +1016,10 @@ public class BattleInfo {
         case 1619294438: // Basilisk
         case 1677670293: // Trugbilder
         case 1402218402: // zaubert
-        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch beschleunigt.";rendered
-        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde getötet.";rendered
+        case 138727251: // "Rosie Kattun (sppd) zaubert Beschleunigung: 385 Krieger wurden magisch
+                        // beschleunigt.";rendered
+        case 450463848: // "Die Verzehrenden von Dotetkul (Li8h) zaubert Eisiger Drachenodem: 1 Krieger wurde
+                        // getötet.";rendered
         case 1878259751: // niemand in Reichweite
         case 1385719261: // Tod des Geistes
           currentSpellInfo = addSpell(m, true);
@@ -1075,7 +1077,7 @@ public class BattleInfo {
           if (currentSpellInfo == null) {
             log.warn("unexpected dead " + m);
           } else {
-            currentSpellInfo.setDead(Integer.parseInt(m.getAttributes().get("dead")));
+            currentSpellInfo.setDead(Integer.parseInt(m.getAttribute("dead")));
           }
           break;
         case 1612582557: // empty
@@ -1249,13 +1251,13 @@ public class BattleInfo {
 
   private void addLoot(Message m) {
     UnitInfo info = getUnit(getUnit(m));
-    info.addLoot(m.getAttributes().get("item"), Integer.parseInt(m.getAttributes().get("amount")));
+    info.addLoot(m.getAttribute("item"), Integer.parseInt(m.getAttribute("amount")));
   }
 
   private void addHit(Message m) {
     UnitInfo info = getUnit(getUnit(m));
-    info.setKills(Integer.parseInt(m.getAttributes().get("kills")));
-    info.setHits(Integer.parseInt(m.getAttributes().get("hits")));
+    info.setKills(Integer.parseInt(m.getAttribute("kills")));
+    info.setHits(Integer.parseInt(m.getAttribute("hits")));
   }
 
   private UnitID addTactic(Message m) {
@@ -1267,17 +1269,17 @@ public class BattleInfo {
   }
 
   private void addSummary(Message m) {
-    int hostIndex = Integer.parseInt(m.getAttributes().get("index"));
+    int hostIndex = Integer.parseInt(m.getAttribute("index"));
     HostInfo messageHost = hosts.get(hostIndex);
-    messageHost.setDead(Integer.parseInt(m.getAttributes().get("dead")));
-    if (m.getAttributes().get("fled") != null) {
-      messageHost.setFled(Integer.parseInt(m.getAttributes().get("fled")));
-    } else if (m.getAttributes().get("flown") != null) {
-      messageHost.setFled(Integer.parseInt(m.getAttributes().get("flown")));
+    messageHost.setDead(Integer.parseInt(m.getAttribute("dead")));
+    if (m.getAttribute("fled") != null) {
+      messageHost.setFled(Integer.parseInt(m.getAttribute("fled")));
+    } else if (m.getAttribute("flown") != null) {
+      messageHost.setFled(Integer.parseInt(m.getAttribute("flown")));
     }
 
-    messageHost.setSurvived(Integer.parseInt(m.getAttributes().get("survived")));
-    String abbrev = m.getAttributes().get("abbrev");
+    messageHost.setSurvived(Integer.parseInt(m.getAttribute("survived")));
+    String abbrev = m.getAttribute("abbrev");
     if (messageHost.getAbbrev() == null || !abbrev.equals("-?-")) {
       messageHost.setAbbrev(abbrev);
     }
@@ -1285,17 +1287,17 @@ public class BattleInfo {
 
   private void addLoss(Message m) {
     UnitInfo info = getUnit(getUnit(m));
-    info.setFallen(Integer.parseInt(m.getAttributes().get("fallen")));
-    info.setAlive(Integer.parseInt(m.getAttributes().get("alive")));
-    info.setRun(Integer.parseInt(m.getAttributes().get("run")));
+    info.setFallen(Integer.parseInt(m.getAttribute("fallen")));
+    info.setAlive(Integer.parseInt(m.getAttribute("alive")));
+    info.setRun(Integer.parseInt(m.getAttribute("run")));
   }
 
   private int startRound(Message m) {
-    return Integer.parseInt(m.getAttributes().get("turn"));
+    return Integer.parseInt(m.getAttribute("turn"));
   }
 
   private int startRow(Message m) {
-    return Integer.parseInt(m.getAttributes().get("row"));
+    return Integer.parseInt(m.getAttribute("row"));
   }
 
   protected void initPatterns() {
@@ -1341,10 +1343,11 @@ public class BattleInfo {
   }
 
   private void addMisc(Message m) {
-    String string = m.getAttributes().get("string");
+    String string = m.getAttribute("string");
     if (string.startsWith(Resources.get("plugin.battle.fights", getLocale(), false))) {
       // "Kämpft gegen: Heer 1(orks)";string
-      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Kämpft gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord),
+      // Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1357,7 +1360,9 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.helps", getLocale(), false))) {
       // "Hilft: Heer 0(phos)";string
-      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer 18(-?-), Heer 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-), Heer 25(cat), Heer 26(pt6f), Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
+      // "Hilft: Heer 0(-?-), Heer 13(-?-), Heer 14(-?-), Heer 15(haLb), Heer 16(stds), Heer 17(-?-), Heer 18(-?-), Heer
+      // 19(drac), Heer 20(ouLe), Heer 21(yjap), Heer 22(-?-), Heer 23(tata), Heer 24(-?-), Heer 25(cat), Heer 26(pt6f),
+      // Heer 27(fLos), Heer 28(1akL), Heer 29(phos), Heer 30(isb9)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1370,7 +1375,8 @@ public class BattleInfo {
       }
     } else if (string.startsWith(Resources.get("plugin.battle.attacks", getLocale(), false))) {
       // "Attacke gegen: Heer 1(orks)";string
-      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord), Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
+      // "Attacke gegen: Heer 1(orks), Heer 2(x), Heer 3(2j4e), Heer 4(das), Heer 5(przp), Heer 6(fust), Heer 7(Lord),
+      // Heer 8(Luft), Heer 9(va2z), Heer 10(-?-), Heer 11(mu47), Heer 12(bart)";string
       for (String hostPart : string.substring(string.indexOf(":") + 1).split(",")) {
         Matcher matcher = hostPattern1.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1382,15 +1388,19 @@ public class BattleInfo {
         }
       }
     } else if (unitPattern.matcher(string).matches()) {
-      // "  + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24 Schwerter.";string
-      // "  - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
-      // "  + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen, Weihrauch, Myrrhe, 4 Speere, 32 Schwerter.";string
-      // "  - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat: Streitross, Hellebarde, Schuppenpanzer.";string
-      // "  * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen 9, Ausdauer 5, Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter, Turmschild.";string
-      // "  - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
-      // "  + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2 Kettenhemden, 5 Schilde, Schwert."
-      // "  - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
-      // "  - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
+      // " + Tatarische Fremdenlegion (t7z9), 17 Dämonen, vorne (erschöpft), hat: 17 Schilde, 24 Schwerter.";string
+      // " - Wowukh (ru8y), 2 Trolle, flieht (schwer verwundet, hungert), hat: 2 Bihänder.";string
+      // " + Tatarische Fremdenlegion (zyju), 30 Goblins, vorne, bewacht die Region, hat: 2 Bögen, Weihrauch, Myrrhe, 4
+      // Speere, 32 Schwerter.";string
+      // " - Hellebardiere der Flaumfußens (m01j), 1 Bluthalbling, flieht (verwundet, hungert), hat: Streitross,
+      // Hellebarde, Schuppenpanzer.";string
+      // " * Tatarische Fremdenlegion (t1f1), 44 Goblins, vorne, bewacht die Region, Talente: Hiebwaffen 9, Ausdauer 5,
+      // Reiten 1, hat: 35 Kettenhemden, 2044 Silber, 44 Schilde, 46 Schwerter, Turmschild.";string
+      // " - Rächer des Bösen (7qqu), 7 Skelette, defensiv (schwer verwundet)."
+      // " + Tatarische Fremdenlegion (bdjd), 5 Orks, vorne, bewacht die Region, hat: 5 Kriegsäxte, 2 Kettenhemden, 5
+      // Schilde, Schwert."
+      // " - Delok (o1), 1 Ork, vorne, hat: Pferd, Speer, 2 Phiolen."
+      // " - Mogotk (ut3t), 1 Ork, hinten (schwer verwundet), hat: Bogen."
       Matcher matcher = unitPattern.matcher(string);
       boolean matched = matcher.matches();
       if (!matched) {
@@ -1446,8 +1456,14 @@ public class BattleInfo {
         currentHost.addUnit(unitInfo.getUnit(), unitInfo);
       }
     } else if (hostPattern2.matcher(string).matches()) {
-      // "Heer  0(phos): 17, Heer  1(orks): 0+0+0+2";string
-      // "Heer  0(-?-): 2, Heer  1(orks): 335+233+10+10, Heer  2(x): 295+155+10, Heer  3(2j4e): 0+412+0+25, Heer  4(das): 496+19+113+11, Heer  5(przp): 106+91, Heer  6(fust): 46+32, Heer  7(Lord): 202+100, Heer  8(Luft): 79+4+1, Heer  9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer 12(bart): 275+74+40, Heer 13(-?-): 1, Heer 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds): 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100, Heer 19(drac): 157+249+1, Heer 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer 23(tata): 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
+      // "Heer 0(phos): 17, Heer 1(orks): 0+0+0+2";string
+      // "Heer 0(-?-): 2, Heer 1(orks): 335+233+10+10, Heer 2(x): 295+155+10, Heer 3(2j4e): 0+412+0+25, Heer 4(das):
+      // 496+19+113+11, Heer 5(przp): 106+91, Heer 6(fust): 46+32, Heer 7(Lord): 202+100, Heer 8(Luft): 79+4+1, Heer
+      // 9(va2z): 179+1, Heer 10(-?-): 0+0+0+1, Heer 11(mu47): 54+1, Heer 12(bart): 275+74+40, Heer 13(-?-): 1, Heer
+      // 14(-?-): 1, Heer 15(haLb): 250+63, Heer 16(stds): 573+18+3+3, Heer 17(-?-): 219+53+0+1, Heer 18(-?-): 20+100,
+      // Heer 19(drac): 157+249+1, Heer 20(ouLe): 268+348+0+5, Heer 21(yjap): 163+86+20+2, Heer 22(-?-): 34+0+0+2, Heer
+      // 23(tata): 400+102, Heer 24(-?-): 703+83, Heer 25(cat): 0+1, Heer 26(pt6f): 44, Heer 27(fLos): 0+21, Heer
+      // 28(1akL): 13, Heer 29(phos): 0+20, Heer 30(isb9): 33";string
       for (String hostPart : string.split(",")) {
         Matcher matcher = overviewPattern.matcher(hostPart);
         boolean matched = matcher.matches();
@@ -1472,9 +1488,9 @@ public class BattleInfo {
   }
 
   private HostInfo addHost(Message m) {
-    String sIndex = m.getAttributes().get("index");
+    String sIndex = m.getAttribute("index");
     // "Phosphoros Sancti (phos)";name
-    String name = m.getAttributes().get("name");
+    String name = m.getAttribute("name");
     return addHost(m, sIndex, name);
   }
 
@@ -1506,7 +1522,7 @@ public class BattleInfo {
 
   private void addStarter(Message m) {
     // "Phosphoros Sancti (phos)";factions
-    String messageFactions = m.getAttributes().get("factions");
+    String messageFactions = m.getAttribute("factions");
     addStarter(m, messageFactions);
   }
 
@@ -1569,15 +1585,15 @@ public class BattleInfo {
     spell.setRound(currentRound);
     spell.setCompleted(true);
 
-    if (m.getAttributes().get("dead") != null) {
-      spell.setDead(Integer.parseInt(m.getAttributes().get("dead")));
+    if (m.getAttribute("dead") != null) {
+      spell.setDead(Integer.parseInt(m.getAttribute("dead")));
     }
 
     return spell;
   }
 
   private SpellInfo addSpell(Message m, boolean success) {
-    String name = m.getAttributes().get("spell");
+    String name = m.getAttribute("spell");
     if (name == null) {
       name = Resources.get("plugin.battle.spell.unknown");
     }
@@ -1586,9 +1602,9 @@ public class BattleInfo {
 
   private SpellInfo addSpell(Message m, String name, boolean success) {
     UnitID unit;
-    if (m.getAttributes().get("unit") != null) {
+    if (m.getAttribute("unit") != null) {
       unit = getUnit(m);
-    } else if (m.getAttributes().get("mage") != null) {
+    } else if (m.getAttribute("mage") != null) {
       unit = getUnit(m, "mage");
     } else {
       unit = UnitID.createUnitID(-1, world.base);
@@ -1609,11 +1625,11 @@ public class BattleInfo {
     spell.setRound(currentRound);
     spell.setCompleted(success);
 
-    if (m.getAttributes().get("amount") != null) {
-      spell.setAmount(Integer.parseInt(m.getAttributes().get("amount")));
+    if (m.getAttribute("amount") != null) {
+      spell.setAmount(Integer.parseInt(m.getAttribute("amount")));
     }
-    if (m.getAttributes().get("dead") != null) {
-      spell.setDead(Integer.parseInt(m.getAttributes().get("dead")));
+    if (m.getAttribute("dead") != null) {
+      spell.setDead(Integer.parseInt(m.getAttribute("dead")));
     }
 
     return spell;
@@ -1624,7 +1640,7 @@ public class BattleInfo {
   }
 
   private UnitID getUnit(Message m, String key) {
-    return UnitID.createUnitID(m.getAttributes().get(key), 10, world.base);
+    return UnitID.createUnitID(m.getAttribute(key), 10, world.base);
     // unit.substring(unit.lastIndexOf('(') + 1, unit .lastIndexOf(')'))
   }
 

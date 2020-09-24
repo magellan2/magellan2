@@ -712,13 +712,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       for (Message msg : faction.getMessages()) {
-        if (msg.getAttributes() == null) {
-          log.warn("message without attributes: " + msg.getID());
-          continue;
-        }
-
         // check whether the message belongs to one of the selected regions
-        String value = msg.getAttributes().get("region");
+        String value = msg.getAttribute("region");
         if (value != null) {
           String regionCoordinate = value;
           ID coordinate = CoordinateID.parse(regionCoordinate, ",");
@@ -732,7 +727,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           // some messages, for instance of type 170076 don't have
           // a region tag but a unit tag. Therefore get the region
           // via the unit of that message!
-          value = msg.getAttributes().get("unit");
+          value = msg.getAttribute("unit");
           if (value != null) {
             String number = value;
             UnitID id = UnitID.createUnitID(number, 10, getGameData().base);
@@ -760,7 +755,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         try {
           if ((msgID == 771334452) || (msgID == 2097)) {
             // xyz verdient ... [durch Unterhaltung | ]
-            String modeValue = msg.getAttributes().get("mode");
+            String modeValue = msg.getAttribute("mode");
 
             if (modeValue != null) {
               int i = Integer.parseInt(modeValue);
@@ -768,13 +763,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 log.warnOnce("unknwon earn mode " + i);
                 i = E_MAX;
               }
-              value = msg.getAttributes().get("amount");
+              value = msg.getAttribute("amount");
 
               if (value != null) {
                 earned[i] += Integer.parseInt(value);
               }
 
-              value = msg.getAttributes().get("wanted");
+              value = msg.getAttribute("wanted");
 
               if (value != null) {
                 wanted[i] += Integer.parseInt(value);
@@ -782,7 +777,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             }
           } else if (msgID == 1264208711) {
             // E3 Steuern
-            value = msg.getAttributes().get("amount");
+            value = msg.getAttribute("amount");
 
             if (value != null) {
               earned[E_TAX] += Integer.parseInt(value);
@@ -790,7 +785,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             }
           } else if (msgID == 107552268) {
             // Gebäudeunterhalt
-            String buildingNR = msg.getAttributes().get("building");
+            String buildingNR = msg.getAttribute("building");
             if (buildingNR != null) {
               int i = Integer.parseInt(buildingNR);
               EntityID id = EntityID.createEntityID(i, getGameData().base);
@@ -816,14 +811,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             }
           } else if (msgID == 170076) {
             // bezahlt für Kauf von Luxusgütern
-            value = msg.getAttributes().get("money");
+            value = msg.getAttribute("money");
 
             if (value != null) {
               spent[S_TRADE] += Integer.parseInt(value);
             }
           } else if (msgID == 443066738) {
             // Lernkosten
-            value = msg.getAttributes().get("cost");
+            value = msg.getAttribute("cost");
             if (value != null) {
               spent[S_LEARN] += Integer.parseInt(value);
             }
@@ -832,9 +827,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             try {
               Unit unit =
                   getGameData().getUnit(
-                      UnitID.createUnitID(Integer.parseInt(msg.getAttributes().get("unit")),
+                      UnitID.createUnitID(Integer.parseInt(msg.getAttribute("unit")),
                           getGameData().base));
-              int amount = Integer.parseInt(msg.getAttributes().get("amount"));
+              int amount = Integer.parseInt(msg.getAttribute("amount"));
               if (factions.containsKey(unit.getFaction().getID())) {
                 spent[S_THEFT] += amount;
               }
@@ -847,18 +842,18 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
           } else if (msgID == 5281483) {
             // Übergaben
-            value = msg.getAttributes().get("resource");
-            String value2 = msg.getAttributes().get("amount");
+            value = msg.getAttribute("resource");
+            String value2 = msg.getAttribute("amount");
             if (value != null && value.equalsIgnoreCase(EresseaConstants.I_USILVER.toString())
                 && value2 != null) {
               long amount = Integer.parseInt(value2);
-              value = msg.getAttributes().get("unit");
+              value = msg.getAttribute("unit");
               UnitID id = UnitID.createUnitID(value, 10, getGameData().base);
               Unit giver = getGameData().getUnit(id);
               ID giverID =
                   (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
                       getGameData().base) : giver.getFaction().getID();
-              value = msg.getAttributes().get("target");
+              value = msg.getAttribute("target");
               id = UnitID.createUnitID(value, 10, getGameData().base);
               Unit target = getGameData().getUnit(id);
               ID targetID =
@@ -891,49 +886,49 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   && (currentMessage.getMessageType().getID() != null)) {
                 int msgID = (currentMessage.getMessageType().getID()).intValue();
                 if (msgID == 1682429624) {
-                  if (currentMessage.getAttributes() == null) {
-                    log.warn("message without attributes: " + currentMessage.getID());
-                    continue;
-                  }
-                  // Almosen
-                  // check, ob from unsere Faction ist
-                  String from = currentMessage.getAttributes().get("from");
-                  EntityID fromID =
-                      EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
-                  // Faction beziehen
-                  ID fromFactionID =
-                      getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1,
-                          getGameData().base) : getGameData().getFaction(fromID).getID();
-                  String to = currentMessage.getAttributes().get("to");
-                  EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getGameData().base);
-                  ID toFactionID =
-                      getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1,
-                          getGameData().base) : getGameData().getFaction(toID).getID();
-                  long amount = Integer.parseInt(currentMessage.getAttributes().get("amount"));
-                  if (fromFactionID.equals(faction.getID())) {
-                    // alms from us
-                    spent[S_ALMS] += amount;
-                    // collect data for subnodes
-                    increase(factionAlmsGiven, toFactionID, amount);
+                  try {
+                    // Almosen
+                    // check, ob from unsere Faction ist
+                    String from = currentMessage.getAttribute("from");
+                    EntityID fromID =
+                        EntityID.createEntityID(Integer.parseInt(from), getGameData().base);
+                    // Faction beziehen
+                    ID fromFactionID =
+                        getGameData().getFaction(fromID) == null ? EntityID.createEntityID(-1,
+                            getGameData().base) : getGameData().getFaction(fromID).getID();
+                    String to = currentMessage.getAttribute("to");
+                    EntityID toID = EntityID.createEntityID(Integer.parseInt(to), getGameData().base);
+                    ID toFactionID =
+                        getGameData().getFaction(toID) == null ? EntityID.createEntityID(-1,
+                            getGameData().base) : getGameData().getFaction(toID).getID();
+                    long amount = Integer.parseInt(currentMessage.getAttribute("amount"));
+                    if (fromFactionID.equals(faction.getID())) {
+                      // alms from us
+                      spent[S_ALMS] += amount;
+                      // collect data for subnodes
+                      increase(factionAlmsGiven, toFactionID, amount);
 
-                    Map<Region, Long> factionAlms = almGivenRegions.get(toFactionID);
-                    if (factionAlms == null) {
-                      factionAlms = new HashMap<Region, Long>();
-                    }
-                    increase(factionAlms, currentRegion, amount);
-                    almGivenRegions.put(toFactionID, factionAlms);
-                  } else if (toFactionID.equals(faction.getID())) {
-                    // alms to us
-                    extraEarned[EE_ALMS] += amount;
-                    // collect data for subnodes
-                    increase(factionAlmsGotten, fromFactionID, amount);
+                      Map<Region, Long> factionAlms = almGivenRegions.get(toFactionID);
+                      if (factionAlms == null) {
+                        factionAlms = new HashMap<Region, Long>();
+                      }
+                      increase(factionAlms, currentRegion, amount);
+                      almGivenRegions.put(toFactionID, factionAlms);
+                    } else if (toFactionID.equals(faction.getID())) {
+                      // alms to us
+                      extraEarned[EE_ALMS] += amount;
+                      // collect data for subnodes
+                      increase(factionAlmsGotten, fromFactionID, amount);
 
-                    Map<Region, Long> factionAlms = almGottenRegions.get(fromFactionID);
-                    if (factionAlms == null) {
-                      factionAlms = new HashMap<Region, Long>();
+                      Map<Region, Long> factionAlms = almGottenRegions.get(fromFactionID);
+                      if (factionAlms == null) {
+                        factionAlms = new HashMap<Region, Long>();
+                      }
+                      increase(factionAlms, currentRegion, amount);
+                      almGottenRegions.put(fromFactionID, factionAlms);
                     }
-                    increase(factionAlms, currentRegion, amount);
-                    almGottenRegions.put(fromFactionID, factionAlms);
+                  } catch (Exception e) {
+                    FactionStatsPanel.log.error("unexpected message format: " + currentMessage + "\n" + e);
                   }
                 }
               }
@@ -1370,8 +1365,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           int msgID = (msg.getMessageType().getID()).intValue();
 
           // check whether the message belongs to one of the selected regions
-          if (msg.getAttributes() != null) {
-            String regionCoordinate = msg.getAttributes().get("region");
+          {
+            String regionCoordinate = msg.getAttribute("region");
 
             if (regionCoordinate != null) {
               ID coordinate = CoordinateID.parse(regionCoordinate, ",");
@@ -1388,7 +1383,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             // find a valid amount
             if ((msg.getMessageType() != null) && (msg.getMessageType().getSection() != null)
                 && msg.getMessageType().getSection().equalsIgnoreCase("production")) {
-              String value = msg.getAttributes().get("amount");
+              String value = msg.getAttribute("amount");
               long amount = 0;
 
               if (value != null) {
@@ -1396,12 +1391,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               }
 
               if (amount != 0) {
-                String resource = msg.getAttributes().get("resource");
+                String resource = msg.getAttribute("resource");
 
                 // get the resource
                 if (resource == null) {
                   // possible a message containing ;herb instead of ;resource
-                  resource = msg.getAttributes().get("herb");
+                  resource = msg.getAttribute("herb");
                 }
 
                 if (resource == null) {
@@ -1445,7 +1440,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     p.totalAmount += amount;
 
                     // try to get the unit that did the production
-                    value = msg.getAttributes().get("unit");
+                    value = msg.getAttribute("unit");
 
                     if (value != null) {
                       int number = Integer.parseInt(value);

@@ -472,20 +472,19 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
         if (getTransportMessageType().equals(m.getMessageType())) {
           log.debug("PathCellRenderer(" + u + ") Message " + m);
 
-          if ((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
-            log.debug("PathCellRenderer(" + u + ") Unit   " + m.getAttributes().get("unit"));
+          if (m.getAttribute("unit") != null) {
+            log.debug("PathCellRenderer(" + u + ") Unit   " + m.getAttribute("unit"));
             // actually it should be creatUnitID(*, 10, data.base), but it doesn't matter here
             log.debug("PathCellRenderer(" + u + ") UnitID "
-                + UnitID.createUnitID(m.getAttributes().get("unit"), 10));
+                + UnitID.createUnitID(m.getAttribute("unit"), 10));
           }
         }
       }
 
       if (getTransportMessageType().equals(m.getMessageType())
-          && (m.getAttributes() != null)
-          && (m.getAttributes().get("unit") != null)
+          && (m.getAttribute("unit") != null)
           && u.getID().equals(
-              UnitID.createUnitID(m.getAttributes().get("unit"), 10, u.getData().base))) {
+              UnitID.createUnitID(m.getAttribute("unit"), 10, u.getData().base))) {
         // found a transport message; this is only valid in
         // units with active movement
         if (log.isDebugEnabled()) {

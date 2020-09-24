@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+import java.util.List;
 import java.util.Map;
 
 import magellan.library.rules.MessageType;
@@ -24,17 +25,17 @@ import magellan.library.rules.MessageType;
  * class. Mainly, messages can now have an id and attributes.
  * </p>
  * <p>
- * Two special attributes are available directly via the corresping get/set methods.
+ * Two special attributes are available directly via the corresponding get/set methods.
  * </p>
  * <p>
- * First, this is the type attribte (tag ;type in the cr) denoting the type of the message. It is
+ * First, this is the type attribute (tag ;type in the cr) denoting the type of the message. It is
  * transformed into a <tt>MessageType</tt> object.
  * </p>
  * <p>
  * Second, there is the text attribute (tag ;rendered in the cr). By design this attribute should
  * actually be created by rendering the message according to the message type's pattern and the
  * other attributes. This class does contain a <tt>render()</tt> method, still, it is too primitive
- * to yield acceptable results, so it is preferrable to take the rendered message text directly from
+ * to yield acceptable results, so it is preferable to take the rendered message text directly from
  * the cr.
  * </p>
  * <p>
@@ -51,14 +52,41 @@ public interface Message extends Identifiable {
   /**
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
+   * 
+   * @return A map that may or may not be backed by this object, that is, changes to the map are reflected by this
+   *         object. Never returns <code>null</code>.
+   * 
+   * @deprecated Should use
+   *             {@link #getAttribute(String)}/{@link #setAttribute(String, String)}/{@link #getAttributeKeys()}
    */
+  @Deprecated
   public Map<String, String> getAttributes();
 
   /**
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
+   * 
+   * @param attributes If null, getAttributes() will return an empty map
    */
+  @Deprecated
   public void setAttributes(Map<String, String> attributes);
+
+  /**
+   * Returns the value for an attribute key.
+   * 
+   * @return null if the attribute exists, otherwise the value
+   */
+  public String getAttribute(String key);
+
+  /**
+   * Sets the value for the attribute to a key. A value of null deletes the value.
+   */
+  public void setAttribute(String key, String value);
+
+  /**
+   * Returns a list of all attributes that have been set.
+   */
+  public List<String> getAttributeKeys();
 
   /**
    * Gets the rendered message text.
@@ -86,26 +114,16 @@ public interface Message extends Identifiable {
    * 
    * @param type The new message type
    */
-  public void setType(MessageType type);
+  public void setMessageType(MessageType type);
 
   /**
-   * Renderes a message text from the given <code>pattern</code> and <code>attributes</code>.
-   * <p>
-   * Expects the tokens of the form {name1 name2} and replaces them by the attribute values for
-   * name1, name2 etc. If these values are unit names or region coordinates, their names are taken
-   * from the provided GameData.
-   * </p>
-   * <p>
-   * WARNING! This does not work for the current cr format (41) which expects tokens of the form
-   * $unit($unit).
-   * </p>
+   * Sets the <code>MessageType</code> of this message.
    * 
-   * @param data The game for replacing unit IDs and region coordinates
-   * @param pattern The pattern to render
-   * @param attributes A map of (String,Value)-pairs for replacing tokens in the pattern
-   * @return The rendered text as string
+   * @param type The new message type
+   * @deprecated Use #{setMessageType(MessageType)}
    */
-  // public static String render(GameData data, String pattern, Map attributes);
+  @Deprecated
+  public void setType(MessageType type);
 
   /**
    * Renders the message and updates the message text.
@@ -126,16 +144,6 @@ public interface Message extends Identifiable {
    * IntegerID(-1)
    */
   public boolean equals(Object o);
-
-  /**
-   * Transfers all available information from the current message to the new one.
-   * 
-   * @param curGD fully loaded game data
-   * @param curMsg a fully initialized and valid message
-   * @param newGD the game data to be updated
-   * @param newMsg a message to be updated with the data from curMsg
-   */
-  // public static void merge(GameData curGD, Message curMsg, GameData newGD, Message newMsg);
 
   /**
    * DOCUMENT-ME
@@ -159,4 +167,5 @@ public interface Message extends Identifiable {
    * Sets the new acknowledged status.
    */
   public void setAcknowledged(boolean ack);
+
 }

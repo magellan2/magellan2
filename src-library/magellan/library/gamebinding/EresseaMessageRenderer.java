@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.text.ParseException;
@@ -98,7 +98,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
     if (pat == null)
       return null;
     try {
-      String rendered = renderString(new StringBuffer(pat), msg.getAttributes());
+      String rendered = renderString(new StringBuffer(pat), msg);
       if ((rendered == null) || (rendered.equals("")))
         // fix for empty strings, that cause trouble in the message panel
         return " ";
@@ -107,26 +107,16 @@ public class EresseaMessageRenderer implements MessageRenderer {
     } catch (ParseException e) {
       if (!EresseaMessageRenderer.loggedTypes.containsKey(msg.getMessageType())) {
         EresseaMessageRenderer.loggedTypes.put(msg.getMessageType(), msg.getMessageType());
-        if (msg.getAttributes() == null) {
-          EresseaMessageRenderer.log.warn("Message Rendering Error: " + pat + " null "
-              + e.getMessage() + " Last parse position " + (pat.length() - e.getErrorOffset()), e);
-        } else {
-          EresseaMessageRenderer.log.warn("Message Rendering Error: " + pat + " "
-              + msg.getAttributes().toString() + " " + e.getMessage() + " Last parse position "
-              + (pat.length() - e.getErrorOffset()), e);
-        }
+        EresseaMessageRenderer.log.warn("Message Rendering Error: " + pat + " ["
+            + msg.getAttributeKeys() + "] " + e.getMessage() + " Last parse position "
+            + (pat.length() - e.getErrorOffset()), e);
       }
       return null;
     } catch (Exception e) {
       if (!EresseaMessageRenderer.loggedTypes.containsKey(msg.getMessageType())) {
         EresseaMessageRenderer.loggedTypes.put(msg.getMessageType(), msg.getMessageType());
-        if (msg.getAttributes() == null) {
-          EresseaMessageRenderer.log.warn("Message Rendering Error: " + pat + " null "
-              + e.getMessage(), e);
-        } else {
-          EresseaMessageRenderer.log.error("Message Rendering Error: " + pat + " "
-              + msg.getAttributes().toString() + " " + e.getMessage(), e);
-        }
+        EresseaMessageRenderer.log.error("Message Rendering Error: " + pat + " ["
+            + msg.getAttributeKeys() + "] " + e.getMessage(), e);
       }
       return null;
     }
@@ -137,11 +127,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * 
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return a String containing the fully rendered String part
-   * @throws ParseException if any problem occured parsing the msg
+   * @throws ParseException if any problem occurred parsing the msg
    */
-  private String renderString(StringBuffer unparsed, Map<String, String> attributes)
+  private String renderString(StringBuffer unparsed, Message msg)
       throws ParseException {
     // remove trailing spaces
     while (unparsed.charAt(0) == ' ') {
@@ -161,7 +151,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
         // delete from beginning to $ sign
         unparsed.delete(0, posd + 1);
         // append the returned string of the evaluated $ to the return string
-        parsed.append(renderDollar(unparsed, attributes));
+        parsed.append(renderDollar(unparsed, msg));
         // find next $ and " sign
         posd = unparsed.indexOf("$");
         posq = unparsed.indexOf("\"");
@@ -176,7 +166,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
     } else if (unparsed.charAt(0) == '$') {
       unparsed.deleteCharAt(0);
       try {
-        return (String) renderDollar(unparsed, attributes);
+        return (String) renderDollar(unparsed, msg);
       } catch (ClassCastException e) {
         throw new ParseException("String expected", unparsed.length());
       }
@@ -189,18 +179,18 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * 
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return a String or Array of int could also be NULL
-   * @throws ParseException if any problem occured parsing the msg
+   * @throws ParseException if any problem occurred parsing the msg
    */
-  private Object renderDollar(StringBuffer unparsed, Map<String, String> attributes)
+  private Object renderDollar(StringBuffer unparsed, Message msg)
       throws ParseException {
     if (unparsed.charAt(0) == '{') {
       int pos = unparsed.indexOf("}");
       if (pos > 0) {
         String name = unparsed.substring(1, pos);
         unparsed.delete(0, pos + 1);
-        return renderAttribute(name, attributes);
+        return renderAttribute(name, msg);
       } else
         // ERROR: no matching }
         throw new ParseException("no matching bracket '}'", unparsed.length());
@@ -213,11 +203,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
           // delete function name and opening bracket (
           unparsed.delete(0, m.end());
           // note that we give the name including the opening bracket (
-          return renderFunction(name, unparsed, attributes);
+          return renderFunction(name, unparsed, msg);
         } else {
           // an attribute
           unparsed.delete(0, m.end());
-          return renderAttribute(name, attributes);
+          return renderAttribute(name, msg);
         }
       } else
         throw new ParseException("$ without literals", unparsed.length());
@@ -228,11 +218,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * Returns the attribute value for a given attribute name.
    * 
    * @param name - the name of the attribute
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return The attribute value as String
    */
-  private String renderAttribute(String name, Map<String, String> attributes) {
-    String attr = attributes.get(name);
+  private String renderAttribute(String name, Message msg) {
+    String attr = msg.getAttribute(name);
     if ((attr == null) || (attr.equals("")))
       // fix for empty attributes ->->--^
       return null;
@@ -247,22 +237,22 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * @param name - the name of the function without dollar "$" but with the opening bracket "("
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return a String or Array of int could also be NULL
-   * @throws ParseException if any problem occured parsing the msg
+   * @throws ParseException if any problem occurred parsing the msg
    */
-  private Object renderFunction(String name, StringBuffer unparsed, Map<String, String> attributes)
+  private Object renderFunction(String name, StringBuffer unparsed, Message msg)
       throws ParseException {
     Object value;
     // $int(<int>)
     if (name.equals("int(")) {
-      int[] ar = renderInteger(unparsed, attributes);
+      int[] ar = renderInteger(unparsed, msg);
       if (ar != null) {
         value = Integer.toString(ar[0]);
       } else
         throw new ParseException("argument of int() returns NULL", unparsed.length());
     } else if (name.equals("unit(") || name.equals("unit.dative(")) {
-      EntityID uid = renderEntityID(unparsed, attributes);
+      EntityID uid = renderEntityID(unparsed, msg);
       if ((uid == null) || (uid.equals(unknownUnit))) {
         value = Resources.get("eresseamsgrenderer.func.unit.unknown");
       } else {
@@ -275,7 +265,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $region(<int int int>)
     } else if (name.equals("region(")) {
-      int[] i_ar = renderInteger(unparsed, attributes);
+      int[] i_ar = renderInteger(unparsed, msg);
       if ((i_ar != null) && (i_ar.length >= 2)) {
         CoordinateID rid;
         if (i_ar.length == 2) {
@@ -298,7 +288,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $trail(<string>)
     } else if (name.equals("trail(")) {
-      String trailparam = renderString(unparsed, attributes);
+      String trailparam = renderString(unparsed, msg);
       StringBuffer trail = new StringBuffer();
       if (trailparam != null) {
         String[] regions = trailparam.split(",");
@@ -344,7 +334,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $faction(<ID>)
     } else if (name.equals("faction(")) {
-      EntityID fid = renderEntityID(unparsed, attributes);
+      EntityID fid = renderEntityID(unparsed, msg);
       if (fid == null) {
         value = Resources.get("eresseamsgrenderer.func.faction.unknown");
       } else {
@@ -359,7 +349,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $ship(<ID>)
     } else if (name.equals("ship(")) {
-      EntityID sid = renderEntityID(unparsed, attributes);
+      EntityID sid = renderEntityID(unparsed, msg);
       if (sid == null) {
         value = Resources.get("eresseamsgrenderer.func.ship.unknown");
       } else {
@@ -372,7 +362,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $building(<ID>)
     } else if (name.equals("building(")) {
-      EntityID bid = renderEntityID(unparsed, attributes);
+      EntityID bid = renderEntityID(unparsed, msg);
       if (bid == null) {
         value = Resources.get("eresseamsgrenderer.func.building.unknown");
       } else {
@@ -387,7 +377,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
       // $eq(<int>,<int>)
     } else if (name.equals("eq(")) {
-      int[] ar = renderInteger(unparsed, attributes);
+      int[] ar = renderInteger(unparsed, msg);
       int pos = unparsed.indexOf(",");
       if (pos >= 0) {
         unparsed.delete(0, pos + 1);
@@ -396,7 +386,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
           i[0] = 0;
         } else {
           int a = ar[0];
-          ar = renderInteger(unparsed, attributes);
+          ar = renderInteger(unparsed, msg);
           if (ar == null) {
             i[0] = 0;
           } else {
@@ -411,12 +401,12 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else
         throw new ParseException("wrong arguments for eq()", unparsed.length());
     } else if (name.equals("add(")) {
-      int[] ar = renderInteger(unparsed, attributes);
+      int[] ar = renderInteger(unparsed, msg);
       int pos = unparsed.indexOf(",");
       if ((pos >= 0) && (ar != null)) {
         unparsed.delete(0, pos + 1);
         int a = ar[0];
-        ar = renderInteger(unparsed, attributes);
+        ar = renderInteger(unparsed, msg);
         if (ar != null) {
           int[] i = new int[1];
           i[0] = a + ar[0];
@@ -426,15 +416,15 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else
         throw new ParseException("wrong arguments for add()", unparsed.length());
     } else if (name.equals("if(")) {
-      int cond = renderInteger(unparsed, attributes)[0];
+      int cond = renderInteger(unparsed, msg)[0];
       int pos = unparsed.indexOf(",");
       if (pos >= 0) {
         unparsed.delete(0, pos + 1);
-        String do_true = renderString(unparsed, attributes);
+        String do_true = renderString(unparsed, msg);
         pos = unparsed.indexOf(",");
         if (pos >= 0) {
           unparsed.delete(0, pos + 1);
-          String do_false = renderString(unparsed, attributes);
+          String do_false = renderString(unparsed, msg);
           if (cond > 0) {
             value = do_true;
           } else {
@@ -445,7 +435,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else
         throw new ParseException("wrong arguments for if()", unparsed.length());
     } else if (name.equals("strlen(")) {
-      String content = renderString(unparsed, attributes);
+      String content = renderString(unparsed, msg);
       int[] i = new int[1];
       if (content == null) {
         i[0] = 0;
@@ -455,10 +445,10 @@ public class EresseaMessageRenderer implements MessageRenderer {
       value = i;
       // $order(<string>)
     } else if (name.equals("order(")) {
-      value = renderString(unparsed, attributes);
+      value = renderString(unparsed, msg);
       // $isnull(<any>)
     } else if (name.equals("isnull(")) {
-      Object obj = renderNull(unparsed, attributes);
+      Object obj = renderNull(unparsed, msg);
       int[] i = new int[1];
       if (obj == null) {
         i[0] = 1;
@@ -468,11 +458,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
       value = i;
       // $resource(<string>,<int>)
     } else if (name.equals("resource(")) {
-      String item = renderString(unparsed, attributes);
+      String item = renderString(unparsed, msg);
       int pos = unparsed.indexOf(",");
       if (pos >= 0) {
         unparsed.delete(0, pos + 1);
-        renderInteger(unparsed, attributes);
+        renderInteger(unparsed, msg);
         // TODO use amount(=ar[0]) if possible to spell the item names correctly
         value = gd.getTranslation(item);
       } else
@@ -480,7 +470,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
     } else if (name.equals("resources(")) {
       // the string has the following style: "<amount1> <item1>, <amount2> <item2>, ..."
       // beware <item> could include spaces!
-      String resparam = renderString(unparsed, attributes);
+      String resparam = renderString(unparsed, msg);
       StringBuffer res = new StringBuffer();
       if (resparam != null) {
         String[] resources = resparam.split(",");
@@ -505,17 +495,17 @@ public class EresseaMessageRenderer implements MessageRenderer {
       // $terrain(<string>)
     } else if (name.equals("localize(") || name.equals("skill(") || name.equals("spell(")
         || name.equals("race(") || name.equals("terrain(")) {
-      String str = renderString(unparsed, attributes);
+      String str = renderString(unparsed, msg);
       value = gd.getTranslation(str);
       // $weight(<int>)
     } else if (name.equals("weight(")) {
-      int[] ar = renderInteger(unparsed, attributes);
+      int[] ar = renderInteger(unparsed, msg);
       if (ar != null) {
         value = (ar[0] / 100) + " GE";
       } else
         throw new ParseException(name + ") requires an int parameter != NULL", unparsed.length());
     } else if (name.equals("direction(")) {
-      int[] ar = renderInteger(unparsed, attributes);
+      int[] ar = renderInteger(unparsed, msg);
       if ((ar != null) && (ar.length > 0)) {
         if ((ar[0] >= 0) && (ar[0] <= 5)) {
           value = Resources.get("eresseamsgrenderer.func.direction." + ar[0]);
@@ -525,7 +515,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else
         throw new ParseException("direction() requires an int parameter != NULL", unparsed.length());
     } else {
-      value = "unknown:" + name + renderString(unparsed, attributes) + ")";
+      value = "unknown:" + name + renderString(unparsed, msg) + ")";
       // throw new ParseException("unknown token: "+name, unparsed.length());
     }
 
@@ -545,14 +535,14 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * 
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return an EntityID
    * @throws ParseException if any problem occured parsing the msg
    */
 
-  private EntityID renderEntityID(StringBuffer unparsed, Map<String, String> attributes)
+  private EntityID renderEntityID(StringBuffer unparsed, Message msg)
       throws ParseException {
-    int[] i_ar = renderInteger(unparsed, attributes);
+    int[] i_ar = renderInteger(unparsed, msg);
     if ((i_ar != null) && (i_ar.length >= 1))
       return EntityID.createEntityID(i_ar[0], gd.base);
     else
@@ -565,11 +555,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * 
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return an Array of int
    * @throws ParseException if any problem occured parsing the msg
    */
-  private int[] renderInteger(StringBuffer unparsed, Map<String, String> attributes)
+  private int[] renderInteger(StringBuffer unparsed, Message msg)
       throws ParseException {
     // remove trailing spaces
     while (unparsed.charAt(0) == ' ') {
@@ -577,7 +567,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
     }
     if (unparsed.charAt(0) == '$') {
       unparsed.deleteCharAt(0);
-      Object obj = renderDollar(unparsed, attributes);
+      Object obj = renderDollar(unparsed, msg);
       try {
         return (int[]) obj;
       } catch (ClassCastException eint) {
@@ -610,13 +600,13 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * 
    * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates
    *          this!
-   * @param attributes - the mapping of atributes to values of the message
+   * @param msg - the message
    * @return something that may be NULL
-   * @throws ParseException if any problem occured parsing the msg, i.e. a constant STRING or
+   * @throws ParseException if any problem occurred parsing the msg, i.e. a constant STRING or
    *           integer is found
    */
 
-  private Object renderNull(StringBuffer unparsed, Map<String, String> attributes)
+  private Object renderNull(StringBuffer unparsed, Message msg)
       throws ParseException {
     // remove trailing spaces
     while (unparsed.charAt(0) == ' ') {
@@ -624,7 +614,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
     }
     if (unparsed.charAt(0) == '$') {
       unparsed.deleteCharAt(0);
-      return renderDollar(unparsed, attributes);
+      return renderDollar(unparsed, msg);
     } else if (unparsed.indexOf("NULL") == 0) {
       unparsed.delete(0, 4);
       return null;

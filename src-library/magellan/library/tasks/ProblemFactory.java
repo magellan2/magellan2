@@ -177,110 +177,109 @@ public class ProblemFactory {
       Unit owner, Object object, MessageInspector inspector) {
 
     // try to guess missing arguments by evaluating attributes
-    if (m.getAttributes() != null) {
-      if (owner == null) {
-        String attribute = m.getAttributes().get("unit");
-        if (attribute != null) {
-          UnitID id;
-          try {
-            id = UnitID.createUnitID(attribute, 10, data.base);
-          } catch (NumberFormatException e) {
-            id = null;
-          }
-          if (id != null) {
-            owner = data.getUnit(id);
-          }
+    if (owner == null) {
+      String attribute = m.getAttribute("unit");
+      if (attribute != null) {
+        UnitID id;
+        try {
+          id = UnitID.createUnitID(attribute, 10, data.base);
+        } catch (NumberFormatException e) {
+          id = null;
         }
-      }
-      if (object == null) {
-        String attribute = m.getAttributes().get("target");
-        if (attribute != null) {
-          UnitID id;
-          try {
-            id = UnitID.createUnitID(attribute, 10, data.base);
-          } catch (NumberFormatException e) {
-            id = null;
-          }
-          if (id != null) {
-            object = data.getUnit(id);
-          }
+        if (id != null) {
+          owner = data.getUnit(id);
         }
-      }
-      if (object == null) {
-        String attribute = m.getAttributes().get("mage");
-        if (attribute != null) {
-          UnitID id;
-          try {
-            id = UnitID.createUnitID(attribute, 10, data.base);
-          } catch (NumberFormatException e) {
-            id = null;
-          }
-          if (id != null) {
-            object = data.getUnit(id);
-          }
-        }
-      }
-
-      if (region == null) {
-        String attribute = m.getAttributes().get("region");
-        if (attribute != null) {
-          CoordinateID coord = CoordinateID.parse(attribute, ",");
-          if (coord == null) {
-            coord = CoordinateID.parse(attribute, " ");
-          }
-          if (coord != null) {
-            region = data.getRegion(coord);
-          }
-        }
-      }
-      if (region == null) {
-        String attribute = m.getAttributes().get("end");
-        if (attribute != null && m.getAttributes().get("start") != null) {
-          CoordinateID coord = CoordinateID.parse(attribute, ",");
-          if (coord == null) {
-            coord = CoordinateID.parse(attribute, " ");
-          }
-          if (coord != null) {
-            region = data.getRegion(coord);
-          }
-        }
-      }
-      if (object == null) {
-        String attribute = m.getAttributes().get("ship");
-        if (attribute != null) {
-          EntityID id;
-          try {
-            id = EntityID.createEntityID(attribute, 10, data.base);
-          } catch (NumberFormatException e) {
-            id = null;
-          }
-          if (id != null) {
-            object = data.getShip(id);
-          }
-        }
-      }
-      if (object == null) {
-        String attribute = m.getAttributes().get("building");
-        if (attribute != null) {
-          EntityID id;
-          try {
-            id = EntityID.createEntityID(attribute, 10, data.base);
-          } catch (NumberFormatException e) {
-            id = null;
-          }
-          if (id != null) {
-            object = data.getBuilding(id);
-          }
-        }
-      }
-
-      if (region == null && owner != null) {
-        region = owner.getRegion();
-      }
-      if (region == null && object instanceof HasRegion) {
-        region = ((HasRegion) object).getRegion();
       }
     }
+    if (object == null) {
+      String attribute = m.getAttribute("target");
+      if (attribute != null) {
+        UnitID id;
+        try {
+          id = UnitID.createUnitID(attribute, 10, data.base);
+        } catch (NumberFormatException e) {
+          id = null;
+        }
+        if (id != null) {
+          object = data.getUnit(id);
+        }
+      }
+    }
+    if (object == null) {
+      String attribute = m.getAttribute("mage");
+      if (attribute != null) {
+        UnitID id;
+        try {
+          id = UnitID.createUnitID(attribute, 10, data.base);
+        } catch (NumberFormatException e) {
+          id = null;
+        }
+        if (id != null) {
+          object = data.getUnit(id);
+        }
+      }
+    }
+
+    if (region == null) {
+      String attribute = m.getAttribute("region");
+      if (attribute != null) {
+        CoordinateID coord = CoordinateID.parse(attribute, ",");
+        if (coord == null) {
+          coord = CoordinateID.parse(attribute, " ");
+        }
+        if (coord != null) {
+          region = data.getRegion(coord);
+        }
+      }
+    }
+    if (region == null) {
+      String attribute = m.getAttribute("end");
+      if (attribute != null && m.getAttribute("start") != null) {
+        CoordinateID coord = CoordinateID.parse(attribute, ",");
+        if (coord == null) {
+          coord = CoordinateID.parse(attribute, " ");
+        }
+        if (coord != null) {
+          region = data.getRegion(coord);
+        }
+      }
+    }
+    if (object == null) {
+      String attribute = m.getAttribute("ship");
+      if (attribute != null) {
+        EntityID id;
+        try {
+          id = EntityID.createEntityID(attribute, 10, data.base);
+        } catch (NumberFormatException e) {
+          id = null;
+        }
+        if (id != null) {
+          object = data.getShip(id);
+        }
+      }
+    }
+    if (object == null) {
+      String attribute = m.getAttribute("building");
+      if (attribute != null) {
+        EntityID id;
+        try {
+          id = EntityID.createEntityID(attribute, 10, data.base);
+        } catch (NumberFormatException e) {
+          id = null;
+        }
+        if (id != null) {
+          object = data.getBuilding(id);
+        }
+      }
+    }
+
+    if (region == null && owner != null) {
+      region = owner.getRegion();
+    }
+    if (region == null && object instanceof HasRegion) {
+      region = ((HasRegion) object).getRegion();
+    }
+
     if (object == null) {
       object = owner != null ? owner : region != null ? region : faction != null ? faction : null;
     }

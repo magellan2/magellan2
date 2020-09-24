@@ -2073,65 +2073,64 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                 .intValue() == 1784377885) || ((m.getMessageType().getID()).intValue() == 19735))) {
               // this message indicates that the password has been
               // changed
-              if (m.getAttributes() != null) {
-                String value = m.getAttributes().get("value");
 
-                // if the password in the message is valid and
-                // does not match
-                // the password already set anyway set it for
-                // the faction and in the settings
-                if (value != null) {
-                  String password = value;
+              String value = m.getAttribute("value");
 
-                  if (!password.equals("") && !password.equals(f.getPassword())) {
-                    // ask user for confirmation to take new
-                    // password from message
-                    String oMessage = Resources.get(
-                        "client.msg.postprocessloadedcr.acceptnewpassword.text", new Object[] { f
-                            .toString(), password });
-                    String oTitle = Resources.get(
-                        "client.msg.postprocessloadedcr.acceptnewpassword.title");
-                    String[] oOptions = { Resources.get("button.yes"), Resources.get("button.no"),
-                        Resources.get("button.yestoall"), Resources.get("button.notoall") };
-                    boolean usePasswd = yesToAll;
-                    if (!noToAll && !yesToAll) {
-                      int answer = JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
-                          JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, oOptions,
-                          0);
-                      switch (answer) {
-                      case 0:
-                        usePasswd = true;
-                        break;
-                      case 1:
-                        usePasswd = false;
-                        break;
-                      case 2:
-                        usePasswd = true;
-                        yesToAll = true;
-                        break;
-                      case 3:
-                        usePasswd = false;
-                        noToAll = true;
-                        break;
-                      default:
-                        usePasswd = false;
-                        break;
-                      }
+              // if the password in the message is valid and
+              // does not match
+              // the password already set anyway set it for
+              // the faction and in the settings
+              if (value != null) {
+                String password = value;
+
+                if (!password.equals("") && !password.equals(f.getPassword())) {
+                  // ask user for confirmation to take new
+                  // password from message
+                  String oMessage = Resources.get(
+                      "client.msg.postprocessloadedcr.acceptnewpassword.text", new Object[] { f
+                          .toString(), password });
+                  String oTitle = Resources.get(
+                      "client.msg.postprocessloadedcr.acceptnewpassword.title");
+                  String[] oOptions = { Resources.get("button.yes"), Resources.get("button.no"),
+                      Resources.get("button.yestoall"), Resources.get("button.notoall") };
+                  boolean usePasswd = yesToAll;
+                  if (!noToAll && !yesToAll) {
+                    int answer = JOptionPane.showOptionDialog(getRootPane(), oMessage, oTitle,
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, oOptions,
+                        0);
+                    switch (answer) {
+                    case 0:
+                      usePasswd = true;
+                      break;
+                    case 1:
+                      usePasswd = false;
+                      break;
+                    case 2:
+                      usePasswd = true;
+                      yesToAll = true;
+                      break;
+                    case 3:
+                      usePasswd = false;
+                      noToAll = true;
+                      break;
+                    default:
+                      usePasswd = false;
+                      break;
                     }
-                    if (!noToAll && usePasswd) {
-                      f.setPassword(password);
+                  }
+                  if (!noToAll && usePasswd) {
+                    f.setPassword(password);
 
-                      if (!f.isTrustLevelSetByUser()) { // password
-                        // set
-                        f.setTrustLevel(Faction.TL_PRIVILEGED);
-                      }
+                    if (!f.isTrustLevelSetByUser()) { // password
+                      // set
+                      f.setTrustLevel(Faction.TL_PRIVILEGED);
+                    }
 
-                      factionsWithoutPassword = false;
+                    factionsWithoutPassword = false;
 
-                      if (getProperties() != null) {
-                        getProperties().setProperty("Faction.password." + (f.getID()).intValue(), f
-                            .getPassword());
-                      }
+                    if (getProperties() != null) {
+                      getProperties().setProperty("Faction.password." + (f.getID()).intValue(), f
+                          .getPassword());
                     }
                   }
                 }

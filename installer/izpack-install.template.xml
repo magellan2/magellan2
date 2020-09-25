@@ -92,7 +92,8 @@
     <pack name="ECheck" required="no" preselected="yes">
       <description>A tool for order verification</description>
       <file src="installer/echeck"                          targetdir="$INSTALL_PATH"/>
-      <executable targetfile="$INSTALL_PATH/echeck/echeck" stage="never"/>
+      <executable targetfile="$INSTALL_PATH/echeck/echeck" condition="izpack.linuxinstall" stage="never"/>
+      <executable targetfile="$INSTALL_PATH/echeck/echeck.macos" condition="izpack.macinstall" stage="never"/>
     </pack>
     <pack name="Javadoc documentation" required="no" preselected="no">
       <description>Documentation, especially useful if you'd like to use the Extended Commands plugin</description>

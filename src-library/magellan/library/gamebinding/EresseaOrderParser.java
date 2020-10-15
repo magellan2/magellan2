@@ -2108,8 +2108,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       } else {
         retVal = checkFinal(t);
       }
-
-      if (!getOrder().isAuto() && shallComplete(token, t)) {
+      if (getCompleter() != null && !getOrder().isAuto() && !t.followedBySpace()) { // shallComplete(token, t)) {
         getCompleter().cmpltLerneTalent(skill);
       }
       return retVal;

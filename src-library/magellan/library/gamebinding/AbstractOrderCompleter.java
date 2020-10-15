@@ -654,14 +654,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   protected int getSkillCost(SkillType skillType, Unit aUnit) {
-    Skill skill = aUnit.getSkill(skillType);
-    int cost = 0;
-    if (skill != null) {
-      cost = skillType.getCost(skill.getLevel() + 1);
-    } else {
-      cost = skillType.getCost(1);
-    }
-    return cost;
+    return LearnOrder.getSkillCost(skillType, aUnit);
   }
 
   /**

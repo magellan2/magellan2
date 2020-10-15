@@ -21,20 +21,23 @@ import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -56,9 +59,9 @@ public class SignTextCellRenderer extends HexCellRenderer {
   protected Color fontColor = Color.black;
   protected Color backColor = Color.white;
   protected Color brighterColor = Color.black.brighter();
-  protected Font unscaledFont = null;
-  protected Font font = null;
-  // protected FontMetrics fontMetrics = null;
+  protected Font unscaledFont;
+  protected Font font;
+  // protected FontMetrics fontMetrics ;
   protected int minimumFontSize = 10;
   // protected int fontHeight = 0;
   protected boolean isScalingFont = false;
@@ -67,18 +70,20 @@ public class SignTextCellRenderer extends HexCellRenderer {
   protected String singleString[] = new String[1];
   String doubleString[] = new String[2];
 
+  private boolean drawFrame;
+
   /**
    * Identifier in Region-Tags for MapLines
    */
   public static final String LINE_TAG = "mapline";
 
-  /** DOCUMENT-ME */
+  /** align text left */
   public static final int LEFT = 0;
 
-  /** DOCUMENT-ME */
+  /** align text centered */
   public static final int CENTER = 1;
 
-  /** DOCUMENT-ME */
+  /** align text right */
   public static final int RIGHT = 2;
 
   private boolean LinesOnly = false;
@@ -90,18 +95,28 @@ public class SignTextCellRenderer extends HexCellRenderer {
     super(geo, context);
 
     if (settings != null) {
-      try {
-        setFontColor(Colors.decode(settings.getProperty("SignTextCellRenderer.textColor", Colors
-            .encode(fontColor))));
-        setBackColor(Colors.decode(settings.getProperty("SignTextCellRenderer.backColor", Colors
-            .encode(backColor))));
-      } catch (NumberFormatException e) {
-      }
+      setFontColor(Colors.decode(settings.getProperty("SignTextCellRenderer.textColor", Colors
+          .encode(fontColor))));
+      setBackColor(Colors.decode(settings.getProperty("SignTextCellRenderer.backColor", Colors
+          .encode(backColor))));
 
       setScalingFont((Boolean.valueOf(settings.getProperty("SignTextCellRenderer.isScalingFont",
           "false"))).booleanValue());
       setDrawingLines((Boolean.valueOf(settings.getProperty("SignTextCellRenderer.DrawLines",
           "false"))).booleanValue());
+      setDrawingFrame((Boolean.valueOf(settings.getProperty("SignTextCellRenderer.DrawFrame",
+          "true"))).booleanValue());
+      switch (settings.getProperty("SignTextCellRenderer.halign", "CENTER")) {
+      case "LEFT":
+        setHAlign(LEFT);
+        break;
+      case "RIGHT":
+        setHAlign(RIGHT);
+        break;
+      case "CENTER":
+      default:
+        setHAlign(CENTER);
+      }
     }
 
     setFont(new Font(settings.getProperty("SignTextCellRenderer.fontName", "SansSerif"), Integer
@@ -168,7 +183,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   protected void setMinimumFontSize(int size) {
     if (getMinimumFontSize() != size) {
-      setMinimumFontSize(size);
+      minimumFontSize = size;
       settings.setProperty("SignTextCellRenderer.minimumFontSize", size + "");
     }
   }
@@ -179,18 +194,22 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   protected void setHAlign(int i) {
     hAlign = i;
+    switch (hAlign) {
+    case LEFT:
+      settings.setProperty("SignTextCellRenderer.halign", "LEFT");
+      break;
+    case RIGHT:
+      settings.setProperty("SignTextCellRenderer.halign", "RIGHT");
+      break;
+    case CENTER:
+    default:
+      settings.setProperty("SignTextCellRenderer.halign", "CENTER");
+    }
+
   }
 
-  // protected FontMetrics getFontMetrics() {
-  // if(fontMetrics == null) {
-  // fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
-  // }
-  //
-  // return fontMetrics;
-  // }
-
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
   @Override
   public int getPlaneIndex() {
@@ -198,7 +217,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
   }
 
   /**
-   * Returns the Lines which should be on the sign max 2 Lines allowed
+   * Returns the text lines which should be on the sign; max 2 lines allowed
    *
    * @param r the region
    * @param rect a rectangle of region-hex - not needed here
@@ -209,11 +228,12 @@ public class SignTextCellRenderer extends HexCellRenderer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.HexCellRenderer#init(magellan.library.GameData, java.awt.Graphics,
+   *      java.awt.Rectangle)
    */
   @Override
-  public void init(GameData data, Graphics g, Rectangle offset) {
-    super.init(data, g, offset);
+  public void init(GameData aData, Graphics g, Rectangle aOffset) {
+    super.init(aData, g, aOffset);
 
     if (isScalingFont) {
       setFont(cellGeo.getScaleFactor());
@@ -244,7 +264,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
         int TargetY = Integer.parseInt(coords[1]);
         Color col = Color.red;
         if (coords.length > 2) {
-          // die farbe ist als RGB übergeben worden
+          // die farbe ist als RGB uebergeben worden
           col =
               new Color(Integer.parseInt(coords[2]), Integer.parseInt(coords[3]), Integer
                   .parseInt(coords[4]));
@@ -271,7 +291,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
   @Override
   public void render(Object obj, boolean active, boolean selected) {
@@ -318,49 +338,30 @@ public class SignTextCellRenderer extends HexCellRenderer {
       upperY -= (rect.height / 2);
       int i = 0;
 
-      switch (hAlign) {
-      // left
-      case LEFT:
+      // height/X is not good...but near.
+      // to have the border a bit away from text
+      int lmax = (getMaxWidth(display) + (height / 4));
+      fillRectangle(middleX - (lmax / 2), upperY - height, lmax, ((display.length) * height)
+          + (height / 4));
 
-        int leftX = middleX - (getMaxWidth(display) / 2);
+      int leftX = middleX - (getMaxWidth(display) / 2);
+      int rightX = middleX + (getMaxWidth(display) / 2);
 
-        i = 0;
-        for (String s : display) {
+      i = 0;
+      for (String s : display) {
+        switch (hAlign) {
+        case LEFT:
           drawString(graphics, s, leftX, upperY + (i * height));
-          i++;
-        }
-
-        break;
-
-      // center
-      case CENTER:
-        // height/X is not good...but near.
-        // to have the border a bit away from text
-        int lmax = (getMaxWidth(display) + (height / 4));
-        fillRectangle(middleX - (lmax / 2), upperY - height, lmax, ((display.length) * height)
-            + (height / 4));
-
-        i = 0;
-        for (String s : display) {
+          break;
+        case CENTER:
           int l = getWidth(s);
           drawString(graphics, s, middleX - (l / 2), upperY + (i * height));
-          i++;
-        }
-
-        break;
-
-      // right
-      case RIGHT:
-
-        int rightX = middleX + (getMaxWidth(display) / 2);
-
-        i = 0;
-        for (String s : display) {
-          i++;
+          break;
+        case RIGHT:
           drawString(graphics, s, rightX - getWidth(s), upperY + (i * height));
+          break;
         }
-
-        break;
+        i++;
       }
     }
   }
@@ -400,9 +401,11 @@ public class SignTextCellRenderer extends HexCellRenderer {
   }
 
   private void fillRectangle(int X, int Y, int width, int height) {
-    graphics.setColor(fontColor);
-    graphics.drawRect(X - 1, Y - 1, width + 1, height + 1);
-    graphics.fillRect(X + (width / 2), Y + height, 2, height / 2);
+    if (isDrawingFrame()) {
+      graphics.setColor(fontColor);
+      graphics.drawRect(X - 1, Y - 1, width + 1, height + 1);
+      graphics.fillRect(X + (width / 2), Y + height, 2, height / 2);
+    }
     graphics.setColor(backColor);
     graphics.fillRect(X, Y, width, height);
   }
@@ -414,18 +417,20 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
   protected class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
-    protected SignTextCellRenderer source = null;
+    protected SignTextCellRenderer source;
     private final Logger log = Logger.getInstance(Preferences.class);
 
     // GUI elements
-    private JPanel pnlFontColor = null;
-    private JPanel pnlBackColor = null;
-    private JComboBox cmbFontName = null;
-    private JCheckBox chkFontBold = null;
-    private JComboBox cmbFontSize = null;
-    private JComboBox cmbMinimumFontSize = null;
-    private JCheckBox chkScaleFont = null;
-    private JCheckBox chkDrawLines = null;
+    private JPanel pnlFontColor;
+    private JPanel pnlBackColor;
+    private JComboBox<String> cmbFontName;
+    private JCheckBox chkFontBold;
+    private JComboBox<Integer> cmbFontSize;
+    private JComboBox<Integer> cmbMinimumFontSize;
+    private ButtonGroup alignment;
+    private JCheckBox chkFrame;
+    private JCheckBox chkScaleFont;
+    private JCheckBox chkDrawLines;
 
     /**
      * Creates a new Preferences object.
@@ -474,6 +479,22 @@ public class SignTextCellRenderer extends HexCellRenderer {
       JLabel lblBackColor = new JLabel(Resources.get("map.signtextcellrenderer.backcolor"));
       lblFontColor.setLabelFor(pnlBackColor);
 
+      chkFrame = new JCheckBox(Resources.get("map.signtextcellrenderer.drawframe"), source
+          .isDrawingFrame());
+
+      alignment = new ButtonGroup();
+
+      JRadioButton rbutton;
+      alignment.add(rbutton = new JRadioButton(Resources.get("map.signtextcellrenderer.alignleft")));
+      rbutton.setActionCommand("LEFT");
+      rbutton.setSelected(source.getHAlign() == LEFT);
+      alignment.add(rbutton = new JRadioButton(Resources.get("map.signtextcellrenderer.aligncenter")));
+      rbutton.setActionCommand("CENTER");
+      rbutton.setSelected(source.getHAlign() != RIGHT && source.getHAlign() != LEFT);
+      alignment.add(rbutton = new JRadioButton(Resources.get("map.signtextcellrenderer.alignright")));
+      rbutton.setActionCommand("RIGHT");
+      rbutton.setSelected(source.getHAlign() == RIGHT);
+
       String fontNames[] = null;
 
       try {
@@ -485,7 +506,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
         fontNames = new String[0];
       }
 
-      cmbFontName = new JComboBox(fontNames);
+      cmbFontName = new JComboBox<String>(fontNames);
       cmbFontName.setSelectedItem(source.getFont().getName());
 
       JLabel lblFontName = new JLabel(Resources.get("map.signtextcellrenderer.fonttype"));
@@ -496,26 +517,19 @@ public class SignTextCellRenderer extends HexCellRenderer {
               .getStyle() != Font.PLAIN);
 
       Font font = source.getFont();
-      List<String> fontSizes = new LinkedList<String>();
-      fontSizes.add("8");
-      fontSizes.add("9");
-      fontSizes.add("10");
-      fontSizes.add("11");
-      fontSizes.add("12");
-      fontSizes.add("14");
-      fontSizes.add("16");
-      fontSizes.add("18");
-      fontSizes.add("22");
-      cmbFontSize = new JComboBox(fontSizes.toArray());
+      Integer[] fontSizes = new Integer[] {
+          8, 9, 10, 11, 12, 14, 16, 18, 22
+      };
+      cmbFontSize = new JComboBox<Integer>(fontSizes);
       cmbFontSize.setEditable(true);
-      cmbFontSize.setSelectedItem("" + font.getSize());
+      cmbFontSize.setSelectedItem(font.getSize());
 
       JLabel lblFontSize = new JLabel(Resources.get("map.signtextcellrenderer.fontsize"));
       lblFontSize.setLabelFor(cmbFontSize);
 
-      cmbMinimumFontSize = new JComboBox(fontSizes.toArray());
+      cmbMinimumFontSize = new JComboBox<Integer>(fontSizes);
       cmbMinimumFontSize.setEditable(true);
-      cmbMinimumFontSize.setSelectedItem("" + source.getMinimumFontSize());
+      cmbMinimumFontSize.setSelectedItem(source.getMinimumFontSize());
 
       JLabel lblMinimumFontSize =
           new JLabel(Resources.get("map.signtextcellrenderer.minimumfontsize"));
@@ -537,50 +551,66 @@ public class SignTextCellRenderer extends HexCellRenderer {
       c.gridy = 0;
       this.add(lblFontColor, c);
       c.gridx = 1;
-      c.gridy = 0;
       this.add(pnlFontColor, c);
 
       c.gridx = 0;
-      c.gridy = 1;
+      c.gridy++;
       this.add(lblBackColor, c);
       c.gridx = 1;
-      c.gridy = 1;
       this.add(pnlBackColor, c);
 
       c.gridx = 0;
-      c.gridy = 2;
+      c.gridy++;
+      this.add(chkFrame, c);
+
+      c.gridx = 0;
+      c.gridy++;
+      c.gridwidth = 2;
+      this.add(makeButtonGroup(alignment), c);
+      c.gridwidth = 1;
+
+      c.gridx = 0;
+      c.gridy++;
       this.add(lblFontName, c);
       c.gridx = 1;
-      c.gridy = 2;
       this.add(cmbFontName, c);
 
       c.gridx = 0;
-      c.gridy = 3;
+      c.gridy++;
+      c.gridwidth = 2;
       this.add(chkFontBold, c);
+      c.gridwidth = 1;
 
       c.gridx = 0;
-      c.gridy = 4;
+      c.gridy++;
       this.add(lblFontSize, c);
       c.gridx = 1;
-      c.gridy = 4;
       this.add(cmbFontSize, c);
 
       c.gridx = 0;
-      c.gridy = 5;
+      c.gridy++;
       this.add(lblMinimumFontSize, c);
       c.gridx = 1;
-      c.gridy = 5;
       this.add(cmbMinimumFontSize, c);
 
       c.gridx = 0;
-      c.gridy = 6;
+      c.gridy++;
       c.gridwidth = 2;
       this.add(chkScaleFont, c);
 
       c.gridx = 0;
-      c.gridy = 7;
+      c.gridy++;
       c.gridwidth = 2;
       this.add(chkDrawLines, c);
+    }
+
+    private Component makeButtonGroup(ButtonGroup group) {
+      JPanel panel = new JPanel(new GridLayout(1, 0));
+      Enumeration<AbstractButton> buttons = group.getElements();
+      while (buttons.hasMoreElements()) {
+        panel.add(buttons.nextElement());
+      }
+      return panel;
     }
 
     public void initPreferences() {
@@ -588,30 +618,53 @@ public class SignTextCellRenderer extends HexCellRenderer {
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       source.setFontColor(pnlFontColor.getBackground());
       source.setBackColor(pnlBackColor.getBackground());
 
-      String fontName = (String) cmbFontName.getSelectedItem();
+      source.setDrawingFrame(chkFrame.isSelected());
+      switch (alignment.getSelection().getActionCommand()) {
+      case "LEFT":
+        source.setHAlign(LEFT);
+        break;
+      case "RIGHT":
+        source.setHAlign(RIGHT);
+        break;
+      case "CENTER":
+        source.setHAlign(CENTER);
+        break;
+      }
+
+      String fontName = cmbFontName.getItemAt(cmbFontName.getSelectedIndex());
       int fontStyle = chkFontBold.isSelected() ? Font.BOLD : Font.PLAIN;
-      int fontSize = Integer.parseInt((String) cmbFontSize.getSelectedItem());
+      Integer fontSize = 10, min = 8;
+      fontSize = cmbFontSize.getItemAt(cmbFontSize.getSelectedIndex());
+      if (fontSize == null) {
+        fontSize = 10;
+      }
+      min = cmbMinimumFontSize.getItemAt(cmbMinimumFontSize.getSelectedIndex());
+      if (min == null) {
+        min = 8;
+      }
+      fontSize = Math.min(999, Math.max(0, fontSize));
+      min = Math.min(999, Math.max(0, min));
       source.setFont(new Font(fontName, fontStyle, fontSize));
-      source.setMinimumFontSize(Integer.parseInt((String) cmbMinimumFontSize.getSelectedItem()));
+      source.setMinimumFontSize(min);
       source.setScalingFont(chkScaleFont.isSelected());
       source.setDrawingLines(chkDrawLines.isSelected());
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return source.getName();
@@ -623,6 +676,20 @@ public class SignTextCellRenderer extends HexCellRenderer {
    */
   public Color getBackColor() {
     return backColor;
+  }
+
+  /**
+   * Should the sign frame be drawn.
+   */
+  public boolean isDrawingFrame() {
+    return drawFrame;
+  }
+
+  protected void setDrawingFrame(boolean b) {
+    if (b != drawFrame) {
+      drawFrame = b;
+      settings.setProperty("SignTextCellRenderer.DrawFrame", String.valueOf(drawFrame));
+    }
   }
 
   /**

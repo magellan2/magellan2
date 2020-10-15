@@ -107,7 +107,7 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
       }
     }
 
-    if (p.getBounds().width > 3) {
+    if (p.getBounds().width > 50) {
       g.setColor(Color.black);
       g.drawPolygon(p);
     }

@@ -123,9 +123,9 @@ public class LearnOrderTest extends MagellanTestWithResources {
     List<UnitRelation> relations = unit.getRelations();
     assertEquals(1, relations.size());
     MaintenanceRelation relation = (MaintenanceRelation) relations.get(0);
-    assertTrue(relation.warning);
+    assertFalse(relation.warning); // warning added by maintenance inspector
     assertEquals(EresseaConstants.I_USILVER, relation.itemType.getID());
-    assertEquals(0, relation.getCosts());
+    assertEquals(200, relation.getCosts());
   }
 
   @Test

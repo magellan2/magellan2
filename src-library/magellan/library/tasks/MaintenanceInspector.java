@@ -27,10 +27,11 @@ import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.MovementOrder;
 import magellan.library.relation.MaintenanceRelation;
+import magellan.library.relation.RecruitmentRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * Checks land movement for overload or too many horses.
@@ -38,7 +39,7 @@ import magellan.library.utils.logging.Logger;
 public class MaintenanceInspector extends AbstractInspector {
 
   public enum MaintenanceProblemTypes {
-    UNITSTARVING, BUILDINGMAINTENANCE, LEARNCOSTS, UNKNOWNDESTINATION;
+    UNITSTARVING, BUILDINGMAINTENANCE, LEARNCOSTS, UNKNOWNDESTINATION, MISSINGREQUIREMENT;
 
     public ProblemType type;
 
@@ -63,6 +64,7 @@ public class MaintenanceInspector extends AbstractInspector {
 
   private Collection<ProblemType> types;
   private Map<Unit, Region> movements = new HashMap<Unit, Region>();
+  private ItemType silverType;
 
   protected MaintenanceInspector(GameData data) {
     super(data);
@@ -74,7 +76,10 @@ public class MaintenanceInspector extends AbstractInspector {
     if (r.units().size() == 0)
       return Collections.emptyList();
 
-    ItemType silverType = getData().getRules().getItemType(EresseaConstants.I_USILVER);
+    silverType = getData().getRules().getItemType(EresseaConstants.I_USILVER);
+    if (silverType == null)
+      return Collections.singletonList(ProblemFactory.createProblem(Severity.ERROR, ProblemType.create(
+          "tasks.maintenanceinspector", "nosilver"), null, this, "silver type not found", 0));
 
     /** return value */
     List<Problem> problems = new ArrayList<Problem>();
@@ -85,14 +90,6 @@ public class MaintenanceInspector extends AbstractInspector {
 
     regions.add(r);
     for (Unit u : r.units()) {
-      // building upkeep
-      for (MaintenanceRelation rel : u.getRelations(MaintenanceRelation.class)) {
-        if (rel.problem != null) {
-          problems.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
-              .getType(), r, u, u.getFaction(), u, this, rel.problem.getMessage(), rel.line));
-        }
-      }
-
       // unit upkeep preparation
       int movementOrderLine = getMovementOrderLine(u);
       CoordinateID destination = u.getNewRegion();
@@ -118,13 +115,6 @@ public class MaintenanceInspector extends AbstractInspector {
         regions.add(destRegion);
         movements.put(u, destRegion);
       }
-
-      // if (u.getNewRegion() != null) {
-      // u.getNewRegion().removeMaintenance(u);
-      // }
-      // if (destination != null && destination != u.getRegion()) {
-      // destination.addMaintenance(u);
-      // }
     }
 
     for (Region r2 : regions) {
@@ -135,53 +125,90 @@ public class MaintenanceInspector extends AbstractInspector {
         if (f == null) {
           continue;
         }
-        int has = 0, needs = 0;
+        int diff = 0;
         Unit lastUnit = null;
+
         for (Unit u : r2.units()) {
           if (f == u.getFaction() && r2.getCoordinate().equals(u.getNewRegion())) {
-            Item item = u.getModifiedItem(silverType);
-            int silver = 0;
-            if (item != null) {
-              silver = item.getAmount();
-            }
-            has += silver;
-            needs += u.getRace().getMaintenance() * u.getModifiedPersons();
-            if (silver <= u.getRace().getMaintenance() * u.getModifiedPersons()) {
-              lastUnit = u;
-            }
+            diff += checkUnitMaintenance(problems, u, r);
+            lastUnit = u;
           }
         }
         for (Unit u : r2.getMaintained()) {
-          if (f == u.getFaction()) {
-            if (!r2.getCoordinate().equals(u.getNewRegion())) {
-              Logger.getInstance(this.getClass()).info("hmmm....");
-            }
-            Item item = u.getModifiedItem(silverType);
-            int silver = 0;
-            if (item != null) {
-              silver = item.getAmount();
-            }
-            has += silver;
-            needs += u.getRace().getMaintenance() * u.getModifiedPersons();
-            if (silver <= u.getRace().getMaintenance() * u.getModifiedPersons()) {
-              lastUnit = u;
-            }
+          if (f == u.getFaction() && r2.getCoordinate().equals(u.getNewRegion())) {
+            diff += checkUnitMaintenance(problems, u, r);
+            lastUnit = u;
           }
         }
-        if (has < needs) {
+        if (diff < 0 && lastUnit != null) {
+          Region r3 = getData().getRegion(lastUnit.getNewRegion());
           SimpleProblem problem =
               ProblemFactory.createProblem(Severity.WARNING, MaintenanceProblemTypes.UNITSTARVING
-                  .getType(), r, null, f, lastUnit, this, Resources.get(
-                      "tasks.maintenanceinspector.unitstarving.message", r2), -1);
+                  .getType(), r3, null, f, lastUnit, this, Resources.get(
+                      "tasks.maintenanceinspector.unitstarving.message", r3), -1);
           if (!checkIgnoreUnit(lastUnit, problem)) {
-            // problems.add(ProblemFactory.createProblem(Severity.WARNING,
-            // MaintenanceProblemTypes.UNITSTARVING.getType(), lastUnit, this, -1));
             problems.add(problem);
           }
         }
       }
     }
     return problems;
+  }
+
+  private int checkUnitMaintenance(List<Problem> problems, Unit u, Region r) {
+    int has = getSilver(u);
+    int needs = getMaintenance(u, has);
+    // problem added by getMaintenance
+    // if (has < needs && u.getRegion() == r) {
+    // SimpleProblem problem =
+    // ProblemFactory.createProblem(Severity.WARNING,
+    // MaintenanceProblemTypes.MISSINGREQUIREMENT.getType(),
+    // r, u, u.getFaction(), u, this,
+    // Resources.get("tasks.maintenanceinspector.missingrequirement.message", u), -1);
+    // if (!checkIgnoreUnit(u, problem)) {
+    // problems.add(problem);
+    // }
+    // }
+    return has - needs - u.getRace().getMaintenance() * u.getModifiedPersons();
+  }
+
+  private int getSilver(Unit u) {
+    Item item = u.getModifiedItem(silverType);
+    if (item != null)
+      return item.getAmount();
+    return 0;
+  }
+
+  private int getMaintenance(Unit u, int has) {
+    int costs = 0;
+    for (UnitRelation rel : u.getRelations()) {
+      int cost = apply(rel);
+      costs += cost;
+      if (cost > 0 && costs > has) {
+        rel.setWarning(Resources.get("tasks.maintenanceinspector.missingrequirement.message", u),
+            MaintenanceProblemTypes.MISSINGREQUIREMENT.getType());
+      }
+    }
+
+    return costs;
+  }
+
+  private int apply(UnitRelation rel) {
+    if (rel instanceof RecruitmentRelation)
+      return apply((RecruitmentRelation) rel);
+    if (rel instanceof MaintenanceRelation)
+      return apply((MaintenanceRelation) rel);
+    return 0;
+  }
+
+  private int apply(RecruitmentRelation rel) {
+    return rel.costs;
+  }
+
+  private int apply(MaintenanceRelation rel) {
+    if (silverType.equals(rel.itemType))
+      return rel.getCosts();
+    return 0;
   }
 
   private int getMovementOrderLine(Unit u) {

@@ -153,4 +153,38 @@ public class SimpleProblem implements Problem {
     return null;
   }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof SimpleProblem) {
+      SimpleProblem simple = (SimpleProblem) obj;
+      return type == simple.type &&
+          line == simple.line &&
+          region == simple.region &&
+          owner == simple.owner &&
+          faction == simple.faction &&
+          severity == simple.severity &&
+          inspector == simple.inspector &&
+          (message == null && simple.message == null || message.equals(simple.message)) &&
+          (object == null && simple.object == null || object.equals(simple.object)) &&
+          (name == null && simple.name == null || name.equals(simple.name));
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 0;
+    if (message != null) {
+      hash = message.hashCode();
+    }
+    if (object != null) {
+      hash = hash << 8 + object.hashCode();
+    }
+    if (name != null) {
+      hash = hash << 8 + name.hashCode();
+    } else if (type != null) {
+      hash = hash << 8 + type.hashCode();
+    }
+    return hash;
+  }
 }

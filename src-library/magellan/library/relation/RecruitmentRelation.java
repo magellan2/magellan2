@@ -62,7 +62,7 @@ public class RecruitmentRelation extends PersonTransferRelation {
     source.addRelation(this);
   }
 
-  public void setReserve(UnitRelation rel) {
-    reserveRelation = rel;
-  }
+  // public void setReserve(UnitRelation rel) {
+  // reserveRelation = rel;
+  // }
 }

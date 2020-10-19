@@ -304,6 +304,9 @@ public class GameDataBuilder {
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details. "well known" is set to <code>false</code>.
    *
+   * @param data
+   * @param name
+   * @param region
    * @return the new unit
    */
   public Unit addUnit(GameData data, String name, Region region) {
@@ -314,6 +317,10 @@ public class GameDataBuilder {
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details.
    *
+   * @param data
+   * @param name
+   * @param region
+   * @param wellKnown
    * @return the new unit
    */
   public Unit addUnit(GameData data, String name, Region region, boolean wellKnown) {
@@ -326,6 +333,11 @@ public class GameDataBuilder {
    * Calls {@link #addUnit(GameData, String, String, Faction, Region, boolean)} with generated
    * details. "well known" is set to <code>true</code>.
    *
+   * @param data
+   * @param number
+   * @param name
+   * @param faction
+   * @param region
    * @return the new unit
    */
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {

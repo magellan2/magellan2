@@ -113,26 +113,31 @@ public abstract class AbstractInspector implements Inspector {
       Problem p = it.next();
       Unit unit = getResponsibleUnit(p);
       if (unit != null) {
+        boolean remove = false;
         for (Order line : unit.getOrders2()) {
           if (isSuppressMarkerFor(line, p, false)) {
-            it.remove();
+            remove = true;
             break;
           }
         }
-        if (p.getLine() - 2 >= unit.getOrders2().size()) {
-          AbstractInspector.log.error("error in wrong line: " + unit + " " + p.getLine(),
-              new Exception());
-        } else {
-          for (int l = p.getLine() - 2; l >= 0; --l) {
-            Order line = unit.getOrders2().get(l);
-            if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) || line.getText().startsWith(
-                Inspector.SUPPRESS_PREFIX_PERMANENT))) {
-              break;
-            } else if (isSuppressMarkerFor(line, p, true)) {
-              it.remove();
-              break;
+        if (!remove)
+          if (p.getLine() - 2 >= unit.getOrders2().size()) {
+            AbstractInspector.log.error("error in wrong line: " + unit + " " + p.getLine(),
+                new Exception());
+          } else {
+            for (int l = p.getLine() - 2; l >= 0; --l) {
+              Order line = unit.getOrders2().get(l);
+              if (!(line.getText().startsWith(Inspector.SUPPRESS_PREFIX) ||
+                  line.getText().startsWith(Inspector.SUPPRESS_PREFIX_PERMANENT))) {
+                break;
+              } else if (isSuppressMarkerFor(line, p, true)) {
+                remove = true;
+                break;
+              }
             }
           }
+        if (remove) {
+          it.remove();
         }
       }
     }

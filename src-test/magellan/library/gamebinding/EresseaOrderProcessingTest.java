@@ -24,7 +24,7 @@
 package magellan.library.gamebinding;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -228,7 +228,7 @@ public class EresseaOrderProcessingTest {
     unit1.addItem(new Item(silverType, 200));
 
     executor.processOrders(region);
-    assertEquals(100, unit1.getModifiedItem(silverType).getAmount());
+    assertMaintenance(unit1, 100);
   }
 
   @Test
@@ -241,7 +241,16 @@ public class EresseaOrderProcessingTest {
     building.getBuildingType().setMaintendByRegionOwner(true);
 
     executor.processOrders(region);
-    assertEquals(100, unit1.getModifiedItem(silverType).getAmount());
+
+    assertMaintenance(unit1, 100);
+  }
+
+  private void assertMaintenance(Unit unit, int costs) {
+    MaintenanceRelation relation = (MaintenanceRelation) unit.getRelations().get(0);
+    assertEquals(costs, relation.getCosts());
+    assertEquals(EresseaConstants.I_USILVER, relation.itemType.getID());
+    assertNull(relation.problem);
+    assertEquals(unit, relation.origin);
   }
 
   @Test
@@ -277,9 +286,7 @@ public class EresseaOrderProcessingTest {
       costs += u.getPersons();
     }
     costs *= unit1.getPersons();
-    assertTrue(costs <= 200);
-    assertEquals(200 - costs, unit1.getModifiedItem(silverType).getAmount());
-    assertEquals(1, unit1.getRelations(MaintenanceRelation.class).size());
+    assertMaintenance(unit1, costs);
   }
 
 }

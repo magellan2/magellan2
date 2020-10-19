@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.tasks;
 
 import java.util.ArrayList;
@@ -82,13 +82,11 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
   protected OrderSyntaxInspector(GameData data) {
     super(data);
-    // parser = getGameSpecificStuff().getOrderParser(getData());
   }
 
   @Override
   public void setGameData(GameData gameData) {
     super.setGameData(gameData);
-    // parser = getGameSpecificStuff().getOrderParser(getData());
   }
 
   /**
@@ -182,7 +180,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
       if (0 <= line) {
         errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.LONGORDERS
             .getType(), unit, this, getWarningMessage(OrderSyntaxProblemTypes.LONGORDERS, orders
-            .get(line)), line + 1));
+                .get(line)), line + 1));
       }
     }
 
@@ -193,8 +191,12 @@ public class OrderSyntaxInspector extends AbstractInspector {
           if (order == null || (order.getProblem() == null && order.isValid())) {
             errors.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
                 .getType(), unit.getRegion(), unit, unit.getFaction(), unit, this, rel.problem
-                .getMessage(), rel.line));
+                    .getMessage(), rel.line));
           }
+        } else {
+          errors.add(ProblemFactory.createProblem(rel.problem.getSeverity(), rel.problem
+              .getType(), unit.getRegion(), unit, unit.getFaction(), unit, this, rel.problem
+                  .getMessage(), rel.line));
         }
       }
 

@@ -23,8 +23,6 @@
 //
 package magellan.library.gamebinding;
 
-import java.util.List;
-
 import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -32,9 +30,6 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.MaintenanceRelation;
-import magellan.library.relation.ReserveRelation;
-import magellan.library.relation.UnitRelation;
-import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.utils.Resources;
 
 /**
@@ -70,26 +65,25 @@ public class BuildingMaintenanceOrder {
       if (payer != null) {
         for (Item i : b.getBuildingType().getMaintenanceItems()) {
           // List<UnitRelation> relations =
-          // state.reserveItem(i.getItemType(), false, true, i.getAmount(), owner, -1, null);
-          List<UnitRelation> relations =
-              eState.acquireItem(payer, i.getItemType(), maintain ? i.getAmount() : 0, false, true,
-                  true, -1, null);
+          // eState.acquireItem(payer, i.getItemType(), maintain ? i.getAmount() : 0, false, true,
+          // false, true, -1, null);
           MaintenanceRelation mRel =
               new MaintenanceRelation(payer, b, maintain ? i.getAmount() : 0, i.getItemType(),
                   Resources.get("util.units.node.maintenance"), "upkeep", -1, false);
-          for (UnitRelation rel : relations) {
-            if (rel instanceof ReserveRelation) {
-              // mRel.setReserve((ReserveRelation)rel);
-              mRel.setCosts(((ReserveRelation) rel).amount);
-            } else {
-              rel.add();
-            }
-            if (rel.problem != null) {
-              mRel.warning = true;
-              mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
-                  MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
-            }
-          }
+          // TODO deactivate for now, reserving after actual give/reserve step is more tricky
+          // for (UnitRelation rel : relations) {
+          // if (rel instanceof ReserveRelation) {
+          // // mRel.setReserve((ReserveRelation)rel);
+          // mRel.setCosts(((ReserveRelation) rel).amount);
+          // } else {
+          // rel.add();
+          // }
+          // if (rel.problem != null) {
+          // mRel.warning = true;
+          // mRel.setWarning(Resources.get("order.maintenance.warning.silver"),
+          // MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
+          // }
+          // }
           mRel.add();
         }
       }

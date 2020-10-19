@@ -124,7 +124,16 @@ public class EresseaRelationFactory implements RelationFactory {
     public void run() {
       // long time = System.currentTimeMillis();
       // log.finest(0);
-      processOrders(region);
+      try {
+        processOrders(region);
+      } catch (Exception e) {
+        try {
+          Thread.sleep(100);
+        } catch (InterruptedException e1) {
+          // ignore
+        }
+        processOrders(region);
+      }
       // log.finest("rr " + (System.currentTimeMillis() - time));
     }
 
@@ -625,62 +634,62 @@ public class EresseaRelationFactory implements RelationFactory {
       return amount;
     }
 
-    /**
-     * Tries to reserve a certain amount of an item. This method tries to get it from the material
-     * pool if possible and may produce and register additional relations.
-     *
-     * @param type
-     * @param requiredAmount
-     * @param unit
-     * @param line
-     * @return The relations created for satisfying this event; The last relation is the main
-     *         relation.
-     */
-    public List<UnitRelation> reserveItem(ItemType type, boolean all, boolean includeReserved,
-        int requiredAmount, Unit unit, int line, Order order) {
-      List<UnitRelation> result = null;
-
-      int reservedAmount = getFreeAmount(type, unit, includeReserved, !all);
-      if (!all) {
-        reservedAmount = Math.min(reservedAmount, requiredAmount);
-      } else {
-        requiredAmount = 0;
-      }
-      reservedAmount = Math.max(0, reservedAmount);
-      if (reservedAmount < requiredAmount) {
-        if (unit.getData().getGameSpecificRules().isPooled(unit, type)) {
-          result = new LinkedList<UnitRelation>();
-          for (Unit u : unit.getRegion().units()) {
-            if (u.getFaction() == unit.getFaction() && u != unit) {
-              int givenAmount =
-                  Math.min(getFreeAmount(type, u, includeReserved, true), requiredAmount
-                      - reservedAmount);
-              if (givenAmount > 0) {
-                UnitRelation giveRelation =
-                    new ItemTransferRelation(unit, u, unit, givenAmount, type, line);
-                // new ReserveRelation(unit, u, givenAmount, type, -1, false);
-                result.add(giveRelation);
-                reservedAmount += givenAmount;
-              }
-            }
-            if (reservedAmount == requiredAmount) {
-              break;
-            }
-          }
-        }
-      }
-      ReserveRelation ownRelation = new ReserveRelation(unit, reservedAmount, type, line);
-      if (reservedAmount != requiredAmount && !all) {
-        ownRelation.setWarning(
-            Resources.get("order.reserve.warning.insufficient", type.toString()),
-            OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
-      }
-      if (result != null) {
-        result.add(ownRelation);
-        return result;
-      } else
-        return Collections.<UnitRelation> singletonList(ownRelation);
-    }
+    // /**
+    // * Tries to reserve a certain amount of an item. This method tries to get it from the material
+    // * pool if possible and may produce and register additional relations.
+    // *
+    // * @param type
+    // * @param requiredAmount
+    // * @param unit
+    // * @param line
+    // * @return The relations created for satisfying this event; The last relation is the main
+    // * relation.
+    // */
+    // public List<UnitRelation> reserveItem(ItemType type, boolean all, boolean includeReserved,
+    // int requiredAmount, Unit unit, int line, Order order) {
+    // List<UnitRelation> result = null;
+    //
+    // int reservedAmount = getFreeAmount(type, unit, includeReserved, !all);
+    // if (!all) {
+    // reservedAmount = Math.min(reservedAmount, requiredAmount);
+    // } else {
+    // requiredAmount = 0;
+    // }
+    // reservedAmount = Math.max(0, reservedAmount);
+    // if (reservedAmount < requiredAmount) {
+    // if (unit.getData().getGameSpecificRules().isPooled(unit, type)) {
+    // result = new LinkedList<UnitRelation>();
+    // for (Unit u : unit.getRegion().units()) {
+    // if (u.getFaction() == unit.getFaction() && u != unit) {
+    // int givenAmount =
+    // Math.min(getFreeAmount(type, u, includeReserved, true), requiredAmount
+    // - reservedAmount);
+    // if (givenAmount > 0) {
+    // UnitRelation giveRelation =
+    // new ItemTransferRelation(unit, u, unit, givenAmount, type, line);
+    // // new ReserveRelation(unit, u, givenAmount, type, -1, false);
+    // result.add(giveRelation);
+    // reservedAmount += givenAmount;
+    // }
+    // }
+    // if (reservedAmount == requiredAmount) {
+    // break;
+    // }
+    // }
+    // }
+    // }
+    // ReserveRelation ownRelation = new ReserveRelation(unit, reservedAmount, type, line);
+    // if (reservedAmount != requiredAmount && !all) {
+    // ownRelation.setWarning(
+    // Resources.get("order.reserve.warning.insufficient", type.toString()),
+    // OrderSyntaxInspector.OrderSemanticsProblemTypes.GIVE_WARNING.type);
+    // }
+    // if (result != null) {
+    // result.add(ownRelation);
+    // return result;
+    // } else
+    // return Collections.<UnitRelation> singletonList(ownRelation);
+    // }
 
     /**
      * Tries to reserve a certain amount of an item. This method tries to get it from the material

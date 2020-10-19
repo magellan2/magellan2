@@ -272,4 +272,9 @@ public class NullContainer implements UnitContainer {
   public Object clone() throws CloneNotSupportedException {
     throw new CloneNotSupportedException();
   }
+
+  @Override
+  public String toString() {
+    return "NullContainer";
+  }
 }

@@ -1146,10 +1146,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true)) {
       inspectors.add(SkillInspector.getInstance(gameData));
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX,
-        true)) {
-      inspectors.add(OrderSyntaxInspector.getInstance(gameData));
-    }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TEACH, true)) {
       inspectors.add(TeachInspector.getInstance(gameData));
     }
@@ -1168,6 +1164,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TRANSFER,
         true)) {
       inspectors.add(TransferInspector.getInstance(gameData));
+    }
+    // let's add this last to catch problems inserted by other inspectors
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX,
+        true)) {
+      inspectors.add(OrderSyntaxInspector.getInstance(gameData));
     }
 
     for (Inspector i : inspectors) {
@@ -1861,6 +1862,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
      * @param p
      */
     public void addProblem(final Problem p) {
+      for (int r = 0; r < getRowCount(); ++r)
+        if (getValueAt(r, 0).equals(p))
+          return;
+
       Faction faction = p.getFaction();
 
       Object[] newRow = new Object[TaskTableModel.NUMBEROF_POS + 1];

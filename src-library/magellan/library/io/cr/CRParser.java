@@ -2961,6 +2961,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         // Has not to be stored.
         region.setEntertain(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("letzteunterh")) {
+        region.setOldEntertain(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Rekruten")) {
         // pavkovic 2002.05.10: recruits (and old recruits are used from cr)
         region.setRecruits(Integer.parseInt(sc.argv[0]));

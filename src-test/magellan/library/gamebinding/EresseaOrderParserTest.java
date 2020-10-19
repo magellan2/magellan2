@@ -110,6 +110,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("\\", false);
     checkOrder("LERNE Hiebwaffen");
     checkOrder("LERNE \\\nHiebwaffen");
+    checkOrder("LERNE\u00a0Hiebwaffen", false);
   }
 
   /**

@@ -735,7 +735,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
   }
 
   private void process(Region region) {
-    EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
+    EresseaRelationFactory executor = new EresseaRelationFactory(data.getRules());
     executor.processOrders(region);
   }
 

@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
@@ -39,12 +40,14 @@ import magellan.client.extern.MagellanPlugIn;
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Order;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.Sign;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
@@ -60,6 +63,7 @@ import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
 import magellan.library.utils.Utils;
@@ -252,10 +256,8 @@ class Warning {
 
 class SupplyMap {
   Map<String, Map<Unit, Supply>> supplyMap;
-  private E3CommandParser parser;
 
   public SupplyMap(E3CommandParser parser) {
-    this.parser = parser;
     supplyMap = new LinkedHashMap<String, Map<Unit, Supply>>();
   }
 
@@ -365,6 +367,26 @@ class Reserves {
   }
 }
 
+class SkillSpec {
+
+  public SkillType skill;
+  public int level;
+  public int max;
+
+  public SkillSpec(SkillType skill, int level, int max) {
+    if (skill == null || level <= 0 || max <= 0)
+      throw new IllegalArgumentException("invalid SkillSpec " + skill + " " + level + " " + max);
+    this.skill = skill;
+    this.level = level;
+    this.max = max;
+  }
+
+  @Override
+  public String toString() {
+    return skill.getName() + " " + level + "/" + max;
+  }
+}
+
 /**
  * Call from the script of your faction with<br />
  * "<code>(new E3CommandParser(world, helper)).execute(container);</code>" or from the script of a
@@ -391,6 +413,13 @@ class E3CommandParser {
 
   /** If this is true, some more hints will be added to the orders if expected units are missing */
   public static boolean ADD_NOT_THERE_INFO = false;
+
+  public static String TEACH_PREFIX = null;
+  public static String LEARN_HELMSMAN = null;
+  public static String SOLDIER_HELMSMAN = "best best null null";
+  public static String LEARN_CREW = null;
+  public static String SOLDIER_CREW = "best best null null";
+  public static final int DEFAULT_LEARNLEVEL = 20;
 
   /**
    * If this is &gt; 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
@@ -559,6 +588,7 @@ class E3CommandParser {
   private long supplySerial = 0;
   private int showStats = 1;
   private String cachedScriptCommand;
+  private Map<Unit, Collection<SkillSpec>> skills = new HashMap<Unit, Collection<SkillSpec>>();
 
   public int getShowStats() {
     return showStats;
@@ -702,6 +732,7 @@ class E3CommandParser {
   protected void execute(Region region) {
     try {
       currentRegion = region;
+      skills.clear();
       initSupply();
 
       for (Unit u : region.units()) {
@@ -725,6 +756,7 @@ class E3CommandParser {
       // comment out the following line if you don't have the newest nightly build of Magellan
       helper.getUI().setProgress(region.toString() + " - postprocessing", ++progress);
 
+      teachUnits();
       satisfyNeeds();
     } catch (RuntimeException e) {
       e.printStackTrace();
@@ -1029,8 +1061,8 @@ class E3CommandParser {
    * Ueberwache<br />
    * <code>// $cript Ernaehre [amount]</code> -- earn money<br />
    * <code>// $cript Handel amount [ALLES | good...]</code> -- trade luxuries<br />
-   * <code>// $cript Steuermann minSilver maxSilver</code> -- be responsible for ship<br />
-   * <code>// $cript Mannschaft skill</code> -- be crew and learn<br />
+   * <code>// $cript Steuermann minSilver maxSilver [Talent ...]</code> -- be responsible for ship<br />
+   * <code>// $cript Mannschaft [Talen ...]</code> -- be crew and learn<br />
    * <code>// $cript Quartiermeister [[amount item]...]</code> -- be lookout<br />
    * <code>// $cript Sammler [interval]</code> -- collect and research HERBS<br />
    * <code>// $cript KrautKontrolle [route]</code> -- FORSCHE KRÄUTER in several regions<br />
@@ -1098,6 +1130,8 @@ class E3CommandParser {
                 setChangedOrders(true);
               } else if (command.equals("auto")) {
                 commandAuto(tokens);
+              } else if (command.equals("Mannschaft")) {
+                commandCrew(tokens);
               } else {
                 // order remains
                 addNewOrder(currentOrder, false);
@@ -1134,20 +1168,7 @@ class E3CommandParser {
                 } else if (command.equals("Handel")) {
                   commandTrade(tokens);
                 } else if (command.equals("Steuermann")) {
-                  if (tokens.length < 3) {
-                    addNewError("zu wenige Argumente");
-                  } else {
-                    commandNeed(new String[] { "Benoetige", tokens[1], tokens[2], "Silber",
-                        String.valueOf(DEFAULT_PRIORITY + 10) });
-                    setConfirm(currentUnit, false);
-                  }
-                } else if (command.equals("Mannschaft")) {
-                  if (tokens.length < 3) {
-                    addNewError("zu wenige Argumente");
-                  } else {
-                    commandLearn(new String[] { "Lerne", tokens[1], tokens[2] });
-                    setConfirm(currentUnit, true);
-                  }
+                  commandHelmsman(tokens);
                 } else if (command.equals("Quartiermeister")) {
                   commandQuartermaster(tokens);
                 } else if (command.equals("Sammler")) {
@@ -1570,6 +1591,10 @@ class E3CommandParser {
 
     String sOther = "???";
     if (tokens[0].equals("BenoetigeFremd")) {
+      if (tokens.length < 3) {
+        addNewError("zu wenig Argumente");
+        return;
+      }
       sOther = tokens[1];
       unit = helper.getUnit(tokens[1]);
 
@@ -1874,25 +1899,37 @@ class E3CommandParser {
       addNewError("falsche Anzahl Argumente");
       return;
     }
-    List<Skill> targetSkills = new LinkedList<Skill>();
+    List<SkillSpec> targetSkills = new LinkedList<SkillSpec>();
 
-    for (int i = 1; i < tokens.length; i++) {
+    for (int i = 1; i < tokens.length;) {
+      int j = i;
       try {
         if (i < tokens.length - 1) {
-          SkillType skill = world.getRules().getSkillType(tokens[i++]);
-          int level = Integer.parseInt(tokens[i]);
-          if (skill == null) {
-            addNewError("unbekanntes Talent " + tokens[i - 1]);
+          SkillType skill = world.getRules().getSkillType(tokens[j++]);
+          int level = Integer.parseInt(tokens[j]), max = 99;
+          j++; // no exception
+          if (i < tokens.length - 2) {
+            try {
+              max = Integer.parseInt(tokens[j]);
+              j++;
+            } catch (NumberFormatException e) {
+              max = 99;
+            }
           }
-          targetSkills.add(new Skill(skill, 0, level, 1, true));
+          if (skill == null) {
+            addNewError("unbekanntes Talent " + tokens[i]);
+          } else {
+            targetSkills.add(new SkillSpec(skill, level, max));
+          }
         } else {
           addNewError("unerwartetes Token " + tokens[i]);
         }
       } catch (NumberFormatException e) {
         addNewError("ungültige Stufe " + tokens[i]);
+      } finally {
+        i = Math.max(j, i + 1);
       }
     }
-
     learn(currentUnit, targetSkills);
   }
 
@@ -1901,11 +1938,14 @@ class E3CommandParser {
    * Tries to learn best skill and acquire equipment. If no skill is given, best weapon skill is
    * selected. If no weapon is given, best matching weapon is acquired and so on. Preference is
    * always for RESERVEing stuff the unit already has. Waffe, Schild, Rüstung can be "null" if
-   * nothing should be reserved or "best" (the default behaviour).<br />
+   * nothing should be reserved or "best" (the default behavior).<br />
    * Warning can be:<br />
-   * nie: issues no warnings at all, Talent: only warns if no skill is given and no best skill
-   * exists, Waffe: additionally warn if no weapon can be acquired, Schild: additionally warn if no
-   * shield, Rüstung: additionally warn if no armor. Default warning level is "Waffe".
+   * nie: issues no warnings at all,
+   * Talent: only warns if no skill is given and no best skill exists,
+   * Waffe: additionally warn if no weapon can be acquired,
+   * Schild: additionally warn if no shield,
+   * Rüstung: additionally warn if no armor.
+   * Default warning level is "Waffe".
    */
   protected void commandSoldier(String[] tokens) {
     String warning = tokens[tokens.length - 1];
@@ -1935,18 +1975,18 @@ class E3CommandParser {
       warning = Warning.W_WEAPON;
     }
 
-    if (BEST.equals(skill)) {
-      skill = null;
-    }
-    if (BEST.equals(weapon)) {
-      weapon = null;
-    }
-    if (BEST.equals(shield)) {
-      shield = null;
-    }
-    if (BEST.equals(armor)) {
-      armor = null;
-    }
+    // if (NULL.equals(skill)) {
+    // skill = null;
+    // }
+    // if (NULL.equals(weapon)) {
+    // weapon = null;
+    // }
+    // if (NULL.equals(shield)) {
+    // shield = null;
+    // }
+    // if (NULL.equals(armor)) {
+    // armor = null;
+    // }
 
     soldier(currentUnit, skill, weapon, shield, armor, warning);
   }
@@ -1957,7 +1997,7 @@ class E3CommandParser {
    *
    */
   protected Collection<String> commandEmbassador(String[] tokens) {
-    Skill skill = null;
+    SkillType skill = null;
     int minimum = 100;
     int actionToken = 1;
     if (tokens.length > 1) {
@@ -1969,11 +2009,11 @@ class E3CommandParser {
       }
     }
     if (tokens.length > actionToken) {
-      skill = getSkill(tokens[actionToken], 10);
+      skill = getSkillType(tokens[actionToken]);
     } else {
-      skill = getSkill(EresseaConstants.S_WAHRNEHMUNG.toString(), 10);
+      skill = getSkillType(EresseaConstants.S_WAHRNEHMUNG.toString());
       if (skill == null) {
-        skill = getSkill(EresseaConstants.S_AUSDAUER.toString(), 10);
+        skill = getSkillType(EresseaConstants.S_AUSDAUER.toString());
       }
     }
 
@@ -2010,7 +2050,7 @@ class E3CommandParser {
       return Collections.singletonList(order.toString());
       // addNewOrder(order.toString(), true);
     } else {
-      learn(currentUnit, Collections.singleton(skill));
+      learn(currentUnit, Collections.singleton(new SkillSpec(skill, 10, 99)));
       if (tokens.length > actionToken + 1) {
         addNewError("zu viele Argumente");
       }
@@ -2361,12 +2401,148 @@ class E3CommandParser {
   }
 
   /**
+   * <code>// $cript Steuermann minSilver maxSilver [Talent ...]</code> -- be responsible for ship
+   * 
+   * Reserves silver for crew, maintains route commands, executes soldier command. If given, uses the same parameters as
+   * commandSoldier, starting with Talent.
+   * Otherwise uses parameters specified in {@link #SOLDIER_HELMSMAN}.
+   * 
+   * If {@link #LEARN_HELMSMAN} is not null, adds those parameters to the teach plugin.
+   * 
+   * @param tokens
+   */
+  protected void commandHelmsman(String[] tokens) {
+    if (tokens.length == 2) {
+      addNewError("zu wenige Argumente");
+      return;
+    }
+    String min, max;
+    if (tokens.length > 1) {
+      min = tokens[1];
+      max = tokens[2];
+    } else {
+      Ship ship = currentUnit.getShip();
+      if (ship == null) {
+        min = "300";
+        max = "500";
+      } else {
+        int sail = 0, sailors = 0;
+        for (Unit u : ship.units()) {
+          sail += u.getSkill(EresseaConstants.S_SEGELN).getLevel() * u.getPersons();
+          sailors += u.getPersons();
+          if (sail >= ship.getShipType().getSailorSkillLevel()) {
+            break;
+          }
+        }
+        min = String.valueOf((sailors * 6 * 10 - 1) / 100 * 100 + 100);
+        max = String.valueOf((sailors * 11 * 10 - 1) / 100 * 100 + 100);
+      }
+    }
+    commandNeed(new String[] { "Benoetige", min, max, "Silber",
+        String.valueOf(DEFAULT_PRIORITY + 10) });
+    setConfirm(currentUnit, false);
+
+    for (Order order : currentUnit.getOrders2()) {
+      String text = order.getText();
+      if (text.startsWith(ROUTEOrder + " " + PAUSEOrder)) {
+        addNewWarning("Route beendet");
+      }
+    }
+    removeOrdersLike(ROUTEOrder + " " + PAUSEOrder + ".*", true);
+
+    String[] soldierTokens;
+    if (tokens.length > 3) {
+      // Soldat [Talent [Waffe [Schild [Rüstung]]]]
+      soldierTokens = new String[tokens.length - 1];
+      soldierTokens[0] = tokens[0];
+      for (int i = 1; i < tokens.length - 2; ++i) {
+        soldierTokens[i] = tokens[i + 2];
+      }
+    } else {
+      soldierTokens = (tokens[0] + " " + SOLDIER_HELMSMAN).split(" ");
+    }
+    if (LEARN_HELMSMAN != null) {
+      addToTeachPlugin(currentUnit, parseLearn(LEARN_HELMSMAN));
+    }
+    commandSoldier(soldierTokens);
+  }
+
+  /**
+   * <code>// $cript Mannschaft [Talent ...]</code> -- be crew and learn<br />
+   * 
+   * If given, uses the same parameters as
+   * commandSoldier, starting with Talent.
+   * Otherwise uses parameters specified in {@link #SOLDIER_CREW}.
+   * 
+   * If {@link #LEARN_CREW} is not null, adds those parameters to the teach plugin.
+   * 
+   * @param tokens
+   */
+  protected void commandCrew(String[] tokens) {
+    String[] soldierTokens;
+    boolean legacy = false;
+    if (tokens.length == 3) {
+      try {
+        Integer.parseInt(tokens[2]);
+        addNewOrder(createScriptCommand() + tokens[0], true);
+        legacy = true;
+      } catch (NumberFormatException e) {
+        //
+      }
+    }
+    if (!legacy) {
+      addNewOrder(currentOrder, false);
+    }
+    if (tokens.length > 1 && !legacy) {
+      soldierTokens = new String[tokens.length];
+      soldierTokens[0] = tokens[0];
+      for (int i = 1; i < tokens.length; ++i) {
+        soldierTokens[i] = tokens[i];
+      }
+    } else {
+      soldierTokens = (tokens[0] + " " + SOLDIER_CREW).split(" ");
+    }
+    if (LEARN_CREW != null) {
+      addToTeachPlugin(currentUnit, parseLearn(LEARN_CREW));
+    }
+    commandSoldier(soldierTokens);
+
+    setConfirm(currentUnit, true);
+  }
+
+  private Collection<SkillSpec> parseLearn(String learnLine) {
+    OrderedHashtable<SkillSpec, Object> parsed = new OrderedHashtable<SkillSpec, Object>();
+    StringTokenizer tokens = new StringTokenizer(learnLine);
+    while (tokens.hasMoreTokens()) {
+      String t = tokens.nextToken();
+      if (t.matches("[A-Z].*")) {
+        int level = -1, max = -1;
+        SkillType skill = getSkillType(t);
+        try {
+          level = Integer.parseInt(tokens.nextToken());
+          max = Integer.parseInt(tokens.nextToken());
+        } catch (NumberFormatException e) {
+          //
+        } catch (NoSuchElementException e) {
+          //
+        }
+        if (skill != null && level > 0 && max > 0) {
+          parsed.put(new SkillSpec(skill, level, max), "");
+        } else {
+          addNewWarning("error in skillLine :" + learnLine);
+        }
+      }
+    }
+    return parsed.keySet();
+  }
+
+  /**
    * <code>// $cript Quartiermeister [[Menge1 Gut 1]...]</code>: learn perception, allow listed
    * amount of goods. If other goods are detected, do not confirm orders.
    */
   protected void commandQuartermaster(String[] tokens) {
-    learn(currentUnit, Collections.singleton(new Skill(world.getRules().getSkillType(
-        EresseaConstants.S_WAHRNEHMUNG), 30, 10, 1, true)));
+    learn(currentUnit, Collections.singleton(new SkillSpec(world.getRules().getSkillType(
+        EresseaConstants.S_WAHRNEHMUNG), 10, 99)));
     try {
       for (Item item : currentUnit.getItems()) {
         boolean okay = false;
@@ -3034,7 +3210,7 @@ class E3CommandParser {
       }
     }
     if (minAmount > maxAmount) {
-      addNewError("min amount " + minAmount + " > max amount" + maxAmount);
+      addNewError("min amount " + minAmount + " > max amount " + maxAmount);
       maxAmount = minAmount;
     }
     needQueue.add(result = new Need(unit, item, minAmount, maxAmount, priority, w, ++supplySerial));
@@ -3069,7 +3245,6 @@ class E3CommandParser {
     ItemType shield = sShield == null ? null : rules.getItemType(StringID.create(sShield));
 
     if (weaponSkill == null || BEST.equals(sWeaponSkill)) {
-
       int max = 0;
       for (Skill skill : u.getSkills()) {
         if (isWeaponSkill(skill) && skill.getLevel() > max) {
@@ -3121,15 +3296,14 @@ class E3CommandParser {
     }
 
     if (weaponSkill != null) {
-      List<Skill> targetSkills = new LinkedList<Skill>();
-      targetSkills.add(u.getSkill(weaponSkill));
-      if (weaponSkill.getName().equals("Hiebwaffen")
-          || weaponSkill.getName().equals("Stangenwafen")) {
-        targetSkills.add(getSkill(S_ENDURANCE, Math.round(ENDURANCERATIO_FRONT
-            * getSkillLevel(u, weaponSkill))));
+      List<SkillSpec> targetSkills = new LinkedList<SkillSpec>();
+      targetSkills.add(new SkillSpec(weaponSkill, DEFAULT_LEARNLEVEL, 99));
+      if (weaponSkill.getName().equals("Hiebwaffen") || weaponSkill.getName().equals("Stangenwaffen")) {
+        targetSkills.add(new SkillSpec(
+            getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_FRONT * DEFAULT_LEARNLEVEL), 99));
       } else {
-        targetSkills.add(getSkill(S_ENDURANCE, Math.round(ENDURANCERATIO_BACK
-            * getSkillLevel(u, weaponSkill))));
+        targetSkills.add(new SkillSpec(
+            getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_BACK * DEFAULT_LEARNLEVEL), 99));
       }
       learn(u, targetSkills);
     }
@@ -3155,13 +3329,18 @@ class E3CommandParser {
    * @param u
    * @param targetSkills
    */
-  protected void learn(Unit u, Collection<Skill> targetSkills) {
+  protected void learn(Unit u, Collection<SkillSpec> targetSkills) {
+
+    if (hasTeachPlugin()) {
+      addToTeachPlugin(currentUnit, targetSkills);
+      return;
+    }
 
     // find skill with maximum priority
     double maxWeight = 0;
-    Skill maxSkill = null;
+    SkillSpec maxSkill = null;
     StringBuilder comment = new StringBuilder(";");
-    for (Skill skill : targetSkills) {
+    for (SkillSpec skill : targetSkills) {
       double weight = calcSkillWeight(u, skill, targetSkills);
       comment.append(" ").append(skill.toString()).append(" ").append(weight);
       if (weight > maxWeight) {
@@ -3177,7 +3356,53 @@ class E3CommandParser {
     } else {
       removeOrdersLike(LEARNOrder + ".*", true);
       removeOrdersLike(TEACHOrder + ".*", true);
-      addNewOrder(LEARNOrder + " " + maxSkill.getName(), true);
+      addNewOrder(LEARNOrder + " " + maxSkill.skill.getName(), true);
+    }
+  }
+
+  private boolean hasTeachPlugin() {
+    return TEACH_PREFIX != null;
+  }
+
+  private void addToTeachPlugin(Unit unit, Collection<SkillSpec> targetSkills) {
+    Collection<SkillSpec> oldskills = skills.get(unit);
+    if (oldskills != null) {
+      Map<SkillType, SkillSpec> map = new OrderedHashtable<SkillType, SkillSpec>();
+      for (SkillSpec spec : targetSkills) {
+        map.put(spec.skill, spec);
+      }
+      for (SkillSpec spec : oldskills) {
+        map.put(spec.skill, spec);
+      }
+      for (SkillSpec spec : targetSkills) {
+        map.put(spec.skill, spec);
+      }
+
+      skills.put(unit, map.values());
+    } else {
+      skills.put(unit, targetSkills);
+    }
+  }
+
+  private void teachUnits() {
+    for (Unit u : skills.keySet()) {
+      boolean teach = true;
+      for (Order order : u.getOrders2()) {
+        if (order.isLong() && !order.getText().startsWith(TEACHOrder) && !order.getText().startsWith(LEARNOrder)) {
+          addOrder(u, "; langer Befehl gefunden, Einheit wird nicht gelehrt", false);
+          teach = false;
+          break;
+        }
+      }
+
+      if (teach) {
+        StringBuilder learnOrder = new StringBuilder(String.format("; $%s$L 100.0", TEACH_PREFIX));
+        for (SkillSpec s : skills.get(u)) {
+          learnOrder.append(String.format(" %s %d %d", s.skill.getName(), s.level, s.max));
+        }
+        addOrder(u, String.format("; $%s$T ALLES 0", TEACH_PREFIX), true);
+        addOrder(u, learnOrder.toString(), true);
+      }
     }
   }
 
@@ -3185,51 +3410,52 @@ class E3CommandParser {
    * Returns a weight ("importance") of a skill according to target values and the unit's current
    * skill levels.
    */
-  protected static double calcSkillWeight(Unit u, Skill learningSkill,
-      Collection<Skill> targetSkills) {
+  protected static double calcSkillWeight(Unit u, SkillSpec learningSkill,
+      Collection<SkillSpec> targetSkills) {
     if (learningSkill == null)
       return 0;
     double prio = 0.5;
 
     // calc max mult
-    Skill learningTarget = null;
+    SkillSpec learningTarget = null;
     double maxMult = 0;
 
-    for (Skill skill2 : targetSkills) {
-      if (skill2.getSkillType().equals(learningSkill.getSkillType())) {
+    for (SkillSpec skill2 : targetSkills) {
+      if (skill2.skill.equals(learningSkill.skill)) {
         learningTarget = skill2;
       }
-      int level = Math.max(1, getSkillLevel(u, skill2.getSkillType()));
-      // if (lev < getMax(skill2)) {
-      double mult = level / (double) skill2.getLevel();
-      if (maxMult < mult) {
-        maxMult = mult;
+      int level = Math.max(1, getSkillLevel(u, skill2.skill));
+      if (level < skill2.max) {
+        double mult = level / (double) skill2.level;
+        if (maxMult < mult) {
+          maxMult = mult;
+        }
       }
-      // }
     }
 
     if (learningTarget == null)
       // learned skill is not in target skills
-      return 0.01 * learningSkill.getLevel();
+      return 0.01 * learningSkill.level;
 
     if (maxMult > 0) {
       // calc max normalized learning weeks
       double maxWeeks = 0;
-      for (Skill skill2 : targetSkills) {
-        int currentLevel = Math.max(1, getSkillLevel(u, skill2.getSkillType()));
-        // if (lev < getMax(skill2)) {
-        double weeks = skill2.getLevel() - currentLevel / maxMult + 2;
-        if (maxWeeks < weeks) {
-          maxWeeks = weeks;
+      for (SkillSpec skill2 : targetSkills) {
+        int currentLevel = Math.max(1, getSkillLevel(u, skill2.skill));
+        if (currentLevel < skill2.max) {
+          double weeks = skill2.level - currentLevel / maxMult + 2;
+          if (maxWeeks < weeks) {
+            maxWeeks = weeks;
+          }
         }
-        // }
       }
-      int level = Math.max(1, getSkillLevel(u, learningSkill.getSkillType()));
-      // if (level >= getMax(skill))
-      // prio = 0d;
-      // else
-      // prio should be between .4 and 1
-      prio = .4 + .6 * (learningTarget.getLevel() - level / maxMult + 2) / maxWeeks;
+      int level = Math.max(1, getSkillLevel(u, learningSkill.skill));
+      if (level >= learningSkill.max) {
+        prio = 0.01d;
+      } else {
+        // prio should be between .4 and 1
+        prio = .4 + .6 * (learningTarget.level - level / maxMult + 2) / maxWeeks;
+      }
       if (prio < 0) {
         prio = prio * 1.000001;
       }
@@ -3286,10 +3512,14 @@ class E3CommandParser {
               w.getOrderName(), String.valueOf(DEFAULT_PRIORITY) });
         }
         supply += w.getAmount();
+        if (supply >= currentUnit.getPersons()) {
+          supply = currentUnit.getPersons();
+          break;
+        }
       }
 
-      // now reserve the first matching weapon with min=w.getAmount(), max=w.getPersons()-other
-      // weapons
+      // now reserve the first matching weapon with
+      // min=w.getAmount(), max=w.getPersons()-other weapons
       Item w = ownStuff.get(0);
       String max =
           Integer.toString(Math.max(0, Math.min(currentUnit.getPersons() - supply + w.getAmount(),
@@ -3302,6 +3532,7 @@ class E3CommandParser {
     return true;
   }
 
+  @SuppressWarnings("unused")
   private static Integer putMulti(Map<Unit, Map<String, Integer>> map, Unit key1, String key2,
       Integer value) {
     Map<String, Integer> inner = map.get(key1);
@@ -3340,6 +3571,7 @@ class E3CommandParser {
     }
   }
 
+  @SuppressWarnings("unused")
   private static void appendMulti(Map<Object, Map<Object, Collection<Integer>>> map, Object key1,
       Object key2,
       Integer value) {
@@ -4140,6 +4372,93 @@ class E3CommandParser {
         updateCurrentOrders();
         setCurrentUnit(null);
       }
+    }
+  }
+
+  /**
+   * Private utility script to convert old crew logic to new.
+   *
+   */
+  public static void correctCrewReserve(GameData data) {
+    for (Unit u : data.getUnits()) {
+      boolean found = false;
+      for (Order o : u.getOrders2()) {
+        if (o.getText().startsWith("// $cript Steuermann") || o.getText().startsWith("// $cript Mannschaft")) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        found = false;
+        ArrayList<String> orders = new ArrayList<String>();
+
+        for (Order o : u.getOrders2()) {
+          String text = o.getText();
+          if (!text.matches("// \\$cript Benoetige .* Schwert") && !text.matches(
+              "// \\$cript Benoetige .* Schild")
+              && !text.matches("// \\$cript Benoetige .* Speer")) {
+            orders.add(text);
+          } else {
+            found = true;
+            orders.add("; " + text);
+          }
+        }
+        if (found) {
+          u.setOrders(orders);
+        }
+      }
+    }
+  }
+
+  /**
+   * Deletes all signs, then creates a sign for every island.
+   * 
+   * @param world
+   */
+  public static void signIslands(GameData world) {
+
+    for (Region r : world.getRegions()) {
+      r.clearSigns();
+    }
+    for (Island island : world.getIslands()) {
+      if (island.regions().size() == 0) {
+        continue;
+      }
+      if (island.regions().size() == 1) {
+        Region r = island.regions().iterator().next();
+        if (!r.getRegionType().isLand()) {
+          continue;
+        }
+      }
+      if (island.getModifiedName().matches("([0-9]+. )*[0-9]+")) {
+        continue;
+      }
+
+      int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
+      for (Region r : island.regions()) {
+        if (r.getCoordinate().getZ() != 0) {
+          continue;
+        }
+        minX = Math.min(minX, r.getCoordX());
+        minY = Math.min(minY, r.getCoordY());
+        maxX = Math.max(maxX, r.getCoordX());
+        maxY = Math.max(maxY, r.getCoordY());
+      }
+      int minDist = Integer.MAX_VALUE;
+      Region minR = null;
+      for (Region r : island.regions()) {
+        int x2 = (minX + maxX) / 2 - r.getCoordX();
+        int y2 = (minY + maxY) / 2 - r.getCoordY();
+        int dist2 = x2 * x2 + y2 * y2;
+        if (minDist > dist2 || minR == null) {
+          minDist = dist2;
+          minR = r;
+        }
+      }
+      if (minR != null) {
+        minR.addSign(new Sign(island.getModifiedName()));
+      }
+
     }
   }
 

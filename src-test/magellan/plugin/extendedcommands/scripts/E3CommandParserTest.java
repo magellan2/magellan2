@@ -91,6 +91,9 @@ public class E3CommandParserTest extends MagellanTestWithResources {
         ExtendedCommandsProvider.createHelper(null, data, null, null));
 
     E3CommandParser.DEFAULT_SUPPLY_PRIORITY = 1;
+    E3CommandParser.TEACH_PREFIX = null;
+    E3CommandParser.LEARN_HELMSMAN = null;
+    E3CommandParser.SOLDIER_HELMSMAN = "best best null null";
   }
 
   /**
@@ -760,6 +763,12 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.addOrder("// $cript Benoetige 1 2");
     parser.execute(unit.getFaction());
     assertError("falsche Anzahl Argumente", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript BenoetigeFremd");
+
+    parser.execute(unit.getFaction());
+    assertError("zu wenig Argumente", unit, 2);
   }
 
   /**
@@ -2118,7 +2127,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertWarning("kein Kampftalent", unit2, 1);
 
     // normal operation
-    builder.addSkill(unit2, "Hiebwaffen", 2);
+    builder.addSkill(unit2, "Hiebwaffen", 1);
 
     unit.clearOrders();
     unit2.clearOrders();
@@ -2137,7 +2146,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("RESERVIERE 5 Schwert", unit2, 3);
 
     // normal operation
-    builder.addSkill(unit2, "Hiebwaffen", 2);
+    builder.addSkill(unit2, "Hiebwaffen", 1);
 
     unit.clearOrders();
     unit2.clearOrders();
@@ -2164,11 +2173,11 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(2, unit.getOrders2().size());
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
-    assertEquals("// $cript Soldat Hiebwaffen Schwert Schild null", unit2.getOrders2().get(0)
-        .getText());
+    assertEquals("// $cript Soldat Hiebwaffen Schwert Schild null", unit2.getOrders2().get(0).getText());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertWarning("braucht 10 mehr Schild, Soldat (s) needs 10/10 Schild (100)", unit2, 4);
     assertOrder("RESERVIERE 5 Schwert", unit2, 3);
+    assertWarning("braucht 10 mehr Schild, Soldat (s) needs 10/10 Schild (100)", unit2, 4);
+    // assertMessage("braucht 10 mehr Kettenhemd", unit2, 5);
 
     // normal operation
     unit.clearOrders();
@@ -2181,8 +2190,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB s 5 Schwert", unit, 1);
     assertEquals(5, unit2.getOrders2().size());
     assertOrder("LERNE Hiebwaffen", unit2, 2);
-    assertWarning("braucht 10 mehr Kettenhemd, Soldat (s) needs 10/10 Kettenhemd (100)", unit2, 4);
     assertOrder("RESERVIERE 5 Schwert", unit2, 3);
+    assertWarning("braucht 10 mehr Kettenhemd, Soldat (s) needs 10/10 Kettenhemd (100)", unit2, 4);
 
     // normal operation
     builder.addItem(data, unit2, "Plattenpanzer", 2);
@@ -2213,7 +2222,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     Unit unit3 = builder.addUnit(data, "s2", "Soldat 2", unit.getFaction(), unit.getRegion());
     unit3.setPersons(10);
-    builder.addSkill(unit3, "Hiebwaffen", 2);
+    builder.addSkill(unit3, "Hiebwaffen", 1);
     builder.addItem(data, unit3, "Schild", 10);
 
     unit2.clearOrders();
@@ -2245,7 +2254,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   public final void testCommandSoldier2() {
     unit.clearOrders();
     unit.addOrder("// $cript Soldat best Hellebarde null Plattenpanzer");
-    builder.addSkill(unit, "Hiebwaffen", 2);
+    builder.addSkill(unit, "Hiebwaffen", 1);
     builder.addItem(data, unit, "Hellebarde", 1);
     builder.addItem(data, unit, "Plattenpanzer", 1);
     parser.execute(unit.getFaction());
@@ -3074,4 +3083,185 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(4, unit.getOrders2().size());
     assertError("Ungültige Einheitennummer", unit, 3);
   }
+
+  /**
+   * Lerne command with TeachPlugin
+   */
+  @Test
+  public final void testCommandLerne() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Lerne Hiebwaffen 2 Ausdauer 1");
+    E3CommandParser.TEACH_PREFIX = "stm";
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 2 99 Ausdauer 1 99", unit, 3);
+  }
+
+  /**
+   * Steuermann default
+   */
+  @Test
+  public final void testCommandSteuermann() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    E3CommandParser.LEARN_HELMSMAN = "$x$ 100.0 Schiffbau 4 99 Unterhaltung 4 5";
+    E3CommandParser.SOLDIER_HELMSMAN = "best best null null";
+
+    Ship ship = builder.addShip(data, unit.getRegion(), "ship", "Karavelle", "Schiff", 250);
+    unit.setShip(ship);
+    Unit unit2 = builder.addUnit(data, "Crew", unit.getRegion());
+    unit2.setShip(ship);
+    unit2.setPersons(3);
+    builder.addSkill(unit, "Segeln", 10);
+    builder.addSkill(unit2, "Segeln", 10);
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann");
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertWarning("braucht 300/500 mehr Silber", unit, 4);
+    assertWarning("braucht 1 mehr Schwert", unit, 5);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200");
+    builder.addSkill(unit, "Hiebwaffen", 1);
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertWarning("braucht 100/200 mehr Silber", unit, 4);
+    assertWarning("braucht 1 mehr Schwert", unit, 5);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200");
+    builder.addItem(data, unit, "Schwert", 2);
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
+    assertWarning("braucht 100/200 mehr Silber", unit, 5);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200");
+    unit.addOrder("ROUTE PAUSE no");
+    builder.addItem(data, unit, "Schwert", 2);
+    parser.execute(unit.getFaction());
+    assertEquals(7, unit.getOrders2().size());
+    assertWarning("Route beendet", unit, 2);
+    assertOrder("; $stm$T ALLES 0", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 5);
+    assertWarning("braucht 100/200 mehr Silber", unit, 6);
+  }
+
+  /**
+   * Steuermann advanced
+   */
+  @Test
+  public final void testCommandSteuermann2() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    E3CommandParser.LEARN_HELMSMAN = "$x$ 100.0 Schiffbau 4 99 Unterhaltung 4 5";
+    E3CommandParser.SOLDIER_HELMSMAN = "best best null null";
+
+    builder.addItem(data, unit, "Schwert", 2);
+    builder.addItem(data, unit, "Bihänder", 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200 Hiebwaffen best Schild null");
+    parser.execute(unit.getFaction());
+    assertEquals(7, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
+    assertWarning("braucht 100/200 mehr Silber", unit, 5);
+    assertWarning("braucht 1 mehr Schild", unit, 6);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200");
+    unit.addOrder("ROUTE no");
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertMessage("langer Befehl gefunden", unit, 3);
+
+  }
+
+  /**
+   * Steuermann advanced
+   */
+  @Test
+  public final void testCommandCrew() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    E3CommandParser.LEARN_CREW = "$x$ 100.0 Schiffbau 4 99 Unterhaltung 4 5";
+    E3CommandParser.SOLDIER_CREW = "best best best null";
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Mannschaft Hiebwaffen best Schild null");
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertWarning("braucht 1 mehr Schwert", unit, 4);
+    assertWarning("braucht 1 mehr Schild", unit, 5);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Mannschaft");
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Mannschaft Hiebwaffen 16");
+    parser.execute(unit.getFaction());
+    assertEquals(6, unit.getOrders2().size());
+    assertOrder("// $cript Mannschaft", unit, 1);
+    assertOrder("; $stm$T ALLES 0", unit, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertWarning("braucht 1 mehr Schwert", unit, 4);
+    assertMessage("braucht 1 mehr Schild", unit, 5);
+
+    builder.addItem(data, unit, "Schild", 1);
+    builder.addItem(data, unit, "Schwert", 1);
+    unit.clearOrders();
+    unit.addOrder("// $cript Mannschaft best best best");
+    parser.execute(unit.getFaction());
+    assertEquals(7, unit.getOrders2().size());
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
+    assertOrder("RESERVIERE JE 1 Schild", unit, 5);
+  }
+
+  @Test
+  public final void testHelmsmanTwo() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    Unit unit2 = builder.addUnit(data, "2", "Other", unit.getFaction(), unit.getRegion());
+    builder.addSkill(unit2, "Hiebwaffen", 2);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.addOrder("ROUTE SO PAUSE");
+    unit.addOrder("// $cript Steuermann 300 500");
+
+    unit2.addOrder("// $cript Steuermann 300 500");
+
+    parser.execute(unit.getFaction());
+
+    assertMessage("langer Befehl gefunden", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99", unit2, 2);
+  }
+
+  @Test
+  public final void testHelmsmanClean() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Benoetige JE 1 Schwert");
+    unit.addOrder("// $cript Steuermann 300 500");
+    unit.addOrder("// $cript Benoetige JE 1 Schild");
+    unit.addOrder("// $cript Benoetige 2 Speer");
+
+    E3CommandParser.correctCrewReserve(data);
+    assertEquals(4, unit.getOrders2().size());
+    assertMessage("", unit, 0);
+    assertMessage("", unit, 2);
+    assertMessage("", unit, 3);
+  }
+
 }

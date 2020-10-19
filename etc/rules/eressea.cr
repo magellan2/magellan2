@@ -1669,6 +1669,7 @@ ITEM "Laen"
 ITEM "Adamantium"
 "Adamantium";name
 2;weight
+"Bergbau";makeskill
 "resources";category
 1;storeinbonw
 
@@ -1914,6 +1915,9 @@ RESOURCES
 ITEM "Adamantiumaxt"
 "Adamantiumaxt";name
 1;weight
+"Waffenbau";makeskill
+"Hiebwaffen";useskill
+8;makeskilllevel
 "weapons";category
 1;storeinbonw
 RESOURCES
@@ -2043,6 +2047,8 @@ RESOURCES
 ITEM "Adamantiumrüstung"
 "Adamantiumrüstung";name
 1;weight
+"Rüstungsbau";makeskill
+10;makeskilllevel
 "armour";category
 1;storeinbonw
 RESOURCES
@@ -2378,6 +2384,54 @@ ITEM "Drachenkopf"
 
 ITEM "Ring der flinken Finger"
 "Ring der flinken Finger";name
+0;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Amulett des wahren Sehens"
+"Amulett des wahren Sehens";name
+0;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Ring der Macht"
+"Ring der Macht";name
+0;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Gürtel der Trollstärke"
+"Gürtel der Trollstärke";name
+0;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Aurafocus"
+"Aurafocus";name
+1;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Traumauge"
+"Traumauge";name
+1;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Sphäre der Unsichtbarkeit"
+"Sphäre der Unsichtbarkeit";name
+1;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Feenstiefel"
+"Feenstiefel";name
+0;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Antimagiekristall"
+"Antimagiekristall";name
 0;weight
 "misc";category
 1;storeinbonw

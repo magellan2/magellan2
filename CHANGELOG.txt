@@ -1,3 +1,8 @@
+2020-10-19 / Build 736 - stm (stm2@users.sourceforge.net)
+    * tweaked sign renderer options
+    * changed checking of building, recruiting, learning, and promotion costs
+    * fixed a few items in eressea rules
+
 2020-09-13 / Build 729 - stm (stm2@users.sourceforge.net)
     * new movement rules for trolls and unskilled horses
 

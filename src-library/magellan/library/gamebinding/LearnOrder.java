@@ -30,11 +30,8 @@ import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.MaintenanceRelation;
-import magellan.library.relation.ReserveRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
-import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -77,6 +74,8 @@ public class LearnOrder extends SimpleOrder {
 
   @Override
   public void execute(ExecutionState state, GameData data, Unit unit, int line) {
+    if (skillType == null)
+      return;
     EresseaExecutionState eState = (EresseaExecutionState) state;
 
     ItemType silverType = data.getRules().getItemType(EresseaConstants.I_USILVER);
@@ -88,25 +87,27 @@ public class LearnOrder extends SimpleOrder {
     }
 
     if (realCost > 0) {
-      List<UnitRelation> relations = eState.acquireItem(unit, silverType, realCost, false, true, false, line, this);
+      // List<UnitRelation> relations = eState.acquireItem(unit, silverType, realCost, false, true, false, true, line,
+      // this);
 
       MaintenanceRelation mRel =
           new MaintenanceRelation(unit, MagellanFactory.createNullContainer(data), realCost, silverType,
               Resources
                   .get("util.units.node.learn"), "skills", line, false);
 
-      for (UnitRelation rel : relations) {
-        if (rel instanceof ReserveRelation) {
-          mRel.setCosts(((ReserveRelation) rel).amount);
-        } else {
-          rel.add();
-        }
-        if (rel.problem != null) {
-          mRel.warning = true;
-          mRel.setWarning(Resources.get("order.learn.warning.silver"),
-              MaintenanceInspector.MaintenanceProblemTypes.LEARNCOSTS.type);
-        }
-      }
+      // TODO deactivate for now, reserving after actual give/reserve step is more tricky
+      // for (UnitRelation rel : relations) {
+      // if (rel instanceof ReserveRelation) {
+      // mRel.setCosts(((ReserveRelation) rel).amount);
+      // } else {
+      // rel.add();
+      // }
+      // if (rel.problem != null) {
+      // mRel.warning = true;
+      // mRel.setWarning(Resources.get("order.learn.warning.silver"),
+      // MaintenanceInspector.MaintenanceProblemTypes.LEARNCOSTS.type);
+      // }
+      // }
       mRel.add();
     }
   }

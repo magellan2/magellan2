@@ -67,17 +67,18 @@ public abstract class UnitRelation {
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
-    return this.getClass().getName() + "@ORIGIN=" + origin + "@SOURCE=" + source + "@line=" + line
+    return "@ORIGIN=" + origin + "@SOURCE=" + source + "@line=" + line
         + "@WARNING=" + problem;
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public static class ID {
     protected static int lastID = -1;
     int id;

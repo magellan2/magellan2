@@ -1824,61 +1824,38 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   private void applyRelation(Cache cache1, ItemTransferRelation itr) {
-    Item modifiedItem = cache1.modifiedItems.get(itr.itemType.getID());
-
-    if (modifiedItem != null) {
-      modifiedItem.setChanged(true);
-      // the transferred item can be found among this unit's items
-      if (equals(itr.source)) {
-        modifiedItem.setAmount(modifiedItem.getAmount() - itr.amount);
-      }
-      if (equals(itr.target)) {
-        modifiedItem.setAmount(modifiedItem.getAmount() + itr.amount);
-      }
-    } else {
-      // the transferred item is not among the items the unit already has
-      if (equals(itr.source)) {
-        modifiedItem = new Item(itr.itemType, -itr.amount);
-      } else if (equals(itr.target)) {
-        modifiedItem = new Item(itr.itemType, itr.amount);
-      } else {
-        // we're neither source nor target, but we triggered a transfer between two unit
-        // (material pool)
-        modifiedItem = new Item(itr.itemType, 0);
-      }
-
-      modifiedItem.setChanged(true);
-      cache1.modifiedItems.put(itr.itemType.getID(), modifiedItem);
+    int change = 0;
+    // we could be source, target, both, or none!
+    if (equals(itr.source)) {
+      change += -itr.amount;
     }
+    if (equals(itr.target)) {
+      change += itr.amount;
+    }
+
+    changeModifiedItem(cache1, itr.itemType, change);
+  }
+
+  private void changeModifiedItem(Cache cache1, ItemType itemType, int change) {
+    Item modifiedItem = cache1.modifiedItems.get(itemType.getID());
+    if (modifiedItem != null) {
+      modifiedItem.setAmount(modifiedItem.getAmount() + change);
+    } else {
+      modifiedItem = new Item(itemType, change);
+    }
+
+    modifiedItem.setChanged(true);
+    cache1.modifiedItems.put(itemType.getID(), modifiedItem);
   }
 
   private void applyRelation(Cache cache1, RecruitmentRelation rr) {
-    Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
-
-    if (modifiedItem != null) {
-      modifiedItem.setChanged(true);
-      modifiedItem.setAmount(modifiedItem.getAmount() - rr.costs);
-    } else {
-      if (equals(rr.target)) {
-        modifiedItem =
-            new Item(getData().getRules().getItemType(EresseaConstants.I_USILVER), -rr.costs);
-        modifiedItem.setChanged(true);
-        cache1.modifiedItems.put(EresseaConstants.I_USILVER, modifiedItem);
-      }
-    }
+    // TODO change 0, for now, reserving after actual give/reserve step is more tricky
+    changeModifiedItem(cache1, getData().getRules().getItemType(EresseaConstants.I_USILVER), 0);
   }
 
   private void applyRelation(Cache cache1, MaintenanceRelation rr) {
-    Item modifiedItem = cache1.modifiedItems.get(rr.itemType.getID());
-
-    if (modifiedItem != null) {
-      modifiedItem.setChanged(true);
-      modifiedItem.setAmount(modifiedItem.getAmount() - rr.getCosts());
-    } else {
-      modifiedItem = new Item(rr.itemType, -rr.getCosts());
-      modifiedItem.setChanged(true);
-      cache1.modifiedItems.put(rr.itemType.getID(), modifiedItem);
-    }
+    // TODO change 0, for now, reserving after actual give/reserve step is more tricky
+    changeModifiedItem(cache1, getData().getRules().getItemType(EresseaConstants.I_USILVER), 0);
   }
 
   /**

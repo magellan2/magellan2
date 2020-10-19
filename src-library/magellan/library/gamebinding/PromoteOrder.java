@@ -29,10 +29,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.MaintenanceRelation;
-import magellan.library.relation.ReserveRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
-import magellan.library.tasks.MaintenanceInspector;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -76,26 +73,27 @@ public class PromoteOrder extends SimpleOrder {
 
     ItemType silverType = data.getRules().getItemType(EresseaConstants.I_USILVER);
 
-    List<UnitRelation> relations = eState.acquireItem(unit, silverType, costs, false, true, false,
-        line, this);
+    // List<UnitRelation> relations = eState.acquireItem(unit, silverType, costs, false, true, true, true,
+    // line, this);
 
     MaintenanceRelation mRel =
         new MaintenanceRelation(unit, MagellanFactory.createNullContainer(data), costs, silverType,
             Resources
                 .get("util.units.node.promotion"), "hero", line, false);
 
-    for (UnitRelation rel : relations) {
-      if (rel instanceof ReserveRelation) {
-        mRel.setCosts(((ReserveRelation) rel).amount);
-      } else {
-        rel.add();
-      }
-      if (rel.problem != null) {
-        mRel.warning = true;
-        mRel.setWarning(Resources.get("order.promote.warning.silver"),
-            MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
-      }
-    }
+    // TODO deactivate for now, reserving after actual give/reserve step is more tricky
+    // for (UnitRelation rel : relations) {
+    // if (rel instanceof ReserveRelation) {
+    // mRel.setCosts(((ReserveRelation) rel).amount);
+    // } else {
+    // rel.add();
+    // }
+    // if (rel.problem != null) {
+    // mRel.warning = true;
+    // mRel.setWarning(Resources.get("order.promote.warning.silver"),
+    // MaintenanceInspector.MaintenanceProblemTypes.BUILDINGMAINTENANCE.type);
+    // }
+    // }
     mRel.add();
 
   }

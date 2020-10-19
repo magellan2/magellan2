@@ -109,4 +109,13 @@ public class MaintenanceRelation extends UnitContainerRelation {
     icon = name;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.eressea.relation.UnitRelation#toString()
+   */
+  @Override
+  public String toString() {
+    return super.toString() + "@ITEM=" + itemType + "@COSTS" + costs;
+  }
 }

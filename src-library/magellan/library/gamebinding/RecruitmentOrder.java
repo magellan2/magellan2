@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.List;
@@ -28,10 +28,7 @@ import java.util.List;
 import magellan.library.GameData;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
-import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
 import magellan.library.relation.RecruitmentRelation;
-import magellan.library.relation.ReserveRelation;
-import magellan.library.relation.UnitRelation;
 import magellan.library.rules.Race;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSemanticsProblemTypes;
 import magellan.library.utils.OrderToken;
@@ -92,13 +89,10 @@ public class RecruitmentOrder extends SimpleOrder {
       }
     }
 
-    EresseaExecutionState eState = (EresseaExecutionState) state;
+    // EresseaExecutionState eState = (EresseaExecutionState) state;
     // List<UnitRelation> relations =
-    // eState.reserveItem(data.getRules().getItemType(EresseaConstants.I_USILVER), false, true,
-    // costs, unit, line, this);
-    List<UnitRelation> relations =
-        eState.acquireItem(unit, data.getRules().getItemType(EresseaConstants.I_USILVER), costs,
-            false, true, false, line, this);
+    // eState.acquireItem(unit, data.getRules().getItemType(EresseaConstants.I_USILVER), costs,
+    // false, true, true, true, line, this);
 
     RecruitmentRelation recRel = new RecruitmentRelation(unit, amount, costs, unit.getRace(), line);
     if (warning != null) {
@@ -106,18 +100,19 @@ public class RecruitmentOrder extends SimpleOrder {
     }
     recRel.add();
 
-    for (UnitRelation rel : relations) {
-      if (rel instanceof ReserveRelation) {
-        recRel.setReserve(rel);
-        recRel.costs = ((ReserveRelation) rel).amount;
-      } else {
-        rel.add();
-      }
-      if (rel.problem != null) {
-        recRel.setWarning(Resources.get("order.recruit.warning.silver"),
-            OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
-      }
-    }
+    // TODO deactivate for now, reserving after actual give/reserve step is more tricky
+    // for (UnitRelation rel : relations) {
+    // if (rel instanceof ReserveRelation) {
+    // // recRel.setReserve(rel);
+    // recRel.costs = ((ReserveRelation) rel).amount;
+    // } else {
+    // rel.add();
+    // }
+    // if (rel.problem != null) {
+    // recRel.setWarning(Resources.get("order.recruit.warning.silver"),
+    // OrderSemanticsProblemTypes.SEMANTIC_ERROR.type);
+    // }
+    // }
 
     if (unit instanceof TempUnit) {
       ((TempUnit) unit).setTempRace(getRace());

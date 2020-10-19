@@ -95,7 +95,7 @@ public class E3RelationFactoryTest extends MagellanTestWithResources {
     refreshOrders();
 
     assertEquals(1, unit.getRelations(MaintenanceRelation.class).size());
-    checkRelation(unit, 0, berg, getItemType(EresseaConstants.I_USILVER), true);
+    checkRelation(unit, 500, berg, getItemType(EresseaConstants.I_USILVER), false);
 
     builder.addItem(data, unit, "Silber", 1000);
 

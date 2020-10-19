@@ -852,6 +852,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public void reloadGraphicSet() {
     mapper.reloadGraphicSet();
+    context.getImageFactory().reset();
   }
 
   /**

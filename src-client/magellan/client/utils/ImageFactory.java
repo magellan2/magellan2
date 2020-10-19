@@ -55,12 +55,15 @@ public class ImageFactory implements GameDataListener {
     if (e.getGameData() != null) {
       gamename = e.getGameData().getGameName().toLowerCase();
 
-      if (ImageFactory.log.isDebugEnabled()) {
-        ImageFactory.log.debug("ImageFactory.gameDataChanged: set gamename to " + gamename);
-      }
-
-      images.clear();
+      reset();
     }
+  }
+
+  /**
+   * Clears the cache.
+   */
+  public void reset() {
+    images.clear();
   }
 
   private Map<String, ImageIcon> images = new HashMap<String, ImageIcon>();
@@ -75,7 +78,7 @@ public class ImageFactory implements GameDataListener {
   /**
    * Loads the given image. First it tests to load
    */
-  public ImageIcon loadImage(String imageName, Boolean errorIfNotFound) {
+  public ImageIcon loadImage(String imageName, boolean errorIfNotFound) {
     // look into cache
     if (images.containsKey(imageName))
       return images.get(imageName);
@@ -85,7 +88,7 @@ public class ImageFactory implements GameDataListener {
     // we do not replace spaces by strings
     // fName = fName.trim().replaceAll(" ","");
     if (img == null) {
-      ImageFactory.log.debug("Loading image " + fName);
+      // ImageFactory.log.debug("Loading image " + fName);
       img = doLoadImage(gamename + "/" + fName);
     }
     if (img == null) {

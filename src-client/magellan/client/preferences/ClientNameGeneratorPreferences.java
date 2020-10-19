@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.Component;
@@ -41,7 +41,11 @@ import magellan.client.Client;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.NameGenerator;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 
+/**
+ * 
+ */
 public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter implements
     PreferencesAdapter, ActionListener {
   protected JCheckBox active;
@@ -88,15 +92,19 @@ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter i
     return help;
   }
 
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+   */
   public void initPreferences() {
-    // TODO: implement it
+    fileField.setText(settings.getProperty("NameGenerator.Source"));
+    active.setSelected(NameGenerator.getInstance().isActive() && !Utils.isEmpty(fileField.getText()));
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    boolean available = active.isSelected();
+    boolean available = active.isSelected() && !Utils.isEmpty(fileField.getText());
     settings.setProperty("NameGenerator.Source", fileField.getText());
     NameGenerator.getInstance().setEnabled(available);
 
@@ -110,21 +118,21 @@ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter i
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("util.namegenerator.prefs.title");
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
     String s = settings.getProperty("NameGenerator.Source");
@@ -146,6 +154,9 @@ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter i
 
     if (ret == JFileChooser.APPROVE_OPTION) {
       fileField.setText(f.getSelectedFile().toString());
+      if (Utils.isEmpty(fileField.getText())) {
+        active.setSelected(false);
+      }
     }
   }
 }

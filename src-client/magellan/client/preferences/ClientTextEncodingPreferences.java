@@ -264,7 +264,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("util.textencodingpreferences.prefs.title");

@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.swing.map;
 
 import java.awt.BorderLayout;
@@ -159,9 +159,6 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     protected BackgroundImagePreferences(MapCellRenderer source) {
       super(new BorderLayout());
       this.source = (BackgroundImageRenderer) source;
-      filename = BackgroundImageRenderer.this.filename;
-      img = BackgroundImageRenderer.this.img;
-      imgPanel.setImage(img);
 
       JPanel jpbtn = new JPanel();
       JButton btnopen = new JButton(Resources.get("map.backgroundimagerenderer.prefs.open"));
@@ -169,14 +166,17 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
       jpbtn.add(btnopen);
       this.add(jpbtn, BorderLayout.NORTH);
       this.add(imgPanel, BorderLayout.CENTER);
+      initPreferences();
     }
 
     public void initPreferences() {
-      // TODO: implement it
+      filename = BackgroundImageRenderer.this.filename;
+      img = BackgroundImageRenderer.this.img;
+      imgPanel.setImage(img);
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       setImage(img);

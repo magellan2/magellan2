@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +57,9 @@ import java.util.zip.ZipEntry;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -68,6 +71,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.FontUIResource;
 
 import org.simplericity.macify.eawt.Application;
@@ -234,7 +239,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   @Deprecated
   public static final String COMPLETIONSETTINGS_FILENAME = "magellan_completions.ini";
 
-  public static final String DEFAULT_LAF = "Windows";
+  public static final String DEFAULT_LAF = "Nimbus";
 
   public static final String FALLBACK_LAF = "Metal";
 
@@ -1014,7 +1019,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     bookmarks.setMnemonic(Resources.get("client.menu.bookmarks.mnemonic").charAt(0));
 
     JMenuItem toggle = new JMenuItem(Resources.get("client.menu.bookmarks.toggle.caption"));
-    toggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK));
+    toggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_DOWN_MASK));
     toggle.addActionListener(new ToggleBookmarkAction());
     bookmarks.add(toggle);
 
@@ -1028,7 +1033,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     bookmarks.add(forward);
 
     JMenuItem backward = new JMenuItem(Resources.get("client.menu.bookmarks.backward.caption"));
-    backward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK));
+    backward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_DOWN_MASK));
     backward.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         bookmarkManager.jumpBackward();
@@ -1096,8 +1101,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(extras, optionAction);
     addMenuItem(extras, new ProfileAction(this));
 
-    // TODO(pavkovic): currently EresseaOptionPanel is broken, I deactivated
-    // it.
     extras.addSeparator();
     addMenuItem(extras, new HelpAction(this));
     addMenuItem(extras, new TipOfTheDayAction(this));
@@ -1180,6 +1183,42 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     MenuActionObserver foo = new MenuActionObserver(item, action);
 
     return item;
+  }
+
+  private static class MessageWithLink extends JEditorPane {
+    private static final long serialVersionUID = 1L;
+
+    public MessageWithLink(String htmlBody) {
+      super("text/html", "<html><body style=\"" + getStyle() + "\">" + htmlBody + "</body></html>");
+      addHyperlinkListener(new HyperlinkListener() {
+        @Override
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+          if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
+            try {
+              java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+            } catch (IOException | URISyntaxException e1) {
+              log.warn(e1);
+            }
+          }
+        }
+      });
+      setEditable(false);
+      setBorder(null);
+    }
+
+    static StringBuffer getStyle() {
+      // for copying style
+      JLabel label = new JLabel();
+      Font font = label.getFont();
+      Color color = label.getBackground();
+
+      // create some css from the label's font
+      StringBuffer style = new StringBuffer("font-family:" + font.getFamily() + ";");
+      style.append("font-weight:" + (font.isBold() ? "bold" : "normal") + ";");
+      style.append("font-size:" + font.getSize() + "pt;");
+      style.append("background-color: rgb(" + color.getRed() + "," + color.getGreen() + "," + color.getBlue() + ");");
+      return style;
+    }
   }
 
   /**
@@ -1276,8 +1315,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
                   }
 
-                  JOptionPane.showMessageDialog(Client.startWindow, Resources.get(
-                      "client.new_version", new Object[] { newestVersion, url }));
+                  JOptionPane.showMessageDialog(Client.startWindow,
+                      new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
+                      "",
+                      JOptionPane.INFORMATION_MESSAGE);
                 }
               }
 

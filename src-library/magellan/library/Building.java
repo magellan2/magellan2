@@ -26,31 +26,31 @@ import magellan.library.rules.BuildingType;
 public interface Building extends UnitContainer, HasRegion, Selectable {
 
   /**
-   * DOCUMENT ME!
    * 
    * @return the size of the building.
    */
   public int getSize();
 
   /**
-   * DOCUMENT ME!
    * 
    * @param iSize set the size of the building.
    */
   public void setSize(int iSize);
 
   /**
-   * DOCUMENT ME!
    * 
    * @return the cost of the building.
+   * @deprecated The server does not provide this anymore. Upkeep is accessed via {@link #getBuildingType()}.
    */
+  @Deprecated
   public int getCost();
 
   /**
-   * DOCUMENT ME!
    * 
    * @param iCost set the cost for the building.
+   * @deprecated The server does not provide this anymore. Upkeep is accessed via {@link #getBuildingType()}.
    */
+  @Deprecated
   public void setCost(int iCost);
 
   /**

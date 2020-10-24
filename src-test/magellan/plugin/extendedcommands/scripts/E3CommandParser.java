@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import magellan.client.extern.MagellanPlugIn;
@@ -589,6 +590,7 @@ class E3CommandParser {
   private int showStats = 1;
   private String cachedScriptCommand;
   private Map<Unit, Collection<SkillSpec>> skills = new HashMap<Unit, Collection<SkillSpec>>();
+  private Map<String, Consumer<String[]>> commands;
 
   public int getShowStats() {
     return showStats;
@@ -734,6 +736,32 @@ class E3CommandParser {
       currentRegion = region;
       skills.clear();
       initSupply();
+
+      commands = new HashMap<String, Consumer<String[]>>();
+      commands.put("KrautKontrolle", constructCommand(this::commandControl, false, true));
+      commands.put("auto", constructCommand(this::commandAuto, false, false));
+      commands.put("Mannschaft", constructCommand(this::commandCrew, false, false));
+      commands.put("Loeschen", constructCommand(this::commandClear));
+      commands.put("GibWenn", constructCommand(this::commandGiveIf));
+      commands.put("Benoetige", constructCommand(this::commandNeed));
+      commands.put("BenoetigeFremd", constructCommand(this::commandNeed));
+      commands.put("Versorge", constructCommand(this::commandSupply));
+      commands.put("Kapazitaet", constructCommand(this::commandCapacity));
+      commands.put("BerufDepotVerwalter", constructCommand(this::commandDepot));
+      commands.put("Soldat", constructCommand(this::commandSoldier));
+      commands.put("Lerne", constructCommand(this::commandLearn));
+      // commands.put("BerufBotschafter", constructCommand(this::commandEmbassador, () ->
+      // addNewOrder(currentOrder, false), () -> ));
+      commands.put("Ueberwache", constructCommand(this::commandMonitor));
+      commands.put("Erlaube", constructCommand(this::commandAllow));
+      commands.put("Verlange", constructCommand(this::commandAllow));
+      commands.put("Ernaehre", constructCommand(this::commandEarn));
+      commands.put("Handel", constructCommand(this::commandTrade));
+      commands.put("Steuermann", constructCommand(this::commandHelmsman));
+      commands.put("Quartiermeister", constructCommand(this::commandQuartermaster));
+      commands.put("Sammler", constructCommand(this::commandCollector));
+      commands.put("RekrutiereMax", constructCommand(this::commandRecruit));
+      commands.put("Kommentar", constructCommand(this::commandComment));
 
       for (Unit u : region.units()) {
         if (currentFactions.containsKey(u.getFaction())) {
@@ -1120,69 +1148,27 @@ class E3CommandParser {
               }
             }
             if (tokens != null) {
-              // System.out.println(o);
-              String command = tokens[0];
-              if (command.startsWith("+")) {
-                commandWarning(tokens);
-                setChangedOrders(true);
-              } else if (command.equals("KrautKontrolle")) {
-                commandControl(tokens);
-                setChangedOrders(true);
-              } else if (command.equals("auto")) {
-                commandAuto(tokens);
-              } else if (command.equals("Mannschaft")) {
-                commandCrew(tokens);
+              Consumer<String[]> interpreter = commands.get(tokens[0]);
+              if (interpreter != null) {
+                interpreter.accept(tokens);
               } else {
-                // order remains
-                addNewOrder(currentOrder, false);
-
-                if (command.equals("Loeschen")) {
-                  commandClear(tokens);
-                } else if (command.equals("GibWenn")) {
-                  commandGiveIf(tokens);
-                } else if (command.equals("Benoetige") || command.equals("BenoetigeFremd")) {
-                  commandNeed(tokens);
-                } else if (command.equals("Versorge")) {
-                  commandSupply(tokens);
-                } else if (command.equals("Kapazitaet")) {
-                  commandCapacity(tokens);
-                } else if (command.equals("BerufDepotVerwalter")) {
-                  commandDepot(tokens);
-                } else if (command.equals("Soldat")) {
-                  commandSoldier(tokens);
-                } else if (command.equals("Lerne")) {
-                  commandLearn(tokens);
+                String command = tokens[0];
+                if (command.startsWith("+")) {
+                  commandWarning(tokens);
+                  setChangedOrders(true);
                 } else if (command.equals("BerufBotschafter")) {
-                  Collection<String> commands = commandEmbassador(tokens);
-                  Collections.reverse((List<?>) commands);
-                  for (String newOrder : commands) {
+                  addNewOrder(currentOrder, false);
+                  Collection<String> addedCommands = commandEmbassador(tokens);
+                  Collections.reverse((List<?>) addedCommands);
+                  for (String newOrder : addedCommands) {
                     queue.addFirst(newOrder);
                   }
                   setChangedOrders(true);
-                } else if (command.equals("Ueberwache")) {
-                  commandMonitor(tokens);
-                } else if (command.equals("Erlaube") || command.equals("Verlange")) {
-                  commandAllow(tokens);
-                } else if (command.equals("Ernaehre")) {
-                  commandEarn(tokens);
-                } else if (command.equals("Handel")) {
-                  commandTrade(tokens);
-                } else if (command.equals("Steuermann")) {
-                  commandHelmsman(tokens);
-                } else if (command.equals("Quartiermeister")) {
-                  commandQuartermaster(tokens);
-                } else if (command.equals("Sammler")) {
-                  commandCollector(tokens);
-                } else if (command.equals("RekrutiereMax")) {
-                  commandRecruit(tokens);
-                } else if (command.equals("Kommentar")) {
-                  commandComment(tokens);
                 } else {
                   addNewError("unbekannter Befehl: " + command);
                 }
               }
               currentOrder = null;
-
             }
           }
         } catch (Throwable t) {
@@ -1190,7 +1176,35 @@ class E3CommandParser {
         }
       }
     }
+
     updateCurrentOrders();
+
+  }
+
+  private Consumer<String[]> constructCommand(Consumer<String[]> command, Runnable before, Runnable after) {
+    return (tokens) -> {
+      before.run();
+      command.accept(tokens);
+      after.run();
+    };
+  }
+
+  private Consumer<String[]> constructCommand(Consumer<String[]> command, boolean keep, boolean setChanged) {
+    return constructCommand(command,
+        () -> {
+          if (keep) {
+            addNewOrder(currentOrder, false);
+          }
+        },
+        () -> {
+          if (setChanged) {
+            setChangedOrders(true);
+          }
+        });
+  }
+
+  private Consumer<String[]> constructCommand(Consumer<String[]> command) {
+    return constructCommand(command, true, false);
   }
 
   /**
@@ -1889,10 +1903,10 @@ class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Lerne Talent1 Stufe1 [[Talent2 Stufe2]...]</code><br />
+   * <code>// $cript Lerne Talent1 Stufe1 [Max1] [[Talent2 Stufe2 [Max2]...]</code><br />
    * Tries to learn skills in given ratio. For example,
-   * <code>// $cript Lerne Hiebwaffen 10 Ausdauer 5</code> tries to learn to (Hiebwaffen 2, Ausdauer
-   * 1), (Hiebwaffen 4, Ausdauer 2), and so forth.
+   * <code>// $cript Lerne Hiebwaffen 10 99 Ausdauer 5 3</code> tries to learn to (Hiebwaffen 2, Ausdauer
+   * 1), (Hiebwaffen 4, Ausdauer 2), and so forth, but Ausdauer only until level 3 is reached.
    */
   protected void commandLearn(String[] tokens) {
     if (tokens.length < 3 || tokens.length % 2 != 1) {

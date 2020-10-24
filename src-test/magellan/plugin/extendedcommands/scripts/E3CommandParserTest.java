@@ -18,8 +18,11 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -3242,6 +3245,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.addOrder("// $cript Steuermann 300 500");
 
     unit2.addOrder("// $cript Steuermann 300 500");
+    builder.addBuilding(data, unit.getRegion(), "x", "Sägewerk", "S", 10);
 
     parser.execute(unit.getFaction());
 
@@ -3262,6 +3266,30 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("", unit, 0);
     assertMessage("", unit, 2);
     assertMessage("", unit, 3);
+  }
+
+  class TestCommand implements Consumer<String[]> {
+    public void accept(String[] parameters) {
+      // do stuff
+    }
+  }
+
+  static class AllCommands {
+    public static void add(String[] parameters) {
+    }
+
+    public void subtract(String[] parameters) {
+    }
+  }
+
+  @Test
+  public final void testFunctional() {
+    Map<String, Consumer<String[]>> map = new HashMap<String, Consumer<String[]>>();
+    map.put("x", new TestCommand());
+    map.put("x", (parameters) -> { // do stuff
+    });
+    map.put("y", (new AllCommands())::subtract);
+    map.put("z", AllCommands::add);
   }
 
 }

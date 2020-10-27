@@ -747,6 +747,7 @@ public class ExtendedCommands {
   protected synchronized void runJShell(String script, GameData world, Unit unit,
       UnitContainer container, UserInterface ui, ExtendedCommandsHelper helper) {
     try {
+      log.finest("script:\n" + script);
       final JShell sh = JShell.builder().compilerOptions("-Xlint:all")
           .executionEngine("local").build();
 
@@ -769,31 +770,48 @@ public class ExtendedCommands {
 
       String remaining = script;
       boolean firstStatement = true;
-      for (List<Snippet> snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining); remaining
-          .trim().length() > 0; snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining)) {
-        for (Snippet snippet : snippets) {
-          Kind kind = snippet.kind();
-          switch (kind) {
-          case ERRONEOUS:
-            // throw new JShellException(snippet, sh.diagnostics(snippet));
-            break;
-          case IMPORT:
-            if (!firstStatement) {
-              log.warn("ExtendedCommands: import statement after first code statement: " + snippet
-                  .source());
-              firstStatement = true;
+      int restart = 1;
+      while (restart > 0) {
+        restart = 0;
+        for (List<Snippet> snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining); remaining
+            .trim().length() > 0; snippets = sh.sourceCodeAnalysis().sourceToSnippets(remaining)) {
+          for (Snippet snippet : snippets) {
+            if (restart > 1) {
+              break;
             }
-            break;
-          default:
-            if (firstStatement) {
-              defineGlobals(sh);
-              firstStatement = false;
+            Kind kind = snippet.kind();
+            switch (kind) {
+            case ERRONEOUS:
+              // throw new JShellException(snippet, sh.diagnostics(snippet));
+              if (firstStatement) {
+                defineGlobals(sh);
+                firstStatement = false;
+                restart = 1;
+              }
+              break;
+            case IMPORT:
+              if (!firstStatement) {
+                log.warn("ExtendedCommands: import statement after first code statement: " + snippet
+                    .source());
+                firstStatement = true;
+              }
+              break;
+            default:
+              if (firstStatement) {
+                defineGlobals(sh);
+                firstStatement = false;
+              }
+              break;
             }
+          }
+          if (restart < 1) {
+            String old = remaining;
+            remaining = eval(sh, remaining);
+            log.finest("evaluated:\n" + old.substring(0, old.lastIndexOf(remaining)).trim());
+          } else {
             break;
           }
         }
-
-        remaining = eval(sh, remaining);
       }
     } catch (JShellException e) {
       // TODO
@@ -833,7 +851,9 @@ public class ExtendedCommands {
 
     for (SnippetEvent event : evaluation) {
       // TODO do proper logging of warnings
-      log.finest("eval: " + event.value() + "\n" + source);
+      if (!Utils.isEmpty(event.value())) {
+        log.finest("eval: " + event.value());
+      }
       switch (event.status()) {
       case REJECTED: {
         Stream<Diag> diags = sh.diagnostics(event.snippet());

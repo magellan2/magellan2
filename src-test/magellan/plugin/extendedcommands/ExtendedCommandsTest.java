@@ -110,6 +110,12 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
   }
 
   @Test
+  public void testHappy2Script() throws IOException {
+    String log = runScript("Happy2");
+    assertEquals("", log);
+  }
+
+  @Test
   public void testIncomplete() throws IOException {
     String log = runScript("Incomplete");
     assertMatches(".*source is incomplete.*", log);

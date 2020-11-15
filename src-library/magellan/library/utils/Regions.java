@@ -2049,9 +2049,12 @@ public class Regions {
   }
 
   /**
-   * Compute distance between two coordinates. Contributed by Hubert Mackenberg. Thanks.
+   * Compute distance between two coordinates.
    */
   public static int getDist(CoordinateID r1, CoordinateID r2) {
+    // could be expressed as Math.max(Math.max(Math.abs(dx), Math.abs(dy)), Math.abs(dx + dy));
+
+    /* Contributed by Hubert Mackenberg. Thanks. */
     int dx = r1.getX() - r2.getX();
     int dy = r1.getY() - r2.getY();
     /*

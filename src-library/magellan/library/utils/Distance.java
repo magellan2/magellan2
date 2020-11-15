@@ -13,6 +13,11 @@
 
 package magellan.library.utils;
 
+/**
+ * Computes distance between Eressea coordinates.
+ *
+ * @author Hubert Mackenberg
+ */
 class Distance {
   static void usage() {
     System.out.println("usage: Distance x1 y1 x2 y2");

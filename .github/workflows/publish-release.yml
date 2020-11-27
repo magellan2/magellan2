@@ -20,17 +20,23 @@ jobs:
         VERSION=$(ant -q -S print_version)
         SHORT=$(echo "${VERSION}" | cut -d. -f-2)
         BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
-        echo "::set-env name=BUILD::$BUILD"
-        echo "::set-env name=SHORT::$SHORT"
-        echo "::set-env name=VERSION::$VERSION"
-        echo "::set-env name=TAG::$(echo "v${VERSION}")"
+        echo "::set-output name=BUILD::$BUILD"
+        echo "::set-output name=SHORT::$SHORT"
+        echo "::set-output name=VERSION::$VERSION"
+        echo "::set-output name=TAG::$(echo "v${VERSION}")"
 
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
-        echo "::set-env name=REFTAG::$REFTAG"
+        echo "::set-output name=REFTAG::$REFTAG"
 
-      
     - name: Sanity check
+      id: sanity_check
       run: |
+        # env
+        BUILD=${{ steps.get-version.outputs.BUILD }}
+        SHORT=${{ steps.get-version.outputs.SHORT }}
+        VERSION=${{ steps.get-version.outputs.VERSION }}
+        TAG=${{ steps.get-version.outputs.TAG }}
+        REFTAG=${{ steps.get-version.outputs.REFTAG }}
         # tag is v1.2[.3]-567[.abc4]
         if [[ "$TAG" =~ ^v[0-9][0-9]*[.][0-9][0-9]*([.][0-9][0-9]*)?(-[1-9][0-9]*)([.][a-z][a-z0-9]*)?$ ]]; then
           echo tag $TAG okay
@@ -53,9 +59,9 @@ jobs:
         else
           echo "WARNING: $TAG <> $REFTAG"
           TAG=$REFTAG
-          echo "::set-env name=TAG::$TAG"
           # exit 1
         fi
+        echo "::set-output name=TAG::$TAG"
 
         # most recent tag has older build number
         LASTTAG=$(git tag -l v* --sort='-committerdate')
@@ -92,13 +98,14 @@ jobs:
         value="${value//'%'/'%25'}"
         value="${value//$'\n'/'%0A'}"
         value="${value//$'\r'/'%0D'}"
-        echo "::set-env name=BODY::$value"
+        echo "::set-output name=BODY::$value"
 
     - name: prepare meta
+      id: prepare-meta
       run: |
         set -x
-        if [[ "${{ env.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
+        if [[ "${{ steps.sanity_check.outputs.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ steps.sanity_check.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
         else
           TYPE=stable
         fi
@@ -106,7 +113,7 @@ jobs:
           echo "invalid type $TYPE"
           exit 1
         fi
-        echo "::set-env name=TYPE::$TYPE"
+        echo "::set-output name=TYPE::$TYPE"
 
     - name: Create release
       uses: meeDamian/github-release@2.0
@@ -116,9 +123,9 @@ jobs:
         allow_override: false
         token: ${{ secrets.GITHUB_TOKEN }}
         commitish: master
-        tag: ${{ env.TAG }}
-        name: Release v${{ env.VERSION }} (${{ env.TYPE }})
-        body: ${{ env.BODY }}
+        tag: ${{ steps.sanity_check.outputs.TAG }}
+        name: Release v${{ steps.get-version.outputs.VERSION }} (${{ steps.prepare-meta.outputs.TYPE }})
+        body: ${{ steps.changelog.outputs.BODY }}
         gzip: folders
         files: >
           LICENSE.txt
@@ -126,8 +133,8 @@ jobs:
           RELEASENOTES.txt
           CHANGELOG.txt
           VERSION
-          magellan_v${{ env.VERSION }}.jar
-          magellan_v${{ env.VERSION }}.zip
+          magellan_v${{ steps.get-version.outputs.VERSION }}.jar
+          magellan_v${{ steps.get-version.outputs.VERSION }}.zip
 
 #    - name: trigger meta action
 #      run: |
@@ -141,7 +148,7 @@ jobs:
 #              "sha": "${{ github.sha }}",
 #              "caller_repository" : "${{ github.repository }}",
 #              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
-#              "tag" : "${{ env.TAG }}",
-#              "version" : "${{ env.VERSION }}",
-#              "type": "${{ env.TYPE }}" }}'
+#              "tag" : "${{ steps.sanity_check.outputs.TAG }}",
+#              "version" : "${{ steps.get-version.outputs.VERSION }}",
+#              "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
 

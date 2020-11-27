@@ -2700,6 +2700,24 @@ REGIONTYPES
 "Vulkan"
 "Aktiver Vulkan"
 
+BUILDINGTYPE "Steinkreis"
+"Steinkreis";name
+2;level
+100;maxsize
+RAWMATERIALS
+5;Stein
+5;Holz
+REGIONTYPES
+"Berge"
+"Ebene"
+"Gletscher"
+"Hochland"
+"Sumpf"
+"Wüste"
+"Wald"
+"Vulkan"
+"Aktiver Vulkan"
+
 BUILDINGTYPE "Marktplatz"
 "Marktplatz";name
 3;level

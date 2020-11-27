@@ -1258,11 +1258,22 @@ public class GameDataMerger {
       if ((curUC.getEffects() != null) && (curUC.getEffects().size() > 0)) {
         if (newUC.getEffects() == null) {
           newUC.setEffects(new LinkedList<String>());
+          newUC.getEffects().addAll(curUC.getEffects());
         } else {
-          newUC.getEffects().clear();
+          // newUC.getEffects().clear();
+          // Fiete 20201126: add all effects
+          /*
+           * If spell "Mauern der Ewigkeit" is casted, the faction of the mage sees that effect, but other factions
+           * see the effect "Ein Magischer Schimmer liegt auf diesen Mauen"
+           * Both effects are valid and should be included in newUC
+           * We will make sure, that no effects are doubled
+           */
+          for (String s : curUC.getEffects()) {
+            if (!newUC.getEffects().contains(s)) {
+              newUC.getEffects().add(s);
+            }
+          }
         }
-
-        newUC.getEffects().addAll(curUC.getEffects());
       }
     }
 

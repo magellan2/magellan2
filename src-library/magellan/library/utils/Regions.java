@@ -1614,6 +1614,8 @@ public class Regions {
       Direction returnDirection, CoordinateID destination, int speed) {
     PathWithLength result =
         planShipRouteWithLength(data, start, returnDirection, destination, speed);
+    if (result == null)
+      return null;
     return result.path;
   }
 

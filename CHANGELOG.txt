@@ -1,3 +1,8 @@
+2020-11-27 / Build 738 - stm (stm2@users.sourceforge.net)
+    * fixed ExtCmds execution
+    * updated schneekugel, schneemann icons
+    * updated release scripts
+
 2020-10-19 / Build 736 - stm (stm2@users.sourceforge.net)
     * tweaked sign renderer options
     * changed checking of building, recruiting, learning, and promotion costs

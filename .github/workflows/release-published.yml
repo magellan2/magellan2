@@ -11,22 +11,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: set env
-      run: |
-        TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
-        echo "::set-env name=TAG::$TAG"
-
     - name: get version
+      id:get-version
       run: |
-        wget https://github.com/${{ github.repository }}/releases/download/${TAG}/VERSION
+        wget https://github.com/${{ github.repository }}/releases/download/${{ steps.get-version.outputs.TAG }}/VERSION
         VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )
-        echo "::set-env name=VERSION::$VERSION"
+        echo "::set-output name=VERSION::$VERSION"
+        TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
+        echo "::set-output name=TAG::$TAG"
 
     - name: prepare meta
+      id: prepare-meta
       run: |
         set -x
-        if [[ "${{ env.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ env.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
+        if [[ "${{ steps.get-version.outputs.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
+          TYPE=$(echo ${{ steps.get-version.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
         else
           TYPE=stable
         fi
@@ -34,7 +33,7 @@ jobs:
           echo "invalid type $TYPE"
           exit 1
         fi
-        echo "::set-env name=TYPE::$TYPE"
+        echo "::set-output name=TYPE::$TYPE"
 
     - name: trigger meta action
       run: |
@@ -48,7 +47,7 @@ jobs:
               "sha": "${{ github.sha }}",
               "caller_repository" : "${{ github.repository }}",
               "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
-              "tag" : "${{ env.TAG }}",
-              "version" : "${{ env.VERSION }}",
-              "type": "${{ env.TYPE }}" }}'
+              "tag" : "${{ steps.get-version.outputs.TAG }}",
+              "version" : "${{ steps.get-version.outputs.VERSION }}",
+              "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
 

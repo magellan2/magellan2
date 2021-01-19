@@ -45,6 +45,7 @@ import magellan.library.Region;
 import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -176,13 +177,13 @@ public class TreeBuilder {
   private Collection<Region> sortRegions(Collection<Region> regions) {
     if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true")))
         .booleanValue()) {
-      if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals(
+      if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates").equals(
           "coordinates")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Collections.sort(sortedRegions, IDComparator.DEFAULT);
 
         return sortedRegions;
-      } else if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates")
+      } else if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates")
           .equals("islands")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Comparator<Unique> idCmp = IDComparator.DEFAULT;
@@ -262,7 +263,7 @@ public class TreeBuilder {
       if (!((unitInteresting && !r.units().isEmpty())
           || (buildingInteresting && !r.buildings().isEmpty())
           || (shipInteresting && !r.ships().isEmpty()) || (commentInteresting && !((r.getComments() == null) || (r
-          .getComments().size() == 0))))) {
+              .getComments().size() == 0))))) {
         continue;
       }
 

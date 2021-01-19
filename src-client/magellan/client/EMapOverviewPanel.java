@@ -444,11 +444,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // initialize variables used in while loop
 
     // TODO: this needs explanations
-    boolean createIslandNodes =
-        PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.displayIslands", true)
-            && PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true)
-            && settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates")
-                .equalsIgnoreCase("islands");
+    boolean createIslandNodes = isShowIslands(settings);
 
     boolean sortShipUnderUnitParent =
         PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true);
@@ -2389,5 +2385,15 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public void setCollapseMode(int collapseMode) {
     this.collapseMode = collapseMode;
+  }
+
+  /**
+   * @return true if islands are displayed according to settings.
+   */
+  public static boolean isShowIslands(Properties settings) {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.REGIONOVERVIEW_DISPLAYISLANDS, true)
+        && PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true)
+        && settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates")
+            .equalsIgnoreCase("islands");
   }
 }

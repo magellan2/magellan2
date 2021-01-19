@@ -457,11 +457,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         "EMapOverviewPanel.treeBuilderWithComments", true));
 
     rdbSortRegionsCoordinates.setSelected(settings.getProperty(
-        "EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
-    rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria",
+        PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates").equals("coordinates"));
+    rdbSortRegionsIslands.setSelected(settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA,
         "coordinates").equals("islands"));
     chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings,
-        "EMapOverviewPanel.displayIslands", true));
+        PropertiesHelper.REGIONOVERVIEW_DISPLAYISLANDS, true));
 
     chkShowHomeless.setSelected(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.showHomeless", false));
@@ -556,12 +556,12 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     settings.setProperty("EMapOverviewPanel.filters", String.valueOf(newFilter));
 
     if (rdbSortRegionsCoordinates.isSelected()) {
-      settings.setProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates");
+      settings.setProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates");
     } else if (rdbSortRegionsIslands.isSelected()) {
-      settings.setProperty("EMapOverviewPanel.sortRegionsCriteria", "islands");
+      settings.setProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands");
     }
 
-    settings.setProperty("EMapOverviewPanel.displayIslands", String.valueOf(chkDisplayIslands
+    settings.setProperty(PropertiesHelper.REGIONOVERVIEW_DISPLAYISLANDS, String.valueOf(chkDisplayIslands
         .isSelected()));
 
     settings.setProperty("EMapOverviewPanel.showHomeless", String.valueOf(chkShowHomeless

@@ -3190,6 +3190,21 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
   }
 
+  @Test
+  public final void testHelmsmanLearnLearn() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    E3CommandParser.LEARN_CREW = "$x$ 100.0 Schiffbau 4 99 Unterhaltung 4 5";
+    E3CommandParser.LEARN_HELMSMAN = "$x$ 100.0 Schiffbau 4 99 Unterhaltung 4 5";
+    E3CommandParser.SOLDIER_HELMSMAN = "best best null null";
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann 100 200 Hiebwaffen best Schild null");
+    unit.addOrder("// $cript Lerne Hiebwaffen 11 99");
+    parser.execute(unit.getFaction());
+    assertOrder("; $stm$T ALLES 0", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 11 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
+
+  }
+
   /**
    * Steuermann advanced
    */
@@ -3290,6 +3305,45 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     });
     map.put("y", (new AllCommands())::subtract);
     map.put("z", AllCommands::add);
+  }
+
+  @Test
+  public final void testQuartiermeister() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Quartiermeister");
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript Quartiermeister", unit, 1);
+    assertOrder("LERNE Wahrnehmung", unit, 3);
+    assertTrue(unit.isOrdersConfirmed());
+
+    builder.addItem(data, unit, "Schwert", 1);
+    unit.setOrdersConfirmed(false);
+    unit.clearOrders();
+    unit.addOrder("// $cript Quartiermeister");
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("LERNE Wahrnehmung", unit, 3);
+    assertFalse(unit.isOrdersConfirmed());
+
+  }
+
+  @Test
+  public final void testQuartiermeisterItem() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Quartiermeister 1 Schwert 1 Amulett~des~wahren~Sehens");
+    builder.addItem(data, unit, "Amulett des wahren Sehens", 1);
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("LERNE Wahrnehmung", unit, 3);
+    assertTrue(unit.isOrdersConfirmed());
+
   }
 
 }

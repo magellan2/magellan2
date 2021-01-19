@@ -1909,7 +1909,7 @@ class E3CommandParser {
    * 1), (Hiebwaffen 4, Ausdauer 2), and so forth, but Ausdauer only until level 3 is reached.
    */
   protected void commandLearn(String[] tokens) {
-    if (tokens.length < 3 || tokens.length % 2 != 1) {
+    if (tokens.length < 3) {
       addNewError("falsche Anzahl Argumente");
       return;
     }
@@ -2440,16 +2440,16 @@ class E3CommandParser {
         min = "300";
         max = "500";
       } else {
-        int sail = 0, sailors = 0;
+        int sail = 0, money = 0;
         for (Unit u : ship.units()) {
           sail += u.getSkill(EresseaConstants.S_SEGELN).getLevel() * u.getPersons();
-          sailors += u.getPersons();
-          if (sail >= ship.getShipType().getSailorSkillLevel()) {
+          money += u.getPersons() * u.getRace().getMaintenance();
+          if (sail >= ship.getShipType().getSailorSkillLevel() * ship.getAmount()) {
             break;
           }
         }
-        min = String.valueOf((sailors * 6 * 10 - 1) / 100 * 100 + 100);
-        max = String.valueOf((sailors * 11 * 10 - 1) / 100 * 100 + 100);
+        min = String.valueOf((money * 6 - 1) / 100 * 100 + 100);
+        max = String.valueOf((money * 11 - 1) / 100 * 100 + 100);
       }
     }
     commandNeed(new String[] { "Benoetige", min, max, "Silber",
@@ -2565,7 +2565,7 @@ class E3CommandParser {
           okay = true;
         }
         for (int i = 1; !okay && i < tokens.length - 1; i += 2) {
-          if (item.getName().equals(tokens[i + 1])) {
+          if (item.getName().equals(tokens[i + 1]) || item.getOrderName().equals(tokens[i + 1])) {
             if (item.getAmount() <= Integer.parseInt(tokens[i])) {
               okay = true;
               break;

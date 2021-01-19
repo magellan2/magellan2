@@ -1890,16 +1890,17 @@ public class EresseaOrderParser extends AbstractOrderParser {
         type = EresseaConstants.OC_UNIT;
         t0 = t;
         t = getNextToken();
+        retVal = readKontaktiereUnitFaction(t0, t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
         t.ttype = OrderToken.TT_KEYWORD;
         type = EresseaConstants.OC_FACTION;
         t0 = t;
         t = getNextToken();
+        retVal = readKontaktiereUnitFaction(t0, t);
       } else {
         // type = EresseaConstants.OC_UNIT;
+        unexpected(t);
       }
-
-      retVal = readKontaktiereUnitFaction(t0, t);
 
       if (shallComplete(token, t)) {
         getCompleter().cmpltKontaktiere(type);

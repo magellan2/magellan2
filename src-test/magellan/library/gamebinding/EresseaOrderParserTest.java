@@ -675,8 +675,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("KONTAKTIERE EINHEIT a");
     checkOrder("KONTAKTIERE EINHEIT TEMP a");
     checkOrder("KONTAKTIERE PARTEI x");
-    checkOrder("KONTAKTIERE a");
-    checkOrder("KONTAKTIERE TEMP a");
+    checkOrder("KONTAKTIERE a", false);
+    checkOrder("KONTAKTIERE TEMP a", false);
     checkOrder("KONTAKTIERE PARTEI TEMP x", false);
     checkOrder("KONTAKTIERE abc def", false);
     checkOrder("KONTAKTIERE", false);
@@ -1255,7 +1255,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("HELFEN bla KÄMPFE"); // KÄMPFEN is deprecated
     checkOrder("KÄMPFEN HELFE NICHT"); // HELFEN is deprecated
     checkOrder("KAUFEN 2 Balsam");
-    checkOrder("KONTAKTIEREN def");
+    checkOrder("KONTAKTIEREN EINHEIT def");
     checkOrder("LEHREN abc");
     checkOrder("LERNEN Ausdauer");
     checkOrder("MACHEN 5 Schwert");

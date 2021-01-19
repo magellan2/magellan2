@@ -141,7 +141,7 @@ public class ShipInspector extends AbstractInspector {
       } else if (!Units.isPrivilegedAndNoSpy(newOwner)) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.CAPTAIN_FACTION
             .getType(), s, this));
-      } else if (Units.getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel()) {
+      } else if (Units.getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel() * s.getModifiedAmount()) {
         problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCREW
             .getType(), s, this));
       }

@@ -1401,6 +1401,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
         final Unit srcClone = clones.get(srcUnit.getID());
         final Unit targetUnit = rel.target;
         final Unit targetClone = clones.get(targetUnit.getID());
+        /*
+         * NOTE: maybe we respect rel.amount instead of reducing it here; we produce a warning message if transfer
+         * amount is illegal
+         */
         final int transferredPersons = Math.max(0, Math.min(srcClone.getPersons(), rel.amount));
 
         if (transferredPersons == 0) {

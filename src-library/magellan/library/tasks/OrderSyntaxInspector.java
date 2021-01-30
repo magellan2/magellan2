@@ -34,6 +34,7 @@ import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.UnitRelation;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
@@ -160,7 +161,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
                 OrderSyntaxProblemTypes.PARSE_WARNING, order), line));
       }
 
-      longOrder |= order.isLong();
+      longOrder |= order.isLong() && !orders.isToken(order, 0, EresseaConstants.OC_ATTACK);
     }
 
     if ((Utils.isEmpty(orders) || orders.size() == 0)) {

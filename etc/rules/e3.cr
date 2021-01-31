@@ -2739,6 +2739,42 @@ REGIONTYPES
 "Vulkan"
 "Aktiver Vulkan"
 
+BUILDINGTYPE "Steinkreis"
+"Steinkreis";name
+2;level
+100;maxsize
+RAWMATERIALS
+5;Stein
+5;Holz
+REGIONTYPES
+"Berge"
+"Ebene"
+"Gletscher"
+"Hochland"
+"Sumpf"
+"Wüste"
+"Wald"
+"Vulkan"
+"Aktiver Vulkan"
+
+BUILDINGTYPE "Gesegneter Steinkreis"
+"Gesegneter Steinkreis";name
+2;level
+100;maxsize
+RAWMATERIALS
+5;Stein
+5;Holz
+REGIONTYPES
+"Berge"
+"Ebene"
+"Gletscher"
+"Hochland"
+"Sumpf"
+"Wüste"
+"Wald"
+"Vulkan"
+"Aktiver Vulkan"
+
 REGIONTYPE "Berge"
 "Berge";name
 600;maxworkers

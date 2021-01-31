@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import magellan.client.EMapOverviewPanel;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -317,13 +316,6 @@ public class PropertiesHelper {
 
   /** Property type boolean: show islands "coordinates" or "islands" */
   public static final String REGIONOVERVIEW_DISPLAYISLANDS = "EMapOverviewPanel.displayIslands";
-
-  /**
-   * @return true if islands are displayed according to settings.
-   */
-  public static boolean isShowIslands(Properties settings) {
-    return EMapOverviewPanel.isShowIslands(settings);
-  }
 
   /**
    * Property type String (version number): current version number

@@ -19,12 +19,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
 import magellan.client.Client;
+import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.ProgressBarUI;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Islands;
-import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
@@ -57,7 +57,7 @@ public class IslandAction extends MenuAction {
 
         data.setIslands(Islands.getIslands(new ProgressBarUI(client), data));
         client.getDispatcher().fire(new GameDataEvent(this, data));
-        if (!PropertiesHelper.isShowIslands(client.getProperties())) {
+        if (!EMapOverviewPanel.isShowIslands(client.getProperties())) {
           JOptionPane.showMessageDialog(client, Resources.get("actions.islandaction.display.message"), "",
               JOptionPane.INFORMATION_MESSAGE);
         }

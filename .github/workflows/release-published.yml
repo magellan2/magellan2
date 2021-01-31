@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: get version
-      id:get-version
+      id: get-version
       run: |
         wget https://github.com/${{ github.repository }}/releases/download/${{ steps.get-version.outputs.TAG }}/VERSION
         VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )

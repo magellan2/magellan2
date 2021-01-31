@@ -33,7 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
@@ -243,19 +242,22 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
         new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
             GridBagConstraints.VERTICAL, new Insets(4, 4, 4, 4), 0, 0);
 
-    JLabel label = new JLabel(Resources.get("clientpreferences.tempids"));
-    tempIDs.add(label, c2);
+    // JLabel label = new JLabel(Resources.get("clientpreferences.tempids"));
+    // tempIDs.add(label, c2);
     c2.gridy = 1;
 
     String s = settings.getProperty("ClientPreferences.TempIDsInitialValue", "");
+    JLabel initialValueLabel = new JLabel(Resources.get("clientpreferences.tempidsinitialvalue.caption"));
     tempIDsInitialValue = new JTextField(s);
-    tempIDsInitialValue.setPreferredSize(new Dimension(100, 40));
-    tempIDsInitialValue.setBorder(new TitledBorder(Resources
-        .get("clientpreferences.tempidsinitialvalue.caption")));
-    tempIDsInitialValue.setMargin(new Insets(2, 2, 2, 2));
+    tempIDsInitialValue.setPreferredSize(new Dimension(100, tempIDsInitialValue.getPreferredSize().height));
     tempIDsInitialValue.setHorizontalAlignment(SwingConstants.CENTER);
+
+    tempIDs.add(initialValueLabel, c2);
+    initialValueLabel.setLabelFor(tempIDsInitialValue);
+    c2.gridy++;
     tempIDs.add(tempIDsInitialValue, c2);
 
+    c2.gridy = 1;
     Boolean b = Boolean.valueOf(settings.getProperty("ClientPreferences.countDecimal", "true"));
     countDecimal =
         new JRadioButton(Resources.get("clientpreferences.tempids.countdecimal.caption"), b
@@ -268,10 +270,11 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     buttonGroup.add(countDecimal);
     buttonGroup.add(countBase36);
     c2.gridx = 1;
+    c2.weightx = 0.0;
     tempIDs.add(countDecimal, c2);
     c2.gridx = 2;
-    tempIDs.add(countBase36, c2);
     c2.weightx = 1.0;
+    tempIDs.add(countBase36, c2);
     c2.gridx = 3;
     tempIDs.add(new JPanel(), c2);
 
@@ -290,8 +293,10 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     buttonGroup2.add(descendingOrder);
     c2.gridy = 2;
     c2.gridx = 1;
+    c2.weightx = 0.0;
     tempIDs.add(ascendingOrder, c2);
     c2.gridx = 2;
+    c2.weightx = 1.0;
     tempIDs.add(descendingOrder, c2);
     c2.weightx = 1.0;
 
@@ -301,7 +306,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     showTempUnitDialog =
         new JCheckBox(Resources.get("clientpreferences.showtempunitdialog"), settings.getProperty(
             "MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog", "true").equalsIgnoreCase(
-            "true"));
+                "true"));
     tempIDs.add(showTempUnitDialog, c2);
 
     // tooltips

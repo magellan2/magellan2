@@ -2913,7 +2913,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
       if (isNumeric(t.getText()) == true
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
-        retVal = readReserviereAmount(t);
+        retVal = readReserviereAmount(t, false);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_EACH))) {
         retVal = readReserviereJe(t);
       } else {
@@ -2934,7 +2934,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       OrderToken t = getNextToken();
 
       if (isNumeric(t.getText()) == true) {
-        retVal = readReserviereAmount(t);
+        retVal = readReserviereAmount(t, true);
       } else {
         unexpected(t);
       }
@@ -2946,7 +2946,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
     }
 
-    protected boolean readReserviereAmount(OrderToken token) {
+    protected boolean readReserviereAmount(OrderToken token, boolean each) {
       boolean retVal = false;
       if (token.equalsToken(getOrderTranslation(EresseaConstants.OC_ALL))) {
         token.ttype = OrderToken.TT_KEYWORD;
@@ -2970,7 +2970,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltReserviereAmount();
+        getCompleter().cmpltReserviereAmount(each, getOrder().amount);
       }
       return retVal;
     }

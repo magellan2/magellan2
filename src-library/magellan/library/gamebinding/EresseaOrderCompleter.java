@@ -750,40 +750,22 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
    * is necessary to get the unit's id and the amount to be given. They are given as parameters:
    *
    * @param uid the unit's id
-   * @param i the amount
+   * @param amount the amount
    * @param each Whether amount contained "JE"
    */
-  /** Add completions for command GibUIDAmount. */
-  public void cmpltGibUIDAmount(UnitID uid, int i, boolean each) {
-    addUnitItems(i, "");
+  public void cmpltGibUIDAmount(UnitID uid, int amount, boolean each) {
+    addUnitItems(amount, "");
 
-    if ((i != 0) && (uid != null)) {
-      // add completions, that create multiple Give-Orders for the resources of an item
-      for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter
-          .hasNext();) {
-        final ItemType iType = iter.next();
-
-        if (iType.getResources() != null && iType.getResources().hasNext() // necessary resources
-        // are known
-            && checkForMaterials(iType.getResources(), i)) { // necessary resources are available
-
-          addMulti(uid, i, iType.getOrderName(), iType.getResources());
-        }
+    if ((amount != 0) && (uid != null)) {
+      String prefix = getOrderTranslation(EresseaConstants.OC_GIVE) + " " + uid.toString() + " ";
+      if (each) {
+        prefix += getOrderTranslation(EresseaConstants.OC_EACH) + " ";
       }
-      for (Spell spell : getData().getSpells()) {
-        List<Item> comps = new LinkedList<Item>();
-        for (Spell.Component sComp : spell.getParsedComponents()) {
-          if (sComp.getItem() != null) {
-            comps.add(new Item(sComp.getItem(), sComp.getAmount()));
-          }
-        }
 
-        if (!comps.isEmpty()) {
-          addMulti(uid, i, spell.getName(), comps.iterator());
-        }
-      }
+      cmpltResources(uid, amount, prefix);
+
       /**
-       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shild,
+       * Add multiple GIVE orders for if we enter ALL i.e. assume the unit has 200 sword, shield,
        * plate and 80 horses GIVE abcd 100 [ALL] will complete to GIVE abcd 100 sword GIVE abcd 100
        * shield GIVE abcd 100 plate as we have not at least 100 horses. This is perfect to split
        * units
@@ -796,17 +778,17 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       } catch (RulesException e) {
         tounit = "TEMP " + uid;
       }
-      if (!each && (unit.getPersons() >= i)) {
+      if (!each && (unit.getPersons() >= amount)) {
         order = getOrderTranslation(EresseaConstants.OC_MEN);
       }
       for (final Item item : unit.getItems()) {
-        if (item.getAmount() >= i) {
+        if (item.getAmount() >= amount) {
 
           if ("".equals(order)) {
             order = item.getOrderName();
           } else {
             order +=
-                ("\n" + getOrderTranslation(EresseaConstants.OC_GIVE) + " " + tounit + " " + i
+                ("\n" + getOrderTranslation(EresseaConstants.OC_GIVE) + " " + tounit + " " + amount
                     + " " + item.getOrderName());
           }
         }
@@ -819,7 +801,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
     if (!each) {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_MEN), (unit
-          .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
+          .getPersons() >= amount) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
     //
@@ -827,7 +809,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       Ship s = unit.getModifiedShip();
       if (s.getModifiedOwnerUnit().equals(unit)) {
         // is the amount <= number of ships in the fleet?
-        if (i <= s.getModifiedAmount()) {
+        if (amount <= s.getModifiedAmount()) {
           // valid targets are 0, or the captain of another ship or a unit on the same ship or a
           // unit without ship
           Unit target = getData().getUnit(uid);
@@ -850,7 +832,54 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   }
 
-  private void addMulti(UnitID uid, int i, String name, Iterator<Item> resources) {
+  private void cmpltResources(UnitID uid, int i, String prefix) {
+    // add completions, that create multiple Give-Orders for the resources of an item
+    for (final Iterator<ItemType> iter = getData().getRules().getItemTypeIterator(); iter.hasNext();) {
+      final ItemType iType = iter.next();
+
+      if (iType.getResources() != null && iType.getResources().hasNext() // necessary resources are known
+          && (!getCompleterSettingsProvider().getLimitMakeCompletion()
+              || checkForMaterials(iType.getResources(), i))) { // necessary resources are available
+
+        addMulti(uid, i, iType.getOrderName(), iType.getResources(), prefix);
+      }
+    }
+    for (final Iterator<BuildingType> iter = getData().getRules().getBuildingTypeIterator(); iter
+        .hasNext();) {
+      final BuildingType bType = iter.next();
+      String name =
+          Resources.getRuleItemTranslation("building." + bType.getID().toString(), getLocale());
+
+      if (!getCompleterSettingsProvider().getLimitMakeCompletion() ||
+          checkForMaterials(bType.getRawMaterials().iterator(), i)) {
+        addMulti(uid, i, name, bType.getRawMaterials().iterator(), prefix);
+      }
+    }
+    for (final Iterator<ShipType> iter = getData().getRules().getShipTypeIterator(); iter
+        .hasNext();) {
+      final ShipType sType = iter.next();
+      String name = sType.getName();
+
+      if (!getCompleterSettingsProvider().getLimitMakeCompletion() ||
+          checkForMaterials(sType.getRawMaterials().iterator(), i)) {
+        addMulti(uid, i, name, sType.getRawMaterials().iterator(), prefix);
+      }
+    }
+    for (Spell spell : getData().getSpells()) {
+      List<Item> comps = new LinkedList<Item>();
+      for (Spell.Component sComp : spell.getParsedComponents()) {
+        if (sComp.getItem() != null) {
+          comps.add(new Item(sComp.getItem(), sComp.getAmount()));
+        }
+      }
+
+      if (!comps.isEmpty()) {
+        addMulti(uid, i, spell.getName(), comps.iterator(), prefix);
+      }
+    }
+  }
+
+  private void addMulti(UnitID uid, int i, String name, Iterator<Item> resources, String prefix) {
     boolean suggest = true;
     int loopCount = 0;
     final StringBuffer order = new StringBuffer();
@@ -858,26 +887,29 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     for (final Iterator<Item> iterator = resources; iterator.hasNext() && suggest; loopCount++) {
       final Item resource = iterator.next();
 
-      if ((loopCount == 0) && !iterator.hasNext()) {
-        // only one resource is necessary for this ItemType
-        // don't create a completion to give the resource for this ItemType
-        suggest = false;
-      } else {
+      // if ((loopCount == 0) && !iterator.hasNext()) {
+      // // only one resource is necessary for this ItemType
+      // // don't create a completion to give the resource for this ItemType
+      // suggest = false;
+      // } else
+      {
 
-        if (order.length() == 0) {
-          order.append(resource.getOrderName());
-        } else {
-          order.append("\n").append(getOrderTranslation(EresseaConstants.OC_GIVE)).append(" ")
-              .append(uid.toString()).append(" ").append(i * resource.getAmount()).append(" ")
-              .append(resource.getOrderName());
+        if (order.length() > 0) {
+          order.append("\n");
         }
+        order.append(prefix).append(i * resource.getAmount()).append(" ").append(resource.getOrderName());
+
         order.append("; ").append(name);
       }
     }
 
     if (suggest) {
-      completions.add(new Completion("R-" + name, order.toString(), "",
-          Completion.DEFAULT_PRIORITY + 1));
+      Completion completion = new Completion(getTranslation("gamebinding.eressea.eresseaordercompleter.resourceprefix")
+          + name,
+          order.toString(), "",
+          Completion.DEFAULT_PRIORITY + 1);
+      completion.setReplaceLine(true);
+      completions.add(completion);
     }
   }
 
@@ -1483,7 +1515,7 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   }
 
   /** Add completions for command ReserviereAmount. */
-  public void cmpltReserviereAmount() {
+  public void cmpltReserviereAmount(boolean each, int amount) {
     addUnitItems("");
     if (getSilverPool()) {
       // if unit doesn't have silver, but silver pool is available
@@ -1511,6 +1543,12 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
           }
         }
       }
+
+      String prefix = getOrderTranslation(EresseaConstants.OC_RESERVE) + " ";
+      if (each) {
+        prefix += getOrderTranslation(EresseaConstants.OC_EACH) + " ";
+      }
+      cmpltResources(unit.getID(), amount, prefix);
     }
   }
 

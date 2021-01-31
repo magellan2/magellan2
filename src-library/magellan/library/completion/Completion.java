@@ -30,6 +30,8 @@ public class Completion {
   private int priority = Completion.DEFAULT_PRIORITY;
   private int cursorOffset = 0;
 
+  private boolean replaceLine;
+
   /**
    * Creates a new Completion object.
    * 
@@ -194,6 +196,14 @@ public class Completion {
     return getName().hashCode() + getValue().hashCode() + getPostfix().hashCode();
   }
 
+  public boolean isReplaceLine() {
+    return replaceLine;
+  }
+
+  public void setReplaceLine(boolean replaceLine) {
+    this.replaceLine = replaceLine;
+  }
+
   /**
    * @see java.lang.Object#toString()
    */
@@ -205,7 +215,7 @@ public class Completion {
   public String replace(String line, String stub) {
     int stubBeg = line.length() - stub.length();
 
-    String newLine = line.substring(0, stubBeg);
+    String newLine = replaceLine ? "" : line.substring(0, stubBeg);
     String replacement = getValue() + getPostfix();
     newLine = newLine.concat(replacement);
     return newLine;

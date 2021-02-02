@@ -39,7 +39,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -47,6 +46,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.function.Function;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -162,6 +162,7 @@ import magellan.library.relation.TransportRelation;
 import magellan.library.relation.UnitContainerRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ConstructibleType;
 import magellan.library.rules.ItemCategory;
@@ -1400,30 +1401,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Collect herbs: key: ItemType; value: LinkedList containing the region-objects
     Map<ItemType, List<Region>> herbs = new Hashtable<ItemType, List<Region>>();
 
+    Map<BuildingType, List<Region>> buildings = new HashMap<BuildingType, List<Region>>();
+
     int peasants = 0;
     int silver = 0;
     int horses = 0;
 
     for (Region region : r) {
       if (region.getHerb() != null) {
-        List<Region> regionList = herbs.get(region.getHerb());
-
-        if (regionList == null) {
-          regionList = new LinkedList<Region>();
-          herbs.put(region.getHerb(), regionList);
-        }
-
-        regionList.add(region);
+        addToList(herbs, region.getHerb(), region);
       }
 
-      List<Region> list = regions.get(region.getType());
-
-      if (list == null) {
-        list = new LinkedList<Region>();
-        regions.put(region.getType(), list);
-      }
-
-      list.add(region);
+      addToList(regions, region.getType(), region);
 
       boolean foundPeasants = false;
       boolean foundSilver = false;
@@ -1444,6 +1433,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           }
         }
       }
+
+      for (Building b : region.buildings()) {
+        addToList(buildings, b.getBuildingType(), region);
+      }
+
       // evaluate (deprecated) peasant info
       if (!foundPeasants && region.getPeasants() != -1) {
         peasants += region.getPeasants();
@@ -1460,34 +1454,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // Now the data is prepared. Build the tree:
 
     // terrains sorted by region type
-    DefaultMutableTreeNode terrainsNode =
-        new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.terrains"));
-    parent.add(terrainsNode);
-    expandableNodes.add(new NodeWrapper(terrainsNode, "EMapDetailsPanel.RegionTerrainsExpanded"));
+    addRegionList(parent, Resources.get("emapdetailspanel.node.terrains"), regions,
+        (rType) -> rType.getName(),
+        (rType) -> rType.getIcon(),
+        (region) -> {
+          int persons = 0;
 
-    List<UnitContainerType> sortedList1 = new LinkedList<UnitContainerType>(regions.keySet());
-    Collections.sort(sortedList1, new NameComparator(IDComparator.DEFAULT));
-
-    for (ListIterator<UnitContainerType> iter = sortedList1.listIterator(); iter.hasNext();) {
-      UnitContainerType rType = iter.next();
-      List<Region> list = regions.get(rType);
-      Collections.sort(list, new NameComparator(IDComparator.DEFAULT));
-
-      DefaultMutableTreeNode regionsNode =
-          createSimpleNode(rType.getName() + ": " + list.size(), rType.getIcon());
-      terrainsNode.add(regionsNode);
-
-      for (Region region : list) {
-        int persons = 0;
-
-        for (Unit unit : region.units()) {
-          persons += unit.getPersons();
-        }
-
-        regionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(
-            region, persons)));
-      }
-    }
+          for (Unit unit : region.units()) {
+            persons += unit.getPersons();
+          }
+          return persons;
+        },
+        expandableNodes, "EMapDetailsPanel.RegionTerrainsExpanded");
 
     // resources of the regions sorted by name,id of resource
     DefaultMutableTreeNode resourcesNode =
@@ -1525,35 +1503,60 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // herbs of the regions sorted by name, id of herb
-    DefaultMutableTreeNode herbsNode =
-        new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.herbs"));
-    List<ItemType> sortedList3 = new LinkedList<ItemType>(herbs.keySet());
+    addRegionList(parent, Resources.get("emapdetailspanel.node.herbs"), herbs,
+        (iType) -> iType.getName(),
+        (iType) -> "items/" + iType.getIcon(),
+        null, expandableNodes, "EMapDetailsPanel.HerbStatisticExpanded");
+
+    addRegionList(parent, Resources.get("emapdetailspanel.node.buildings"), buildings,
+        (bType) -> bType.getName(),
+        (bType) -> bType.getIcon(),
+        null, expandableNodes, "EMapDetailsPanel.BuildingStatisticExpanded");
+
+  }
+
+  private <KEY extends Named> void addRegionList(DefaultMutableTreeNode parent, String nodeName,
+      Map<KEY, List<Region>> regionLists,
+      Function<KEY, String> namer, Function<KEY, String> iconer, Function<Region, Integer> subCounter,
+      Collection<NodeWrapper> expandableNodes, String expandKey) {
+    DefaultMutableTreeNode herbsNode = new DefaultMutableTreeNode(nodeName);
+    List<KEY> sortedList3 = new LinkedList<KEY>(regionLists.keySet());
     Collections.sort(sortedList3, new NameComparator(IDComparator.DEFAULT));
 
-    for (ListIterator<ItemType> iter = sortedList3.listIterator(); iter.hasNext();) {
-      ItemType herbType = iter.next();
-      List<Region> regionList = herbs.get(herbType);
+    for (KEY herbType : sortedList3) {
+      List<Region> regionList = regionLists.get(herbType);
       int i = regionList.size();
-      DefaultMutableTreeNode regionsNode =
-          new DefaultMutableTreeNode(herbType.getName() + ": " + i, true);
+      DefaultMutableTreeNode regionsNode = createSimpleNode(
+          namer.apply(herbType) + ": " + i, iconer == null ? null : iconer.apply(herbType));
 
-      // m = new
-      // DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(herbType.getName() + ": "
-      // + i, herbType.getIconName()));
       herbsNode.add(regionsNode);
       Collections.sort(regionList, new NameComparator(IDComparator.DEFAULT));
 
-      for (ListIterator<Region> iter2 = regionList.listIterator(); iter2.hasNext();) {
-        Region myRegion = iter2.next();
-        regionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory
-            .createRegionNodeWrapper(myRegion)));
+      for (Region r : regionList) {
+        if (subCounter != null) {
+          regionsNode.add(
+              new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(r, subCounter.apply(r))));
+        } else {
+          regionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(r)));
+        }
       }
     }
 
     if (herbsNode.getChildCount() > 0) {
       parent.add(herbsNode);
-      expandableNodes.add(new NodeWrapper(herbsNode, "EMapDetailsPanel.HerbStatisticExpanded"));
+      expandableNodes.add(new NodeWrapper(herbsNode, expandKey));
     }
+  }
+
+  private <K, T> void addToList(Map<K, List<T>> listMap, K key, T region) {
+    List<T> list = listMap.get(key);
+
+    if (list == null) {
+      list = new LinkedList<T>();
+      listMap.put(key, list);
+    }
+
+    list.add(region);
   }
 
   private void addResource(Map<ItemType, Integer> resources, ItemType iType, int amount) {

@@ -1192,8 +1192,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // collect the buildings
     for (Region r : regions.values()) {
       for (Building building : r.buildings()) {
-        if ((building.getOwnerUnit() != null)
-            && factions.containsKey(building.getOwnerUnit().getFaction().getID())) {
+        if (isOwned(building, r, factions)) {
           if (!buildingsCounter.containsKey(building.getType())) {
             buildingsCounter.put(building.getType(), new LinkedList<Building>());
           }
@@ -1237,8 +1236,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // collect the ships
     for (Region r : regions.values()) {
       for (Ship ship : r.ships()) {
-        if ((ship.getOwnerUnit() != null)
-            && factions.containsKey(ship.getOwnerUnit().getFaction().getID())) {
+        if (isOwned(ship, r, factions)) {
           if (!shipsCounter.containsKey(ship.getType())) {
             shipsCounter.put(ship.getType(), new LinkedList<Ship>());
           }
@@ -1535,6 +1533,19 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     treeModel.reload();
     setCursor(Cursor.getDefaultCursor());
+  }
+
+  private boolean isOwned(UnitContainer container, Region region, Map<magellan.library.ID, Faction> friendlies) {
+    Unit owner = container.getOwnerUnit() != null ? container.getOwnerUnit() : region.getOwnerUnit();
+    if (owner == null) {
+      for (Unit u : region.units()) {
+        if (u.getFaction() != null && friendlies.containsKey(u.getFaction().getID())) {
+          owner = u;
+          break;
+        }
+      }
+    }
+    return owner != null && friendlies.containsKey(owner.getFaction().getID());
   }
 
   private <ID> void increase(Map<ID, Long> intMap, ID id, long delta) {

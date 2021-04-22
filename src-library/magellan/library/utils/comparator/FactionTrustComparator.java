@@ -16,7 +16,8 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.Faction;
-import magellan.library.utils.Resources;
+import magellan.library.TrustLevel;
+import magellan.library.utils.TrustLevels;
 
 /**
  * A comparator imposing an ordering on <tt>Faction</tt> objects by comparing the trust levels.
@@ -56,21 +57,8 @@ public class FactionTrustComparator implements Comparator<Faction> {
   public static final FactionTrustComparator DETAILED_COMPARATOR = new FactionTrustComparator(
       new FactionDetailComparator(new NameComparator(IDComparator.DEFAULT)));
 
-  /** The "privileged" trust level */
-  public static final int PRIVILEGED = Faction.TL_PRIVILEGED;
-
-  /** The "allied" trust level */
-  public static final int ALLIED = Faction.TL_DEFAULT + 1;
-
-  /** The "default" trust level */
-  public static final int DEFAULT = Faction.TL_DEFAULT;
-
-  /** The "enemy" trust level */
-  public static final int ENEMY = Faction.TL_DEFAULT - 1;
-
   /**
-   * Compares its two arguments for order with regard to their trust levels (one of
-   * {@link #PRIVILEGED}, {@link #ALLIED}, {@link #DEFAULT}, or {@link #ENEMY}.
+   * Compares its two arguments for order with regard to their trust levels (one of {@link TrustLevel}).
    * 
    * @param o1
    * @param o2
@@ -88,20 +76,54 @@ public class FactionTrustComparator implements Comparator<Faction> {
         return +999;
     }
 
-    int t1 = FactionTrustComparator.getTrustLevel(o1.getTrustLevel());
-    int t2 = FactionTrustComparator.getTrustLevel(o2.getTrustLevel());
+    TrustLevel t1 = TrustLevel.getLevel(o1.getTrustLevel());
+    TrustLevel t2 = TrustLevel.getLevel(o2.getTrustLevel());
 
-    return ((t1 == t2) && (sameTrustSubCmp != null)) ? sameTrustSubCmp.compare(o1, o2) : (t2 - t1);
+    return ((t1 == t2) && (sameTrustSubCmp != null)) ? sameTrustSubCmp.compare(o1, o2) : t1.compareTo(t2);
   }
+
+  /**
+   * The "privileged" trust level
+   * 
+   * @deprecated use {@link TrustLevel}
+   */
+  @Deprecated
+  public static final int PRIVILEGED = TrustLevel.TL_PRIVILEGED;
+
+  /**
+   * The "allied" trust level
+   * 
+   * @deprecated use {@link TrustLevel}
+   */
+  @Deprecated
+  public static final int ALLIED = TrustLevel.TL_DEFAULT + 1;
+
+  /**
+   * The "default" trust level
+   * 
+   * @deprecated use {@link TrustLevel}
+   */
+  @Deprecated
+  public static final int DEFAULT = TrustLevel.TL_DEFAULT;
+
+  /**
+   * The "enemy" trust level
+   * 
+   * @deprecated use {@link TrustLevel}
+   */
+  @Deprecated
+  public static final int ENEMY = TrustLevel.ENEMY.getIntLevel();
 
   /**
    * Returns the trust level (privilegd,allied,default,enemy) of a faction.
    * 
    * @param f
    * @return Returns the trust level of a faction
+   * @deprecated use {@link TrustLevel#getLevel(int)}
    */
+  @Deprecated
   public static int getTrustLevel(Faction f) {
-    return FactionTrustComparator.getTrustLevel(f.getTrustLevel());
+    return TrustLevel.getLevel(f.getTrustLevel()).getIntLevel();
   }
 
   /**
@@ -109,18 +131,11 @@ public class FactionTrustComparator implements Comparator<Faction> {
    * 
    * @param trustLevel
    * @return Returns the trust level for an exact trust value.
+   * @deprecated use {@link TrustLevel#getLevel(int)}
    */
+  @Deprecated
   public static int getTrustLevel(int trustLevel) {
-    if (trustLevel >= FactionTrustComparator.PRIVILEGED)
-      return FactionTrustComparator.PRIVILEGED;
-
-    if (trustLevel >= FactionTrustComparator.ALLIED)
-      return FactionTrustComparator.ALLIED;
-
-    if (trustLevel >= FactionTrustComparator.DEFAULT)
-      return FactionTrustComparator.DEFAULT;
-
-    return FactionTrustComparator.ENEMY;
+    return TrustLevel.getLevel(trustLevel).getIntLevel();
   }
 
   /**
@@ -128,34 +143,11 @@ public class FactionTrustComparator implements Comparator<Faction> {
    * 
    * @param level One of the defined levels
    * @return Returns the name of the trust level
+   * @deprecated use {@link TrustLevels#getTrustLevelLabel(int)}
    */
+  @Deprecated
   public static String getTrustLevelLabel(int level) {
-    // TODO(pavkovic): move functions and translations to a suitable position
-    String nodeLabel = "";
-
-    switch (FactionTrustComparator.getTrustLevel(level)) {
-    case FactionTrustComparator.PRIVILEGED:
-      nodeLabel = Resources.get("factionstatspanel.node.trust.privileged");
-
-      break;
-
-    case FactionTrustComparator.ALLIED:
-      nodeLabel = Resources.get("factionstatspanel.node.trust.allied");
-
-      break;
-
-    case FactionTrustComparator.DEFAULT:
-      nodeLabel = Resources.get("factionstatspanel.node.trust.standard");
-
-      break;
-
-    case FactionTrustComparator.ENEMY:
-      nodeLabel = Resources.get("factionstatspanel.node.trust.enemy");
-
-      break;
-    }
-
-    return nodeLabel;
+    return TrustLevels.getTrustLevelLabel(level);
   }
 
 }

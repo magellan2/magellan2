@@ -31,11 +31,13 @@ import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.io.cr.CRParser;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Taggable;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.comparator.BuildingTypeComparator;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
@@ -439,12 +441,15 @@ public class TreeHelper {
 
             break;
 
-          case TRUSTLEVEL:
-            SimpleNodeWrapper trustlevelNodeWrapper =
-                factory.createSimpleNodeWrapper(FactionTrustComparator.getTrustLevelLabel(prevUnit
-                    .getFaction().getTrustLevel()), (String) null);
-            DefaultMutableTreeNode trustlevelNode =
-                new DefaultMutableTreeNode(trustlevelNodeWrapper);
+          case TRUSTLEVEL: {
+            String label;
+            if (prevUnit.getFaction() != null) {
+              label = TrustLevels.getTrustLevelLabel(prevUnit.getFaction().getTrustLevel());
+            } else {
+              label = TrustLevels.getTrustLevelLabel(TrustLevel.TL_DEFAULT);
+            }
+            SimpleNodeWrapper trustlevelNodeWrapper = factory.createSimpleNodeWrapper(label, (String) null);
+            DefaultMutableTreeNode trustlevelNode = new DefaultMutableTreeNode(trustlevelNodeWrapper);
             mother.add(trustlevelNode);
 
             if (se != null) {
@@ -455,18 +460,17 @@ public class TreeHelper {
                 addUnits(trustlevelNode, treeStructure, sortCriteria + 1, helpList, factory,
                     activeAlliances, unitNodes, data, unitSorting);
             helpList.clear();
-
+          }
             break;
 
           case TAGGABLE:
           case TAGGABLE2:
           case TAGGABLE3:
           case TAGGABLE4:
-          case TAGGABLE5:
+          case TAGGABLE5: {
             String label = getTaggableLabel(prevUnit, treeStructure[sortCriteria]);
             if (label != null) {
-              SimpleNodeWrapper simpleNodeWrapper =
-                  factory.createSimpleNodeWrapper(label, (String) null);
+              SimpleNodeWrapper simpleNodeWrapper = factory.createSimpleNodeWrapper(label, (String) null);
               DefaultMutableTreeNode taggableNode = new DefaultMutableTreeNode(simpleNodeWrapper);
               mother.add(taggableNode);
 
@@ -483,7 +487,7 @@ public class TreeHelper {
                       activeAlliances, unitNodes, data, unitSorting);
             }
             helpList.clear();
-
+          }
             break;
           } // end of switch
         }
@@ -569,24 +573,28 @@ public class TreeHelper {
 
           break;
 
-        case TRUSTLEVEL:
-          node =
-              new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(FactionTrustComparator
-                  .getTrustLevelLabel(curUnit.getFaction().getTrustLevel()), (String) null));
-
+        case TRUSTLEVEL: {
+          String label;
+          if (curUnit.getFaction() != null) {
+            label = TrustLevels.getTrustLevelLabel(curUnit.getFaction().getTrustLevel());
+          } else {
+            label = TrustLevels.getTrustLevelLabel(TrustLevel.TL_DEFAULT);
+          }
+          node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(label, (String) null));
+        }
           break;
 
         case TAGGABLE:
         case TAGGABLE2:
         case TAGGABLE3:
         case TAGGABLE4:
-        case TAGGABLE5:
-
+        case TAGGABLE5: {
           String label = getTaggableLabel(curUnit, treeStructure[sortCriteria]);
           if (label != null) {
             node =
                 new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(label, (String) null));
           }
+        }
           break;
 
         } // end of switch

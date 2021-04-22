@@ -23,7 +23,6 @@ import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Message;
@@ -33,6 +32,7 @@ import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.TempUnit;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
@@ -49,6 +49,7 @@ import magellan.library.rules.SkillType;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.Units;
 
@@ -293,7 +294,8 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     // collects enemy units
     // maps faction ids to a List of unit ids
     // to create a set of attack-orders against total factions later
-    final Map<ID, List<Unit>> unitList = new Hashtable<ID, List<Unit>>();
+    final Map<Faction, List<Unit>> unitList = new Hashtable<Faction, List<Unit>>();
+    int minTrust = TrustLevel.TL_DEFAULT;
 
     for (Unit curUnit : unit.getRegion().units()) {
       if (curUnit.isSpy()) {
@@ -302,12 +304,15 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       } else {
         final Faction f = curUnit.getFaction();
 
-        if ((f != null) && (f.getTrustLevel() <= Faction.TL_DEFAULT)) {
-          List<Unit> v = unitList.get(f.getID());
+        if (f != null && !TrustLevels.isAlly(f)) {
+          if (minTrust > f.getTrustLevel()) {
+            minTrust = f.getTrustLevel();
+          }
+          List<Unit> v = unitList.get(f);
 
           if (v == null) {
             v = new LinkedList<Unit>();
-            unitList.put(f.getID(), v);
+            unitList.put(f, v);
           }
 
           v.add(curUnit);
@@ -322,18 +327,16 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       enemyUnits.append(battleStateOrder);
       completions.add(new Completion(
           getTranslation("gamebinding.eressea.eresseaordercompleter.spies"), enemyUnits.toString(),
-          "", 5, 0));
+          "", Completion.DEFAULT_PRIORITY + minTrust * 2 - 6, 0));
     }
 
-    for (ID fID : unitList.keySet()) {
-      StringBuilder enemyUnits = getAttackOrders(unitList.get(fID));
+    for (Faction f : unitList.keySet()) {
+      StringBuilder enemyUnits = getAttackOrders(unitList.get(f));
       enemyUnits.append(battleStateOrder);
-      completions.add(new Completion(getData().getFaction(fID).getName() + " (" + fID.toString()
-          + ")",
-          enemyUnits.toString(), "", 6, 0));
-      completions.add(new Completion(fID.toString() + " (" + getData().getFaction(fID).getName()
-          + ")",
-          enemyUnits.toString(), "", 7, 0));
+      completions.add(new Completion(f.getName() + " (" + f.getID().toString() + ")",
+          enemyUnits.toString(), "", Completion.DEFAULT_PRIORITY - 4 + minTrust + f.getTrustLevel()));
+      completions.add(new Completion(f.getID().toString() + " (" + f.getName() + ")",
+          enemyUnits.toString(), "", Completion.DEFAULT_PRIORITY - 2 + f.getTrustLevel()));
     }
   }
 

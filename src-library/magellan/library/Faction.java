@@ -19,25 +19,31 @@ import java.util.Map;
 
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
+import magellan.library.utils.TrustLevels;
 
 /**
  * A class representing a faction in Eressea.
  */
 public interface Faction extends UnitContainer {
 
-  /** Any faction has this trust level if not otherwise specified. */
-  public static final int TL_DEFAULT = 0;
+  /**
+   * @deprecated Use {@link TrustLevel#TL_DEFAULT}.
+   */
+  @Deprecated
+  public static final int TL_DEFAULT = TrustLevel.TL_DEFAULT;
 
   /**
-   * This trust level indicates that units of this faction may receive new orders and similar
-   * privileges.
+   * @deprecated Use {@link TrustLevel#TL_PRIVILEGED}.
    */
+  @Deprecated
   public static final int TL_PRIVILEGED = 100;
 
   /**
-   * Returns <code>true</code> iff this faction has trustlevel at least {@value #TL_PRIVILEGED}
-   * TL_PRIVILEGED
+   * Returns <code>true</code> iff this faction has trustlevel at least{@link TrustLevel#PRIVILEGED}
+   * 
+   * @deprecated Use {@link TrustLevels#isPrivileged(Faction)}
    */
+  @Deprecated
   public boolean isPrivileged();
 
   /**
@@ -187,6 +193,7 @@ public interface Faction extends UnitContainer {
    * 
    * @return Returns hasGiveAlliance.
    */
+  @Deprecated
   public boolean isHasGiveAlliance();
 
   /**
@@ -194,6 +201,7 @@ public interface Faction extends UnitContainer {
    * 
    * @param hasGiveAlliance The value for hasGiveAlliance.
    */
+  @Deprecated
   public void setHasGiveAlliance(boolean hasGiveAlliance);
 
   /**

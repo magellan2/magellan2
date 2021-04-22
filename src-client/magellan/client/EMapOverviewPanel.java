@@ -107,6 +107,7 @@ import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
+import magellan.library.TrustLevel;
 import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.ZeroUnit;
@@ -116,6 +117,7 @@ import magellan.library.event.UnitChangeListener;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.Units;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
@@ -191,7 +193,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /** DOCUMENT-ME */
   public static final int EXPAND_IFINSIDE_FLAG = 2;
   private int expandMode = EMapOverviewPanel.EXPAND_FLAG | (3 << 2);
-  private int expandTrustlevel = Faction.TL_PRIVILEGED;
+  private int expandTrustlevel = TrustLevel.TL_PRIVILEGED;
 
   /** DOCUMENT-ME */
   public static final int COLLAPSE_FLAG = 1;
@@ -1899,7 +1901,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     boolean privilegedWithoutAllies = false;
 
     for (Faction f : getGameData().getFactions()) {
-      if (f.isPrivileged()) {
+      if (TrustLevels.isPrivileged(f)) {
         privilegedFactions.add(f);
 
         if ((f.getAllies() == null || f.getAllies().values().size() <= 0)
@@ -1991,7 +1993,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       expandTrustlevel =
           Integer.parseInt(settings.getProperty("EMapOverviewPanel.ExpandTrustlevel"));
     } catch (Exception exc) {
-      expandTrustlevel = Faction.TL_PRIVILEGED;
+      expandTrustlevel = TrustLevel.TL_PRIVILEGED;
     }
   }
 

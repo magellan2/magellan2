@@ -677,6 +677,27 @@ public class GenericRules implements Rules {
   }
 
   /**
+   * @see magellan.library.Rules#getFaction(magellan.library.StringID)
+   */
+  public FactionType getFaction(StringID id) {
+    return getObjectType(FactionType.class, id, false);
+  }
+
+  /**
+   * @see magellan.library.Rules#getFaction(magellan.library.StringID, boolean)
+   */
+  public FactionType getFaction(StringID id, boolean add) {
+    return getObjectType(FactionType.class, id, add);
+  }
+
+  /**
+   * Returns all factionss.
+   */
+  public Collection<FactionType> getFactions() {
+    return getMap(FactionType.class).values();
+  }
+
+  /**
    * @see magellan.library.Rules#changeName(java.lang.String, java.lang.String)
    */
   public ObjectType changeName(String from, String to) {

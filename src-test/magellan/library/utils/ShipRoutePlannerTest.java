@@ -30,10 +30,10 @@ import java.util.Collection;
 import org.junit.Test;
 
 import magellan.library.CoordinateID;
-import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.utils.guiwrapper.RoutingDialogData;
 import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
@@ -94,7 +94,7 @@ public class ShipRoutePlannerTest extends MagellanTestWithResources {
     ship = builder.addShip(data, r, "home", "Langboot", "Home", 5);
     captain.setShip(ship);
     ship.setOwner(captain);
-    captain.getFaction().setTrustLevel(Faction.TL_PRIVILEGED);
+    captain.getFaction().setTrustLevel(TrustLevel.TL_PRIVILEGED);
     captain.clearOrders();
 
   }

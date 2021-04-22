@@ -73,6 +73,7 @@ import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -1102,7 +1103,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
     for (Faction f : newData.getFactions()) {
 
       // generates a new one if not present
-      if (f.getTrustLevel() <= Faction.TL_DEFAULT) {
+      if (!TrustLevels.isAlly(f)) {
         getFactionColor(f, getWarningColor());
       } else {
         getFactionColor(f);

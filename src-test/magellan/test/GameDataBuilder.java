@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
@@ -53,6 +54,9 @@ public class GameDataBuilder {
   private static final int BASE_ROUND = 901;
   private String gameName = ERESSEA;
   private Locale locale = Locale.GERMAN;
+  private int factionSortIndex = 1;
+  private int regionSortIndex = 1;
+  private int allianceID = 1;
 
   public static final String ERESSEA = "Eressea";
   public static final String E3 = "E3";
@@ -135,12 +139,12 @@ public class GameDataBuilder {
       faction = addFaction(data, "1", "Mooks", "Menschen", 1);
       faction.setLocale(Locale.ENGLISH);
     } else {
-      faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", 1);
+      faction = addFaction(data, "iLja", "Faction_867718", "Meermenschen", -1);
     }
 
     final Island island = addIsland(data, 1, "Island_1");
 
-    final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Ebene", 1);
+    final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Ebene", -1);
     region_0_0.setIsland(island);
 
     if (addUnit) {
@@ -206,31 +210,62 @@ public class GameDataBuilder {
   }
 
   /**
-   * Add a faction to the given report.
+   * Add a faction with passwort to the given report.
    *
    * @param data
    * @param number
-   * @param name
+   * @param name Set to null to create a non-privileged faction
    * @param race
-   * @param sortIndex
+   * @param sortIndex Set to -1 to autoincrease
    * @return The new faction
    */
   public Faction addFaction(GameData data, String number, String name, String race, int sortIndex) {
     final EntityID id = EntityID.createEntityID(number, data.base);
+    if (data.getFaction(id) != null)
+      throw new IllegalArgumentException("faction exists");
 
     final Faction faction = MagellanFactory.createFaction(id, data);
     data.addFaction(faction);
 
-    faction.setName(name);
+    if (sortIndex > 0) {
+      factionSortIndex = Math.max(sortIndex, ++factionSortIndex);
+      faction.setSortIndex(sortIndex);
+    } else {
+      faction.setSortIndex(++factionSortIndex);
+    }
+
+    faction.setName(name != null ? name : ("Partei " + factionSortIndex));
 
     faction.setPassword(name);
 
-    faction.setType(data.getRules().getRace(StringID.create(race), true));
-
-    faction.setSortIndex(sortIndex);
+    if (race != null) {
+      faction.setType(data.getRules().getRace(StringID.create(race), true));
+    }
 
     faction.setLocale(getLocale());
 
+    return faction;
+  }
+
+  /**
+   * Add the unknown faction.
+   * 
+   * @param data
+   */
+  public Faction addUnknownFaction(GameData data) {
+    Faction faction = addFaction(data, "-1", null, "Mensch", -1);
+    faction.setName("Parteigetarnte");
+    return faction;
+  }
+
+  /**
+   * Add the monster faction.
+   * 
+   * @param data
+   */
+  public Faction addMonsterFaction(GameData data) {
+    Faction faction = addFaction(data, "ii", null, "Mensch", -1);
+    faction.setName("Monster");
     return faction;
   }
 
@@ -296,7 +331,13 @@ public class GameDataBuilder {
       region.setType(data.getRules().getRegionType(StringID.create(type), true));
     }
 
-    region.setSortIndex(sortIndex);
+    if (sortIndex > 0) {
+      region.setSortIndex(sortIndex);
+      regionSortIndex = Math.max(sortIndex, ++regionSortIndex);
+    } else {
+      region.setSortIndex(++regionSortIndex);
+    }
+
     return region;
   }
 
@@ -593,6 +634,33 @@ public class GameDataBuilder {
       allies1.put(ally.getID(), alliance);
     }
     alliance.addState(state);
+  }
+
+  /**
+   * Add an (E3 style) alliance with given leader.
+   * 
+   */
+  public AllianceGroup addAlliance(GameData data, Faction leader) {
+    final EntityID id = EntityID.createEntityID(++allianceID, data.base);
+    final AllianceGroup alliance = new AllianceGroup(id);
+    alliance.setName("Allianz " + allianceID);
+    alliance.setLeader(leader.getID());
+    data.addAllianceGroup(alliance);
+    alliance.addFaction(leader);
+    leader.setAlliance(alliance);
+
+    return alliance;
+  }
+
+  /**
+   * Add a faction to an alliance.
+   * 
+   */
+  public AllianceGroup addToAlliance(AllianceGroup alliance, Faction faction) {
+    alliance.addFaction(faction);
+    faction.setAlliance(alliance);
+
+    return alliance;
   }
 
   /**

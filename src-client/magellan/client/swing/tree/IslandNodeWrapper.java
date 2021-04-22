@@ -21,6 +21,7 @@ import java.util.Properties;
 import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.utils.TrustLevels;
 
 /**
  * DOCUMENT-ME
@@ -75,7 +76,7 @@ public class IslandNodeWrapper extends DefaultNodeWrapper implements SupportsCli
         while (it.hasNext()) {
           Unit u = it.next();
 
-          if (u.getFaction().isPrivileged()) {
+          if (u.getFaction() != null && TrustLevels.isPrivileged(u.getFaction())) {
             if (!u.isOrdersConfirmed())
               return true;
           }

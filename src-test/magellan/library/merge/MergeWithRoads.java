@@ -130,6 +130,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
   }
 
   /** bugzilla bug #819 */
+  @Test
   public void testSameRoundUnitInSecondCrAndRoadInFirstCR() throws Exception {
     GameDataBuilder builder = new GameDataBuilder();
 
@@ -143,7 +144,7 @@ public class MergeWithRoads extends MagellanTestWithResources {
     Unit u2 = builder.addUnit(gd2, "Unit_2", region_1_1_gd2);
     u2.setCombatStatus(1);
 
-    System.out.println(u2.getFaction().isPrivileged());
+    // System.out.println(u2.getFaction().isPrivileged());
 
     GameData gd4 = GameDataMerger.merge(gd1, gd2);
 

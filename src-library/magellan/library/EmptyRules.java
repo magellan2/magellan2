@@ -48,6 +48,7 @@ import magellan.library.io.file.FileType;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
+import magellan.library.rules.FactionType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.ObjectType;
@@ -450,6 +451,18 @@ public class EmptyRules implements Rules {
   }
 
   public String getGameName() {
+    return null;
+  }
+
+  public FactionType getFaction(StringID id, boolean add) {
+    return null;
+  }
+
+  public FactionType getFaction(StringID id) {
+    return null;
+  }
+
+  public Collection<FactionType> getFactions() {
     return null;
   }
 

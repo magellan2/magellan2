@@ -33,6 +33,7 @@ import org.junit.Test;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.library.tasks.OrderSyntaxInspector.OrderSyntaxProblemTypes;
@@ -57,7 +58,7 @@ public class OrderSyntaxInspectorTest extends MagellanTestWithResources {
     data = builder.createSimpleGameData();
     unit = data.getUnits().iterator().next();
     faction0 = unit.getFaction();
-    faction0.setTrustLevel(Faction.TL_PRIVILEGED);
+    faction0.setTrustLevel(TrustLevel.TL_PRIVILEGED);
     region0 = data.getRegions().iterator().next();
     relationFactory = ((EresseaRelationFactory) data.getGameSpecificStuff().getRelationFactory());
     relationFactory.stopUpdating();

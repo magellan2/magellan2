@@ -2862,3 +2862,7 @@ REGIONTYPE "Aktiver Vulkan"
 250;roadstones
 "true";isAstralVisible
 "true";isLand
+
+FACTION "666"
+666;id
+"true";isMonster

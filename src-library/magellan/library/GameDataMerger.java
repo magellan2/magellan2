@@ -805,7 +805,7 @@ public class GameDataMerger {
                 transformer1);
           } else { // only copy the skills to get change-level base
             if ((newerUnit != null)
-                && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
+                && ((newerUnit.getSkills() != null) || (TrustLevels.isPrivileged(olderUnit.getFaction())))) {
               MagellanFactory.copySkills(olderUnit, resultUnit);
             }
           }
@@ -1137,8 +1137,8 @@ public class GameDataMerger {
     }
 
     if (adjustTrustLevels
-        && ((curFaction.getTrustLevel() != Faction.TL_DEFAULT) || curFaction
-            .isTrustLevelSetByUser())) {
+        && (curFaction.getTrustLevel() != TrustLevel.TL_DEFAULT
+            || curFaction.isTrustLevelSetByUser())) {
       newFaction.setTrustLevel(curFaction.getTrustLevel());
       newFaction.setTrustLevelSetByUser(curFaction.isTrustLevelSetByUser());
     }

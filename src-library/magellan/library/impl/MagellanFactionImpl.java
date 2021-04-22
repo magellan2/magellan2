@@ -26,10 +26,12 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.IntegerID;
 import magellan.library.Message;
+import magellan.library.TrustLevel;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 
 /**
  * A class representing a faction in Eressea.
@@ -78,7 +80,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * Indicates to what amount this faction can be trusted. It also influences the privileges of this
    * faction (e.g. being able to edit its units' orders).
    */
-  private int trustLevel = Faction.TL_DEFAULT;
+  private int trustLevel = TrustLevel.TL_DEFAULT;
 
   /**
    * Indicates, if one priviliged faction has set the "GIVE" right to this faction. used for showing
@@ -105,7 +107,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * @see magellan.library.Faction#isPrivileged()
    */
   public boolean isPrivileged() {
-    return trustLevel >= Faction.TL_PRIVILEGED;
+    return TrustLevels.isPrivileged(this);
   }
 
   /**

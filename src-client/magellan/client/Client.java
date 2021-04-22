@@ -182,6 +182,7 @@ import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
 import magellan.library.TempUnit;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -983,7 +984,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (getData() != null) {
       // add all privileged factions
       for (Faction f : getData().getFactions()) {
-        if ((f.isPrivileged()) && !f.units().isEmpty()) {
+        if (TrustLevels.isPrivileged(f) && !f.units().isEmpty()) {
           aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, false, false));
           aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, true, false));
         }
@@ -2098,7 +2099,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         // now check whether this faction has a password and eventually
         // set Trustlevel
         if ((f.getPassword() != null) && !f.isTrustLevelSetByUser()) {
-          f.setTrustLevel(Faction.TL_PRIVILEGED);
+          f.setTrustLevel(TrustLevel.TL_PRIVILEGED);
         }
 
         if (f.getPassword() != null) {
@@ -2162,9 +2163,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                   if (!noToAll && usePasswd) {
                     f.setPassword(password);
 
-                    if (!f.isTrustLevelSetByUser()) { // password
-                      // set
-                      f.setTrustLevel(Faction.TL_PRIVILEGED);
+                    if (!f.isTrustLevelSetByUser()) { // password set
+                      f.setTrustLevel(TrustLevel.TL_PRIVILEGED);
                     }
 
                     factionsWithoutPassword = false;
@@ -2274,7 +2274,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             int done = 0;
 
             for (Unit u : data.getUnits()) {
-              if (u.getFaction().isPrivileged()) {
+              if (TrustLevels.isPrivileged(u.getFaction())) {
                 units++;
 
                 if (u.isOrdersConfirmed()) {
@@ -2286,7 +2286,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               for (TempUnit tempUnit : u.tempUnits()) {
                 Unit u2 = tempUnit;
 
-                if (u2.getFaction().isPrivileged()) {
+                if (TrustLevels.isPrivileged(u2.getFaction())) {
                   units++;
 
                   if (u2.isOrdersConfirmed()) {
@@ -3159,7 +3159,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     int done = 0;
 
     for (Unit u : data.getUnits()) {
-      if (u.getFaction().isPrivileged()) {
+      if (TrustLevels.isPrivileged(u.getFaction())) {
         units++;
 
         if (u.isOrdersConfirmed()) {
@@ -3171,7 +3171,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       for (TempUnit tempUnit : u.tempUnits()) {
         Unit u2 = tempUnit;
 
-        if (u2.getFaction().isPrivileged()) {
+        if (TrustLevels.isPrivileged(u2.getFaction())) {
           units++;
 
           if (u2.isOrdersConfirmed()) {

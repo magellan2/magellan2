@@ -48,6 +48,7 @@ import magellan.client.Client;
 import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.TrustLevel;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
@@ -189,7 +190,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
       if (faction != null && password.length() != 0) {
         faction.setPassword(password);
         if (!faction.isTrustLevelSetByUser()) {
-          faction.setTrustLevel(Faction.TL_PRIVILEGED);
+          faction.setTrustLevel(TrustLevel.TL_PRIVILEGED);
         }
 
         if (client.getProperties() != null) {

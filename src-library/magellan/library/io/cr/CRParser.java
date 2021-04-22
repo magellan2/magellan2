@@ -71,6 +71,7 @@ import magellan.library.rules.CastleType;
 import magellan.library.rules.ConstructibleType;
 import magellan.library.rules.Date;
 import magellan.library.rules.EresseaDate;
+import magellan.library.rules.FactionType;
 import magellan.library.rules.GenericRules;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
@@ -947,12 +948,17 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
   }
 
-  private void parseRace(Rules rules) throws IOException {
+  private StringID getBlockId() {
     final int f = sc.argv[0].indexOf("\"", 0);
     final int t = sc.argv[0].indexOf("\"", f + 1);
     final String id = sc.argv[0].substring(f + 1, t);
-    final Race race = rules.getRace(StringID.create(id), true);
-    race.setName(id);
+    return StringID.create(id);
+  }
+
+  private void parseRace(Rules rules) throws IOException {
+    StringID blockId = getBlockId();
+    final Race race = rules.getRace(blockId, true);
+    race.setName(blockId.toString());
     sc.getNextToken(); // skip RACE xx
 
     while (!sc.eof) {
@@ -1006,10 +1012,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseRaceTerrainSkillBonuses(Race race, Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final String id = sc.argv[0].substring(f + 1, t);
-    final RegionType rType = rules.getRegionType(StringID.create(id), true);
+    StringID blockId = getBlockId();
+    final RegionType rType = rules.getRegionType(blockId, true);
     sc.getNextToken(); // skip TALENTBONI
 
     while (!sc.eof && !sc.isBlock) {
@@ -1050,21 +1054,19 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    */
 
   private void parseItemType(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final String id = sc.argv[0].substring(f + 1, t);
+    StringID blockId = getBlockId();
     ItemType itemType = null;
 
     if (sc.argv[0].startsWith("ITEM ")) {
-      itemType = rules.getItemType(StringID.create(id), true);
+      itemType = rules.getItemType(blockId, true);
     } else if (sc.argv[0].startsWith("HERB ")) {
-      itemType = rules.getItemType(StringID.create(id), true);
+      itemType = rules.getItemType(blockId, true);
     } else {
       unknown(sc.argv[0], true);
       return;
     }
 
-    itemType.setName(id);
+    itemType.setName(blockId.toString());
 
     Skill makeSkill = null;
     sc.getNextToken(); // skip ITEM xx
@@ -1141,10 +1143,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseSkillType(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final String id = sc.argv[0].substring(f + 1, t);
-    final SkillType skillType = rules.getSkillType(StringID.create(id), true);
+    StringID blockId = getBlockId();
+    final SkillType skillType = rules.getSkillType(blockId, true);
     sc.getNextToken(); // skip SKILL xx
 
     while (!sc.eof) {
@@ -1177,7 +1177,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     if (skillType.getName() == null) {
-      skillType.setName(id);
+      skillType.setName(blockId.toString());
     }
   }
 
@@ -1201,10 +1201,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseShipType(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final String id = sc.argv[0].substring(f + 1, t);
-    final ShipType shipType = rules.getShipType(StringID.create(id), true);
+    StringID blockId = getBlockId();
+    final ShipType shipType = rules.getShipType(blockId, true);
     shipType.init(rules.getItemType(EresseaConstants.I_WOOD));
     sc.getNextToken(); // skip SHIPTYPE xx
 
@@ -1263,15 +1261,14 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private void parseBuildingType(Rules rules) throws IOException {
     BuildingType bType = null;
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final String id = sc.argv[0].substring(f + 1, t);
+    StringID blockId = getBlockId();
+
     final String blockName = sc.argv[0].substring(0, sc.argv[0].indexOf(" "));
 
     if (blockName.equals("BUILDINGTYPE")) {
-      bType = rules.getBuildingType(StringID.create(id), true);
+      bType = rules.getBuildingType(blockId, true);
     } else if (blockName.equals("CASTLETYPE")) {
-      bType = rules.getCastleType(StringID.create(id), true);
+      bType = rules.getCastleType(blockId, true);
       ((CastleType) bType).init(rules.getItemType(EresseaConstants.I_USTONE));
     } else {
       unknown(blockName, false);
@@ -1394,10 +1391,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseRegionType(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final RegionType regionType = rules.getRegionType(id, true);
+    StringID blockId = getBlockId();
+    final RegionType regionType = rules.getRegionType(blockId, true);
     sc.getNextToken(); // skip REGIONSTYP xx
 
     while (!sc.eof && !sc.isBlock) {
@@ -1441,10 +1436,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseItemCategory(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final ItemCategory cat = rules.getItemCategory(id, true);
+    StringID blockId = getBlockId();
+    final ItemCategory cat = rules.getItemCategory(blockId, true);
 
     sc.getNextToken(); // skip ITEMCATEGORY xx
 
@@ -1471,10 +1464,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseSkillCategory(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final SkillCategory cat = rules.getSkillCategory(id, true);
+    StringID blockId = getBlockId();
+    final SkillCategory cat = rules.getSkillCategory(blockId, true);
 
     sc.getNextToken(); // skip SKILLCATEGORY xx
 
@@ -1576,6 +1567,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
         parseAllianceCategory(rules);
       } else if (sc.argv[0].startsWith("ORDER ")) {
         parseOrder(rules);
+      } else if (sc.argv[0].startsWith("FACTION ")) {
+        parseFaction(rules);
       } else {
         unknown("RULES", true);
       }
@@ -1605,10 +1598,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseOptionCategory(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final OptionCategory opt = rules.getOptionCategory(id, true);
+    StringID blockId = getBlockId();
+    final OptionCategory opt = rules.getOptionCategory(blockId, true);
     sc.getNextToken(); // skip OPTIONCATEGORY xx
 
     while (!sc.eof) {
@@ -1635,10 +1626,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   private void parseAllianceCategory(Rules rules) throws IOException {
-    final int f = sc.argv[0].indexOf("\"", 0);
-    final int t = sc.argv[0].indexOf("\"", f + 1);
-    final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-    final AllianceCategory cat = rules.getAllianceCategory(id, true);
+    StringID blockId = getBlockId();
+
+    final AllianceCategory cat = rules.getAllianceCategory(blockId, true);
     sc.getNextToken(); // skip ALLIANCECATEGORY xx
 
     while (!sc.eof) {
@@ -1662,10 +1652,9 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
 
   private void parseOrder(Rules rules) throws IOException {
     try {
-      final int f = sc.argv[0].indexOf("\"", 0);
-      final int t = sc.argv[0].indexOf("\"", f + 1);
-      final StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
-      final OrderType ord = rules.getOrder(id, true);
+      StringID blockId = getBlockId();
+
+      final OrderType ord = rules.getOrder(blockId, true);
       sc.getNextToken(); // skip ORDER xx
 
       while (!sc.eof) {
@@ -1677,6 +1666,31 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
           ord.setActive(sc.argv[0].equals("1"));
         } else if ((sc.argc == 2) && sc.argv[1].startsWith("locale_")) {
           ord.addName(new Locale(sc.argv[1].substring("locale_".length())), sc.argv[0]);
+        } else if (!sc.isBlock) {
+          unknown("ORDER", true);
+        } else {
+          break;
+        }
+
+        sc.getNextToken();
+      }
+    } catch (RuntimeException e) {
+      throw e;
+    }
+  }
+
+  private void parseFaction(Rules rules) throws IOException {
+    try {
+      StringID blockId = getBlockId();
+
+      final FactionType ord = rules.getFaction(blockId, true);
+      sc.getNextToken(); // skip ORDER xx
+
+      while (!sc.eof) {
+        if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("id")) {
+          ord.setNumber(Integer.parseInt(sc.argv[0]));
+        } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isMonster")) {
+          ord.setMonster(sc.argv[0].equals("true") || sc.argv[0].equals("1"));
         } else if (!sc.isBlock) {
           unknown("ORDER", true);
         } else {

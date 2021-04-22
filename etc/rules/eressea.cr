@@ -2993,3 +2993,11 @@ REGIONTYPE "Halle"
 REGIONTYPE "Wand"
 "Wand";name
 "true";isLand
+
+FACTION "0"
+0;id
+"true";isMonster
+
+FACTION "666"
+666;id
+"true";isMonster

@@ -82,8 +82,8 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SkillStats;
 import magellan.library.utils.StringFactory;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.comparator.AllianceFactionComparator;
-import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.comparator.SkillComparator;
@@ -449,9 +449,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       { /* Trustlevel node */
-        String nodeLabel =
-            FactionTrustComparator.getTrustLevelLabel(FactionTrustComparator.getTrustLevel(f
-                .getTrustLevel()));
+        String nodeLabel = TrustLevels.getTrustLevelLabel(f.getTrustLevel());
         nodeLabel += (" (" + f.getTrustLevel() + ")");
         // n = new DefaultMutableTreeNode(nodeLabel);
         currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "trust"));

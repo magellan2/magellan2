@@ -80,6 +80,7 @@ import magellan.library.utils.JECheck.ECheckMessage;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -276,7 +277,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     if (cmbFactions != null) {
       cmbFactions.removeAllItems();
       for (Faction f : getGameData().getFactions()) {
-        if (f.isPrivileged()) {
+        if (TrustLevels.isPrivileged(f)) {
           cmbFactions.addItem(f);
         }
       }
@@ -517,7 +518,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     lblFactions.setLabelFor(cmbFactions);
 
     for (Faction f : getGameData().getFactions()) {
-      if (f.isPrivileged()) {
+      if (TrustLevels.isPrivileged(f)) {
         cmbFactions.addItem(f);
       }
     }

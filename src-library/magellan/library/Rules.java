@@ -21,6 +21,7 @@ import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
+import magellan.library.rules.FactionType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.ObjectType;
@@ -468,7 +469,29 @@ public interface Rules {
    */
   public Collection<OrderType> getOrders();
 
+  /**
+   * Sets the game name.
+   */
   public void setGameName(String name);
 
+  /**
+   * Returns the game number.
+   */
   public String getGameName();
+
+  /**
+   * Returns the faction type with the given id. If add is true and the id is not available, it will be
+   * added.
+   */
+  public FactionType getFaction(StringID id, boolean add);
+
+  /**
+   * Returns the faction type with the given id.
+   */
+  public FactionType getFaction(StringID id);
+
+  /**
+   * Return all faction types.
+   */
+  public Collection<FactionType> getFactions();
 }

@@ -51,6 +51,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
+import magellan.library.TrustLevel;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TrustLevels;
@@ -379,11 +380,11 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
             // if the pw is valid increase this faction's trust level
             if (f.getPassword() != null) {
-              f.setTrustLevel(Faction.TL_PRIVILEGED);
+              f.setTrustLevel(TrustLevel.TL_PRIVILEGED);
             } else {
               // default is okay here, combat ally trust levels are restored
               // in the next loop anyway
-              f.setTrustLevel(Faction.TL_DEFAULT);
+              f.setTrustLevel(TrustLevel.TL_DEFAULT);
             }
 
             TrustLevels.recalculateTrustLevels(data);
@@ -448,7 +449,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
           String stringValue =
               (String) JOptionPane.showInputDialog(FactionStatsDialog.this, Resources
                   .get("factionstatsdialog.msg.trustlevelinput.text"), Resources
-                  .get("factionstatsdialog.msg.trustlevelinput.title"),
+                      .get("factionstatsdialog.msg.trustlevelinput.title"),
                   JOptionPane.QUESTION_MESSAGE, null, null, oldTrustLevel);
 
           if (stringValue != null) {
@@ -459,7 +460,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
               // calculate the trustlevel for this faction on its own
               if (stringValue.length() == 0) {
                 faction.setTrustLevelSetByUser(false);
-                faction.setTrustLevel(Faction.TL_DEFAULT);
+                faction.setTrustLevel(TrustLevel.TL_DEFAULT);
               } else {
                 try {
                   int intValue = Integer.parseInt(stringValue);

@@ -53,6 +53,7 @@ import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.Direction;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Regions;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.logging.Logger;
 
 // Fiete 20080806: prepare for loosing special info in CR
@@ -219,7 +220,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       for (Unit unit : units()) {
         Faction f = unit.getFaction();
 
-        if (f.isPrivileged()) {
+        if (TrustLevels.isPrivileged(f)) {
           fogOfWar = 0;
 
           break;

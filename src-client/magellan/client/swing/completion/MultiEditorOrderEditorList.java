@@ -102,6 +102,7 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
@@ -1934,7 +1935,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     protected void createTempUnit() {
-      if ((currentUnit != null) && currentUnit.getFaction().isPrivileged()) {
+      if ((currentUnit != null) && TrustLevels.isPrivileged(currentUnit.getFaction())) {
         // Use the current unit as the parent or its parent if it
         // is itself a temp unit
         Unit parentUnit = currentUnit;

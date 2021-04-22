@@ -27,7 +27,7 @@ import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.utils.Resources;
-import magellan.library.utils.comparator.FactionTrustComparator;
+import magellan.library.utils.TrustLevels;
 
 /**
  * A renderer for displaying ships on the map
@@ -170,9 +170,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
           ID sid = EntityID.createEntityID(msg.substring(from + 1, to), region.getData().base);
           Ship ship = region.getData().getShip(sid);
           // use old owner unit (message is about last round)
-          if (ship != null && ship.getOwnerUnit() != null
-              && ship.getOwnerUnit().getFaction() != null
-              && ship.getOwnerUnit().getFaction().getTrustLevel() >= FactionTrustComparator.ALLIED) {
+          if (ship != null && ship.getOwnerUnit() != null && ship.getOwnerUnit().getFaction() != null
+              && TrustLevels.isAlly(ship.getOwnerUnit().getFaction())) {
             foundAllied = true;
           } else {
             foundEnemy = true;
@@ -183,8 +182,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
 
     for (Ship ship : region.ships()) {
       if (ship != null && ship.getOwnerUnit() != null && ship.getOwnerUnit().getFaction() != null
-          && ship.getOwnerUnit().getFaction().getTrustLevel() >= FactionTrustComparator.ALLIED) {
-
+          && TrustLevels.isAlly(ship.getOwnerUnit().getFaction())) {
+        // nop
       } else {
         foundEnemy = true;
       }

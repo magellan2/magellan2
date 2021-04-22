@@ -105,8 +105,9 @@ public class AllianceGroup implements Unique {
    * 
    * @return the trustlevel of this alliance
    */
+  @Deprecated
   public int getTrustLevel() {
-    return Faction.TL_PRIVILEGED - 1;
+    return TrustLevel.TL_PRIVILEGED - 1;
   }
 
   /**

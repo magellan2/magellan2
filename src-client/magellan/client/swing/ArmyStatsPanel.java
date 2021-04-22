@@ -63,6 +63,7 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
 
@@ -152,8 +153,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public void setCategorized(boolean b) {
     categorize = b;
   }
@@ -332,13 +333,13 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
   protected String getArmyIcon(Faction fac) {
     String icon = "kampfstatus";
 
-    if (fac.isPrivileged()) {
+    if (TrustLevels.isPrivileged(fac)) {
       icon = "alliancestate_basisfaction";
     } else if (getGameData() != null) {
       int minTrust = 255;
 
       for (Faction f : getGameData().getFactions()) {
-        if (f.isPrivileged()) {
+        if (TrustLevels.isPrivileged(f)) {
           if ((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
             Alliance a = f.getAllies().get(fac.getID());
             minTrust &= a.getState();
@@ -776,7 +777,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
         }
       }
 
-      if (unit.getFaction().isPrivileged() && (excludeCombatStates != null)) {
+      if (TrustLevels.isPrivileged(unit.getFaction()) && (excludeCombatStates != null)) {
         boolean doContinue = true;
         Iterator<Integer> it = excludeCombatStates.iterator();
 
@@ -796,7 +797,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       nonSkillWeapons = getNonSkillWeapons(unit, unitMap.keySet(), nonSkillWeapons);
       armour = getArmour(unit, armour);
 
-      if (unit.getFaction().getTrustLevel() <= Faction.TL_PRIVILEGED) {
+      if (!TrustLevels.isPrivileged(unit.getFaction())) {
         if ((unitMap.size() == 0) && (nonSkillWeapons.size() <= 1) && (armour.size() == 0)) {
           continue;
         }

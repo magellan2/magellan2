@@ -51,6 +51,7 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
@@ -294,8 +295,7 @@ public abstract class AbstractOrderCompleter implements Completer {
   public void addEnemyUnits(String postfix) {
     if ((getData() != null) && (unit != null) && (region != null)) {
       for (Unit u : region.units()) {
-        if ((u.getFaction() == null || u.getFaction().getTrustLevel() <= Faction.TL_DEFAULT)
-            || u.isSpy()) {
+        if (u.getFaction() == null || !TrustLevels.isAlly(u.getFaction()) || u.isSpy()) {
           addUnit(u, postfix);
         }
       }
@@ -661,7 +661,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds a unit to the completion in a standard manner without comment.
    */
   public void addUnit(Unit u, String postfix) {
-    addUnit(u, postfix, 0);
+    addUnit(u, postfix, 0, false);
   }
 
   /**

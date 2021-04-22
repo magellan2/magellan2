@@ -82,6 +82,7 @@ import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.IdentityTransformer;
@@ -901,7 +902,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         f.setHeroes(-1);
         f.setMaxHeroes(-1);
 
-        if (found && f.isPrivileged()) {
+        if (found && TrustLevels.isPrivileged(f)) {
           /**
            * Fiete: removed here and called for every faction f.setAverageScore(-1); f.setScore(-1);
            * f.setPersons(-1); f.setMigrants(-1); f.setMaxMigrants(-1); f.setSpellSchool(null);

@@ -3122,7 +3122,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(6, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertWarning("braucht 300/500 mehr Silber", unit, 4);
     assertWarning("braucht 1 mehr Schwert", unit, 5);
 
@@ -3132,7 +3132,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(6, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertWarning("braucht 100/200 mehr Silber", unit, 4);
     assertWarning("braucht 1 mehr Schwert", unit, 5);
 
@@ -3142,7 +3142,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(6, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
     assertWarning("braucht 100/200 mehr Silber", unit, 5);
 
@@ -3154,7 +3154,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(7, unit.getOrders2().size());
     assertWarning("Route beendet", unit, 2);
     assertOrder("; $stm$T ALLES 0", unit, 3);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
     assertOrder("RESERVIERE JE 1 Schwert", unit, 5);
     assertWarning("braucht 100/200 mehr Silber", unit, 6);
   }
@@ -3176,7 +3176,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(7, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
     assertWarning("braucht 100/200 mehr Silber", unit, 5);
     assertWarning("braucht 1 mehr Schild", unit, 6);
@@ -3201,7 +3201,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     unit.addOrder("// $cript Lerne Hiebwaffen 11 99");
     parser.execute(unit.getFaction());
     assertOrder("; $stm$T ALLES 0", unit, 3);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 11 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 11 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
 
   }
 
@@ -3219,7 +3219,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
     assertEquals(6, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertWarning("braucht 1 mehr Schwert", unit, 4);
     assertWarning("braucht 1 mehr Schild", unit, 5);
 
@@ -3234,7 +3234,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(6, unit.getOrders2().size());
     assertOrder("// $cript Mannschaft", unit, 1);
     assertOrder("; $stm$T ALLES 0", unit, 2);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
     assertWarning("braucht 1 mehr Schwert", unit, 4);
     assertMessage("braucht 1 mehr Schild", unit, 5);
 
@@ -3265,7 +3265,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     parser.execute(unit.getFaction());
 
     assertMessage("langer Befehl gefunden", unit, 3);
-    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 12 99", unit2, 2);
+    assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99", unit2, 2);
   }
 
   @Test

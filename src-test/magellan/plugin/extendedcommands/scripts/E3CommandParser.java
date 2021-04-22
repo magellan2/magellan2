@@ -2442,7 +2442,9 @@ class E3CommandParser {
       } else {
         int sail = 0, money = 0;
         for (Unit u : ship.units()) {
-          sail += u.getSkill(EresseaConstants.S_SEGELN).getLevel() * u.getPersons();
+          if (u.getSkill(EresseaConstants.S_SEGELN) != null) {
+            sail += u.getSkill(EresseaConstants.S_SEGELN).getLevel() * u.getPersons();
+          }
           money += u.getPersons() * u.getRace().getMaintenance();
           if (sail >= ship.getShipType().getSailorSkillLevel() * ship.getAmount()) {
             break;
@@ -3313,11 +3315,17 @@ class E3CommandParser {
       List<SkillSpec> targetSkills = new LinkedList<SkillSpec>();
       targetSkills.add(new SkillSpec(weaponSkill, DEFAULT_LEARNLEVEL, 99));
       if (weaponSkill.getName().equals("Hiebwaffen") || weaponSkill.getName().equals("Stangenwaffen")) {
-        targetSkills.add(new SkillSpec(
-            getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_FRONT * DEFAULT_LEARNLEVEL), 99));
+        int weeks = (DEFAULT_LEARNLEVEL) * (DEFAULT_LEARNLEVEL + 1) / 2; // weeks for melee
+        int weeks2 = (DEFAULT_LEARNLEVEL + 2) * (DEFAULT_LEARNLEVEL + 3) / 2; // weeks for melee + 2
+        int maxskill = (int) (-.5 + Math.sqrt(.25 + 2 * (weeks2 - weeks)));
+        targetSkills.add(new SkillSpec(getSkillType(S_ENDURANCE), maxskill, 99));
+        // getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_FRONT * DEFAULT_LEARNLEVEL), 99));
       } else {
-        targetSkills.add(new SkillSpec(
-            getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_BACK * DEFAULT_LEARNLEVEL), 99));
+        int weeks = (DEFAULT_LEARNLEVEL) * (DEFAULT_LEARNLEVEL + 1) / 2; // weeks for melee
+        int weeks2 = (DEFAULT_LEARNLEVEL + 1) * (DEFAULT_LEARNLEVEL + 2) / 2; // weeks for melee + 1
+        int maxskill = (int) (-.5 + Math.sqrt(.25 + 2 * (weeks2 - weeks)));
+        targetSkills.add(new SkillSpec(getSkillType(S_ENDURANCE), maxskill, 99));
+        // getSkillType(S_ENDURANCE), Math.round(ENDURANCERATIO_BACK * DEFAULT_LEARNLEVEL), 99));
       }
       learn(u, targetSkills);
     }

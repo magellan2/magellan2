@@ -96,6 +96,7 @@ import magellan.library.utils.HTTPClient;
 import magellan.library.utils.HTTPResult;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.logging.Logger;
@@ -124,10 +125,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private Collection<Region> regions;
 
   // upload to server
-  private JComboBox cmbServerURL;
+  private JComboBox<String> cmbServerURLs;
 
   // file
-  private JComboBox cmbOutputFile;
+  private JComboBox<String> cmbOutputFiles;
   private JTextField txtOutputFileGenerated;
 
   // email
@@ -161,8 +162,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private JCheckBox chkSelRegionsOnly[] = new JCheckBox[4];
   private JCheckBox chkWriteUnitTagsAsVorlageComment[] = new JCheckBox[4];
 
-  private JComboBox cmbFactions;
-  private JComboBox cmbGroups;
+  private JComboBox<Faction> cmbFactions;
+  private JComboBox<Object> cmbGroups;
 
   private Container ancestor;
 
@@ -563,7 +564,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Group getGroup() {
-    return (Group) cmbGroups.getSelectedItem();
+    Object o = cmbGroups.getSelectedItem();
+    if (o instanceof Group)
+      return (Group) o;
+    return null;
   }
 
   private Faction getFaction() {
@@ -571,10 +575,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Container getFactionPanel() {
-    cmbFactions = new JComboBox();
+    cmbFactions = new JComboBox<Faction>();
 
     for (Faction f : data.getFactions()) {
-      if (f.isPrivileged()) {
+      if (TrustLevels.isPrivileged(f)) {
         cmbFactions.addItem(f);
       }
     }
@@ -644,7 +648,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Container getGroupPanel() {
-    cmbGroups = new JComboBox();
+    cmbGroups = new JComboBox<Object>();
 
     JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
     pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get(
@@ -655,20 +659,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Container getServerPanel() {
-    Object[] list = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_SERVER_URL).toArray();
-    cmbServerURL = new JComboBox(list == null ? new Object[0] : list);
-    cmbServerURL.setEditable(true);
+    String[] list = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_SERVER_URL).toArray(
+        new String[0]);
+    cmbServerURLs = new JComboBox<String>(list == null ? new String[0] : list);
+    cmbServerURLs.setEditable(true);
 
     JPanel pnlFile = new JPanel(new BorderLayout());
     pnlFile.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get(
         "orderwriterdialog.border.output2server")));
 
-    pnlFile.add(cmbServerURL, BorderLayout.CENTER);
-    cmbServerURL.addActionListener(new ActionListener() {
+    pnlFile.add(cmbServerURLs, BorderLayout.CENTER);
+    cmbServerURLs.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         if ("comboBoxEdited".equals(arg0.getActionCommand())) {
           // todo syntax check of edited URL can be done via new URL()
-          addServerURL((String) cmbServerURL.getSelectedItem());
+          addServerURL((String) cmbServerURLs.getSelectedItem());
         }
       }
     });
@@ -678,30 +683,30 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   protected void addServerURL(String url) {
     // delete old entry to prevent too many items...
-    for (int i = 0; i < cmbServerURL.getItemCount(); i++) {
-      String file = (String) cmbServerURL.getItemAt(i);
+    for (int i = 0; i < cmbServerURLs.getItemCount(); i++) {
+      String file = cmbServerURLs.getItemAt(i);
       if (file.equals(url)) {
-        cmbServerURL.removeItemAt(i);
+        cmbServerURLs.removeItemAt(i);
         break;
       }
     }
-    cmbServerURL.insertItemAt(url, 0);
-    cmbServerURL.setSelectedItem(url);
+    cmbServerURLs.insertItemAt(url, 0);
+    cmbServerURLs.setSelectedItem(url);
   }
 
   private Container getFilePanel() {
     Faction faction = getFaction();
     String suffix = getSuffix(faction, FILE_PANEL);
 
-    Object[] list = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix)
-        .toArray();
-    cmbOutputFile = new JComboBox(list == null ? new Object[0] : list);
-    cmbOutputFile.setEditable(true);
+    String[] list = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix)
+        .toArray(new String[0]);
+    cmbOutputFiles = new JComboBox<String>(list == null ? new String[0] : list);
+    cmbOutputFiles.setEditable(true);
 
     JButton btnOutputFile = new JButton("...");
     btnOutputFile.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        String outputFile = getFileName((String) cmbOutputFile.getSelectedItem());
+        String outputFile = getFileName((String) cmbOutputFiles.getSelectedItem());
 
         if (outputFile != null) {
           addFileName(outputFile);
@@ -713,12 +718,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnlFile.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get(
         "orderwriterdialog.border.outputfile")));
 
-    pnlFile.add(cmbOutputFile, BorderLayout.CENTER);
-    cmbOutputFile.addActionListener(new ActionListener() {
+    pnlFile.add(cmbOutputFiles, BorderLayout.CENTER);
+    cmbOutputFiles.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         // log.finer(arg0.getActionCommand());
         if ("comboBoxEdited".equals(arg0.getActionCommand())) {
-          addFileName((String) cmbOutputFile.getSelectedItem());
+          addFileName((String) cmbOutputFiles.getSelectedItem());
         }
         updateAutoFileName();
       }
@@ -751,15 +756,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   protected void addFileName(String outputFile) {
     // delete old entry to prevent too many items...
-    for (int i = 0; i < cmbOutputFile.getItemCount(); i++) {
-      String file = (String) cmbOutputFile.getItemAt(i);
+    for (int i = 0; i < cmbOutputFiles.getItemCount(); i++) {
+      String file = cmbOutputFiles.getItemAt(i);
       if (file.equals(outputFile)) {
-        cmbOutputFile.removeItemAt(i);
+        cmbOutputFiles.removeItemAt(i);
         break;
       }
     }
-    cmbOutputFile.insertItemAt(outputFile, 0);
-    cmbOutputFile.setSelectedItem(outputFile);
+    cmbOutputFiles.insertItemAt(outputFile, 0);
+    cmbOutputFiles.setSelectedItem(outputFile);
   }
 
   private Container getMailPanel() {
@@ -1139,12 +1144,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if (type == FILE_PANEL) {
       List<String> files = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix);
-      while (cmbOutputFile.getItemCount() > 0) {
-        cmbOutputFile.removeItemAt(0);
+      while (cmbOutputFiles.getItemCount() > 0) {
+        cmbOutputFiles.removeItemAt(0);
       }
       if (files != null) {
         for (String file : files) {
-          cmbOutputFile.addItem(file);
+          cmbOutputFiles.addItem(file);
         }
       }
 
@@ -1219,7 +1224,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if (type == FILE_PANEL) {
       PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE + suffix, getNewOutputFiles(
-          cmbOutputFile));
+          cmbOutputFiles));
       pSettings.setProperty(PropertiesHelper.ORDERWRITER_AUTO_FILENAME + suffix, String.valueOf(chkAutoFileName
           .isSelected()));
     }
@@ -1301,7 +1306,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     if (type == SERVER_PANEL) {
-      PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_SERVER_URL, getNewOutputFiles(cmbServerURL));
+      PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_SERVER_URL, getNewOutputFiles(cmbServerURLs));
     }
   }
 
@@ -1349,7 +1354,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return recovered;
   }
 
-  private List<String> getNewOutputFiles(JComboBox combo) {
+  private List<String> getNewOutputFiles(JComboBox<String> combo) {
     List<String> ret = new ArrayList<String>(combo.getItemCount() + 1);
 
     if (combo.getSelectedIndex() == -1) {
@@ -1362,7 +1367,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     for (int i = 0; i < Math.min(combo.getItemCount(), 6); i++) {
-      String item = (String) combo.getItemAt(i);
+      String item = combo.getItemAt(i);
       if (selected != null && item.equals(selected)) {
         continue; // ignore
       }
@@ -1452,10 +1457,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       cw.setForceUnixLineBreaks(forceUnixLineBreaks);
 
-      Object group = getGroup();
+      Group group = getGroup();
 
-      if (!"".equals(group)) {
-        cw.setGroup((Group) group);
+      if (group != null) {
+        cw.setGroup(group);
       }
 
       int writtenUnits = cw.write(stream);
@@ -1549,7 +1554,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void updateAutoFileName() {
-    String pattern = (String) cmbOutputFile.getSelectedItem();
+    String pattern = (String) cmbOutputFiles.getSelectedItem();
 
     // this global setting is deprecated, using filename as pattern if appropriate now
     // settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
@@ -1561,11 +1566,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         feed.setFaction(f.getName());
         feed.setFactionnr(f.getID().toString());
       }
-      Object o = getGroup();
-      Group g = null;
-      if (o != null && !"".equals(o)) {
-        g = (Group) o;
-      }
+      Group g = getGroup();
       if (g != null) {
         feed.setGroup(g.getName());
       }
@@ -1595,7 +1596,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     setWaitCursor(true);
 
-    String url = (String) cmbServerURL.getSelectedItem();
+    String url = (String) cmbServerURLs.getSelectedItem();
 
     // check url parameters
     if ("".equals(url)) {
@@ -1815,8 +1816,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       return;
     }
 
-    mailMessage.setSSL(chkUseSSL.isSelected());
-    mailMessage.setTLS(chkUseTLS.isSelected());
+    mailMessage.setSSLOnConnect(chkUseSSL.isSelected());
+    mailMessage.setStartTLSEnabled(chkUseTLS.isSelected());
 
     StringWriter mailWriter = new StringWriter();
     final Object[] parameters = write(mailWriter, false, false, true, faction, EMAIL_PANEL);
@@ -2019,7 +2020,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   public static boolean canShow(GameData data) {
     Faction faction = null;
     for (Faction f : data.getFactions()) {
-      if (f.isPrivileged()) {
+      if (TrustLevels.isPrivileged(f)) {
         faction = f;
         break;
       }

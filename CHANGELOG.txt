@@ -1,3 +1,7 @@
+2021-07-10 / Build 746 - stm (stm2@users.sourceforge.net)
+    * do not choke on wrong Spiel tag or ECheck version
+    * fixed problem with merging two old reports (PR 23)
+
 2021-04-22 / Build 744 - stm (stm2@users.sourceforge.net)
     * list buildings in region details
     * detect monster faction and list it first in ATTACK order completions

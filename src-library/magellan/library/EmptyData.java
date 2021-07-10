@@ -270,7 +270,6 @@ public class EmptyData extends GameData {
    */
   @Override
   public GameData clone() throws CloneNotSupportedException {
-    // FIXME need more here...
     return new EmptyData(getRules(), getGameName());
   }
 

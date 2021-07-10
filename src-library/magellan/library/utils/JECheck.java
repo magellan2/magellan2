@@ -88,7 +88,7 @@ public class JECheck extends Reader {
 
     commandLine.add("-O" + tempFile.getAbsolutePath());
 
-    commandLine.add("-P" + eCheckExe.getParentFile().getAbsolutePath());
+    // commandLine.add("-P" + eCheckExe.getParentFile().getAbsolutePath());
 
     // // TODO: make optionizable
     // commandLine.add("-nolost");
@@ -105,12 +105,16 @@ public class JECheck extends Reader {
        * do this so the -m option is not necessarily specified in the arguments but prevent problems
        * with older versions
        */
-      Version eVersion = JECheck.getVersion(eCheckExe, settings);
-      if (eVersion.isError()) {
-        log.warn("incompatible version " + eVersion.toString());
+      Version eVersion = null;
+      try {
+        eVersion = JECheck.getVersion(eCheckExe, settings);
+        if (eVersion.isError()) {
+          log.warn("incompatible version " + eVersion.toString());
+        }
+      } catch (Exception e) {
+        JECheck.log.error("could not retrieve ECheck version.");
       }
-
-      if (eVersion.compareTo(new Version("4.0.6")) >= 0) {
+      if (eVersion == null || eVersion.compareTo(new Version("4.0.6")) >= 0) {
         commandLine.add("-m");
       }
       commandLine.add(orders.getAbsolutePath());
@@ -121,7 +125,7 @@ public class JECheck extends Reader {
     start = System.currentTimeMillis();
 
     try {
-      p = Runtime.getRuntime().exec(commandLine.toArray(new String[] {}));
+      p = Runtime.getRuntime().exec(commandLine.toArray(new String[] {}), null, eCheckExe.getParentFile());
     } catch (Exception e) {
       JECheck.log.error("JECheck.JECheck(): exception while executing echeck", e);
       throw new IOException("Cannot execute ECheck: " + e.toString());
@@ -358,12 +362,12 @@ public class JECheck extends Reader {
       }
 
       /* check for error in header */
-      if (error)
-        throw new java.text.ParseException("The header of the ECheck output seems to be corrupt: "
-            + line, 0);
-
-      /* parse messages */
-      line = JECheck.getLine(in);
+      if (error) {
+        JECheck.log.info("Version line missing or corrupt: " + line);
+      } else {
+        /* parse messages */
+        line = JECheck.getLine(in);
+      }
 
       while (line != null) {
         tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);

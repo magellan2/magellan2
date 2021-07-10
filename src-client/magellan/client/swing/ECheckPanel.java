@@ -372,11 +372,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       }
     } catch (IOException e) {
       setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      JOptionPane.showMessageDialog(getRootPane(), Resources
+      if (JOptionPane.showConfirmDialog(getRootPane(), Resources
           .get("echeckpanel.msg.versionretrievalerror.text"), Resources
-              .get("echeckpanel.msg.versionretrievalerror.title"), JOptionPane.ERROR_MESSAGE);
-
-      return;
+              .get("echeckpanel.msg.versionretrievalerror.title"),
+          JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+        return;
     }
 
     // save orders

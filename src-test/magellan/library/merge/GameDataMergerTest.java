@@ -24,7 +24,11 @@
 package magellan.library.merge;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 import magellan.library.AllianceGroup;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -36,8 +40,6 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.MagellanFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
-
-import org.junit.Test;
 
 /**
  * Test for game data merger.
@@ -261,5 +263,45 @@ public class GameDataMergerTest extends MagellanTestWithResources {
     assertEquals(1, gdm011.getBookmarks().size());
     assertEquals(2, gdm012.getBookmarks().size());
     assertEquals(unit012.getID(), gdm012.getBookmarks().iterator().next().getObject().getID());
+  }
+
+  @Test
+  public void mergeTwoOldReports() throws Exception {
+    builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(2, true);
+    GameData gd2 = builder.createSimpleGameData(2, true);
+    GameData gd3 = builder.createSimpleGameData(3, false);
+    Unit u12 = gd2.getUnits().iterator().next();
+    Unit u3 = builder.addUnit(gd3, "Unit 3", gd3.getRegions().iterator().next());
+    GameData merged = GameDataMerger.merge(gd3, gd2);
+    merged = GameDataMerger.merge(gd1, merged);
+
+    assertEquals(1, merged.getUnits().size());
+    assertEquals(merged.getUnits().iterator().next().getID(), u3.getID());
+    assertEquals(1, merged.getOldUnits().size());
+    assertEquals(merged.getOldUnits().iterator().next().getID(), u12.getID());
+  }
+
+  @Test
+  public void mergeTwoNewReports() throws Exception {
+    builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(2, true);
+    GameData gd2 = builder.createSimpleGameData(3, false);
+    GameData gd3 = builder.createSimpleGameData(3, false);
+    Unit u1 = gd1.getUnits().iterator().next();
+    Faction f2 = builder.addFaction(gd2, "f2", "F2", "Mensch", 2);
+    Faction f3 = builder.addFaction(gd3, "f2", "F2", "Mensch", 2);
+    Unit u2 = builder.addUnit(gd2, "u2", "Unit 2", f2, gd2.getRegions().iterator().next(), false);
+    Unit u3 = builder.addUnit(gd3, "u3", "Unit 3", f3, gd3.getRegions().iterator().next(), false);
+    assertNotEquals(u2.getID(), u3.getID());
+
+    GameData merged = GameDataMerger.merge(gd1, gd2);
+    merged = GameDataMerger.merge(gd3, merged);
+
+    assertEquals(2, merged.getUnits().size());
+    assertTrue(merged.getUnit(u2.getID()) != null);
+    assertTrue(merged.getUnit(u3.getID()) != null);
+    assertEquals(1, merged.getOldUnits().size());
+    assertEquals(merged.getOldUnits().iterator().next().getID(), u1.getID());
   }
 }

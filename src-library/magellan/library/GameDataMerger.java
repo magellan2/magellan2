@@ -894,7 +894,7 @@ public class GameDataMerger {
       if (u instanceof TempUnit) {
         continue;
       }
-      if (subtractUnits.get(u.getID()) == null) {
+      if (subtractUnits.get(u.getID()) == null && targetGD.getOldUnit(u.getID()) == null) {
         Unit newUnit = MagellanFactory.createUnit(u.getID(), targetGD);
         newUnit.setSortIndex(sortIndex++);
         targetGD.addOldUnit(newUnit);

@@ -230,11 +230,11 @@ public class MagellanLookAndFeel {
           | IllegalAccessException | NoSuchMethodException | SecurityException
           | IllegalArgumentException
           | InvocationTargetException e) {
-        if (MagellanLookAndFeel.log.isDebugEnabled()) {
-          MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + ","
-              + clazz + "): invalid class (" + e.toString() + ")");
-
-        }
+        MagellanLookAndFeel.log.debug("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+            + clazz + "): invalid class (" + e.toString() + ")");
+      } catch (Throwable t) {
+        MagellanLookAndFeel.log.error("MagellanLookAndfeel.getLookAndFeel(" + name + ","
+            + clazz + "): unexpected error (" + t.toString() + "), skipping.");
       }
     }
   }

@@ -881,9 +881,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
       if (getGameData().getUnits() != null) {
         for (Unit u : getGameData().getUnits()) {
-          if (getEditor(u) != null) {
+          OrderEditor area = getEditor(u);
+          if (area != null) {
             if (u.isOrdersConfirmed() && u != currentUnit) {
-              getEditor(u).setBackground(c);
+              area.setBackground(c);
             }
           }
         }

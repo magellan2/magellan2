@@ -20,9 +20,9 @@ import java.awt.Rectangle;
 import java.util.Properties;
 
 import javax.swing.JLabel;
-import javax.swing.JTextArea;
 
 import magellan.client.MagellanContext;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.GameData;
 import magellan.library.utils.Resources;
@@ -181,21 +181,9 @@ public abstract class HexCellRenderer implements MapCellRenderer {
     }
   }
 
-  protected static JTextArea createDescriptionPanel(String text, Component parent) {
-    JTextArea description = new JTextArea(text);
-    description.setLineWrap(true);
-    description.setWrapStyleWord(true);
-    description.setEditable(false);
-    description.setRequestFocusEnabled(false);
-    if (parent != null) {
-      description.setBackground(parent.getBackground());
-      description.setSelectionColor(parent.getBackground());
-      description.setSelectedTextColor(parent.getForeground());
-      description.setBackground(parent.getBackground());
-      description.setSelectionColor(parent.getBackground());
-      description.setSelectedTextColor(parent.getForeground());
-      description.setFont(new JLabel().getFont());
-    }
+  protected static Component createDescriptionPanel(String text, Component parent) {
+    java.awt.Component description = WrappableLabel.getLabel(text);
+
     return description;
   }
 }

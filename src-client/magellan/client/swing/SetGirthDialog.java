@@ -14,6 +14,7 @@
 package magellan.client.swing;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -23,9 +24,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
@@ -155,10 +156,10 @@ public class SetGirthDialog extends JDialog {
     // new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
     // GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 4, 4);
 
-    JTextArea xmessage = new JTextArea(Resources.get("setgirthdialog.lbl.msgx.caption"), 3, 0);
+    Component xmessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgx.caption"));
     JLabel xminLabel = new JLabel(Resources.get("setgirthdialog.lbl.xmin.caption") + ":");
     JLabel xmaxLabel = new JLabel(Resources.get("setgirthdialog.lbl.xmax.caption") + ":");
-    JTextArea ymessage = new JTextArea(Resources.get("setgirthdialog.lbl.msgy.caption"), 3, 0);
+    Component ymessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgy.caption"));
     JLabel yminLabel = new JLabel(Resources.get("setgirthdialog.lbl.ymin.caption") + ":");
     JLabel ymaxLabel = new JLabel(Resources.get("setgirthdialog.lbl.ymax.caption") + ":");
     JLabel levelLabel = new JLabel(Resources.get("setgirthdialog.lbl.level.caption") + ":");

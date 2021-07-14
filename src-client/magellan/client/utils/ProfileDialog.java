@@ -22,6 +22,7 @@
 //
 package magellan.client.utils;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,9 +40,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.utils.ProfileManager.ProfileException;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -86,16 +87,7 @@ public class ProfileDialog extends JDialog {
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.FIRST_LINE_START,
             GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
 
-    JTextArea comment = new JTextArea(Resources.get("profiledialog.explanation"));
-    comment.setEditable(false);
-    comment.setWrapStyleWord(true);
-    comment.setLineWrap(true);
-    comment.setSelectionColor(getBackground());
-    comment.setSelectedTextColor(getForeground());
-    comment.setRequestFocusEnabled(false);
-    comment.setBackground(getBackground());
-    comment.setSelectionColor(getBackground());
-    comment.setSelectedTextColor(getForeground());
+    Component comment = WrappableLabel.getLabel(Resources.get("profiledialog.explanation"));
     comment.setFont(new JLabel().getFont());
 
     profiles = initProfiles();
@@ -181,6 +173,7 @@ public class ProfileDialog extends JDialog {
     gc.weighty = 1.0;
     gc.gridx = 0;
     gc.gridy++;
+    gc.gridwidth = 2;
     mainPanel.add(bAlwaysAsk, gc);
 
     getContentPane().add(mainPanel);

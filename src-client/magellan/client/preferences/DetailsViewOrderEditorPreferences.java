@@ -44,11 +44,11 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.client.swing.completion.OrderEditor;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
@@ -93,7 +93,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     chkMultiEditorLayout =
         new JCheckBox(Resources
             .get("completion.multieditorordereditorlist.prefs.multieditorlayout"), source
-            .isMultiEditorLayout());
+                .isMultiEditorLayout());
     content.add(chkMultiEditorLayout);
 
     chkHideButtons =
@@ -248,7 +248,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     chkSyntaxHighlighting =
         new JCheckBox(Resources
             .get("completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"), source
-            .getUseSyntaxHighlighting());
+                .getUseSyntaxHighlighting());
     content.add(chkSyntaxHighlighting, c);
 
     c.gridy++;
@@ -264,64 +264,28 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         addPanel(Resources.get("completion.multieditorordereditorlist.prefs.listMode"),
             new BorderLayout(2, 2));
 
-    JLabel dummy = new JLabel();
+    Component text =
+        WrappableLabel.getLabel(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
 
-    JTextArea text =
-        new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
-    text.setEditable(false);
-    text.setLineWrap(true);
-    text.setWrapStyleWord(true);
-    text.setSelectionColor(text.getBackground());
-    text.setSelectedTextColor(text.getForeground());
-    text.setRequestFocusEnabled(false);
-    text.setBackground(content.getBackground());
-    text.setSelectionColor(content.getBackground());
-    text.setSelectedTextColor(content.getForeground());
-    text.setFont(dummy.getFont());
     content.add(text, BorderLayout.NORTH);
 
     JPanel help = new JPanel(new GridBagLayout());
     GridBagConstraints con =
-        new GridBagConstraints(0, 0, 1, 1, 0.5, 0, GridBagConstraints.WEST,
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST,
             GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 0, 0);
     listModes = new JCheckBox[3];
 
     for (int i = 0; i < 3; i++) {
       listModes[i] =
-          new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i));
+          new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i)
+              + " (" + Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i
+                  + ".text") + ")");
       listModes[i].setSelected(((source.getListMode() >> (3 - i)) & 1) != 0);
       help.add(listModes[i], con);
       con.gridy++;
     }
 
-    con.gridy = 0;
-    con.gridx = 1;
-    con.fill = GridBagConstraints.HORIZONTAL;
-
-    for (int i = 0; i < 3; i++) {
-      text =
-          new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i
-              + ".text"));
-      text.setEditable(false);
-      text.setLineWrap(true);
-      text.setWrapStyleWord(true);
-
-      text.setSelectionColor(text.getBackground());
-      text.setSelectedTextColor(text.getForeground());
-      text.setRequestFocusEnabled(false);
-      text.setBackground(content.getBackground());
-      text.setSelectionColor(content.getBackground());
-      text.setSelectedTextColor(content.getForeground());
-      text.setFont(dummy.getFont());
-      help.add(text, con);
-      con.gridy++;
-    }
-
     content.add(help, BorderLayout.CENTER);
-
-    help = new JPanel();
-    help.setPreferredSize(new Dimension(15, 5));
-    content.add(help, BorderLayout.WEST);
 
     return content;
   }

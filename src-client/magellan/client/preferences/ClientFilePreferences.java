@@ -32,11 +32,11 @@ import java.util.Properties;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import magellan.client.Client;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.FileNameGenerator;
 import magellan.library.io.file.FileBackup;
@@ -72,27 +72,18 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     JLabel l = new JLabel(Resources.get("clientpreferences.lbl.filehistoryentries.caption"));
     help.add(l, con);
     con.gridx = 1;
-    con.gridwidth = 2;
+    con.gridwidth = 1;
+    con.weightx = 0;
     txtFileHistorySize = new JSpinner(new SpinnerNumberModel(5, 0, 99, 1));
 
     help.add(txtFileHistorySize, con);
 
-    JTextArea txtDescription =
-        new JTextArea(Resources.get("clientpreferences.txt.filehistorydescription.text"));
-    txtDescription.setRequestFocusEnabled(false);
-    txtDescription.setLineWrap(true);
-    txtDescription.setWrapStyleWord(true);
-    txtDescription.setEditable(false);
-    txtDescription.setOpaque(false);
-    txtDescription.setSelectionColor(getBackground());
-    txtDescription.setSelectedTextColor(getForeground());
-    txtDescription.setFont(l.getFont());
-    txtDescription.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
-        "Label.foreground"));
+    Component txtDescription =
+        WrappableLabel.getLabel(Resources.get("clientpreferences.txt.filehistorydescription.text"));
 
     con.gridx = 0;
     con.gridy = 1;
-    con.gridwidth = 1;
+    con.gridwidth = 2;
     con.weightx = 1;
     con.fill = GridBagConstraints.HORIZONTAL;
     help.add(txtDescription, con);
@@ -107,29 +98,20 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
 
     jpanel_CRBackups.add(l2, con);
 
-    txtCRBackupsCount = new JSpinner(new SpinnerNumberModel(3, 0, 100, 1));
+    txtCRBackupsCount = new JSpinner(new SpinnerNumberModel(3, 0, 99, 1));
 
     con.gridx++;
-    con.gridwidth = 2;
+    con.gridwidth = 1;
+    con.weightx = 0;
     jpanel_CRBackups.add(txtCRBackupsCount, con);
 
-    JTextArea txtDescription2 =
-        new JTextArea(Resources.get("clientpreferences.txt.crbackupsdescription.text"));
-    txtDescription2.setRequestFocusEnabled(false);
-    txtDescription2.setLineWrap(true);
-    txtDescription2.setWrapStyleWord(true);
-    txtDescription2.setEditable(false);
-    txtDescription2.setOpaque(false);
-    txtDescription2.setSelectionColor(getBackground());
-    txtDescription2.setSelectedTextColor(getForeground());
-    txtDescription2.setFont(l.getFont());
-    txtDescription2.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
-        "Label.foreground"));
+    java.awt.Component txtDescription2 =
+        WrappableLabel.getLabel(Resources.get("clientpreferences.txt.crbackupsdescription.text"));
 
     con.gridx = 0;
     con.gridy = 1;
     con.weightx = 1.0;
-    con.gridwidth = 1;
+    con.gridwidth = 2;
     con.fill = GridBagConstraints.HORIZONTAL;
     jpanel_CRBackups.add(txtDescription2, con);
 

@@ -49,7 +49,6 @@ import javax.swing.Timer;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
-import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.transformation.BoxTransformer.BBox;

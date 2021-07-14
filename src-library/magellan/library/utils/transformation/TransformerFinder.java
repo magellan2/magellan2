@@ -42,7 +42,6 @@ import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Score;
-import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.SavedTranslationsMapping;
@@ -398,7 +397,7 @@ public class TransformerFinder {
         Score<?> help =
             (Score<?>) ui.input(Resources.getFormatted(
                 "util.reportmerger.msg.usertranslation.choose", filename, layer), Resources
-                .get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(),
+                    .get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(),
                 bestTranslation);
         Score<CoordinateID> chosenTranslation = null;
         // workaround since we cannot cast Object to Score<CoordinateID>
@@ -627,7 +626,6 @@ public class TransformerFinder {
       return null;
 
     if (choice.equals(inputMethod)) {
-      SetGirthDialog girthDialog;
       BBox box = ui.askForGirth(best, layer, metric);
       return box;
     } else if (choice.equals(skipMethod))
@@ -782,7 +780,8 @@ public class TransformerFinder {
     boolean result = true;
     boolean keep = false;
     if (oldBox != null
-        && ((oldBox.getMinx() != Integer.MAX_VALUE && oldBox.getMinx() != newmin) || (oldBox.getMaxx() != Integer.MIN_VALUE && oldBox.getMaxx() != newmax))) {
+        && ((oldBox.getMinx() != Integer.MAX_VALUE && oldBox.getMinx() != newmin) || (oldBox
+            .getMaxx() != Integer.MIN_VALUE && oldBox.getMaxx() != newmax))) {
       log.warn("box changed: " + oldBox + "-> x: " + newmin + "/" + newmax);
       if (oldBox.getMaxx() - oldBox.getMinx() != newmax - newmin
           && (oldBox.getMinx() != Integer.MAX_VALUE && oldBox.getMaxx() != Integer.MIN_VALUE)) {
@@ -805,7 +804,8 @@ public class TransformerFinder {
     boolean result = true;
     BBox oldBox = boxes.getBox(layer);
     if (oldBox != null
-        && ((oldBox.getMiny() != Integer.MAX_VALUE && oldBox.getMiny() != newmin) || (oldBox.getMaxy() != Integer.MIN_VALUE && oldBox.getMaxy() != newmax))) {
+        && ((oldBox.getMiny() != Integer.MAX_VALUE && oldBox.getMiny() != newmin) || (oldBox
+            .getMaxy() != Integer.MIN_VALUE && oldBox.getMaxy() != newmax))) {
       log.warn("box changed: " + oldBox + "-> y: " + newmin + "/" + newmax);
       if (oldBox.getMaxy() - oldBox.getMiny() != newmax - newmin) {
         result = false;

@@ -27,6 +27,7 @@ import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.UIDefaults;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
@@ -529,6 +530,27 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   public void setErrorBackround(Color c) {
     errorColor = c;
     initStyles();
+  }
+
+  private UIDefaults getUiDefaults() {
+    Object o = getClientProperty("Nimbus.Overrides");
+    UIDefaults defaults;
+    if (o instanceof UIDefaults) {
+      defaults = (UIDefaults) o;
+    } else {
+      defaults = new UIDefaults();
+    }
+    return defaults;
+  }
+
+  @Override
+  public void setBackground(Color bg) {
+    UIDefaults defaults = getUiDefaults();
+    defaults.put("TextPane[Enabled].backgroundPainter", bg);
+    putClientProperty("Nimbus.Overrides", defaults);
+    putClientProperty("Nimbus.Overrides.InheritDefaults", true);
+
+    super.setBackground(bg);
   }
 
   /**

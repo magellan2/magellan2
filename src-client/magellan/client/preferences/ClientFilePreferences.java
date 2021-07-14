@@ -67,13 +67,12 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
         addPanel(Resources.get("clientpreferences.border.filehistory"), new GridBagLayout());
 
     GridBagConstraints con =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
+            GridBagConstraints.HORIZONTAL, new Insets(3, 3, 2, 3), 0, 0);
     JLabel l = new JLabel(Resources.get("clientpreferences.lbl.filehistoryentries.caption"));
     help.add(l, con);
     con.gridx = 1;
     con.gridwidth = 1;
-    con.weightx = 0;
     txtFileHistorySize = new JSpinner(new SpinnerNumberModel(5, 0, 99, 1));
 
     help.add(txtFileHistorySize, con);
@@ -84,16 +83,14 @@ public class ClientFilePreferences extends AbstractPreferencesAdapter implements
     con.gridx = 0;
     con.gridy = 1;
     con.gridwidth = 2;
-    con.weightx = 1;
-    con.fill = GridBagConstraints.HORIZONTAL;
     help.add(txtDescription, con);
 
     JPanel jpanel_CRBackups =
         addPanel(Resources.get("clientpreferences.border.crbackups"), new GridBagLayout());
 
-    con =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 1);
+    con.gridx = 0;
+    con.gridy = 0;
+    con.gridwidth = 1;
     JLabel l2 = new JLabel(Resources.get("clientpreferences.lbl.numberofbackups.caption"));
 
     jpanel_CRBackups.add(l2, con);

@@ -114,10 +114,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         addPanel(Resources.get("completion.multieditorordereditorlist.prefs.colors"),
             new GridBagLayout());
 
-    GridBagConstraints c =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-            new Insets(0, 2, 1, 1), 0, 0);
-
     JLabel lblStandardColor =
         new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground")
             + ": ");
@@ -132,7 +128,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         Color newColor =
             JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
                 .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
-                .getSource()).getBackground());
+                    .getSource()).getBackground());
 
         if (newColor != null) {
           ((Component) e.getSource()).setBackground(newColor);
@@ -155,7 +151,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         Color newColor =
             JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
                 .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
-                .getSource()).getBackground());
+                    .getSource()).getBackground());
 
         if (newColor != null) {
           ((Component) e.getSource()).setBackground(newColor);
@@ -177,7 +173,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         Color newColor =
             JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
                 .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
-                .getSource()).getBackground());
+                    .getSource()).getBackground());
 
         if (newColor != null) {
           ((Component) e.getSource()).setBackground(newColor);
@@ -200,7 +196,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
         Color newColor =
             JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
                 .get("completion.multieditorordereditorlist.prefs.backgroundcolor"), ((Component) e
-                .getSource()).getBackground());
+                    .getSource()).getBackground());
 
         if (newColor != null) {
           ((Component) e.getSource()).setBackground(newColor);
@@ -208,31 +204,46 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
       }
     });
 
-    content.add(lblActiveColor, c);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(0, 2, 1, 1), 0, 0);
+
+    JPanel content2 = new JPanel(new GridBagLayout());
+
+    content2.add(lblActiveColor, c);
     c.gridx++;
-    content.add(pnlActiveColor, c);
+    c.weightx = 0;
+    content2.add(pnlActiveColor, c);
 
     c.gridx = 0;
     c.gridy++;
+    c.weightx = 1;
 
-    content.add(lblActiveColorConfirmed, c);
+    content2.add(lblActiveColorConfirmed, c);
     c.gridx++;
-    content.add(pnlActiveColorConfirmed, c);
+    c.weightx = 0;
+    content2.add(pnlActiveColorConfirmed, c);
 
     c.gridx = 0;
     c.gridy++;
+    c.weightx = 1;
 
-    content.add(lblStandardColor, c);
+    content2.add(lblStandardColor, c);
     c.gridx++;
-    content.add(pnlStandardColor, c);
+    c.weightx = 0;
+    content2.add(pnlStandardColor, c);
 
     c.gridx = 0;
     c.gridy++;
+    c.weightx = 1;
 
-    content.add(lblStandardColorConfirmed, c);
+    content2.add(lblStandardColorConfirmed, c);
     c.gridx++;
-    content.add(pnlStandardColorConfirmed, c);
+    c.weightx = 0;
+    content2.add(pnlStandardColorConfirmed, c);
 
+    content.add(content2, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+        new Insets(0, 2, 1, 1), 0, 0));
     return content;
   }
 
@@ -340,28 +351,26 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     });
 
     GridBagConstraints gbc =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
             new Insets(0, 0, 0, 0), 0, 0);
     content.add(comboSHColors, gbc);
 
     gbc.gridx++;
-    content.add(Box.createRigidArea(new Dimension(5, 5)));
+    content.add(Box.createHorizontalStrut(10), gbc);
 
     gbc.gridx++;
-    content.add(pnlStylesColor);
+    content.add(pnlStylesColor, gbc);
 
-    gbc.gridx++;
-    content.add(Box.createRigidArea(new Dimension(10, 5)));
-
-    gbc.gridx++;
+    gbc.gridy++;
+    gbc.gridx = 0;
     content.add(new JLabel(Resources
-        .get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.label")));
+        .get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.label")), gbc);
 
     gbc.gridx++;
-    content.add(Box.createRigidArea(new Dimension(5, 5)));
+    content.add(Box.createHorizontalStrut(10), gbc);
 
     gbc.gridx++;
-    content.add(pnlBackgroundColor);
+    content.add(pnlBackgroundColor, gbc);
 
     return content;
   }

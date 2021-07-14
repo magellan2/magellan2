@@ -212,6 +212,9 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     // DefaultListModel!
 
     lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    JScrollPane lstScroller = new JScrollPane(lstPaths, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+    lstScroller.setPreferredSize(new Dimension(300, 200));
 
     GridBagConstraints c = new GridBagConstraints();
     c.gridheight = 3;
@@ -219,8 +222,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     c.insets = new Insets(5, 5, 5, 5);
     c.weightx = 0.1;
     c.weighty = 0.1;
-    rpPanel.add(new JScrollPane(lstPaths, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS), c);
+    rpPanel.add(lstScroller, c);
 
     btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
     btnAdd.addActionListener(new ActionListener() {

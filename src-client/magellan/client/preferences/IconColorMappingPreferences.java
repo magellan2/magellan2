@@ -40,6 +40,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,6 +83,26 @@ import magellan.library.utils.Resources;
 public class IconColorMappingPreferences extends JPanel implements ActionListener,
     PreferencesAdapter, ListSelectionListener, KeyListener {
 
+  public class ColorKlickListener extends MouseAdapter {
+
+    private JList list;
+
+    public ColorKlickListener(JList list) {
+      this.list = list;
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if (e.getClickCount() >= 2) {
+        int index = list.locationToIndex(e.getPoint());
+        if (index >= 0) {
+          changePair(index);
+        }
+      }
+    }
+
+  }
+
   protected JList list;
   protected DefaultListModel listModel;
   protected JButton buttons[];
@@ -95,10 +117,10 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
 
     GridBagConstraints con = new GridBagConstraints();
     con.weighty = 1;
-    con.fill = GridBagConstraints.BOTH;
+    con.fill = GridBagConstraints.VERTICAL;
     con.gridy = 0;
     con.gridx = 0;
-    con.weightx = 1;
+    con.weightx = 0;
     con.anchor = GridBagConstraints.CENTER;
     con.gridwidth = 1;
     con.gridheight = 3;
@@ -109,9 +131,11 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     list.setCellRenderer(new ColorMappingListCellRenderer());
     list.addListSelectionListener(this);
     list.addKeyListener(this);
-    this.add(new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+    list.addMouseListener(new ColorKlickListener(list));
+    JScrollPane listScroller;
+    this.add(listScroller = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), con);
-
+    listScroller.setPreferredSize(new Dimension(100, 400));
     JPanel bBox = new JPanel(new GridLayout(0, 1));
 
     buttons = new JButton[5];
@@ -156,10 +180,15 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     con.gridheight = 1;
     this.add(bBox, con);
 
+    con.fill = GridBagConstraints.HORIZONTAL;
+    con.weightx = 1;
+    con.gridx++;
+    this.add(new JPanel(), con);
+
     dialog =
         new HelpDialog((Frame) getTopLevelAncestor(), Resources
             .get("tree.iconadapter.colormap.help.text"), Resources
-            .get("tree.iconadapter.colormap.help.button"));
+                .get("tree.iconadapter.colormap.help.button"));
   }
 
   /**
@@ -272,8 +301,12 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    * 
    */
   protected void changePair() {
-    MapElement elem = (MapElement) list.getSelectedValue();
     int index = list.getSelectedIndex();
+    changePair(index);
+  }
+
+  protected void changePair(int index) {
+    MapElement elem = (MapElement) list.getModel().getElementAt(index);
     String newValue =
         JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.colormap.change.value"));
 
@@ -319,10 +352,13 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    */
   protected void createDefaultPairs() {
     listModel.clear();
-
+    Color col = CellRenderer.getTypeset(CellRenderer.TALENT_INC_STYLE)
+        .getForeground();
+    if (col == null) {
+      col = Color.BLACK;
+    }
     for (int i = 1; i < 31; i++) {
-      addPair(String.valueOf(i), CellRenderer.getTypeset(CellRenderer.TALENT_INC_STYLE)
-          .getForeground());
+      addPair(String.valueOf(i), col);
     }
   }
 
@@ -391,7 +427,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
    * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
    */
   public void keyPressed(KeyEvent e) {
-    if (e.getModifiers() != 0)
+    if (e.getModifiersEx() != 0)
       return;
 
     switch (e.getKeyCode()) {
@@ -494,13 +530,18 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
        * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
        */
       public void paintIcon(Component c, Graphics g, int x, int y) {
-        g.setColor(color);
-        g.fillRoundRect(x, y, width, height, 10, 10);
-
-        if (selected) {
-          g.setColor(Color.white);
-          g.drawRoundRect(x, y, width, height, 10, 10);
+        if (color == null) {
+          g.setColor(Color.GRAY);
+          g.drawLine(x + 5, y, x + width - 5, y + height);
+        } else {
+          g.setColor(color);
+          g.fillRoundRect(x, y, width / 4, height, 10, 10);
         }
+
+        // if (selected) {
+        // g.setColor(Color.white);
+        // g.drawRoundRect(x, y, width, height, 10, 10);
+        // }
       }
     }
 
@@ -531,14 +572,19 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
         setText(((MapElement) value).value);
 
         Color color = ((MapElement) value).color;
-        icon.setColor(color);
-        setForeground(new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue()));
+        if (color != null) {
+          icon.setColor(color);
+          setForeground(color);// new Color(255 - color.getRed(), 255 - color.getGreen(), 255 - color.getBlue()));
+        } else {
+          icon.setColor(null);
+          setForeground(Color.GRAY);
+        }
         icon.setSelected(sel);
         icon.setIconWidth(Math.abs(l.getSize().width - 6));
 
         if (sel) {
           setOpaque(true);
-          setBackground(Color.blue);
+          // setBackground(Color.blue);
           setBorder(border2);
         } else {
           setOpaque(false);

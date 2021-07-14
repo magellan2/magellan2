@@ -863,14 +863,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * Returns the background color for confirmed unit's editrs.
+   * Returns the background color for confirmed units' editors.
    */
   public Color getStandardBackgroundColorConfirmed() {
     return standardBgColorConfirmed;
   }
 
   /**
-   * Sets and applies the background color for confirmed unit's editors for all editors.
+   * Sets and applies the background color for confirmed units' editors for all editors.
    */
   public void setStandardBackgroundColorConfirmed(Color c) {
     if ((standardBgColorConfirmed != c) && (c != null)) {

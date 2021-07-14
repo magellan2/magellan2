@@ -19,9 +19,9 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A class to unify encoding and decoding of colors stored in string
- *         representation (e.g. in magellan.ini).
+ * representation (e.g. in magellan.ini).
  * 
- * @author Ilja Pavkovic 
+ * @author Ilja Pavkovic
  */
 public class Colors {
   private static final Logger log = Logger.getInstance(Colors.class);
@@ -53,6 +53,8 @@ public class Colors {
    * Encode a color into a String with three integers separated by separator ";".
    */
   public static String encode(Color c) {
+    if (c == null)
+      return "";
     return c.getRed() + Colors.SEPARATOR + c.getGreen() + Colors.SEPARATOR + c.getBlue();
   }
 }

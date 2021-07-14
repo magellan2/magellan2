@@ -32,9 +32,11 @@ import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Properties;
 
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -94,25 +96,19 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     panel.setLayout(new GridBagLayout());
 
     GridBagConstraints con =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST,
             GridBagConstraints.HORIZONTAL, new Insets(3, 3, 3, 3), 0, 0);
 
     panel.add(new JLabel(Resources.get("clientpreferences.lbl.relativefontsize.caption")), con);
 
     editFontSize = new JTextField(5);
-    editFontSize.setPreferredSize(new java.awt.Dimension(50, 20));
     editFontSize.setText("100");
 
-    try {
-      float fScale = Float.valueOf(settings.getProperty("Client.FontScale", "1.0")).floatValue();
-      fScale *= 100.0f;
-      editFontSize.setText(Float.toString(fScale));
-    } catch (Exception exc) {
-    }
+    resetFontSize();
+    editFontSize.setInputVerifier(new FontSizeVerifier());
+    editFontSize.setColumns(5);
+    // editFontSize.setMinimumSize(new java.awt.Dimension(50, 20));
 
-    editFontSize.setMinimumSize(new java.awt.Dimension(50, 20));
-
-    con.insets.left = 0;
     con.gridx = 1;
     panel.add(editFontSize, con);
 
@@ -125,7 +121,6 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     con.gridx = 0;
     con.gridy = 1;
     con.gridwidth = 3;
-    con.weightx = 1;
     panel.add(help, con);
 
     return panel;
@@ -179,14 +174,14 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("clientpreferences.border.lookandfeel");
@@ -201,24 +196,50 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     // TODO: implement it
   }
 
-  /**
-   * DOCUMENT-ME
-   */
-  public void applyPreferences() {
+  public class FontSizeVerifier extends InputVerifier {
+
+    @Override
+    public boolean verify(JComponent input) {
+      float size = getFontSize();
+      if (Float.isNaN(size) || size <= .01 || size >= 10) {
+        resetFontSize();
+        return false;
+      }
+      return true;
+    }
+
+  }
+
+  protected float getFontSize() {
     try {
       float fScale = Float.valueOf(editFontSize.getText()).floatValue();
       fScale /= 100.0f;
-
-      settings.setProperty("Client.FontScale", Float.toString(fScale));
+      return fScale;
     } catch (NumberFormatException ex) {
-      log.error(ex);
-      javax.swing.JOptionPane.showMessageDialog(this, Resources
-          .get("clientpreferences.msg.fontsizeerror.text")
-          + ex.toString(), Resources.get("clientpreferences.msg.fontsizeerror.title"),
-          javax.swing.JOptionPane.ERROR_MESSAGE);
+      return Float.NaN;
     }
+  }
 
-    // source.setLookAndFeel((String)jComboBoxLaF.getSelectedItem());
+  protected void resetFontSize() {
+    try {
+      float fScale = Float.valueOf(settings.getProperty("Client.FontScale", "1.0")).floatValue();
+      fScale *= 100.0f;
+      editFontSize.setText(Float.toString(fScale));
+    } catch (Exception exc) {
+      editFontSize.setText("100.0");
+    }
+  }
+
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
+   */
+  public void applyPreferences() {
+    float fScale = getFontSize();
+    if (!Float.isNaN(fScale)) {
+      settings.setProperty("Client.FontScale", String.valueOf(fScale));
+    } else {
+      log.warn("Invalid font size: " + editFontSize.getText());
+    }
     source.setLookAndFeel((String) jComboBoxLaF.getSelectedValue());
 
     settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles

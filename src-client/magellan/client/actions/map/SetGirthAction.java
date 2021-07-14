@@ -17,10 +17,10 @@ import java.awt.event.ActionEvent;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.swing.SetGirthDialog;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
-import magellan.library.utils.SetGirthDialog;
 import magellan.library.utils.transformation.BoxTransformer.BBox;
 
 /**

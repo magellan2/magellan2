@@ -88,8 +88,8 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
     pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("plugins.pluginsettings.modulelist.title")));
 
-    DefaultListModel model = new DefaultListModel();
-    JList pluginList = new JList(model);
+    DefaultListModel<String> model = new DefaultListModel<String>();
+    JList<String> pluginList = new JList<String>(model);
 
     for (MagellanPlugIn plugin : plugins) {
       model.addElement(plugin.getName());

@@ -46,7 +46,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
@@ -55,6 +54,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tasks.TaskTablePanel;
@@ -263,14 +263,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     JScrollPane pane = new JScrollPane(inspectorsList);
     inspectorsPanel.add(pane, BorderLayout.CENTER);
 
-    final JTextArea description = new JTextArea();
-    description.setEditable(false);
-    description.setText(Resources.get("tasks.prefs.inspectors.help"));
-    description.setRows(3);
-    description.setLineWrap(true);
-    description.setWrapStyleWord(true);
+    WrappableLabel description = WrappableLabel.getLabel(Resources.get("tasks.prefs.inspectors.help"));
     JPanel descPanel = new JPanel(new BorderLayout());
-    descPanel.add(new JScrollPane(description), BorderLayout.CENTER);
     descPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("tasks.prefs.inspectors.description")));
 
@@ -393,9 +387,9 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.gridy = 5;
     c.gridx = 0;
     c.gridwidth = 3;
-    c.weightx = 1;
+    c.weightx = 0.5;
     c.weighty = 1;
-    pnlSelection.add(descPanel, c);
+    pnlSelection.add(description, c);
 
     return pnlSelection;
   }

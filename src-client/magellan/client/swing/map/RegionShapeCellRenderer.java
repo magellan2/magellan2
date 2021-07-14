@@ -55,7 +55,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import magellan.client.MagellanContext;
 import magellan.client.desktop.Initializable;
@@ -1630,9 +1629,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       modePanel.add(modeBox);
 
       setLayout(new GridBagLayout());
-      JTextArea description =
-          HexCellRenderer.createDescriptionPanel(Resources
-              .get("map.regionshapecellrenderer.description"), this);
+      Component description =
+          HexCellRenderer.createDescriptionPanel(Resources.get("map.regionshapecellrenderer.description"), this);
       GridBagConstraints con =
           new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
               GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);

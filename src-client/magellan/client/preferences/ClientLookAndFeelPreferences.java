@@ -39,7 +39,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.LookAndFeel;
@@ -48,6 +47,7 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.Client;
 import magellan.client.swing.MagellanLookAndFeel;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -120,19 +120,7 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     JLabel l = new JLabel("%");
     panel.add(l, con);
 
-    JTextArea help =
-        new JTextArea(Resources.get("clientpreferences.txt.restartforfontsize.caption"));
-    help.setEditable(false);
-    help.setLineWrap(true);
-    help.setWrapStyleWord(true);
-    help.setSelectionColor(getBackground());
-    help.setSelectedTextColor(getForeground());
-    help.setFont(l.getFont());
-    help.setMinimumSize(new java.awt.Dimension(546, 20));
-    help.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
-        "Label.background"));
-    help.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get(
-        "Label.foreground"));
+    WrappableLabel help = WrappableLabel.getLabel(Resources.get("clientpreferences.txt.restartforfontsize.caption"));
 
     con.gridx = 0;
     con.gridy = 1;

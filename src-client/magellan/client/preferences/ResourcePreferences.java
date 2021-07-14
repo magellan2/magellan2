@@ -14,6 +14,7 @@
 package magellan.client.preferences;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,7 +37,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -44,6 +44,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import magellan.client.extern.MagellanPlugIn;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
@@ -74,17 +75,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    */
   private void initComponents() {
 
-    JTextArea comment = new JTextArea(Resources.get("resource.resourcesettings.comment"));
-    comment.setEditable(false);
-    comment.setWrapStyleWord(true);
-    comment.setLineWrap(true);
-    comment.setSelectionColor(getBackground());
-    comment.setSelectedTextColor(getForeground());
-    comment.setRequestFocusEnabled(false);
-    comment.setBackground(getBackground());
-    comment.setSelectionColor(getBackground());
-    comment.setSelectedTextColor(getForeground());
-    comment.setFont(new JLabel().getFont());
+    Component comment = WrappableLabel.getLabel(Resources.get("resource.resourcesettings.comment"));
 
     addComponent(comment);
 
@@ -300,7 +291,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
       String input =
           (String) JOptionPane.showInputDialog(parent, Resources
               .get("resource.resourcesettings.msg.edit.text"), Resources
-              .get("resource.resourcesettings.msg.edit.title"), JOptionPane.PLAIN_MESSAGE, null,
+                  .get("resource.resourcesettings.msg.edit.title"), JOptionPane.PLAIN_MESSAGE, null,
               null, selectionValues[0]);
 
       if (input != null) {
@@ -317,7 +308,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
           if (!f.exists()) {
             if (JOptionPane.showConfirmDialog(parent, Resources
                 .get("resource.resourcesettings.msg.usenonexisting.text"), Resources
-                .get("resource.resourcesettings.msg.usenonexisting.title"),
+                    .get("resource.resourcesettings.msg.usenonexisting.title"),
                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
               try {
                 w.setUrl(new URL(input));

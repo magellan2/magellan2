@@ -33,7 +33,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -81,7 +80,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 
     setFont(new Font(settings.getProperty("TextCellRenderer.fontName", "SansSerif"), Integer
         .parseInt(settings.getProperty("TextCellRenderer.fontStyle", Font.PLAIN + "")), Integer
-        .parseInt(settings.getProperty("TextCellRenderer.fontSize", 11 + ""))));
+            .parseInt(settings.getProperty("TextCellRenderer.fontSize", 11 + ""))));
     setMinimumFontSize(Integer.parseInt(settings.getProperty("TextCellRenderer.minimumFontSize",
         "10")));
     setShortenStrings(true);
@@ -200,7 +199,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
         fontNames = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
       } catch (NullPointerException e) {
         // FIXME(pavkovic) 2003.03.17: This is bad!
-        log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+        log.error(
+            "Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
         fontNames = new String[0];
       }
 
@@ -253,10 +253,9 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
       c.gridy = 0;
       c.gridwidth = 2;
       c.fill = GridBagConstraints.BOTH;
-      this.add(new JScrollPane(HexCellRenderer.createDescriptionPanel(Resources
-          .get("map.textcellrenderer.description." + source.getName().trim().replace(" ", "")),
-          this)), c);
-
+      this.add(HexCellRenderer.createDescriptionPanel(
+          Resources.get("map.textcellrenderer.description." + source.getName().trim().replace(" ", "")),
+          this), c);
       c.gridwidth = 1;
       c.gridy++;
       this.add(lblFontColor, c);

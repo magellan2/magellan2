@@ -60,7 +60,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -69,6 +68,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.library.utils.NumberStringComparator;
@@ -568,16 +568,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
 
       con.setLayout(new BorderLayout());
 
-      JTextArea expl = new JTextArea(text);
-      expl.setBackground(con.getBackground());
-      expl.setEditable(false);
-      expl.setBorder(null);
-      expl.setLineWrap(true);
-      expl.setWrapStyleWord(true);
-      expl.setRequestFocusEnabled(false);
-      expl.setFont(new JLabel().getFont());
-      expl.setSelectionColor(expl.getBackground());
-      expl.setSelectedTextColor(expl.getForeground());
+      java.awt.Component expl = WrappableLabel.getLabel(text);
 
       JScrollPane tScroll = new JScrollPane(expl);
       tScroll.setBorder(null);

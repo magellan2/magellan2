@@ -33,12 +33,11 @@ import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
 import magellan.client.extern.MagellanPlugIn;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
@@ -100,17 +99,7 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
         new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
             GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
 
-    JTextArea comment = new JTextArea(Resources.get("plugins.pluginsettings.comment"));
-    comment.setEditable(false);
-    comment.setWrapStyleWord(true);
-    comment.setLineWrap(true);
-    comment.setSelectionColor(pnl.getBackground());
-    comment.setSelectedTextColor(pnl.getForeground());
-    comment.setRequestFocusEnabled(false);
-    comment.setBackground(pnl.getBackground());
-    comment.setSelectionColor(pnl.getBackground());
-    comment.setSelectedTextColor(pnl.getForeground());
-    comment.setFont(new JLabel().getFont());
+    Component comment = WrappableLabel.getLabel(Resources.get("plugins.pluginsettings.comment"));
 
     pnl.add(comment, c);
 

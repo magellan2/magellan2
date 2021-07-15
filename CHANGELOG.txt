@@ -1,3 +1,8 @@
+2021-07-15 / Build 748 - stm (stm2@users.sourceforge.net)
+    * do not choke on missing L&F class
+    * made Nimbus L&F respect order editor backgrounds
+    * tweaks to preferences dialog
+
 2021-07-10 / Build 746 - stm (stm2@users.sourceforge.net)
     * do not choke on wrong Spiel tag or ECheck version
     * fixed problem with merging two old reports (PR 23)

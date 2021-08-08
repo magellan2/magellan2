@@ -294,6 +294,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("BENENNE FREMDE EINHEIT zwei \"abc\"");
     checkOrder("BENENNE FREMDE EINHEIT zwei \"\"", false);
     checkOrder("BENENNE FREMDE PARTEI zwei \"abc\"", true); // no such faction
+    checkOrder("BENENNE FREMDE GEBÄUDE burg \"abc\"");
     checkOrder("BENENNE FREMDE BURG burg \"abc\"");
     checkOrder("BENENNE FREMDE SCHIFF ship \"abc\"");
 
@@ -346,7 +347,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder(getOrderTranslation(EresseaConstants.OC_DESCRIBE) + " EINHEIT \"Foo\"");
     // Achilleus
     checkOrder("BESCHREIBE EINHEIT \"\u1f08\u03c7\u03b9\u03bb\u03bb\u03b5\u03cd\u03c2\"");
-    for (String thing : new String[] { "EINHEIT", "PRIVAT", "BURG", "Sägewerk", "SCHIFF",
+    for (String thing : new String[] { "EINHEIT", "PRIVAT", "BURG", "GEBÄUDE", "Sägewerk", "SCHIFF",
         "REGION" }) {
       checkOrder("BESCHREIBE " + thing + " \"Foo\"");
       checkOrder("BESCHREIBE " + thing + " \"Foo\"; comment");
@@ -364,12 +365,14 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   public void testBetreteReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_ENTER) + " "
         + getOrderTranslation(EresseaConstants.OC_SHIP) + " ship");
+    checkOrder(getOrderTranslation(EresseaConstants.OC_ENTER) + " "
+        + getOrderTranslation(EresseaConstants.OC_BUILDING) + " ship");
     checkOrder("BetretE BURG burg");
-    checkOrder("Betrete BURG burg; ");
-    checkOrder("Betrete BURG abc", true); // no such building
-    checkOrder("Betrete BURG TEMP 123", false);
-    checkOrder("Betrete BURG \"burg\"", false);
-    checkOrder("Betrete 1 BURG burg", false);
+    checkOrder("Betrete GEBÄUDE burg; ");
+    checkOrder("Betrete GEBÄUDE abc", true); // no such building
+    checkOrder("Betrete GEBÄUDE TEMP 123", false);
+    checkOrder("Betrete GEBÄUDE \"burg\"", false);
+    checkOrder("Betrete 1 GEBÄUDE burg", false);
   }
 
   /**
@@ -403,7 +406,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
         + getOrderTranslation(EresseaConstants.OC_REGION) + " \"hallo\"");
     checkOrder("BOTSCHAFT REGION \"\u0645\u0635\u0631\""); // Ägypten
 
-    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF",
+    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "GEBÄUDE", "Sägewerk", "SCHIFF",
         "REGION" }) {
       String nr = " abc ";
       if (thing.equals("REGION")) {
@@ -778,6 +781,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("MACHE a Hurz", false);
     checkOrder("MACHE a Rostiger Bihänder", false);
     checkOrder("MACHE 2 Wasser~des~Lebens"); // TODO
+    checkOrder("MACHE GEBÄUDE 123", false);
+    checkOrder("MACHE GEBÄUDE", false);
   }
 
   /**
@@ -827,6 +832,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("NUMMER EINHEIT 123");
     checkOrder("NUMMER PARTEI 123");
     checkOrder("NUMMER SCHIFF 123");
+    checkOrder("NUMMER GEBÄUDE 123");
     checkOrder("NUMMER BURG 123");
     checkOrder("NUMMER PARTEI");
     checkOrder("NUMMER", false);
@@ -1245,8 +1251,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("BEKLAUEN zwei");
     checkOrder("BENENNEN REGION 'Meine'");
     checkOrder("BENUTZEN 1 Bauernblut");
-    checkOrder("BESCHREIBEN BURG 'schön'");
-    checkOrder("BETRETEN BURG 123");
+    checkOrder("BESCHREIBEN GEBÄUDE 'schön'");
+    checkOrder("BETRETEN GEBÄUDE 123");
     checkOrder("BEWACHEN NICHT");
     checkOrder("FAHREN abc");
     checkOrder("FOLGEN EINHEIT zwei");

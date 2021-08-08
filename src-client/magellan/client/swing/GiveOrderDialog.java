@@ -226,7 +226,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
                 }
 
                 public String getShortcutDescription(KeyStroke stroke) {
-                  return "";
+                  return "invalid";
                 }
 
                 public Iterator<KeyStroke> getShortCuts() {
@@ -234,7 +234,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
                 }
 
                 public String getListenerDescription() {
-                  return "";
+                  return "GiveOrderDialog.ButtonPanel";
                 }
               };
             }

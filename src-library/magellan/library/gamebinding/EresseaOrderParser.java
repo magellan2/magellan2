@@ -350,11 +350,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
-        getOrder().type = RenameObject.T_BUILDING;
-        getOrder().name = readDescription(false);
-        retVal = getOrder().name != null;
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) ||
+          t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         getOrder().type = RenameObject.T_BUILDING;
         getOrder().name = readDescription(false);
         retVal = getOrder().name != null;
@@ -623,7 +620,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
       t.ttype = OrderToken.TT_KEYWORD;
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) ||
+          t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         getOrder().type = RenameObject.T_DESCRIBE_BUILDING;
         retVal = readDescription() != null;
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
@@ -685,7 +683,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) ||
+          t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         getOrder().type = UCArgumentOrder.T_BUILDING;
         retVal = readBetreteBurg(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
@@ -885,7 +884,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
         retVal = readBotschaftPartei(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_REGION))) {
         retVal = readBotschaftRegion(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE))) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) ||
+          t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         retVal = readBotschaftGebaeude(t);
       } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readBotschaftSchiff(t);
@@ -2476,14 +2476,15 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT)) == true) {
+      if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_UNIT))) {
         retVal = readNummerEinheit(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_SHIP))) {
         retVal = readNummerSchiff(t);
       } else if (t.equalsToken(getOrderTranslation(
           EresseaConstants.OC_PARAMETER_FACTION)) == true) {
         retVal = readNummerPartei(t);
-      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) == true) {
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_CASTLE)) ||
+          t.equalsToken(getOrderTranslation(EresseaConstants.OC_BUILDING))) {
         retVal = readNummerBurg(t);
       } else {
         unexpected(t);

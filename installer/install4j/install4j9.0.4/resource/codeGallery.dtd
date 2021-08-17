@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- root element -->
+<!ELEMENT gallery (code)*>
+
+<!-- Each entry in the code gallery is a code element -->
+<!ELEMENT code (#PCDATA)>
+
+<!--
+The tag is used in the bean info to determine which code gallery items are shown. See the
+javadoc for
+com.install4j.api.beaninfo.ScriptPropertyDescriptor#setCodeGalleryTags
+for more information. If you do not specify a tag or if the tag is empty, the code gallery
+item will always be shown.
+-->
+<!ATTLIST code tag CDATA #IMPLIED>
+
+<!--
+The name of the entry displayed in the code gallery. Nested categories can be specified by separating
+the path components with slashes, for example: General/Files/Install files
+-->
+<!ATTLIST code name CDATA #REQUIRED>
+
+<!-- The description displayed in the code gallery -->
+<!ATTLIST code description CDATA #REQUIRED>
+
+]>

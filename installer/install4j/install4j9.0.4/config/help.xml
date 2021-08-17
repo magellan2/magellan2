@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "dtd/map_2_0.dtd">
+
+<map version="2.0">
+  <mapID target="install4j.introduction" url="doc/main/introduction.html"/>
+
+  <mapID target="install4j.concepts.$folder$" url="doc/concepts/$folder$.html"/>
+  <mapID target="install4j.concepts.projects" url="doc/concepts/projects.html"/>
+  <mapID target="install4j.concepts.build" url="doc/concepts/build.html"/>
+  <mapID target="install4j.concepts.files" url="doc/concepts/files.html"/>
+  <mapID target="install4j.concepts.fileGroups" url="doc/concepts/fileGroups.html"/>
+  <mapID target="install4j.concepts.launchers" url="doc/concepts/launchers.html"/>
+  <mapID target="install4j.concepts.screensAndActions" url="doc/concepts/screensAndActions.html"/>
+  <mapID target="install4j.concepts.scripts" url="doc/concepts/scripts.html"/>
+  <mapID target="install4j.concepts.formScreens" url="doc/concepts/formScreens.html"/>
+  <mapID target="install4j.concepts.layoutGroups" url="doc/concepts/layoutGroups.html"/>
+  <mapID target="install4j.concepts.styles" url="doc/concepts/styles.html"/>
+  <mapID target="install4j.concepts.lookAndFeel" url="doc/concepts/lookAndFeel.html"/>
+  <mapID target="install4j.concepts.variables" url="doc/concepts/variables.html"/>
+  <mapID target="install4j.concepts.localization" url="doc/concepts/localization.html"/>
+  <mapID target="install4j.concepts.vmParameters" url="doc/concepts/vmParameters.html"/>
+  <mapID target="install4j.concepts.jreBundles" url="doc/concepts/jreBundles.html"/>
+  <mapID target="install4j.concepts.services" url="doc/concepts/services.html"/>
+  <mapID target="install4j.concepts.privileges" url="doc/concepts/privileges.html"/>
+  <mapID target="install4j.concepts.mergedProjects" url="doc/concepts/mergedProjects.html"/>
+  <mapID target="install4j.concepts.autoUpdate" url="doc/concepts/autoUpdate.html"/>
+  <mapID target="install4j.concepts.versionNumbers" url="doc/concepts/versionNumbers.html"/>
+  <mapID target="install4j.concepts.mediaFiles" url="doc/concepts/mediaFiles.html"/>
+  <mapID target="install4j.concepts.dataFiles" url="doc/concepts/dataFiles.html"/>
+  <mapID target="install4j.concepts.codeSigning" url="doc/concepts/codeSigning.html"/>
+  <mapID target="install4j.concepts.dmgStyling" url="doc/concepts/dmgStyling.html"/>
+
+  <mapID target="install4j.beans.$folder$" url="doc/beans/$folder$.html"/>
+  <mapID target="install4j.beans.screensAndActions" url="doc/beans/screensAndActions.html"/>
+  <mapID target="install4j.beans.customCode" url="doc/beans/customCode.html"/>
+  <mapID target="install4j.beans.applications" url="doc/beans/applications.html"/>
+  <mapID target="install4j.beans.screens" url="doc/beans/screens.html"/>
+  <mapID target="install4j.beans.actions" url="doc/beans/actions.html"/>
+  <mapID target="install4j.beans.groups" url="doc/beans/groups.html"/>
+  <mapID target="install4j.beans.formComponents" url="doc/beans/formComponents.html"/>
+  <mapID target="install4j.beans.layoutGroups" url="doc/beans/layoutGroups.html"/>
+  <mapID target="install4j.beans.styles" url="doc/beans/styles.html"/>
+
+  <mapID target="install4j.installers.$folder$" url="doc/installers/$folder$.html"/>
+  <mapID target="install4j.installers.installerModes" url="doc/installers/installerModes.html"/>
+  <mapID target="install4j.installers.options" url="doc/installers/options.html"/>
+  <mapID target="install4j.installers.responseFile" url="doc/installers/responseFile.html"/>
+  <mapID target="install4j.installers.jre" url="doc/installers/jre.html"/>
+  <mapID target="install4j.installers.http" url="doc/installers/http.html"/>
+  <mapID target="install4j.installers.updates" url="doc/installers/updates.html"/>
+  <mapID target="install4j.installers.errors" url="doc/installers/errors.html"/>
+
+  <mapID target="install4j.api.$folder$" url="doc/api/$folder$.html"/>
+  <mapID target="install4j.api.installer" url="doc/api/installer.html"/>
+  <mapID target="install4j.api.launcher" url="doc/api/launcher.html"/>
+  <mapID target="install4j.api.extensions" url="doc/api/extensions.html"/>
+
+  <mapID target="install4j.cli.$folder$" url="doc/cli/$folder$.html"/>
+  <mapID target="install4j.cli.compiler" url="doc/cli/compiler.html"/>
+  <mapID target="install4j.cli.gradle" url="doc/cli/gradle.html"/>
+  <mapID target="install4j.cli.maven" url="doc/cli/maven.html"/>
+  <mapID target="install4j.cli.ant" url="doc/cli/ant.html"/>
+  <mapID target="install4j.cli.createBundle" url="doc/cli/createBundle.html"/>
+
+
+</map>
+

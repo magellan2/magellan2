@@ -1,0 +1,524 @@
+SetupAppTitle=התקנה
+SetupWindowTitle=התקנה {0}
+UninstallAppTitle=הסר התקנה
+UninstallAppFullTitle={0} הסר התקנה
+InformationTitle=מידע
+ConfirmTitle=אשר
+ErrorTitle=שגיאה
+SetupLdrStartupMessage=זה יתקין את {0}. האם ברצונך להמשיך?
+LdrCannotCreateTemp=אין אפשרות ליצור קובץ זמני. ההתקנה בוטלה
+LdrCannotExecTemp=לא ניתן להריץ קובץ בתיקייה הזמנית. ההתקנה בוטלה
+LastErrorMessage={0} \n\n שגיאה {1}: {\2\}
+SetupFileMissing=קובץ {0} חסר בספריית ההתקנה. אנא תקן את הבעיה או השג עותק חדש של התוכנה.
+SetupFileCorrupt=קבצי ההתקנה פגומים. נא להשיג עותק חדש של התוכנה.
+SetupFileCorruptOrWrongVer=קבצי ההתקנה הם פגומים, או אינם מתיישב עם גרסה זו של התקנה. אנא תקן את הבעיה או השג עותק חדש של התוכנה.
+NotOnThisPlatform=תוכנה זו לא תפעל על {0}.
+OnlyOnThisPlatform=יש להפעיל תוכנה זו על {0}.
+WinVersionTooLowError=תוכנה זו מחייבת {0} גרסה \{1 \} או חדשה יותר.
+WinVersionTooHighError=לא ניתן להתקין תוכנה זו על {0} גרסה \{1 \} או חדשה יותר.
+AdminPrivilegesRequired=עליך להיות בעל הרשאת מנהל מערכת כדי להתקין תוכנה זו.
+PowerUserPrivilegesRequired=אתה חייב להיות מחובר כמנהל מערכת או כחבר בקבוצת משתמשי כוח בעת התקנת התוכנה.
+SetupAppRunningError=ההתקנה זיהתה ש{ 0} פועלת כעת \n\n. אנא סגור את כל הגרסאות שלה עכשיו, ולאחר מכן לחץ על 'אישור' כדי להמשיך, או על ביטול כדי לצאת.
+UninstallAppRunningError=מסיר ההתקנה זיהה ש{ 0} פועל כעת. \n \n. אנא סגור את כל הגרסאות שלה עכשיו, ולאחר מכן לחץ על 'אישור' כדי להמשיך, או על ביטול כדי לצאת.
+ErrorCreatingDir=מנהל ההתקנה לא הצליחה ליצור את התיקייה "{0}"
+ErrorTooManyFilesInDir=לא ניתן ליצור קובץ בתיקייה "{0}" מכיוון שהיא מכילה יותר מדי קבצים
+ExitSetupTitle=יציאה מההגדרה
+ExitSetupMessage=ההתקנה לא הושלמו. אם תצא עכשיו, התוכנה לא תותקן. \n \n אתה יכול להפעיל את תכנית ההתקנה שוב במועד אחר כדי להשלים את ההתקנה. \n \n ליצאת מהגדרות? 
+AboutSetupMenuItem=אודות ההתקנה ...
+AboutSetupTitle=אודות התקנה
+AboutSetupMessage={0}\ גרסה {1\}\n{2}\n\n{0} דף הבית: \n{3}
+ButtonBack=חזור
+ButtonNext=הבא
+ButtonInstall=התקן
+ButtonOK=אישור
+ButtonCancel=בטל
+ButtonYes=כן
+ButtonYesToAll=כן לכל
+ButtonNo=לא
+ButtonNoToAll=לא לכל
+ButtonFinish=סיים
+ButtonBrowse=עיין ...
+ClickNext=לחץ על 'הבא' כדי להמשיך, או על ביטול כדי לצאת מההתקנה.
+WelcomeLabel1=ברוכים הבאים לאשף ההתקנה {0}
+WelcomeLabel2=זה יתקין את {0} במחשב שלך. \n\n מומלץ לסגור את כל היישומים האחרים לפני שתמשיך.
+WizardPassword=סיסמא
+PasswordLabel1=התקנה זו מוגנת בסיסמא.
+PasswordLabel3=נא הכנס סיסמא, ולחץ על 'הבא' כדי להמשיך. הססמאות רגישות לסוג האותיות.
+PasswordEditLabel=סיסמא:
+IncorrectPassword=הסיסמא שהוכנסה שגויה. אנא נסה שוב.
+WizardLicense=הסכם רישיון
+LicenseLabel=אנא קרא מידע חשוב זה לפני שתמשיך.
+LicenseLabel3=אנא קרא את הסכם הרישיון להלן. עליך לאשר את תנאי ההסכם כדי להמשיך בהתקנה.
+LicenseAccepted=אני מקבל את תנאי ההסכם
+LicenseNotAccepted=אני לא מקבל את תנאי ההסכם
+WizardInfoBefore=מידע
+InfoBeforeLabel=אנא קרא מידע חשוב זה לפני שתמשיך.
+InfoBeforeClickLabel=כאשר תהיה מוכן להמשיך בהתקנה, לחץ על 'הבא'.
+WizardInfoAfter=מידע
+InfoAfterLabel=אנא קרא מידע חשוב זה לפני שתמשיך.
+InfoAfterClickLabel=כאשר תהיה מוכן להמשיך בהתקנה, לחץ על 'הבא'.
+WizardUserInfo=נתוני משתמש
+UserInfoDesc=אנא הזן את הנתונים שלך.
+UserInfoName=שם משתמש:
+UserInfoOrg=ארגון:
+UserInfoSerial=מספר סידורי:
+UserInfoNameRequired=עליך להזין שם.
+WizardSelectDir=בחר תקיית יעד
+SelectDirDesc=איפה להתקין את התוכנה {0} ?
+SelectDirLabel=בחר את התיקייה בה ברצונך להתקנה את {0}, ולאחר מכן לחץ על 'הבא'.
+DiskSpaceMBLabel=התוכנה דורשת לפחות {0} MB פנויים בדיסק.
+ToUNCPathname=התקנה לא יכולה להתקין לנתיב שם UNC. אם אתה מנסה להתקין לרשת, תצטרך למפות כונן רשת.
+InvalidPath=עליך להזין נתיב מלא עם אות כונן; לדוגמא: \n\nC:\\APP\n ולא נתיב UNC בצורה: \n\n\\server\share
+InvalidDrive=הכונן או UNC שבחרת אינו קיים או אינו נגיש. אנא בחר כונן אחר.
+DiskSpaceWarningTitle=אין די שטח פנוי בכונן
+DiskSpaceWarning=להתקנה נדרשים לפחות {0} KB בכונן, אך לכונן שנבחר יש רק {1} KB פנויים.
+BadDirName32=שם התיקייה אינו יכול להכיל את התווים הבאים: \n\n\{0} 
+DirExistsTitle=התיקייה כבר קיימת
+DirExists=הספרייה: \n\n{0}\nNalready\ כבר קיימת. האם ברצונך להתקין לספרייה זו בכל אופן?
+DirDoesntExistTitle=התיקייה אינה קיימת
+DirDoesntExist=הספרייה: \n\n{0}\nNalready\ לא קיימת. האם ברצונך ליצור את הספרייה?
+WizardSelectComponents=בחר מרכיבים
+SelectComponentsDesc=איזה מרכיבים ברצונך להתקין?
+SelectComponentsLabel2=בחר את המרכיבים שברצונך להתקין; הסר את המרכיבים שאינך מעוניין להתקין. לחץ על 'הבא' כאשר אתה מוכן להמשיך.
+FullInstallation=התקנה מלאה
+CompactInstallation=התקנה קומפקטית
+CustomInstallation=התקנה מותאמת אישית
+NoUninstallWarningTitle=המרכיבים כבר קיימים
+NoUninstallWarning=ההתקנה זיהתה שהמרכיבים הבאים כבר מותקנים במחשב שלך: \n\n{0}\n\n אי-בחירה של מרכיבים אלה לא תסיר אותם. \n\n האם ברצונך להמשיך בכל זאת?
+ComponentSize1={0}  KB
+ComponentSize2={0}  MB
+ComponentSize3={0}  GB
+ComponentsDiskSpaceMBLabel=לבחירה הנוכחית דורשים לפחות {0} MB של שטח דיסק פנוי.
+WizardSelectTasks=בחר משימות נוספות
+SelectTasksDesc=איזה משימות נוספות יש לבצע?
+SelectTasksLabel2=בחר את המשימות הנוספות שברצונך לבצע בעת התקנת {0}, ולחץ על 'הבא'.
+CreateDesktopIcon=צור אייקון בשולחן עבודה
+WizardSelectProgramGroup=בחר תיקיית התחל
+SelectStartMenuFolderDesc=איכן ברצונך למקם את קיצורי הדרך של התוכנה?
+SelectStartMenuFolderLabel=בחר את תיקיית תפריט ההתחלה בה ברצונך להתקין את קיצורי הדרך של התוכנה, ולחץ על 'הבא'.
+NoIconsCheck=אל תיצור אייקונים
+MustEnterGroupName=עליך להזין את שם התיקייה.
+BadGroupName=שם התיקייה אינו יכול להכיל את התווים הבאים: \n\n{0}
+NoProgramGroupCheck2=אל תיצור תיקיית תפריט התחל
+WizardReady=מוכן להתקנה
+ReadyLabel1=מנהל ההתקנה מוכנה כעת להתחיל בהתקנת {0} במחשב שלך.
+ReadyLabel2a=לחץ על 'התקן' כדי להמשיך בהתקנה, או לחץ על 'חזרה' אם ברצונך לראות או לשנות את הגדרות.
+ReadyLabel2b=לחץ על 'התקן' כדי להמשיך בהתקנה.
+ReadyMemoUserInfo=נתוני משתמש:
+ReadyMemoDir=ספריית יעד:
+ReadyMemoType=סוג התקנה:
+ReadyMemoComponents=מרכיבים שנבחרו:
+ReadyMemoGroup=תיקיית תפריט התחל:
+ReadyMemoTasks=משימות נוספות:
+WizardPreparing=מתכונן להתקנה
+PreparingDesc=מנהל ההתקנה נערך להתקין את {0} במחשב שלך.
+PreviousInstallNotCompleted=ההתקנה/הסרה של תוכנה קודמת לא הושלמה. יהיה עליך להפעיל מחדש את המחשב כדי להשלים את ההתקנה. \n\n לאחר ההפעלה מחדש של מחשב, הרץ את תכנית ההתקנה שוב כדי להשלים את ההתקנה של {0}.
+CannotContinue=ההתקנה לא יכולה להמשיך. אנא לחץ על 'ביטול' כדי לצאת.
+WizardInstalling=מתקין
+InstallingLabel=אנא המתן בזמן ההתקנה {0} במחשב שלך.
+FinishedHeadingLabel=משלים את אשף ההתקנה של {0}
+FinishedLabelNoIcons=מנהל ההתקנה סיים להתקין את {0} במחשב שלך.
+FinishedLabel=מנהל ההתקנה סיים להתקין את {0} במחשב שלך. ניתן להפעיל את היישום על ידי בחירת האייקונים המותקנים.
+ClickFinish=לחץ על 'סיום' כדי לצאת ממנהל ההתקנה.
+FinishedRestartLabel=כדי להשלים את ההתקנה של {0}, מנהל ההתקנה צריך להפעיל מחדש את המחשב שלך. האם ברצונך להפעיל את נמחשב מחדש עכשיו?
+FinishedRestartMessage=כדי להשלים את ההתקנה של {0}, ההתקנה צריכה להפעיל מחדש את המחשב. \n\n האם להפעיל מחדש עכשיו?
+ShowReadmeCheck=כן, אני רוצה לראות את הקובץ "קרא אותי"
+YesRadio=כן, להפעיל מחדש עכשיו
+NoRadio=לא, אני אפעיל מחדש את המחשב מאוחר יותר
+RunEntryExec=הפעל את {0}
+RunEntryShellExec=צפה ב {0}
+ChangeDiskTitle=מנהל ההתקנה צריך את הדיסק הבא
+SelectDirectory=בחר ספרייה
+SelectDiskLabel2=אנא הכנס את הדיסק {0} ולחץ על 'אישור'.\n\n אם הקבצים בדיסק זה נמצאים בתיקייה שונה מזו המוצגת כאן, הזן את הנתיב הנכון או לחץ על עיון.
+PathLabel=נתיב:
+FileNotInDir2=הקובץ "{0}" לא אותר ב-"{1}". אנא הכנס את הדיסק הנכון או בחר תיקייה אחרת.
+SelectDirectoryLabel=אנא ציין את מיקומו של הדיסק הבא.
+SetupAborted=ההתקנה לא הושלמה. \n\n אנא תקן את הבעיה והפעל את תכנית ההתקנה שוב. 
+EntryAbortRetryIgnore=לחץ על נסה שנית כדי לנסות שוב, על התעלם כדי להמשיך בכל אופן, או על ביטול לביטול התקנה.
+StatusCreateDirs=יוצר ספריות ...
+StatusExtractFiles=פותח קבצים ...
+StatusCreateIcons=יוצר אייקונים של התוכנה ...
+StatusCreateIniEntries=יוצר ערכי INI ...
+StatusCreateRegistryEntries=יוצר ערכי רישום ...
+StatusRegisterFiles=רישום קבצים ...
+StatusSavingUninstall=שומר מידע להסרת ההתקנה ...
+StatusRunProgram=מסיים התקנה ...
+StatusRollback=מגלגל בחזרה את השינויים
+ErrorInternal2=שגיאה פנימית: {0}
+ErrorFunctionFailedNoCode={0} נכשל
+ErrorFunctionFailed={0} נכשל; קוד {1}.
+ErrorFunctionFailedWithMessage={0} נכשל; קוד {1}.\n{2}
+ErrorExecutingProgram=לא ניתן להריץ קובץ: :\n{0}
+ErrorRegOpenKey=שגיאה בפתיחת קוד רישום:\n{0}\{1}
+ErrorRegCreateKey=שגיאה ביצירת קוד רישום:\n{0}\{1}
+ErrorRegWriteKey=שגיאה בכתיבת קוד רישום:\n{0}\{1}
+ErrorIniEntry=שגיאה ביצירת קובץ INI בתיקיית "{0}".
+FileAbortRetryIgnore=לחץ על נסה שוב כדי לנסות שנית, על התעלם כדי לדלג על קובץ זה (לא מומלץ), או על בטל לביטול ההתקנה.
+FileAbortRetryIgnore2=לחץ על נסה שוב כדי לנסות שנית, על התעלם כדי להמשיך בכל זאת (לא מומלץ), או על בטל לביטול ההתקנה.
+SourceIsCorrupted=קובץ המקור פגום
+SourceDoesntExist=קובץ המקור "{0}" אינו קיים
+ExistingFileReadOnly=לחץ על נסה שנית כדי להסיר את התכונה "לקריאה בלבד" ונסה שוב, על התעלם כדי לדלג על קובץ זה, או על בטל לביטול התקנה.
+ErrorReadingExistingDest=אירעה שגיאה בעת ניסיון לקרוא את הקובץ הקיים:
+FileExists=הקובץ כבר קיים.. \n \n האם ברצונך להחליף אותו?
+ExistingFileNewer=הקובץ הקיים חדש יותר מזה שמנהל ההתקנה מנסה להתקין. מומלץ לשמור את הקובץ הקיים. \n\n האם ברצונך לשמור את הקובץ הקיים?
+ErrorChangingAttr=אירעה שגיאה בעת ניסיון לשנות את תכונות הקובץ הקיים:
+ErrorCreatingTemp=אירעה שגיאה בעת ניסיון ליצור קובץ בתיקיית היעד:
+ErrorReadingSource=אירעה שגיאה בעת ניסיון לקרוא את קובץ המקורי:
+ErrorCopying=אירעה שגיאה בעת ניסיון להעתיק קובץ:
+ErrorReplacingExistingFile=אירעה שגיאה בעת ניסיון להחליף את הקובץ הקיים:
+ErrorRestartReplace=RestartReplace נכשל:
+ErrorRenamingTemp=אירעה שגיאה בעת ניסיון לשנות את שם הקובץ בתיקיית היעד:
+ErrorRegisterServer=לא ניתן לרשום את ה-DLL/OCX: {0}
+ErrorRegisterServerMissingExport=יצוא DllRegisterServer לא נמצא
+ErrorRegisterTypeLib=לא ניתן לרשום את ספריית הסוגים: {0}
+ErrorOpeningReadme=אירעה שגיאה בעת הניסיון לפתוח את הקובץ README.
+ErrorRestartingComputer=מנהל ההתקנה לא הצליח להפעיל מחדש את המחשב. אנא עשה זאת ידנית.
+UninstallNotFound=קובץ "{0}" אינו קיים. לא ניתן להסיר את ההתקנה.
+UninstallUnsupportedVer=קובץ היומן הסר תוכנה "{0}" הוא בפורמט שאינו מוכר על ידי גרסה זו של מסיר ההתקנה. לא ניתן להסיר את ההתקנה
+UninstallUnknownEntry=נתון לא מוכר ( {0} ) נמצא ביומן הסרת ההתקנה
+ConfirmUninstall=האם אתה בטוח שברצונך להסיר לחלוטין את {0} על כל מרכיביו?
+OnlyAdminCanUninstall=התקנה זו ניתנת להסרה רק על ידי משתמש עם הרשאות מנהל.
+UninstallStatusLabel=אנא המתן בזמן ש-{0} מוסר מהמחשב שלך.
+UninstalledAll={0} הוסר בהצלחה מהמחשב שלך.
+UninstalledMost={0}הסרת התוכנה הושלמה. \n\n אלמנטים מסוימים לא ניתנים להסרה. ניתן להסיר אותם באופן ידני.
+UninstalledAndNeedsRestart=כדי להשלים את הסרת ההתקנה של {0}, יש להפעיל מחדש את המחשב. \n\n האם תרצה להפעיל מחדש עכשיו?
+UninstallDataCorrupted=הקובץ "{0}" פגום. לא ניתן להסיר את ההתקנה
+ConfirmDeleteSharedFileTitle=להסיר קובץ שיתוף?
+ConfirmDeleteSharedFile2=המערכת מציינת שהקובץ המשותף הבא כבר לא נמצא בשימוש על ידי שום תוכנה. האם אתה רוצה שתוכנת הסרת ההתקנה תסיר את הקובץ המשותף הזה? n\n\ אם ישנם יישומים אשר עדיין משתמשים בקובץ הזה והוא יוסר, יישומים אלו עלולים שלא לפעול כראוי. אם אתה לא בטוח, בחר "לא".השארת הקובץ במערכת לא יגרום כל נזק.
+SharedFileNameLabel=שם הקובץ:
+SharedFileLocationLabel=מיקום:
+WizardUninstalling=סטטוס הסרת תוכנה
+StatusUninstalling=הסרת תוכנה {0} ...
+MustEnterDirectory=עליך להגדיר תיקיית יעד.
+InvalidDirectory=הספרייה: n\n\{0}\n\n לא חוקית.
+CreateQuickLaunchIcon=צור אייקון הפעלה מהירה
+CreateIconsGroup=אייקונים נוספים:
+PrepareCancel=מתכונן לבטל ...
+Downloading=מוריד יישום ...
+# {0} is a file name
+DownloadingWithFileName=הורדת {0} ...
+# {0} הוא היישום שהוסר
+UninstallerMenuEntry=מסיר התקנה {0}
+# {0} is a file name
+AskRetryInstallFile=לא ניתן ליצור קובץ זה. האם לנסות שוב?
+WindowsServicesTitle=שירותים של Windows
+WindowsServicesSubtitle=אנא בחר את הפרטים של איך צריכים להיות מותקנים השירותים.
+# {0} הנו שם של שירות של Windows
+WindowsServiceInstallCheckbox=שירות התקנת "{0}"
+WindowsServiceStartOnBootupCheckbox=התחל באתחול מחדש
+UnixDaemonsTitle=דמונים
+# {0} is the name of the application
+UnixDaemonsSubTitle=אנא שים לב לדמונים המסופקים על ידי {0}.
+# {0} is the name of the Unix daemon
+UnixDaemonStartStopScriptLabel=התחל/הפסק תסריט לדמון "{0}":
+MacosStartupItemsTitle=פריטי אתחול
+MacosStartupItemsSubTitle=אנא בחר את הפרטים של איך צריכים להיות מותקנים פריטי האתחול.
+# {0} is the name of the Mac OS X startup item
+MacosStartupItemInstallCheckbox=התקן פריט אתחול "{0}"
+# {0} is the name of the service
+ErrorInstallService=לא ניתן להתקין שירות "{0}"
+# {0} is the name of the service
+ErrorUninstallService=לא ניתן להסיר את התקנת שירות "{0}"
+ErrorInstallIcons=לא ניתן להתקין אייקונים.
+# {0} is a version number, {1} is an application name
+AppleJavaMinVersionError=אתה צריך לפחות {0} מכונת ג'אווה וירטואלית כדי להתקין את {1}.\n נא להוריד אותו מ-http://java.com
+# {0} is a file name
+AskContinue=לא ניתן להתקין את הקובץ \n{0}\n האם ברצונך להמשיך בהתקנה?
+UninstallFailureTitle=תוצאות של מסיר ההתקנה
+# {0} is an application name
+UninstallFailureSubTitle=לא ניתן להסיר את כל הקבצים של {0}.
+UninstallFailureLabel=לא ניתן למחוק את הקבצים והספריות הבאים:
+# {0} is an application name
+DownloadingJre={0} מוריד כעת Java (TM) Runtime Environment אנא המתן.
+ErrorWininet=אין אפשרות לאתחל את Wininet.dll. אנא התקן Internet Explorer 3.0 /n או גרסה גבוהה יותר.
+DownloadJreError=שגיאת הורדת סביבת Java (TM) Runtime. \n בדוק את חיבור האינטרנט שלך ולהתחיל שוב את תכנית התקנה.
+ChooseJavaExe=בחר קובץ "java.exe" ב-JRE
+# {0} is an application name
+PrepareInstaller={0} נערך להתקין את אשף ההתקנה install4j אשר ינחה אותך בהמשך תהליך ההתקנה.
+InitConnection=מאתחל חיבור ...
+# {0} is the amount downloaded so far, {1} is the total size of the file, {3} is the download speed, measured in kb/s
+DownloadProgress={0} MB of {1} MB ({2}%) at {3} kb/s
+ButtonDownload=הורדה
+ButtonLocate=איתור
+WizardCaption=אשף התקנה install4j
+JvmStartError=לא ניתן לאתחל את Java (TM) VM. אנא הפעל מחדש \n את ההתקנה. אתה יכול להשתמש בפרמטר "/ ידני" \n כדי להוריד או בחר VM שונה באופן ידני.
+NoDirNameWithSpace=שם הספרייה אינו יכול להכיל רווחים.
+ConfirmReboot=כדי להשלים את ההתקנה צריך לאתחל מחדש את המערכת. האם ברצונך לאתחל את Windows עכשיו?
+ProgramGroupAllUsers=צור קיצורי דרך לכל המשתמשים
+# {0} is a the application name
+FinishedLabelUnix=מנהל ההתקנה סיים להתקין את {0} במחשב שלך. ניתן להפעיל את היישום על ידי ביצוע תסריטי האתחול המותקנים.
+WizardSelectLinkDir=בחר תיקייה לקישורי Symlinks
+SelectLinkDirDesc=איפה צריך {0} ליצור קישורים Symlinks להרצה?
+NoSymlinksCheck=אל תיצור קישורים Symlinks
+SelectLinkDirLabel=בחר את התיקייה בה {0} ייצור קישורים Symlinks, ולחץ על 'הבא'.
+LastRunFailed=ההתקנה לא התחילה בצורה נכונה בריצה האחרונה. \n זה כנראה נגרם על ידי VM Java פגום \n האם אתה רוצה להוריד או לבחור JVM ידנית?
+WizardSelectAssociations=בחר "קישורי קבצים"
+SelectAssociationsDesc=איזה קישורי קבצים יש ליצור?
+SelectAssociationsLabel=בחר את הקישורים קבצים שברצונך ליצור; נקה את קישורי הקבצים שאינך מעוניין ליצור. לחץ על 'הבא' כאשר אתה מוכן להמשיך.
+LocateBrowserExecutable=אתר את ההפעלה של דפדפן האינטרנט שלך.
+ErrorStartingBrowser=אירעה שגיאה בעת הפעלת הדפדפן.
+NoWritePermissions=אין לך הרשאת כתיבה בספרייה זו אנא בחר ספרייה אחרת.
+LocateOrDownloadJre2=האשף Install4j לא יכול לאתר את Java (TM) Runtime Environment במערכת שלך. אתה יכול לאתר או להוריד JRE מתאים. (גרסה מינימלית: {0}, גרסה מקסימלית: {1})
+LocateJre2=האשף Install4j לא יכול לאתר את Java (TM) Runtime Environment במערכת שלך. אנא אתר גרסת JRE מתאימה. (גרסה מינימלית: {0}, גרסה מקסימלית: {1})
+EnterPassword=נא הכנס את הסיסמא שלך:
+AdminGroupRequired=אתה חייב להיות חבר בקבוצת המנהלים
+EnterPasswordTitle=הכנס סיסמא
+WrongPassword=הסיסמא שהכנסת שגויה. אנא נסה שוב.
+FileCorrupted=קובץ ההתקנה פגום. אם זו הורדה, אנא נסה שוב.
+StatusStoppingServices=שירותי הפסקה
+StatusUninstallingPrevious=מסיר גרסה קודמת
+DifferentApplication=ספרייה זו מכילה יישום אחר. אנא בחר ספרייה אחרת.
+NoTargetApplication=זה מתקין תוספות. הספרייה שבחרת \n אינה מכילה את יישום היעד. \n בחר ספרייה אחרת.
+DifferentApplication2=ספריית ההתקנה מכילה יישום שונה. \n לא ניתן לבצע את ההתקנה.
+NoTargetApplication2=היישום להתקנת תוספות לא אותר במערכת שלך. \n לא ניתן לבצע את ההתקנה.
+InternetConnection=חיבור לאינטרנט
+DirectConnection=יש לי חיבור ישיר לאינטרנט
+ProxyConnection=אני מחובר לאינטרנט דרך שרת משנה (פרוקסי)
+ProxyAuthentication=נדרש אימות שרת משנה (פרוקסי)
+ProxyHost=מארח שרת משנה (פרוקסי)
+ProxyPort=יציאת שרת משנה (פרוקסי)
+UserName=שם משתמש:
+Password=סיסמא:
+PortValueError=רק ערכים מספריים בין 1 ל-65536 תקפים.
+DownloadError=לא ניתן להתחבר לשרת ההורדה.
+ConnectionParametersRequest=נא להזין את הפרמטרים שלך לחיבור לאינטרנט:
+ProxySettings=הגדרות שרת משנה (פרוקסי)
+EnterInformation=נא להזין את כל המידע הנדרש.
+ComponentHideDescription=הסתר תיאור
+ComponentShowDescription=הצג תיאור
+ComponentDownloadedFromInternet=מרכיב זה מורד מהאינטרנט
+ComponentIncludedInInstaller=מרכיב זה נכלל בהתקנה
+exe4j.MessageBoxTitle=שגיאה 
+exe4j.NoJvmFound=לא נמצא JVM במערכת שלך. \n נא הגדר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE או הורד JRE מ-www.java.com.
+exe4j.JvmInPath=ה-JVM שנמצא בנתיב שלך פגום. \n נא להתקין מחדש או להגדיר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE מותקנים
+# {0} is the name of an environment variable
+exe4j.JvmEnvVar=המשתנה הסביבתי {0} אינו מצביע על JDK או JRE עובד
+# {0} is a directory name
+exe4j.JvmDefinedPath=ה-JVM שנמצא ב-{0} פגום. \n נא להתקין מחדש או להגדיר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE מותקנים
+exe4j.JvmStart=לא ניתן לאתחל את JVM גודל הקובץ המרבי (-Xmx) עשוי להיות גדול מדי או ייתכן שתוכנת אנטי-וירוס או חומת-אש חוסמים את הביצוע.
+# do not translate "heap" and "-Xmx" 
+exe4j.JvmStart2=לא ניתן לאתחל את JVM גודל הקובץ המרבי (-Xmx) עשוי להיות גדול מדי או ייתכן שתוכנת אנטי-וירוס או חומת-אש חוסמים את הביצוע.
+# {0} is a file name
+exe4j.FileNotFound=קובץ או תיקיית {0} לא נמצא או שהוא ריק \n
+exe4j.WrongParameters=שימוש בפרמטר שגוי
+# {0} is the name of an environment variable
+exe4j.EnvVarNotDefined=יש להגדיר את המשתנה הסביבתי {0}
+# {0} is an internal error code
+exe4j.InternalError=אירעה שגיאה פנימית (קוד שגיאה: {0})
+exe4j.MainClassNotFound=לא ניתן לטעון את הסוג העיקרי.
+exe4j.MainMethodNotFound=השיטה העיקרית לא נמצאה.
+exe4j.ErrorDialogCaption=שגיאה
+exe4j.ErrorDialogOk=אישור
+# {0} is an application name
+exe4j.ErrorDialogText=אירעה שגיאה בעת הפעלת {0} :
+WizardInstallationType=בחר את סוג ההתקנה
+SelectInstallationType=איזה סוג התקנה יש לבצע?
+SelectInstallationTypeLabel=בחר את סוג ההתקנה שברצונך לבצע. לחץ על 'הבא' כאשר אתה מוכן להמשיך.
+StandardInstallation=התקנה סטנדרטית
+StandardInstallationDescription=כל המרכיבים הדרושים לשימוש רגיל מותקנים. חלק מהמרכיבים שבשימוש לעתים נדירות אינם מותקנים על מנת לחסוך מקום בדיסק. 
+FullInstallationDescription=כל המרכיבים במנהל התקנה זה הותקנו.
+CustomInstallationDescription=בשלב הבא תוכל להתאים אישית את המרכיבים שיש להתקין. הבחירה הראשונית מוגדרת כהתקנה סטנדרטית. 
+SelectAll=בחר הכל
+SelectNone=אין בחירה
+# See the NoProgramGroupCheck2 message, this is just the positive version of the question with a question mark
+ConsoleProgramGroupCheck=צור תיקיית תפריט אתחול
+# See the NoSymlinksCheck message, this is just the positive version of the question with a question mark
+ConsoleSymlinksCheck=צור קישורי symlinks
+# {0} is the name of the application
+updater.WindowTitle=מעדכן - {0}
+# {0} is the name of the application
+updater.WelcomeTitle=ברוכים הבאים למעדכן {0}
+updater.WelcomeInfoText=הוא בודק אם יש עדכון עבור {0}.
+updater.CheckForUpdateTitle=מחפש עדכונים
+updater.CheckForUpdateSubtitle=אנא המתן בזמן שהמעדכן בודק אם יש עדכון זמין.
+updater.CheckForUpdateLabel=מחפש עדכונים ...
+# {0} is a URL
+updater.CheckForUpdateError=פרטי העדכון לא ניתנים להורדה. n\n\{0}\n\n אנא בדוק את חיבור הרשת שלך.
+updater.UpToDateTitle=אתה מעודכן
+# {0} is the name of the application
+updater.UpToDateInfoText=אתה משתמש בגרסה האחרונה של {0}
+updater.NewVersionAvailableTitle=גרסה חדשה זמינה
+updater.NewVersionAvailableSubtitle=גרסה חדשה של {0} זמינה. אנא בדוק את הפרטים מטה.
+updater.CurrentVersionLabel=גרסה נוכחית:
+updater.NewVersionLabel=גרסה חדשה:
+updater.ShowComments=הצג הערות
+updater.DownloadLocationLabel=בשלב הבא, המתקין יורד. תופיע הודעה לפני שההתקנה תתבצע. אם אתה לא רוצה להוריד את מנהל ההתקנה, לחץ על 'ביטול' עכשיו.
+updater.DownloadToLabel=הורד ל:
+updater.DownloadSizeLabel=גודל ההורדה:
+updater.CommentsTitle=הערות
+updater.CommentsSubTitle=אנא קרא את ההערות בנוגע לעדכון.
+updater.CommentsLabel=הערות
+updater.DownloadTitle=מוריד את המתקין
+updater.DownloadSubTitle=אנא המתן בזמן התקנת המעדכן
+# {0} is a URL
+updater.DownloadError=אירעה שגיאה בזמן ההורדה מ-\n\n{0}n\n\ אנא בדוק את חיבור הרשת שלך.
+updater.FinishTitle=ההורדה הסתיימה
+updater.FinishInfoText=העדכון של {0} הורד למחשב שלך.
+updater.LaunchError=התקנת העדכון לא יכולה להתבצע
+updater.LaunchUpdaterQuestion=האם ברצונך להפעיל את מתקין העדכון עכשיו?
+updater.LaunchUpdaterLabel=כן, בצע את התקנת העדכון עכשיו
+updater.DoNotLaunchUpdaterLabel=לא, אני אבצע את התקנת העדכון מאוחר יותר
+updater.OpenContainingFolderLabel=פתח את התיקייה המכילה את העדכון
+WaitLabel=אנא המתן ...
+# {0} is the name of the application
+ConsoleWelcomeLabel=זה יתקין את {0} במחשב שלך.
+# {0} is the name of the application
+SelectTasksUninstallLabel=בחר את המשימות הנוספות שברצונך לבצע תוך הסרת התקנה של {0}, ולחץ על 'הבא'.
+RollbackWindowTitle=מגלגל בחזרה את השינויים
+ExitUninstallerMessage=הסרת ההתקנה לא הושלמה. אם תצא עכשיו, התוכנה לא תוסר. n\n\ אתה יכול להפעיל את תוכנת ההסרה שוב במועד אחר כדי להשלים את הסרת התוכנה. \n\n\ לצאת מתוכנת ההסרה?
+ExitApplication=האם אתה באמת רוצה לצאת?
+exe4j.PowerUserRequired=אתה חייב להיות משתמש מתקדם כדי להפעיל תוכנה זו.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired=אתה חייב להיות מחובר כמשתמש root בעת התקנת תוכנה זו.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired2=פעולה זו דורשת הרשאות root
+UseSudo=השימוש ב-sudo (נא להזין את הסיסמא שלך)
+# "root" is the Unix super-user, do not translate
+UseSu=השתמש ב-su (הכנס ססמת root)
+languages.zh_CN=סינית (פשוטה)
+languages.zh_TW=סינית (מסורתית)
+languages.hr=קרואטית
+languages.cs=צ'כית
+languages.da=דנית
+languages.nl=הולנדית
+languages.en=אנגלית
+languages.fi=פינית
+languages.fr=צרפתית
+languages.de=גרמנית
+languages.el=יוונית
+languages.hu=הונגרית
+languages.it=איטלקית
+languages.ja=יפנית
+languages.ko=קוריאנית
+languages.no=נורבגית
+languages.pl=פולנית
+languages.pt=פורטוגזית
+languages.pt_BR=פורטוגזית(ברזיל)
+languages.ru=רוסית
+languages.es=ספרדית
+languages.sv=שוודית
+languages.tr=תורכית
+languages.ro=רומנית
+LanguageSelectionDialogTitle=בחירת שפה
+LanguageSelectionLabel=אנא בחר שפה:
+ConsoleMultipleSelectionLabel=אנא הזן את רשימת הערכים הנבחרים מופרדים בפסיקים או לחץ על [Enter] לבחירת ברירת המחדל:
+# This is the "Enter" key on the keyboard
+ConsoleEnter=Enter
+RequiredDiskSpaceLabel=שטח דיסק נדרש:
+FreeDiskSpaceLabel=שטח דיסק פנוי:
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.NoJvmFound3264=לא נמצא JVM במערכת שלך. \n נא הגדר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE {0}-bit מותקנים או הורד JRE מ-www.java.com.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.JvmInPath3264=ה-JVM שנמצא בנתיב שלך פגום. \n נא להתקין מחדש או להגדיר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE {0}-bit מותקנים
+# {0} is the name of an environment variable, don't translate 32-bit
+exe4j.JvmEnvVar32=המשתנה הסביבתי {0} אינו מצביע על JDK או JRE 32-bit עובד
+# {0} is the name of an environment variable, don't translate 64-bit
+exe4j.JvmEnvVar64=המשתנה הסביבתי {0} אינו מצביע על JDK או JRE 64-bit עובד
+# {0} is a directory name, don't translate 32-bit
+exe4j.JvmDefinedPath32=ה-JVM שנמצא בנתיב שלך פגום. \n נא להתקין מחדש או להגדיר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE 32-bit מותקנים
+# {0} is a directory name, don't translate 64-bit
+exe4j.JvmDefinedPath64=ה-JVM שנמצא בנתיב שלך פגום. \n נא להתקין מחדש או להגדיר EXE4J_JAVA_HOME\n כדי להצביע על JDK או JRE 64-bit מותקנים
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateOrDownloadJre3=האשף Install4j לא יכול לאתר את Java (TM) Runtime Environment במערכת שלך. אתה יכול לאתר או להוריד {0}-בית JRE מתאים.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateJre3=האשף Install4j לא יכול לאתר את Java (TM) Runtime Environment במערכת שלך. אנא אתר {0}-בית JRE מתאים.
+MinimumVersion=מינימלית:
+MaximumVersion=גרסה מקסימלית:
+ReadLicenseFirst=אנא קרא קודם את הרישיון במלואו.
+UnattendedRunningFailure=היישום פועל כעת. אנא סגור את כל הגרסאות והפעל התקנה זו שוב.
+# don't translate -DproxyAuthPassword=[password]
+ProxyPasswordRequired=דרושה ססמת פרוקסי. הגדר את הפרמטר - DproxyAuthPassword=[סיסמא].
+EnterCredentialsTitle=הזן את האישורים
+# {0} is a URL
+EnterCredentialsLabel=נא להזין את האישורים שלך להורדה מהאתר {0}
+# don't translate -DserverAuthUser=[user] / -DproxyAuthPassword=[password]
+ServerPasswordRequired=נדרשת ססמת שרת. אנא הגדר את הפרמטרים - DserverAuthUser=[משתמש] ו-DserverAuthPassword=[סיסמא].
+CheckForUpdatesLabel=בדוק אם יש עדכונים:
+updateSchedule.start=בכל אתחול
+updateSchedule.daily=יומית
+updateSchedule.weekly=שבועית
+updateSchedule.monthly=חודשית
+updateSchedule.never=לעולם לא
+DirectoryChooserLabel=כתוב את שם התיקייה החדשה:
+DirectoryChooserTitle=צור תיקייה חדשה
+DirectoryChooserTooltip=תיקייה חדשה
+#Same as ConsoleProgramGroupCheck, only not phrased as a question
+ProgramGroupCheck=צור תיקיית תפריט אתחול
+#Same as ConsoleSymlinksCheck, only not phrased as a question
+SymlinksCheck=צור קישורי symlinks
+ButtonIgnore=התעלם
+ButtonRetry=נסה שוב
+ButtonQuit=צא
+ButtonCreateUser=צור משתמש
+UserNameLabel=שם משתמש:
+PasswordLabel=סיסמא:
+DescriptionLabel=תיאור:
+LocalGroupNameLabel=קבוצה מקומית:
+CreateUserHeader=צור משתמש מקומי חדש עם המאפיינים הבאים:
+CreateUserError=אירעה שגיאה בעת יצירת המשתמש.
+CreateUserErrorAccessDenied=הגישה נדחתה.
+CreateUserErrorGroupExists=הקבוצה שנבחרה כבר קיימת.
+CreateUserErrorGroupNotFound=הקבוצה שנבחרה לא נמצאה.
+CreateUserErrorPasswordRequirements=דרישות הסיסמא לא הושלמו.
+CreateUserErrorUserExists=המשתמש כבר קיים.
+CreateUserSuccess=המשתמש נוצר בהצלחה.
+# Similar to SetupAppRunningError
+SetupAppRunningErrorAddOn=תוכנת ההתקנה זיהתה שהיישום פועל כעת. n\n\ אנא סגור את כל הגרסאות שלה עכשיו, ולאחר מכן לחץ על 'אישור' כדי להמשיך, או על ביטול כדי לצאת.
+# A response file contains previous user input 
+HelpResponseFile=השתמש בקובץ תגובה
+# "Console" is a command line window, like a DOS box
+HelpConsoleMode=הפעל במצב "קונסולה"
+# "Unattended" means silently, without user input
+HelpUnattendedMode=הפעל במצב "ללא התערבות"
+HelpUnattendedDir=במצב "ללא התערבות", הגדר את ספריית ההתקנה
+HelpUnattendedOverwrite=במצב "ללא התערבות", החלף את כל הקבצים
+HelpUnattendedSplash=במצב "ללא התערבות", הראה את חלון ההתקדמות
+HelpUnattendedConsole=במצב "ללא התערבות", פתח קונסולה המראה את הפלט
+# "GUI" means graphical user interface
+HelpGuiMode=הפעל במצב GUI
+HelpManual=בחר ידנית סביבת עבודה Java
+HelpSystemProperties=הגדר מאפייני מערכת
+HelpHelp=הצג את העזרה הזאת
+HelpHeaderLabel=האפשרויות הבאות של פקודות שורה נמצאות זמינות:
+# {0} is a list of numbers, the whole message should be in parentheses
+ConsoleComponentHelpLabel=(כדי להציג את התיאור של מרכיב כלשהו, נא להזין את אחד מ-{0} )
+PreviousInstallationLabel=זוהתה התקנה קודמת. האם ברצונך לעדכן את ההתקנה הזו?
+RadioUpdateInstallation=כן, עדכן את ההתקנה הקיימת
+RadioNewInstallation=לא, התקן בספרייה אחרת
+WelcomeLabel3=זה יתקין את {0} במחשב שלך. אשף ההתקנה יוביל אותך צעד אחר צעד בהתקנה.
+# {0} is a directory
+NoWritePermissions2=אין לך הרשאת כתיבה לספרייה \n\n{0}n\n\ אנא בחר ספרייה אחרת.
+# Translate "directory", but not "-dir"
+DestinationDirHelp=אתה יכול להגדיר תיקיית יעד על ידי מעבר -dir [directory]
+UnattendedInstallationDir=נקבעה ספריית התקנה ל-{0}.
+ProgramGroupExists=קבוצת התוכנה שנבחרה כבר קיימת. האם ברצונך להשתמש בה בכל מקרה?
+ButtonExit=יציאה
+ButtonContinue=המשך
+UninstallerFinish=מסיים את הסרת ההתקנה ...
+ProcessElevationTitle=מתחיל את התהליך אם הרשאות גבוהות
+TextfieldEmptyWarning=אין להשאיר שדה טקסט זה ריק.
+# {0} and {1} are application names, "Retry" must be like in ButtonRetry, "Cancel" like in ButtonCancel
+AppRunningError={0} זיהה ש-{1} פועל כעת. n\n\ אנא סגור את התהליכים הבאים, ולאחר מכן לחץ על נסה שוב כדי להמשיך, או על ביטול כדי לצאת.
+AppRunningErrorAddOn={0} זיהה שהיישום פועל כעת. n\n\ אנא סגור את התהליכים הבאים, ולאחר מכן לחץ על נסה שוב כדי להמשיך, או על ביטול כדי לצאת.
+ButtonCloseProcesses=סגור תהליכים
+ButtonTerminateProcesses=סיים את התהליכים
+RunningProcessesDetected=זוהו תהליכים הרצים כעת
+DownloadFileCorrupt=הקובץ שהורד פגום. האם ברצונך לנסות שוב?
+DownloadInterrupted=ההורדה נקטעה. האם ברצונך לנסות שוב?
+DownloadContentError=לא ניתן להוריד קבצי תוכן. האם ברצונך לנסות שוב?
+# Do not translate "dock", it is a UI element on Mac OS X
+AddToDock=הוסף למזח
+UploadingWithFileName=העלאה {0} ...
+Uploading=העלאה ...
+UploadInterrupted=ההעלאה נקטעה. האם ברצונך לנסות שוב?
+InstallerName={0} תוכנת התקנה
+PasswordsDoNotMatch=הססמאות לא תואמות.
+# Like PasswordLabel above only for a repetition, with colon at the end
+RepeatPasswordLabel=הכנס את הסיסמא שנית:
+UninstallerPreparing=מתכונן להסיר את ההתקנה
+# Same as AdminPrivilegesRequired, only use "execute" instead of "install"
+AdminPrivilegesRequiredExecute=עליך להיות בעל הרשאות מנהל להפעלת תוכנה זו.
+# Same as RootPrivilegesRequired, only use "execute" instead of "install"
+RootPrivilegesRequiredExecute=אתה חייב להיות מחובר כ- Root בעת הפעלת תוכנה זו.
+# Same as StatusRunProgram, only use "execute" instead of "install"
+StatusRunProgramExecute=מסיים ביצוע ...

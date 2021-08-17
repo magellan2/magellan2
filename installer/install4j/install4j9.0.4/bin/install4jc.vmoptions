@@ -1,0 +1,2 @@
+# One VM option per line
+-include-options install4j.vmoptions

@@ -1,0 +1,17 @@
+import com.install4j.gradle.Install4jTask
+
+plugins {
+    id 'com.install4j.gradle' version '9.0.4'
+}
+
+if (!hasProperty('install4jHomeDir')) {
+    throw new RuntimeException("Specify install4jHomeDir in gradle.properties")
+}
+
+install4j {
+    installDir = file(install4jHomeDir)
+}
+
+task media(type: Install4jTask) {
+    projectFile = file('hello.install4j')
+}

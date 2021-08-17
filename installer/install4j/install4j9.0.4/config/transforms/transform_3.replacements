@@ -1,0 +1,7 @@
+sys.mediaDirectory=sys.mediaDir
+sys.installerDirectory=sys.installerDir
+isErrorOccured=isErrorOccurred
+setErrorOccured=setErrorOccurred
+sys.programGroup.name=sys.programGroupName
+sys.programGroup.linkDir=sys.symlinkDir
+sys.programGroup.allUsers=sys.programGroupAllUsers

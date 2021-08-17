@@ -1,0 +1,9 @@
+--add-opens java.base/java.net=ALL-UNNAMED
+--add-opens java.base/java.util=ALL-UNNAMED
+--add-opens java.desktop/javax.swing.plaf.basic=ALL-UNNAMED
+--add-opens java.desktop/javax.swing.plaf.metal=ALL-UNNAMED
+--add-opens java.desktop/javax.swing.text.html=ALL-UNNAMED
+--add-opens java.desktop/javax.swing=ALL-UNNAMED
+--add-opens java.desktop/sun.swing=ALL-UNNAMED
+--add-opens java.desktop/sun.awt=ALL-UNNAMED
+--add-opens java.desktop/sun.java2d=ALL-UNNAMED

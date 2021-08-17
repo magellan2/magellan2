@@ -1,0 +1,524 @@
+SetupAppTitle=Kurulum
+SetupWindowTitle={0} Kurulumu
+UninstallAppTitle=Kaldır
+UninstallAppFullTitle={0} Kaldır
+InformationTitle=Bilgi
+ConfirmTitle=Onayla
+ErrorTitle=Hata
+SetupLdrStartupMessage={0} kurulacaktır. Devam etmek istiyor musunuz?
+LdrCannotCreateTemp=Geçici dosya oluşturulamıyor. Kurulum iptal edildi
+LdrCannotExecTemp=Geçici dizindeki dosya yürütülemiyor. Kurulum iptal edildi
+LastErrorMessage={0}.\n\nHata {1}: {2}
+SetupFileMissing=Kurulum dizininde {0} dosyası yok. Lütfen sorunu gideriniz veya programın yeni bir kopyasını edininiz.
+SetupFileCorrupt=Kaynak dosyaları bozuk Lütfen programın yeni bir kopyasını edininiz.
+SetupFileCorruptOrWrongVer=Kurulum dosyaları bozuk veya Kurulumun bu sürümüyle uyumlu değil. Lütfen sorunu gideriniz veya programın yeni bir kopyasını edininiz.
+NotOnThisPlatform=Bu program {0} üzerinde çalışmaz.
+OnlyOnThisPlatform=Bu programın {0} üzerinde çalıştırılması gerekir.
+WinVersionTooLowError=Bu program {0} sürüm {1} veya daha yükseğini gerektirir.
+WinVersionTooHighError=Bu program {0} sürüm {1} veya daha yükseğine kurulamaz.
+AdminPrivilegesRequired=Bu programın kurulumunu yaparken yönetici olarak oturum açmanız gerekir.
+PowerUserPrivilegesRequired=Bu programın kurulumunu yaparken yönetici veya İleri Düzeydeki Kullanıcılar grubunun bir üyesi olarak oturum açmanız gerekir.
+SetupAppRunningError=Kurulum, {0} programının şu anda çalıştığını belirledi.\n\nLütfen tüm kopyalarını kapatınız ve devam etmek için TAMAM'ı veya çıkmak için İptal'i tıklayınız.
+UninstallAppRunningError=Kaldır, {0} programının çalıştığını belirledi.\n\nLütfen tüm kopyalarını kapatınız ve devam etmek için TAMAM'ı veya çıkmak için İptal'i tıklayınız.
+ErrorCreatingDir=Kurulum, "{0}" dizinini oluşturamadı
+ErrorTooManyFilesInDir=Çok fazla dosya içerdiğinden dolayı, "{0}" dizininde dosya oluşturulamadı
+ExitSetupTitle=Kurulumdan çık
+ExitSetupMessage=Kurulum tamamlanmadı. Şimdi çıkarsanız program kurulmaz.\n\nKurulumu tamamlamak için Kurulum programını başka bir zaman tekrar çalıştırabilirsiniz.\n\nKurulumdan çıkmak istiyor musunuz?
+AboutSetupMenuItem=Kurulum hakkında...
+AboutSetupTitle=Kurulum hakkında
+AboutSetupMessage={0} sürüm {1}\n{2}\n\n{0} giriş sayfası:\n{3}
+ButtonBack=Geri
+ButtonNext=İleri
+ButtonInstall=Kur
+ButtonOK=TAMAM
+ButtonCancel=İptal
+ButtonYes=Evet
+ButtonYesToAll=Tümüne Evet
+ButtonNo=Hayır
+ButtonNoToAll=Tümüne Hayır
+ButtonFinish=Son
+ButtonBrowse=Gözat...
+ClickNext=Devam etmek için İleri'yi veya Kurulumdan çıkmak için İptal'i tıklayınız.
+WelcomeLabel1={0} Kurulum Sihirbazına hoş geldiniz
+WelcomeLabel2={0} bilgisayarınıza kurulacaktır.\n\nDevam etmeden önce diğer uygulamaların tümünü kapatmanızı öneririz.
+WizardPassword=Şifre
+PasswordLabel1=Bu kurulum, şifre ile korunmuştur.
+PasswordLabel3=Lütfen şifreyi giriniz ve devam etmek için İleri'yi tıklayınız. Şifreler büyük/küçük harfe karşı duyarlıdır.
+PasswordEditLabel=Şifre:
+IncorrectPassword=Girdiğiniz parola yanlış. Lütfen tekrar deneyiniz.
+WizardLicense=Lisans Sözleşmesi
+LicenseLabel=Devam etmeden önce lütfen aşağıdaki önemli bilgileri okuyunuz.
+LicenseLabel3=Lütfen aşağıdaki Lisans Sözleşmesini okuyunuz. Kuruluma devam etmeden önce bu sözleşmenin koşullarını kabul etmeniz gerekir.
+LicenseAccepted=Sözleşmeyi kabul ediyorum
+LicenseNotAccepted=Sözleşmeyi kabul etmiyorum
+WizardInfoBefore=Bilgi
+InfoBeforeLabel=Devam etmeden önce lütfen aşağıdaki önemli bilgileri okuyunuz.
+InfoBeforeClickLabel=Kuruluma devam etmeye hazır olduğunuzda İleri'yi tıklayınız.
+WizardInfoAfter=Bilgi
+InfoAfterLabel=Devam etmeden önce lütfen aşağıdaki önemli bilgileri okuyunuz.
+InfoAfterClickLabel=Kuruluma devam etmeye hazır olduğunuzda İleri'yi tıklayınız.
+WizardUserInfo=Kullanıcı Bilgisi
+UserInfoDesc=Lütfen bilgilerinizi giriniz.
+UserInfoName=Kullanıcı Adı:
+UserInfoOrg=Kuruluş:
+UserInfoSerial=Seri Numarası:
+UserInfoNameRequired=Bir ad girmeniz gerekiyor.
+WizardSelectDir=Hedef Dizini seçiniz
+SelectDirDesc={0} programının yüklenmesini istediğiniz yeri seçiniz.
+SelectDirLabel={0} programının yüklenmesini istediğiniz dizini seçiniz, ardından İleri'yi tıklayınız.
+DiskSpaceMBLabel=Program için en az {0} MB disk alanı gerekir.
+ToUNCPathname=Kurulum, bir UNC yol adına kurulum yapamıyor. Bir ağa kurulum yapmaya çalışıyorsanız, bir ağ sürücüsünü eşlemeniz gerekir.
+InvalidPath=Sürücü harfiyle birlikte bir tam yol; örneğin:\n\nC:\APP\n\nveya aşağıdaki biçimde bir UNC yolu girmeniz gerekir:\n\n\\sunucu\paylaşım
+InvalidDrive=Seçtiğiniz sürücü veya UNC paylaşımı yok veya erişilir durumda değil. Lütfen başka birini seçiniz.
+DiskSpaceWarningTitle=Disk Alanı Yetersiz
+DiskSpaceWarning=Kurulum için en az {0} KB boş alan gerekiyor, ancak seçili sürücüde yalnızca {1} KB kullanılabilir alan var.\n\nYine de devam etmek istiyor musunuz?
+BadDirName32=Dizin adları, aşağıdaki karakterlerden herhangi birini içeremez:\n\n{0}
+DirExistsTitle=Dizin zaten var
+DirExists={0}\n\ndizini\n\nzaten var. Yine de bu dizine kurulum yapmak istediğinizden emin misiniz?
+DirDoesntExistTitle=Dizin Yok
+DirDoesntExist=Kaynak dosyası\n\n"{0}"\n\nyok Dizini oluşturmak istiyor musunuz?
+WizardSelectComponents=Bileşenleri seçiniz
+SelectComponentsDesc=Hangi bileşenlerin yüklenmesini istiyorsunuz?
+SelectComponentsLabel2=Yüklenmesini istediğiniz bileşenleri seçiniz; yüklemek istemediğiniz bileşenleri temizleyiniz. Devam etmeye hazır olduğunuzda İleri'yi tıklayınız.
+FullInstallation=Tam kurulum
+CompactInstallation=Kısa kurulum
+CustomInstallation=Özel kurulum
+NoUninstallWarningTitle=Bileşenler Var
+NoUninstallWarning=Kurulum, aşağıdaki bileşenlerin bilgisayarınızda zaten kurulu olduğunu belirledi:\n\n{0}\n\nBu bileşenlerdeki seçimi kaldırmak bunları kaldırmaz.\n\nYine de devam etmek istediğinizden emin misiniz?
+ComponentSize1={0} KB
+ComponentSize2={0} MB
+ComponentSize3={0} GB
+ComponentsDiskSpaceMBLabel=Geçerli seçim için en az {0} MB disk alanı gerekir.
+WizardSelectTasks=Ek Görevleri Seçiniz
+SelectTasksDesc=Hangi ek görevlerin gerçekleştirilmesini istiyorsunuz?
+SelectTasksLabel2=Kurulumun {0} programını kurarken gerçekleştirmesini istediğiniz ek görevleri seçiniz, sonra İleri'yi tıklayınız.
+CreateDesktopIcon=Masaüstü simgesi oluştur
+WizardSelectProgramGroup=Başlat Menüsü Dizinini Seçiniz
+SelectStartMenuFolderDesc=Kurulumun programın kısayollarını yerleştirmesini istediğiniz yeri belirtiniz.
+SelectStartMenuFolderLabel=Kurulumun programın kısayollarını yerleştirmesini istediğiniz Başlat Menüsü dizinini seçiniz, sonra İleri'yi tıklayınız.
+NoIconsCheck=Hiçbir simge oluşturma
+MustEnterGroupName=Bir dizin adı girmeniz gerekiyor.
+BadGroupName=Dizin adı, aşağıdaki karakterlerden herhangi birini içeremez:\n\n{0}
+NoProgramGroupCheck2=Başlat Menüsünde dizin oluşturma
+WizardReady=Kuruluma hazır
+ReadyLabel1=Kurulum artık {0} programını bilgisayarınıza kurmaya hazır.
+ReadyLabel2a=Kuruluma devam etmek için Kur'u, herhangi bir ayarı gözden geçirmek veya değiştirmek içinse Geri'yi tıklayınız.
+ReadyLabel2b=Kuruluma devam etmek için Kur'u tıklayınız.
+ReadyMemoUserInfo=Kullanıcı bilgisi:
+ReadyMemoDir=Hedef dizin:
+ReadyMemoType=Kurulum türü:
+ReadyMemoComponents=Seçili bileşenler:
+ReadyMemoGroup=Başlat Menüsü klasörü:
+ReadyMemoTasks=Ek görevler:
+WizardPreparing=Kurulum hazırlanıyor
+PreparingDesc=Kurulum, {0} programının bilgisayarınıza kurulumunu hazırlıyor.
+PreviousInstallNotCompleted=Önceki programın kurulumu/kaldırılması tamamlanmamış. Kurulumu tamamlamak için bilgisayarınızı yeniden başlatmanız gerekir.\n\n{0} kurulumunu tamamlamak için, bilgisayarınızı yeniden başlattıktan sonra Kurulum'u yeniden çalıştırınız.
+CannotContinue=Kurulum devam edemiyor. Çıkmak için lütfen İptal'i tıklayınız.
+WizardInstalling=Kuruluyor
+InstallingLabel=Lütfen Kurulum bilgisayarınıza {0} programını kurarken bekleyiniz.
+FinishedHeadingLabel={0} Kurulum Sihirbazı tamamlanıyor
+FinishedLabelNoIcons=Kurulum, {0} programının bilgisayarınıza kurulumunu tamamladı.
+FinishedLabel=Kurulum, {0} programının bilgisayarınıza kurulumunu tamamladı. Yüklü simgeleri seçerek uygulamayı başlatabilirsiniz.
+ClickFinish=Kurulum'dan çıkmak için Son'u tıklayınız.
+FinishedRestartLabel={0} kurulumunu tamamlamak için bilgisayarınızı yeniden başlatmanız gerekir. Bilgisayarınızı şimdi yeniden başlatmak istiyor musunuz?
+FinishedRestartMessage={0} kurulumunu tamamlamak için bilgisayarınızı yeniden başlatmanız gerekir.\n\nBilgisayarınızı şimdi yeniden başlatmak istiyor musunuz?
+ShowReadmeCheck=Evet, BENİOKU dosyasını görüntülemek istiyorum
+YesRadio=Evet, bilgisayarımı şimdi yeniden başlatmak istiyorum
+NoRadio=Hayır, bilgisayarımı sonra yeniden başlatmak istiyorum
+RunEntryExec={0} programını çalıştır
+RunEntryShellExec={0} programını görüntüle
+ChangeDiskTitle=Kurulum için bir sonraki disketi yerleştiriniz
+SelectDirectory=Dizini seçiniz
+SelectDiskLabel2=Lütfen {0}. disketi yerleştiriniz ve TAMAM'ı tıklayınız.\n\nBu disketteki dosyalar, aşağıda görüntülenen dizinden farklı bir dizindeyse, yolu düzeltiniz veya Gözat'ı tıklayınız.
+PathLabel=Yol:
+FileNotInDir2={0} dosyası "{1}" altında bulunamadı. Lütfen doğru disketi yerleştiriniz veya farklı bir dizin seçiniz.
+SelectDirectoryLabel=Lütfen bir sonraki disketin konumunu belirtiniz.
+SetupAborted=Kurulum tamamlanmadı.\n\n.Lütfen sorunu gideriniz ve Kurulum'u tekrar çalıştırınız.
+EntryAbortRetryIgnore=Yeniden denemek için Yeniden Dene'yi tıklayınız, yine de devam etmek için Yoksay'ı, kurulumu iptal etmek için de İptal'i tıklayınız.
+StatusCreateDirs=Dizinler oluşturuluyor...
+StatusExtractFiles=Dosyalar çıkarılıyor...
+StatusCreateIcons=Program simgeleri oluşturuluyor...
+StatusCreateIniEntries=INI girişleri oluşturuluyor...
+StatusCreateRegistryEntries=Kayıt defteri girişleri oluşturuluyor...
+StatusRegisterFiles=Dosyalar kaydediliyor...
+StatusSavingUninstall=Kaldırma bilgileri kaydediliyor...
+StatusRunProgram=Kurulum bitiriliyor...
+StatusRollback=Değişiklikler geri alınıyor...
+ErrorInternal2=İç hata: {0}
+ErrorFunctionFailedNoCode={0} başarısız
+ErrorFunctionFailed={0} başarısız; kod {1}
+ErrorFunctionFailedWithMessage={0} başarısız; kod {1}.\n{2}
+ErrorExecutingProgram=Aşağıdaki dosya yürütülemiyor:\n{0}
+ErrorRegOpenKey=Aşağıdaki kayıt defteri anahtarını açarken hata oluştu:\n{0}\{1}
+ErrorRegCreateKey=Aşağıdaki kayıt defteri anahtarını oluştururken hata oluştu:\n{0}\{1}
+ErrorRegWriteKey=Aşağıdaki kayıt defteri anahtarını yazarken hata oluştu:\n{0}\{1}
+ErrorIniEntry={0} dosyasında INI girişini oluştururken hata oluştu.
+FileAbortRetryIgnore=Yeniden denemek için Yeniden Dene'yi, bu dosyayı geçmek için Yoksay'ı (tavsiye edilmez), kurulumu iptal etmek için de İptal'i tıklayınız.
+FileAbortRetryIgnore2=Yeniden denemek için Yeniden Dene'yi tıklayınız, yine de devam etmek için Yoksay'ı (tavsiye edilmez), kurulumu iptal etmek için de İptal'i tıklayınız.
+SourceIsCorrupted=Kaynak dosyası bozuk
+SourceDoesntExist=Kaynak dosyası "{0}" yok
+ExistingFileReadOnly=Varolan dosya salt okunur olarak işaretlenmiş.\n\nSalt okunur özniteliğini kaldırıp yeniden denemek için Yeniden Dene'yi, bu dosyayı geçmek için Yoksay'ı, kurulumu iptal etmek içinse İptal'i tıklayınız.
+ErrorReadingExistingDest=Varolan dosyayı okumaya çalışırken bir hata oluştu:
+FileExists=Dosya zaten var.\n\nKurulum'un, üzerine yazmasını ister misiniz?
+ExistingFileNewer=Varolan dosya, Kurulum'un yüklemeye çalıştığından daha yeni. Varolan dosyayı saklamanız önerilir.\n\nVarolan dosyayı saklamak istiyor musunuz?
+ErrorChangingAttr=Varolan dosyanın özniteliklerini değiştirmeye çalışırken bir hata oluştu:
+ErrorCreatingTemp=Hedef dizinde bir dosya oluşturmaya çalışırken bir hata oluştu:
+ErrorReadingSource=Kaynak dosyayı okumaya çalışırken bir hata oluştu:
+ErrorCopying=Bir dosyayı kopyalamaya çalışırken bir hata oluştu:
+ErrorReplacingExistingFile=Varolan dosyayı başkasıyla değiştirmeye çalışırken bir hata oluştu:
+ErrorRestartReplace=Yeniden başlattıktan sonra değiştirme başarısız:
+ErrorRenamingTemp=Hedef dizindeki bir dosyanın adını değiştirmeye çalışırken bir hata oluştu:
+ErrorRegisterServer=DLL/OCX kaydedilemedi: {0}
+ErrorRegisterServerMissingExport=Dışa verilen DllRegisterServer bulunamadı
+ErrorRegisterTypeLib=Kitaplık türü kaydedilemedi: {0}
+ErrorOpeningReadme=BENİOKU dosyasını açmaya çalışırken bir hata oluştu.
+ErrorRestartingComputer=Kurulum, bilgisayarı yeniden başlatamadı. Lütfen bilgisayarı manuel olarak yeniden başlatınız.
+UninstallNotFound={0} dosyası yok. Kaldırılamıyor.
+UninstallUnsupportedVer=Kaldırma günlük dosyası "{0}", kaldırma uygulamasının bu sürümünün tanıdığı biçimde değil. Kaldırılamıyor.
+UninstallUnknownEntry=Kaldırma günlüğünde bilinmeyen bir giriş ({0}) bulundu
+ConfirmUninstall={0} programını ve tüm bileşenlerini tamamen kaldırmak istediğinizden emin misiniz?
+OnlyAdminCanUninstall=Bu kurulum yalnızca yönetici ayrıcalıkları olan bir kullanıcı tarafından kaldırılabilir.
+UninstallStatusLabel=Lütfen {0} programının bilgisayarınızdan kaldırılmasını bekleyiniz.
+UninstalledAll={0} bilgisayarınızdan kaldırıldı.
+UninstalledMost={0} programını kaldırma tamamlandı.\n\nBazı öğeler kaldırılamadı. Bunları manuel olarak kaldırabilirsiniz.
+UninstalledAndNeedsRestart={0} programını kaldırmayı tamamlamak için bilgisayarınızı yeniden başlatmanız gerekir.\n\nBilgisayarınızı şimdi yeniden başlatmak istiyor musunuz?
+UninstallDataCorrupted="{0}" dosyası bozuk. Kaldırılamıyor
+ConfirmDeleteSharedFileTitle=Paylaşımlı dosyayı kaldırmak istiyor musunuz?
+ConfirmDeleteSharedFile2=Sistem, aşağıdaki paylaşımlı dosyanın artık hiçbir program tarafından kullanılmadığını belirtiyor. Kaldır'ın bu paylaşımlı dosyayı kaldırmasını istiyor musunuz?\n\nBu dosya herhangi bir program tarafından hâlen kullanıyorsa, dosya kaldırıldığında bu programlar düzgün bir biçimde çalışmayabilir. Emin değilseniz Hayır'ı seçiniz. Dosyayı sisteminizde bırakmanızın hiçbir zararı yok.
+SharedFileNameLabel=Dosya adı:
+SharedFileLocationLabel=Dizin:
+WizardUninstalling=Kaldırma Durumu
+StatusUninstalling={0} kaldırılıyor...
+MustEnterDirectory=Bir hedef dizin girmeniz gerekir.
+InvalidDirectory={0}\n\ndizini\n\ngeçersiz.
+CreateQuickLaunchIcon=Hızlı Başlatma simgesi oluştur
+CreateIconsGroup=Ek simgeler:
+PrepareCancel=İptal etmeye hazırlanıyor ...
+Downloading=Yükleniyor ...
+# {0} bir dosya adıdır
+DownloadingWithFileName=Yükleniyor {0} ...
+# {0} kaldırılan uygulamadır
+UninstallerMenuEntry={0} kaldırma uygulaması
+# {0} bir dosya adıdır
+AskRetryInstallFile={0}\nBu dosya oluşturulamadı. Yeniden deneyeyim mi?
+WindowsServicesTitle=Windows Hizmetleri
+WindowsServicesSubtitle=Lütfen yüklemek istediğiniz hizmetlerin ayrıntılarını seçiniz.
+# {0} Windows hizmetinin adıdır
+WindowsServiceInstallCheckbox={0} hizmetini kurunuz
+WindowsServiceStartOnBootupCheckbox=Önyüklemede başlat
+UnixDaemonsTitle=Arka plan programları
+# {0} uygulamanın adıdır
+UnixDaemonsSubTitle=Lütfen {0} tarafından sağlanan arka plan programlarına dikkat ediniz.
+# {0} Unix arka plan programının adıdır
+UnixDaemonStartStopScriptLabel={0} arka plan programı için komut dosyası başlat/durdur:
+MacosStartupItemsTitle=Başlangıç öğeleri
+MacosStartupItemsSubTitle=Lütfen yüklemek istediğiniz başlangıç öğelerinin ayrıntılarını seçiniz.
+# {0} macOS başlangıç öğesinin adıdır
+MacosStartupItemInstallCheckbox={0} başlangıç öğesini kurunuz
+# {0} hizmetin adıdır
+ErrorInstallService={0} hizmeti kurulamadı
+# {0} hizmetin adıdır
+ErrorUninstallService={0} hizmeti kaldırılamadı
+ErrorInstallIcons=Simgeler yüklenemedi.
+# {0} bir sürüm numarasıdır, {1} bir uygulama adıdır
+AppleJavaMinVersionError={1} programını kurmak için en azından bir {0} Java Sanal Makinesi gerekir.\nLütfen bunu http://java.com adresinden yükleyiniz
+# {0} bir dosya adıdır
+AskContinue={0} dosyası \nyüklenemedi.\nKuruluma devam etmek istiyor musunuz?
+UninstallFailureTitle=Kaldırma uygulamasının sonuçları
+# {0} bir uygulama adıdır
+UninstallFailureSubTitle={0} uygulamasının tüm dosyaları kaldırılamadı.
+UninstallFailureLabel=Aşağıdaki dosyalar ve dizinler silinemedi:
+# {0} bir uygulama adıdır
+DownloadingJre={0} uygulaması Java(TM) Runtime Environment'ı yüklüyor. Lütfen bekleyiniz.
+ErrorWininet=wininet.dll başlatılamıyor. Lütfen Internet\nExplorer 3.0 veya üstünü kurunuz.
+DownloadJreError=Java(TM) Runtime Ortamı'nı yüklerken hata oluştu.\nLütfen Internet bağlantınızı kontrol ediniz ve kurulumu yeniden başlatınız.
+ChooseJavaExe=Lütfen JRE'nin "java.exe" dosyasını seçiniz
+# {0} bir uygulama adıdır
+PrepareInstaller={0}, kalan kurulum işleminde size rehberlik edecek olan install4j Sihirbazı'nı hazırlıyor.
+InitConnection=Bağlantı kuruluyor ...
+# {0} is the amount downloaded so far, {1} is the total size of the file, {3} is the download speed, measured in kb/s
+DownloadProgress={0} MB / {1} MB (%{2}), {3} kb/s hızında
+ButtonDownload=Yükle
+ButtonLocate=Bul
+WizardCaption=install4j Sihirbazı
+JvmStartError=Java(TM) VM başlatılamadı. Lütfen kurulumu\nyeniden başlatınız. Farklı bir VM yüklemek veya manuel\nolarak seçmek için "/manuel" parametresini kullanabilirsiniz.
+NoDirNameWithSpace=Dizin adında boşluk bulunmamalıdır.
+ConfirmReboot=Kurulumu tamamlamak için bilgisayarınızı yeniden yüklemeniz gerekir. Windows'u şimdi yeniden yüklemek ister misiniz?
+ProgramGroupAllUsers=Tüm kullanıcılar için kısa yol oluştur
+# {0} bir uygulama adıdır
+FinishedLabelUnix=Kurulum, {0} programının bilgisayarınıza kurulumunu tamamladı. Kurulum, {0} uygulamasının bilgisayarınıza kurulumunu tamamladı. Başlat simgelerini seçerek uygulamayı başlatabilirsiniz.
+WizardSelectLinkDir=Sembolik bağlantı dizinini seçiniz
+SelectLinkDirDesc={0} uygulaması, bağlantıları çalıştırılabilir dosyaların neresinde oluştursun?
+NoSymlinksCheck=Hiçbir sembolik bağlantı oluşturma
+SelectLinkDirLabel={0} uygulamasının bağlantı oluşturmasını istediğiniz dizini seçiniz, daha sonra İleri'yi tıklayınız..
+LastRunFailed=Kurulum son programda doğru başlamadı.\nBunun sebebi bozuk bir Java VM olabilir.\nJVM'i yüklemek mi yada manuel olarak seçmek mi istersiniz?
+WizardSelectAssociations=Dosya çağrışımlarını seçiniz
+SelectAssociationsDesc=Hangi dosya çağrışımlarının oluşturulmasını istersiniz?
+SelectAssociationsLabel=Oluşturulmasını istediğiniz dosya çağrışımlarını seçiniz, oluşturmak istemediğiniz dosya çağrışımlarını temizleyiniz. Devam etmeye hazır olduğunuzda İleri'yi tıklayınız.
+LocateBrowserExecutable=Lütfen internet tarayıcı programının yerinin belirleyiniz.
+ErrorStartingBrowser=Tarayıcıyı başlatırken bir hata oluştu.
+NoWritePermissions=Bu dizini düzenlemek için gerekli izine sahip değilsiniz. Lütfen başka birini seçiniz.
+LocateOrDownloadJre2=Install4j sihirbazı sisteminizde Java(TM) Runtime Environment birimi bulamadı. Uygun bir JRE bulabilir veya yükleyebilirsiniz (en düşük sürüm: {0}, en yüksek sürüm: {1})
+LocateJre2=Install4j sihirbazı sisteminizde Java(TM) Runtime Environment birimi bulamadı. Lütfen ygun bir JRE bulunuz. (en düşük sürüm: {0}, en yüksek sürüm: {1})
+EnterPassword=Lütfen şifrenizi giriniz:
+AdminGroupRequired=Yönetici grubunun bir üyesi olmanız gerekir
+EnterPasswordTitle=Şifreyi giriniz
+WrongPassword=Girdiğiniz şifre yanlış. Lütfen tekrar deneyiniz.
+FileCorrupted=Kurulum dosyası bozuk. Eğer bu bir yükleme işlemi ise, lütfen tekrar deneyiniz.
+StatusStoppingServices=Hizmet Durduruluyor
+StatusUninstallingPrevious=Önceki sürüm kaldırılıyor
+DifferentApplication=Bu dizin farklı bir uygulama içermektedir. Lütfen başka birini seçiniz.
+NoTargetApplication=Bu bir ek kurulum sihirbazıdır. \nSeçmiş olduğunuz dizin hedef uygulamayı içermemektedir.\nLütfen başka bir dizin seçiniz.
+DifferentApplication2=Kurulum dizini farklı bir uygulama içermektedir.\nKurulum gerçekleştirilemez.
+NoTargetApplication2=Ek kurulum sihirbazının hedef uygulaması sisteminizde bulunamamaktadır.\nKurulum gerçekleştirilemez.
+InternetConnection=İnternet bağlantısı
+DirectConnection=İnternet'e doğrudan bağlantım var
+ProxyConnection=İnternet'e proxy aracılığıyla bağlanıyorum
+ProxyAuthentication=Proxy kimlik doğrulaması gerekmektedir
+ProxyHost=Proxy anasistemi
+ProxyPort=Proxy bağlantı noktası
+UserName=Kullanıcı adı
+Password=Şifre
+PortValueError=Sadece 1 ile 65536 arasındaki sayısal değerler geçerlidir.
+DownloadError=Yükleme sunucusu ile bağlantı sağlanamamaktadır.
+ConnectionParametersRequest=Lütfen internet bağlantı şifrelerinizi giriniz:
+ProxySettings=Proxy ayarları
+EnterInformation=Lütfen gerekli bütün bilgileri giriniz.
+ComponentHideDescription=Tanımlamayı gizle
+ComponentShowDescription=Tanımlamayı göster
+ComponentDownloadedFromInternet=Bileşen internetten yüklenmiştir
+ComponentIncludedInInstaller=Bileşen, kurulum sihirbazı içerisinde yer almaktadır
+exe4j.MessageBoxTitle=Hata
+exe4j.NoJvmFound=Sisteminizde herhangi bir JVM bilgisi bulunamamıştır.\nLütfen JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız veya www.java.com internet adresinden JRE yükleyiniz.
+exe4j.JvmInPath=Yolunuzda bulunan JVM hasar görmüştür.\nLütfen kurulumu yeniden yapınız veya JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız.
+# {0} çevre değişkeninin adıdır
+exe4j.JvmEnvVar={0} çevre değişkeni çalışan bir JDK veya JRE bilgisini\nişaret etmemektedir.
+# {0} bir dizin adıdır
+exe4j.JvmDefinedPath=Yolunuzda bulunan JVM hasar görmüştür.\nLütfen kurulumu yeniden yapınız veya JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız.
+exe4j.JvmStart=Java(TM) VM başlatılamadı. Azami heap büyüklüğü (-Xmx) çok büyük olabilir veya bir antivirüs veya güvenlik duvarı uygulaması yürütmeyi bloke ediyor olabilir.
+# do not translate "heap" and "-Xmx" 
+exe4j.JvmStart2=Java(TM) VM başlatılamadı. Azami heap büyüklüğü (-Xmx) çok büyük olabilir veya bir antivirüs veya güvenlik duvarı uygulaması yürütmeyi bloke ediyor olabilir.
+# {0} bir dosya adıdır
+exe4j.FileNotFound={0} dosyası veya dizini bulunamadı veya boş\n
+exe4j.WrongParameters=Yanlış Değer Kullanımı
+# {0} çevre değişkeninin adıdır
+exe4j.EnvVarNotDefined={0} çevre değişkeni tanımlanmalıdır
+# {0} bir iç hatadır
+exe4j.InternalError=Bir iç hata oluştu (hata kodu: {0})
+exe4j.MainClassNotFound=Ana sınıfı yükleyemedi.
+exe4j.MainMethodNotFound=Ana yöntem bulunamadı.
+exe4j.ErrorDialogCaption=Hata
+exe4j.ErrorDialogOk=Tamam
+# {0} bir uygulama adıdır
+exe4j.ErrorDialogText={0} başlatılırken bir hata oluştu:
+WizardInstallationType=Kurulum Şeklini seçiniz
+SelectInstallationType=Ne tür bir kurulum şekli uygulanmalıdır?
+SelectInstallationTypeLabel=Uygulamak istediğiniz kurulum şeklini seçiniz. Devam etmeye hazır olduğunuzda İleri'yi tıklayınız.
+StandardInstallation=Normal kurulum
+StandardInstallationDescription=Bu kurulum sihirbazında yer alan bütün bileşenler kurulmuştur. Bazı az sıklıkta kullanılan bileşenler disk boyutunda boş alan sağlamak amacıyla kurulmamıştır.
+FullInstallationDescription=Bu kurulum sihirbazında yer alan bütün bileşenler kurulmuştur.
+CustomInstallationDescription=Bir sonraki adımda, kurulması gereken bileşenleri özelleştirebilirsiniz. Başlangıçta belirlenen seçimler normal kuruluma göre ayarlanmıştır. 
+SelectAll=Tümünü Seç
+SelectNone=Hiçbirini seçme
+# See the NoProgramGroupCheck2 message, this is just the positive version of the question with a question mark
+ConsoleProgramGroupCheck=Başlat Menüsü klasörü oluşturulsun mu?
+# See the NoSymlinksCheck message, this is just the positive version of the question with a question mark
+ConsoleSymlinksCheck=Sembolik bağlantı oluşturulsun mu?
+# {0} uygulamanın adıdır
+updater.WindowTitle=Güncelleyici - {0}
+# {0} uygulamanın adıdır
+updater.WelcomeTitle={0} Güncelleyicisine hoş geldiniz
+updater.WelcomeInfoText=Bu, {0} için herhangi bir güncellemenin olup olmadığını kontrol edecektir.
+updater.CheckForUpdateTitle=Güncellemenin olup olmadığı kontrol ediliyor
+updater.CheckForUpdateSubtitle=Güncelleyici herhangi bir güncellemenin olup olmadığını kontrol ederken lütfen bekleyiniz.
+updater.CheckForUpdateLabel=Güncellemenin olup olmadığı kontrol ediliyor ...
+# {0} bir URLdir
+updater.CheckForUpdateError=\n\n{0} biriminden güncelleme bilgisi yüklenemiyor\n\nLütfen ağ bağlantınızı kontrol ediniz.
+updater.UpToDateTitle=En son güncellemelere sahipsiniz
+# {0} uygulamanın adıdır
+updater.UpToDateInfoText={0}'ın en son sürümünü kullanmaktasınız
+updater.NewVersionAvailableTitle=Yeni Sürüm Bulunmaktadır
+updater.NewVersionAvailableSubtitle={0}'ın yeni bir sürümü bulunmaktadır, lütfen aşağıdaki detaylara göz atınız.
+updater.CurrentVersionLabel=Mevcut sürüm:
+updater.NewVersionLabel=Yeni sürüm:
+updater.ShowComments=Yorumları göster
+updater.DownloadLocationLabel=Bir sonraki adımda, kurulum sihirbazı yüklenecektir. Kurulum sihirbazı başlatılmadan önce size uyarı verilecektir. Eğer kurulum sihirbazını yüklemek istemiyorsanız, şimdi İptal'i tıklayınız.
+updater.DownloadToLabel=Yüklenecek yer:
+updater.DownloadSizeLabel=Yükleme boyutu:
+updater.CommentsTitle=Yorumlar
+updater.CommentsSubTitle=Lütfen aşağıdaki güncelleme ile ilgili yorumları okuyunuz.
+updater.CommentsLabel=Yorumlar
+updater.DownloadTitle=Kurulum Sihirbazının Yüklenmesi
+updater.DownloadSubTitle=Güncelleme kurulum sihirbazı yüklenirken lütfen bekleyiniz
+# {0} bir URLdir
+updater.DownloadError={0}\n\nbiriminden yükleme esnasında bir hata oluştu\n\nLütfen ağ bağlantınızı kontrol ediniz.
+updater.FinishTitle=Yükleme Tamamlandı
+updater.FinishInfoText={0} güncellemesi bilgisayarınıza yüklenmiştir.
+updater.LaunchError=Güncelleme kurulum sihirbazı başlatılamadı
+updater.LaunchUpdaterQuestion=Güncelleme kurulum sihirbazını şimdi başlatmak istiyor musunuz?
+updater.LaunchUpdaterLabel=Evet, güncelleme kurulum sihirbazını şimdi başlat
+updater.DoNotLaunchUpdaterLabel=Hayır, güncelleme kurulum sihirbazını daha sonra başlatacağım
+updater.OpenContainingFolderLabel=İlgili dizini aç
+WaitLabel=Lütfen bekleyiniz ...
+# {0} uygulamanın adıdır
+ConsoleWelcomeLabel=Bu, {0} biriminin bilgisayarınıza kurulumunu gerçekleştirecektir.
+# {0} uygulamanın adıdır
+SelectTasksUninstallLabel={0} biriminin bilgisayardan kaldırılması esnasında uygulanmak üzere Ayarlamak istediğiniz ilave görevleri seçiniz, sonra İleri (Next) bölümüne tıklayınız.
+RollbackWindowTitle=Değişikliklerin eski haline getirilmesi
+ExitUninstallerMessage=Kurulum tamamlanmadı. Şimdi çıkarsanız program kurulmaz.\n\nKurulumu tamamlamak için Kurulum programını başka bir zaman tekrar çalıştırabilirsiniz.\n\nKurulumdan çıkmak istiyor musunuz?
+ExitApplication=Gerçekten çıkmak istiyor musunuz?
+exe4j.PowerUserRequired=Bu programı çalıştırabilmek için en az Poweruser yetkisine sahip olmalısınız.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired=Bu programın kurulumunu yaparken root olarak oturum açmış olmanız gerekmektedir.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired2=Bu uygulama root ayrıcalıkları gerektirmektedir.
+UseSudo=sudo kullan (lütfen kişisel şifrenizi giriniz)
+# "root" is the Unix super-user, do not translate
+UseSu=su kullan (lütfen root şifresini giriniz)
+languages.zh_CN=Çince (Basitleştirilmiş)
+languages.zh_TW=Çince (Geleneksel)
+languages.hr=Hırvatça
+languages.cs=Çekçe
+languages.da=Danca
+languages.nl=Hollandaca
+languages.en=İngilizce
+languages.fi=Fince
+languages.fr=Fransızca
+languages.de=Almanca
+languages.el=Yunanca
+languages.hu=Macarca
+languages.it=İtalyanca
+languages.ja=Japonca
+languages.ko=Korece
+languages.no=Norveç dili
+languages.pl=Lehçe
+languages.pt=Portekizce
+languages.pt_BR=Portekizce (Brezilya dili)
+languages.ru=Rusça
+languages.es=İspanyolca
+languages.sv=İsveç dili
+languages.tr=Türkçe
+languages.ro=Rumence
+LanguageSelectionDialogTitle=Dil Seçimi
+LanguageSelectionLabel=Lütfen bir dil seçiniz:
+ConsoleMultipleSelectionLabel=Lütfen seçilen değerlerin virgülle ayrılmış bir listesini giriniz veya varsayılan seçim için [Enter] tuşuna basınız.
+# This is the "Enter" key on the keyboard
+ConsoleEnter=Enter
+RequiredDiskSpaceLabel=Gerekli olan disk alanı:
+FreeDiskSpaceLabel=Boş olan disk alanı:
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.NoJvmFound3264=Sisteminizde herhangi bir JVM bilgisi bulunamamıştır.\nLütfen {0}-bit JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız veya www.java.com internet adresinden JRE yükleyiniz.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.JvmInPath3264=Yolunuzda bulunan JVM hasar görmüştür.\nLütfen kurulumu yeniden yapınız veya {0}-bit JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız.
+# {0} is the name of an environment variable, don't translate 32-bit
+exe4j.JvmEnvVar32={0} çevre değişkeni çalışan bir 32-bit JDK veya JRE bilgisini\nişaret etmemektedir.
+# {0} is the name of an environment variable, don't translate 64-bit
+exe4j.JvmEnvVar64={0} çevre değişkeni çalışan bir 64-bit JDK veya JRE bilgisini\nişaret etmemektedir.
+# {0} is the name of an environment variable, don't translate 32-bit
+exe4j.JvmDefinedPath32={0} üzerinde bulunan JVM hasar görmüştür.\nLütfen kurulumu yeniden yapınız veya 32-bit JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız.
+# {0} is the name of an environment variable, don't translate 64-bit
+exe4j.JvmDefinedPath64={0} üzerinde bulunan JVM hasar görmüştür.\nLütfen kurulumu yeniden yapınız veya 64-bit JDK veya JRE kurulumu yapılmış bir noktaya EXE4J_JAVA_HOME\nbilgisini tanımlayınız.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateOrDownloadJre3=Install4j sihirbazı sisteminizde Java(TM) Runtime Environment birimi bulamadı. Uygun bir JRE bulabilir veya yükleyebilirsiniz
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateJre3=Install4j sihirbazı sisteminizde Java(TM) Runtime Environment birimi bulamadı. Lütfen uygun bir {0}-bit JRE bulunuz.
+MinimumVersion=en düşük sürüm:
+MaximumVersion=en yüksek sürüm:
+ReadLicenseFirst=Lütfen lisans koşullarının tamamını okuyunuz.
+UnattendedRunningFailure=Kurulum, uygulamanın şu anda çalıştığını belirledi. Lütfen tüm çalışan kopyaları kapatınız.
+# don't translate -DproxyAuthPassword=[password]
+ProxyPasswordRequired=Proxy için bir şifre gerekiyor. Lütfen -DproxyAuthPassword=[password] parametresini atayınız
+EnterCredentialsTitle=Kimlik bilgilerini giriniz.
+# {0} bir URLdir
+EnterCredentialsLabel=Lütfen {0} yükleme sayfası için kimlik bilgilerini giriniz.
+# don't translate -DproxyAuthPassword=[password]
+ServerPasswordRequired=Sunucu şifresi gerekiyor. Lütfen -DserverAuthUser=[user] and -DserverAuthPassword=[password] parametrelerini atayınız.
+CheckForUpdatesLabel=Güncelleştirmeleri kontrol et:
+updateSchedule.start=Her başlatmada
+updateSchedule.daily=Günlük
+updateSchedule.weekly=Haftalık
+updateSchedule.monthly=Aylık
+updateSchedule.never=Hiçbir zaman
+DirectoryChooserLabel=Yeni dizinin adı:
+DirectoryChooserTitle=Yeni dizin oluştur:
+DirectoryChooserTooltip=Yeni dizin
+#Same as ConsoleProgramGroupCheck, only not phrased as a question
+ProgramGroupCheck=Başlatma menüsünde dizin oluştur
+#Same as ConsoleSymlinksCheck, only not phrased as a question
+SymlinksCheck=Sembolik bağlantılar oluşturuluyor
+ButtonIgnore=Yoksay
+ButtonRetry=Yeniden Dene
+ButtonQuit=İptal
+ButtonCreateUser=Kullanıcı oluştur
+UserNameLabel=Kullanıcı adı
+PasswordLabel=Şifre:
+DescriptionLabel=Tanım:
+LocalGroupNameLabel=Yerel grup:
+CreateUserHeader=Aşağıda belirtilen özellikleri olan yeni bir kullanıcı oluştur:
+CreateUserError=Kullanıcı oluşturulurken bir hata oluştu.
+CreateUserErrorAccessDenied=Erişim reddedildi.
+CreateUserErrorGroupExists=Seçili grup zaten var:
+CreateUserErrorGroupNotFound=Seçili grup bulunamadı.
+CreateUserErrorPasswordRequirements=Gerekli şifre koşulları yerine getirilmedi.
+CreateUserErrorUserExists=Bu kullanıcı zaten var.
+CreateUserSuccess=Kullanıcı başarıyla oluşturuldu.
+# Similar to SetupAppRunningError
+SetupAppRunningErrorAddOn=Kurulum, uygulamanın şu anda çalıştığını belirledi.\n\nLütfen tüm kopyalarını kapatınız ve devam etmek için TAMAM'ı veya çıkmak için İptal'i tıklayınız.
+# A response file contains previous user input 
+HelpResponseFile=Bir yanıtlama dosyası kullan
+# "Console" is a command line window, like a DOS box
+HelpConsoleMode=Konsol kipini etkinleştir
+# "Unattended" means silently, without user input
+HelpUnattendedMode=İşletmensiz kipi etkinleştir
+HelpUnattendedDir=İşletmensiz kipte, kurulum dizinini ata
+HelpUnattendedOverwrite=İşletmensiz kipte, dosyaların üzerine yazdır
+HelpUnattendedSplash=İşletmensiz kipte, aşama penceresini göster
+HelpUnattendedConsole=İşletmensiz kipte, çıktı konsolünü aç
+# "GUI" means graphical user interface
+HelpGuiMode=GUI kipini etkinleştir
+HelpManual=Bir Java Runtime Environment'ı manuel olarak seç
+HelpSystemProperties=Sistem özelliklerini ata
+HelpHelp=Bu yardımı göster
+HelpHeaderLabel=Aşağıda belirtilen komut satırı seçenekleri mümkündür:
+# {0} is a list of numbers, the whole message should be in parentheses
+ConsoleComponentHelpLabel=(Bir bileşenin tanımını göstermek için {0} numaralarından birini giriniz)
+PreviousInstallationLabel=Varolan bir kurulum bulundu. Bu kurulumu güncellemek istiyor musunuz?
+RadioUpdateInstallation=Evet, varolan kurulumu güncelle
+RadioNewInstallation=Hayır, başka bir dizine kur
+WelcomeLabel3=Bu, {0} biriminin bilgisayarınıza kurulumunu gerçekleştirecektir. Bu sırada Kurulum Sihirbazı size adım adım yol gösterecektir.
+# {0} bir dizin adıdır
+NoWritePermissions2=0}\n\ndizinini düzenlemek için gerekli izine sahip değilsiniz.\n\nLütfen başka bir dizin seçiniz
+# Translate "directory", but not "-dir"
+DestinationDirHelp=Kurulum dizinini -dir [directory] ile atayabilirsiniz.
+UnattendedInstallationDir=Kurulum dizini {0} olarak atandı.
+ProgramGroupExists=Seçili olan başlatma menüsü dizini zaten var. Yine de bunu kullanmak istiyor musunuz?
+ButtonExit=Çık
+ButtonContinue=Devam
+UninstallerFinish=Kaldırmayı sona erdirme...
+ProcessElevationTitle=İşlemi yükseltilmiş yetkilerle başlat
+TextfieldEmptyWarning=Bu metin alanı boş bırakılmamalıdır.
+# {0} and {1} are application names, "Retry" must be like in ButtonRetry, "Cancel" like in ButtonCancel
+AppRunningError={0}, şu anda {1} uygulamasının çalışmakta olduğunu belirledi.\n\nŞimdi lütfen aşağıda belirtilen işlemleri kapatınız ve devam etmek için "Yeniden Dene"yi veya bitirmek için "İptal"i tıklayınız.
+AppRunningErrorAddOn={0}, şu anda uygulamanın çalışmakta olduğunu belirledi.\n\nŞimdi lütfen aşağıda belirtilen işlemleri kapatınız ve devam etmek için "Yeniden Dene"yi veya bitirmek için "İptal"i tıklayınız.
+ButtonCloseProcesses=İşlemi bitir
+ButtonTerminateProcesses=İşlemlere son ver
+RunningProcessesDetected=Yürümekte olan işlemler bulundu
+DownloadFileCorrupt=Kurulum dosyası bozuk. Yeniden denemek istiyor musunuz?
+DownloadInterrupted=Yükleme işlemi durdu. Yeniden denemek istiyor musunuz?
+DownloadContentError=Kurulum dosyaları yüklenemedi. Yeniden denemek istiyor musunuz?
+# Do not translate "dock", it is a UI element on macOS
+AddToDock=Dock'a ekle
+UploadingWithFileName={0} karşıya yükleniyor ...
+Uploading=Karşıya yükleniyor ...
+UploadInterrupted=Karşıya yükleme kesildi. Tekrar denemek istiyor musunuz?
+InstallerName={0} Kurulum programı
+PasswordsDoNotMatch=Parolalar eşleşmiyor.
+# Like PasswordLabel above only for a repetition, with colon at the end
+RepeatPasswordLabel=Parolayı tekrarla:
+UninstallerPreparing=Kaldırmaya hazırlan
+# Same as AdminPrivilegesRequired, only use "execute" instead of "install"
+AdminPrivilegesRequiredExecute=Bu programı çalıştırmak için yönetici yetkileriniz bulunmalıdır.
+# Same as RootPrivilegesRequired, only use "execute" instead of "install"
+RootPrivilegesRequiredExecute=Bu programı çalıştırmak için kök kullanıcı olarak oturum açmalısınız.
+# Same as StatusRunProgram, only use "execute" instead of "install"
+StatusRunProgramExecute=Çalıştırma bitiriliyor ...

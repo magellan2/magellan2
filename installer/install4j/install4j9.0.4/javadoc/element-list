@@ -1,0 +1,16 @@
+com.install4j.api
+com.install4j.api.actions
+com.install4j.api.beaninfo
+com.install4j.api.beans
+com.install4j.api.context
+com.install4j.api.events
+com.install4j.api.formcomponents
+com.install4j.api.laf
+com.install4j.api.launcher
+com.install4j.api.macos
+com.install4j.api.screens
+com.install4j.api.styles
+com.install4j.api.unix
+com.install4j.api.update
+com.install4j.api.windows
+com.install4j.api.windows.service

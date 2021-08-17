@@ -1,0 +1,62 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.test.hello</groupId>
+  <artifactId>hello-world</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0</version>
+  <name>Hello World</name>
+  <url>https://www.ej-technologies.com</url>
+  <properties>
+    <!-- TODO specify install4j installation directory in the property below -->
+    <!-- <install4j.home>CHANGEME</install4j.home> -->
+  </properties>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ej-technologies</id>
+      <url>https://maven.ej-technologies.com/repository</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.install4j</groupId>
+        <artifactId>install4j-maven</artifactId>
+        <version>9.0.4</version>
+        <executions>
+          <execution>
+            <id>install4j</id>
+            <phase>package</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <projectFile>${project.basedir}/hello.install4j</projectFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-property</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireProperty>
+                  <property>install4j.home</property>
+                  <message>The property "install4j.home" must be specified, uncomment the property definition in the POM file</message>
+                </requireProperty>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,524 @@
+SetupAppTitle=الإعداد
+SetupWindowTitle=الإعداد - {0}
+UninstallAppTitle=إلغاء التثبيت
+UninstallAppFullTitle={0} إلغاء التثبيت
+InformationTitle=المعلومات
+ConfirmTitle=تأكيد
+ErrorTitle=خطأ
+SetupLdrStartupMessage=سوف يقوم هذا بتثبيت {0}‏. هل تريد الاستمرار؟
+LdrCannotCreateTemp=تعذر إنشاء ملف مؤقت. تم إلغاء عملية الإعداد
+LdrCannotExecTemp=تعذر تنفيذ ملف في المجلد المؤقت. تم إلغاء عملية الإعداد
+LastErrorMessage={0}‏.\n\nخطأ {1}: {2}
+SetupFileMissing=الملف {0} غير موجود بمجلد التثبيت. يرجى حل المشكلة أو الحصول على نسخة جديدة من البرنامج.
+SetupFileCorrupt=ملفات الإعداد تالفة. يرجى الحصول على نسخة جديدة من البرنامج.
+SetupFileCorruptOrWrongVer=ملفات الإعداد تالفة أو غير متوافقة مع هذا الإصدار من برنامج الإعداد. يرجى حل المشكلة أو الحصول على نسخة جديدة من البرنامج.
+NotOnThisPlatform= هذا البرنامج لن يعمل على {0}‏.
+OnlyOnThisPlatform=يجب أن يتم تشغيل هذا البرنامج على {0}‏.
+WinVersionTooLowError=هذا البرنامج يستلزم وجود {0} الإصدار {1} أو نسخة أحدث.
+WinVersionTooHighError=لا يمكن تثبيت هذا البرنامج على {0} الإصدار {1} أو أحدث.
+AdminPrivilegesRequired=يجب أن يكون لديك امتيازات مدير النظام لتثبيت هذا البرنامج.
+PowerUserPrivilegesRequired=يجب أن تسجل الدخول كمدير أو كعضو من مجموعة المستخدمين المتقدمين عند تثبيت البرنامج.
+SetupAppRunningError=لقد اكتشف برنامج الإعداد أن {0} يعمل حاليا.\n\nيرجى غلق جميع العمليات التي يجريها، ثم انقر على موافق للاستمرار أو على إلغاء للخروج.
+UninstallAppRunningError=لقد اكتشف برنامج إلغاء التثبيت أن {0} يعمل حاليا.\n\nيرجى غلق جميع العمليات التي يجريها، ثم انقر على موافق للاستمرار أو على إلغاء للخروج.
+ErrorCreatingDir= برنامج الإعداد لا يستطيع إنشاء المجلد "{0}"
+ErrorTooManyFilesInDir=لا يمكن إنشاء ملف في المجلد "{0}" لأنه يحتوى على عدد كبير للغاية من الملفات
+ExitSetupTitle=الخروج من عملية الإعداد
+ExitSetupMessage=عملية الإعداد لم تكتمل. إذا خرجت من عملية التثبيت الآن، فلن يتم تثبيت البرنامج.\n\nيمكنك تشغيل برنامج الإعداد مجددا في وقت آخر لإتمام عملية التثبيت.\n\nهل تريد الخروج من الإعداد؟
+AboutSetupMenuItem=حول عملية الإعداد ...
+AboutSetupTitle=حول عملية الإعداد
+AboutSetupMessage={0} الإصدار {1}\n{2}\n\n{0} الصفحة الرئيسية:\n{3}
+ButtonBack=رجوع
+ButtonNext=التالي
+ButtonInstall=تثبيت
+ButtonOK=موافق
+ButtonCancel=إلغاء
+ButtonYes=نعم
+ButtonYesToAll=نعم للكل
+ButtonNo=لا
+ButtonNoToAll=لا للكل
+ButtonFinish=إنهاء
+ButtonBrowse=استعراض ...
+ClickNext=انقر على التالي للاستمرار أو على إلغاء للخروج من الإعداد.
+WelcomeLabel1=مرحبا بك في معالج إعداد {0}
+WelcomeLabel2=هذا سيقوم بتثبيت {0} على الكمبيوتر الخاص بك.\n\n يوصى بغلق جميع التطبيقات الأخرى قبل الاستمرار.
+WizardPassword=كلمة المرور
+PasswordLabel1=هذا التثبيت محمي بواسطة كلمة مرور.
+PasswordLabel3=يرجى إدخال كلمة المرور، ثم انقر على التالي للاستمرار. من المهم مراعاة حالة أحرف كلمات المرور.
+PasswordEditLabel=كلمة المرور:
+IncorrectPassword=كلمة المرور التي أدخلتها غير صحيحة. يرجى المحاولة مرة أخرى.
+WizardLicense=اتفاقية الترخيص
+LicenseLabel=يرجى قراءة المعلومات المهمة التالية قبل الاستمرار.
+LicenseLabel3=يرجى قراءة اتفاقية الترخيص التالية. يجب أن توافق على بنود هذه الاتفاقية قبل الاستمرار في التثبيت.
+LicenseAccepted=أنا أوافق على الاتفاقية
+LicenseNotAccepted=أنا لا أوافق على الاتفاقية
+WizardInfoBefore=المعلومات
+InfoBeforeLabel=يرجى قراءة المعلومات المهمة التالية قبل الاستمرار.
+InfoBeforeClickLabel=عندما تكون مستعدا للاستمرار في عملية الإعداد، انقر على التالي.
+WizardInfoAfter=المعلومات
+InfoAfterLabel=يرجى قراءة المعلومات المهمة التالية قبل الاستمرار.
+InfoAfterClickLabel=عندما تكون مستعدا للاستمرار في عملية الإعداد، انقر على التالي.
+WizardUserInfo=بيانات المستخدم
+UserInfoDesc=يرجى إدخال بياناتك.
+UserInfoName=اسم المستخدم:
+UserInfoOrg=المؤسسة:
+UserInfoSerial=الرقم المسلسل:
+UserInfoNameRequired=يجب أن تدخل اسما.
+WizardSelectDir=اختر المجلد الهدف
+SelectDirDesc=أين يمكن تثبيت {0}؟
+SelectDirLabel=حدد المجلد الذي تود أن يتم تثبيت {0} فيه، ثم انقر على التالي.
+DiskSpaceMBLabel=يتطلب البرنامج وجود مساحة {0} ميجابايت على الأقل من مساحة القرص الصلب.
+ToUNCPathname=برنامج الإعداد غير قادر على التثبيت في اسم مسار UNC‏. إذا كنت تحاول التثبيت عبر شبكة، ستحتاج لتحديد وحدة القرص الصلب عبر الشبكة.
+InvalidPath=يجب إدخال مسار كامل يتضمن الحرف المسماة به وحدة القرص الصلب؛ على سبيل المثال:\n\nC:\APP\n\nأو مسار UNC بالصيغة التالية:\n\n\\server\share
+InvalidDrive=وحدة القرص الصلب أو اسم مشارك UNC الذي اخترته غير موجود أو يتعذر الوصول إليه. يرجى اختيار واحد آخر.
+DiskSpaceWarningTitle=لا توجد مساحة كافية بالقرص الصلب
+DiskSpaceWarning=عملية الإعداد تتطلب وجود مساحة {0} كيلوبايت على الأقل خالية للقيام بالتثبيت لكن وحدة القرص الصلب المختارة بها مساحة {1} كيلوبايت خالية.\n\nهل تريد الاستمرار على أي حال؟
+BadDirName32=لا يمكن لأسماء المجلدات أن تحتوي على أي من الرموز التالية:\n\n{0}
+DirExistsTitle=المجلد موجود
+DirExists=المجلد:\n\n{0}\n\nموجود بالفعل. هل تريد التثبيت في هذا المجلد على أي حال؟
+DirDoesntExistTitle=المجلد غير موجود
+DirDoesntExist=المجلد:\n\n{0}\n\nغير موجود. هل تريد أن يتم إنشاء المجلد؟
+WizardSelectComponents=اختر المكونات
+SelectComponentsDesc=ما هي المكونات التي تريد تثبيتها؟
+SelectComponentsLabel2=حدد المكونات التي تريد تثبيتها؛ قم بإلغاء اختيار المكونات التي لا تريد تثبيتها. ثم انقر على التالي عندما تكون مستعدا للاستمرار.
+FullInstallation=تثبيت كامل
+CompactInstallation=تثبيت محدود
+CustomInstallation=تثبيت مخصص
+NoUninstallWarningTitle=المكونات موجودة
+NoUninstallWarning=برنامج الإعداد اكتشف أن المكونات التالية مثبتة بالفعل على الكمبيوتر الخاص بك:\n\n{0}\n\nعدم اختيار هذه المكونات لن يؤدي إلى إلغاء تثبيتها.\n\nهل تريد الاستمرار على أي حال؟
+ComponentSize1={0} كيلوبايت
+ComponentSize2={0} ميجابايت
+ComponentSize3={0} جيجابايت
+ComponentsDiskSpaceMBLabel=العناصر المختارة حاليا تتطلب على الأقل مساحة {0} ميجابايت خالية.
+WizardSelectTasks=حدد مهام إضافية
+SelectTasksDesc=ما المهام الإضافية التي ترغب في تنفيذها؟
+SelectTasksLabel2=حدد المهام الإضافية التي تريد أن ينفذها برنامج الإعداد أثناء تثبيت {0}، ثم انقر على التالي.
+CreateDesktopIcon=قم بإنشاء أيقونة سطح مكتب
+WizardSelectProgramGroup=اختر مجلد قائمة ابدأ
+SelectStartMenuFolderDesc=أين ينبغي على برنامج الإعداد وضع اختصارات البرنامج؟
+SelectStartMenuFolderLabel=حدد مجلد قائمة ابدأ الذي تود من برنامج الإعداد أن يقوم بإنشاء اختصارات البرنامج فيه، ثم انقر على التالي.
+NoIconsCheck=لا تقم بإنشاء أي أيقونات
+MustEnterGroupName=يجب إدخال اسم للمجلد.
+BadGroupName=لا يجوز أ أن تحتوي أسماء المجلدات على أي من الرموز التالية:\n\n{0}
+NoProgramGroupCheck2=لا تقم بإنشاء مجلد بقائمة ابدأ
+WizardReady=جاهز للتثبيت
+ReadyLabel1=برنامج الإعداد جاهز لبدء تثبيت {0} على الكمبيوتر الخاص بك.
+ReadyLabel2a=انقر على تثبيت للاستمرار في التثبيت أو انقر على رجوع إذا أردت مراجعة أو تغيير أي من الإعدادات.
+ReadyLabel2b=انقر على تثبيت للاستمرار في التثبيت.
+ReadyMemoUserInfo=بيانات المستخدم:
+ReadyMemoDir=المجلد الهدف:
+ReadyMemoType=نوع الإعداد:
+ReadyMemoComponents=العناصر المحددة:
+ReadyMemoGroup=مجلد قائمة بدأ:
+ReadyMemoTasks=المهام الإضافية:
+WizardPreparing=جاري التجهيز للتثبيت
+PreparingDesc=برنامج الإعداد يجهز لتثبيت {0} على الكمبيوتر الخاص بك.
+PreviousInstallNotCompleted=عملية التثبيت/الإزالة لبرنامج سابق لم تكتمل. أنت تحتاج إلى إعادة تشغيل الكمبيوتر الخاص بك لإتمام عملية التثبيت هذه.\n\nبعد إعادة تشغيل الكمبيوتر الخاص بك قم بتشغيل برنامج الإعداد مرة أخرى لإتمام تثبيت {0}‏.
+CannotContinue=لا يمكن مواصلة عملية الإعداد. يرجى النقر على إلغاء للخروج من البرنامج.
+WizardInstalling=جاري التثبيت
+InstallingLabel=يرجي الانتظار بينما يقوم برنامج الإعداد بتثبيت {0} على الكمبيوتر الخاص بك.
+FinishedHeadingLabel=جاري استكمال معالج إعداد {0}‏.
+FinishedLabelNoIcons=برنامج الإعداد انتهى من تثبيت {0} على الكمبيوتر الخاص بك.
+FinishedLabel=برنامج الإعداد انتهى من تثبيت {0} على الكمبيوتر الخاص بك. يمكن تشغيل التطبيق عن طريق اختيار أيقونات البرنامج التي تم تثبيتها.
+ClickFinish=انقر على إنهاء للخروج من برنامج الإعداد.
+FinishedRestartLabel=لإنهاء تثبيت {0}، يجب أن يقوم برنامج الإعداد بإعادة تشغيل الكمبيوتر الخاص بك. هل تريد إعادة التشغيل الآن؟
+FinishedRestartMessage=لإتمام تثبيت {0}، يجب أن يقوم برنامج الإعداد بإعادة تشغيل الكمبيوتر الخاص بك.\n\nهل تريد إعادة التشغيل الآن؟
+ShowReadmeCheck=نعم، أريد عرض ملف اقرأني
+YesRadio=نعم، أعد تشغيل الكمبيوتر الآن
+NoRadio=لا، سأقوم بإعادة تشغيل الكمبيوتر لاحقا
+RunEntryExec=تشغيل {0}
+RunEntryShellExec=عرض {0}
+ChangeDiskTitle=يحتاج برنامج الإعداد إلى الأسطوانة التالية
+SelectDirectory=حدد المجلد
+SelectDiskLabel2=يرجى إدخال الأسطوانة {0}، ثم انقر على موافق.\n\n إذا كان من الممكن إيجاد الملفات على هذه الأسطوانة في مجلد آخر غير المجلد المعروض أدناه، فأدخل المسار الصحيح أو انقر على تصفح.
+PathLabel=المسار:
+FileNotInDir2=تعذر العثور على الملف "{0}" في "{1}". يرجى إدخال الأسطوانة الصحيحة أو تحديد مجلد آخر.
+SelectDirectoryLabel=يرجى تحديد مكان القرص التالي.
+SetupAborted=عملية الإعداد لم تتم.\n\nيرجى حل المشكلة وتشغيل برنامج الإعداد مرة أخرى.
+EntryAbortRetryIgnore=انقر على إعادة المحاولة للمحاولة مرة أخرى أو على تجاهل للمتابعة على أي حال أو على إلغاء لإلغاء عملية التثبيت.
+StatusCreateDirs=جاري إنشاء المجلدات ...
+StatusExtractFiles=جاري استخراج الملفات ...
+StatusCreateIcons=جاري إنشاء أيقونات البرنامج ...
+StatusCreateIniEntries=جاري إنشاء مدخلات INI  ...
+StatusCreateRegistryEntries=جاري إنشاء مدخلات السجل ...
+StatusRegisterFiles=جاري تسجيل الملفات ...
+StatusSavingUninstall=جاري حفظ بيانات إلغاء التثبيت ...
+StatusRunProgram=جاري إنهاء التثبيت ...
+StatusRollback=التراجع عن التغييرات ...
+ErrorInternal2=خطأ داخلي: {0}
+ErrorFunctionFailedNoCode={0} فشل
+ErrorFunctionFailed={0} فشل؛ كود {1}
+ErrorFunctionFailedWithMessage={0} فشل؛ كود {1}.\n{2}
+ErrorExecutingProgram=تعذر تنفيذ ملف:\n{0}
+ErrorRegOpenKey=خطأ أثناء فتح مفتاح السجل:\n{0}\{1}
+ErrorRegCreateKey=خطأ أثناء إنشاء مفتاح السجل:\n{0}\{1}
+ErrorRegWriteKey=خطأ أثناء الكتابة في مفتاح السجل:\n{0}\{1}
+ErrorIniEntry=خطأ أثناء إنشاء مُدخل INI في ملف "{0}".
+FileAbortRetryIgnore=انقر على إعادة المحاولة للمحاولة مرة أخرى أو على تجاهل لتجاوز هذا الملف (لا يوصى به) أو على إلغاء للخروج من عملية التثبيت.
+FileAbortRetryIgnore2=انقر على إعادة المحاولة للمحاولة مرة أخرى أو على تجاهل لتجاوز هذا الملف (لا يوصى به) أو على إلغاء لإلغاء عملية التثبيت.
+SourceIsCorrupted=الملف المصدر تالف
+SourceDoesntExist=الملف المصدر "{0}" غير موجود
+ExistingFileReadOnly=الملف الموجود محدد كملف للقراءة فقط.\n\nانقر على إعادة المحاولة لإزالة خاصية القراءة فقط والمحاولة مجددا أو على تجاهل لتجاوز هذا الملف أو على إلغاء لإلغاء عملية التثبيت.
+ErrorReadingExistingDest=حدث خطأ أثناء إعادة محاولة قراءة الملف الموجود:
+FileExists=الملف موجود بالفعل.\n\nهل تريد أن يقوم برنامج الإعداد باستبداله؟
+ExistingFileNewer=الملف الموجود أحدث من الملف الذي يحاول برنامج الإعداد تثبيته. يوصى بالإبقاء على الملف الموجود.\n\nهل تريد الإبقاء على الملف الموجود؟
+ErrorChangingAttr=حدث خطأ أثناء محاولة تغيير خصائص الملف الموجود:
+ErrorCreatingTemp=حدث خطأ أثناء محاول إنشاء ملف في المجلد الهدف:
+ErrorReadingSource=حدث خطأ أثناء محاولة قراءة الملف المصدر:
+ErrorCopying=حدث خطأ أثناء محاولة نسخ ملف:
+ErrorReplacingExistingFile=حدث خطأ أثناء محاولة استبدال الملف الموجود:
+ErrorRestartReplace=فشل إعادة تشغيل الاستبدال:
+ErrorRenamingTemp=حدث خطأ أثناء محاولة إعادة تسمية ملف في المجلد الهدف:
+ErrorRegisterServer=تعذر تسجيل DLL/OCX: {0}
+ErrorRegisterServerMissingExport=لم يتم العثور على ملف تصدير خادم تسجيل Dll
+ErrorRegisterTypeLib=تعذر تسجيل مكتبة النوع: {0}
+ErrorOpeningReadme=حدث خطأ أثناء محاولة فتح ملف اقرأني.
+ErrorRestartingComputer=برنامج الإعداد غير قادر على إعادة تشغيل الجهاز. يرجي القيام بهذا يدويا.
+UninstallNotFound=الملف "{0}" غير موجود. تعذر إلغاء التثبيت.
+UninstallUnsupportedVer=سجل إلغاء تثبيت الملف "{0}" يوجد بصيغة غير معرفة بواسطة هذا الإصدار من برنامج إلغاء التثبيت. تعذر إلغاء التثبيت
+UninstallUnknownEntry=تمت مصادفة مدخل غير معروف ({0}) في سجل إلغاء التثبيت
+ConfirmUninstall=هل أنت متأكد أنك تريد إزالة {0} بالكامل مع جميع مكوناته؟
+OnlyAdminCanUninstall=يمكن إلغاء تثبيت هذا البرنامج فقط بواسطة مستخدم يتمتع بصلاحيات مدير النظام.
+UninstallStatusLabel=يرجي الانتظار بينما يتم إزالة {0} من الكمبيوتر الخاص بك.
+UninstalledAll=تمت إزالة {0} بنجاح من الكمبيوتر الخاص بك.
+UninstalledMost=تم إلغاء تثبيت {0}‏.\n\nتعذر إزالة بعض المكونات. يمكن إزالة هذه المكونات يدويا.
+UninstalledAndNeedsRestart=لإتمام عملية إلغاء تثبيت {0} من الكمبيوتر الخاص بك، يجب إعادة تشغيل الجهاز.\n\nهل تريد إعادة التشغيل الآن؟
+UninstallDataCorrupted=الملف "{0}" تالف. تعذر إلغاء التثبيت
+ConfirmDeleteSharedFileTitle=هل تريد إزالة الملف قيد المشاركة؟
+ConfirmDeleteSharedFile2=يشير النظام إلى أن الملف قيد المشاركة التالي لم يعد قيد الاستخدام بواسطة أي برنامج. هل تريد إزالة هذا الملف قيد المشاركة لإلغاء التثبيت؟\n\nإذا كانت هناك أي برامج ما زالت تستخدم هذا الملف وتمت إزالته، فقد لا تعمل هذه البرامج بشكل صحيح. إذا لم تكن متأكدا، فاختر لا. الإبقاء على هذا الملف في النظام الخاص بك لن يؤدي إلى حدوث أي أضرار.
+SharedFileNameLabel=اسم الملف:
+SharedFileLocationLabel=المكان:
+WizardUninstalling=حالة إزالة التثبيت
+StatusUninstalling=إزالة التثبيت {0} ...
+MustEnterDirectory=يجب أن تقوم بإدخال مجلد هدف.
+InvalidDirectory=المجلد:\n\n{0}\n\nغير صحيح.
+CreateQuickLaunchIcon=إنشاء أيقونة تشغيل سريع
+CreateIconsGroup=أيقونات إضافية:
+PrepareCancel=جاري التجهيز للإلغاء ...
+Downloading=جاري التنزيل...
+# {0} is a file name
+DownloadingWithFileName=جاري تنزيل {0} ...
+# {0} is the application that is uninstalled
+UninstallerMenuEntry=برنامج إلغاء تثبيت {0}
+# {0} is a file name
+AskRetryInstallFile={0}\nغير قادر على إنشاء هذا الملف. هل تريد إعادة المحاولة؟
+WindowsServicesTitle=خدمات Windows‎
+WindowsServicesSubtitle=يرجى اختيار تفاصيل كيفية تثبيت الخدمات.
+# {0} is the name of the Windows service
+WindowsServiceInstallCheckbox=تثبيت خدمة "{0}"
+WindowsServiceStartOnBootupCheckbox=تشغيل البرنامج عند تشغيل الجهاز
+UnixDaemonsTitle=البرامج الخفية
+# {0} is the name of the application
+UnixDaemonsSubTitle=يرجى ملاحظة البرامج الخفية من إنتاج {0}‏.
+# {0} is the name of the Unix daemon
+UnixDaemonStartStopScriptLabel=برنامج نصي لتشغيل/إيقاف برنامج "{0}" الخفي:
+MacosStartupItemsTitle=عناصر بدء التشغيل
+MacosStartupItemsSubTitle=يرجى اختيار تفاصيل كيفية تثبيت عناصر بدء التشغيل.
+# {0} is the name of the macOS startup item
+MacosStartupItemInstallCheckbox=تثبيت عنصر بدء التشغيل "{0}"
+# {0} is the name of the service
+ErrorInstallService=تعذر تثبيت خدمة "{0}"
+# {0} is the name of the service
+ErrorUninstallService=تعذر إلغاء تثبيت خدمة "{0}"
+ErrorInstallIcons=تعذر تثبيت الأيقونات.
+# {0} is a version number, {1} is an application name
+AppleJavaMinVersionError=تحتاج على الأقل وجود {0} من جهاز Java الافتراضي للقيام بتثبيت {1}.\nيرجي تنزيله من موقع الإنترنت http://java.com
+# {0} is a file name
+AskContinue=تعذر تثبيت ملف \n{0}\nهل تريد استكمال التثبيت؟
+UninstallFailureTitle=نتائج برنامج إلغاء التثبيت
+# {0} is an application name
+UninstallFailureSubTitle=ليست كل ملفات {0} قابلة لإلغاء التثبيت.
+UninstallFailureLabel=تعذر حذف الملفات والمجلدات التالية:
+# {0} is an application name
+DownloadingJre=جاري تنزيل بيئة وقت تشغيل Java(TM)‎ بواسطة {0}‏. يرجى الانتظار.
+ErrorWininet=تعذر تهيئة wininet.dll. يرجى تثبيت \nبرنامج Internet Explorer 3.0 أو إصدار أحدث.
+DownloadJreError=خطأ في تنزيل بيئة وقت تشغيل Java(TM)‎‏.\nيرجى فحص اتصال الإنترنت الخاص بك وتشغيل برنامج الإعداد مرة أخرى.
+ChooseJavaExe=يرجى اختيار ملف "java.exe" الخاص ببيئة JRE
+# {0} is an application name
+PrepareInstaller={0} يقوم الآن بتجهيز معالج التثبيت install4j الذي سيقودك خلال باقي عملية الإعداد.
+InitConnection=تهيئة الاتصال ...
+# {0} is the amount downloaded so far, {1} is the total size of the file, {3} is the download speed, measured in kb/s
+DownloadProgress=‏{0} ميجابايت من {1} ميجابايت ({2}%) بسرعة {3} كيلوبايت/ثانية
+ButtonDownload=تنزيل
+ButtonLocate=تحديد مكان
+WizardCaption=معالج install4j
+JvmStartError=تعذر تشغيل جهاز Java(TM)‎ الافتراضي. يرجى إعادة تشغيل \nعملية التثبيت. يمكنك استخدام المعملة"/manual"\n للتنزيل أو اختيار جهاز افتراضي آخر يدويا.
+NoDirNameWithSpace=يجب ألا يحتوي اسم المجلد على مسافات.
+ConfirmReboot=لإتمام عملية التثبيت يجب إعادة تشغيل النظام الخاص بك. هل تريد إعادة تشغيل Windows الآن؟
+ProgramGroupAllUsers=إنشاء اختصارات لجميع المستخدمين
+# {0} is a the application name
+FinishedLabelUnix= برنامج الإعداد انتهى من تثبيت {0} على الكمبيوتر الخاص بك. يمكن تشغيل التطبيق من خلال تنفيذ البرامج النصية برنامج التثبيت الخاصة ببدء التشغيل.
+WizardSelectLinkDir=حدد مجلدا للارتباطات الرمزية
+SelectLinkDirDesc=أين ينبغي أن يقوم {0} بإنشاء ارتباطات رمزية للملفات التنفيذية؟
+NoSymlinksCheck=لا تقم بإنشاء ارتباطات رمزية
+SelectLinkDirLabel=حدد المجلد الذي ترغب أن يقوم {0} بإنشاء ارتباطات رمزية فيه، ثم انقر على التالي.
+LastRunFailed=برنامج التثبيت لم يبدأ بشكل صحيح أثناء آخر تشغيل.\nمن المحتمل أن يكون هذا بسبب  تلف جهاز Java الافتراضي (JVM).\nهل تريد تنزيل جهاز Java الافتراضي (JVM) أو اختياره يدويا؟
+WizardSelectAssociations=حدد اقترانات الملف
+SelectAssociationsDesc=ما اقترانات الملف التي تريد أن يتم إنشاؤها؟
+SelectAssociationsLabel=حدد اقترانات الملف التي تريد إنشاءها؛ امسح اقترانات الملف التي لا تريد إنشاءها. انقر على التالي عندما تكون مستعدا للمتابعة.
+LocateBrowserExecutable=يرجى تحديد مكان الملف التنفيذي لمستعرض الإنترنت الخاص بك.
+ErrorStartingBrowser=حدث خطأ أثناء بدء تشغيل المتصفح.
+NoWritePermissions=ليس لديك أذونات الكتابة لهذا المجلد. يرجى تحديد مجلد آخر.
+LocateOrDownloadJre2=لم يتمكن معالج install4j من العثور على بيئة وقت تشغيل Java(TM) على النظام الخاص بك. يمكنك تحديد مكان إصدار JRE مناسب أو تنزيله. (أدنى إصدار: {0}، أعلى إصدار: {1})
+LocateJre2=لم يتمكن معالج install4j من العثور على بيئة وقت تشغيل Java(TM) على النظام الخاص بك. يرجى تحديد مكان إصدار JRE مناسب. (أدنى إصدار: {0}، أدنى إصدار: {1})
+EnterPassword=يرجى إدخال كلمة المرور الخاصة بك:
+AdminGroupRequired=يجب أن تكون عضوا ضمن مديري النظام
+EnterPasswordTitle=أدخل كلمة المرور
+WrongPassword=كلمة المرور التي أدخلتها غير صحيحة. يرجى المحاولة مرة أخرى.
+FileCorrupted=ملف التثبيت تالف. إذا كان هذا تنزيلا يرجى المحاولة مرة أخرى.
+StatusStoppingServices=إيقاف الخدمات
+StatusUninstallingPrevious=إلغاء تثبيت النسخة السابقة
+DifferentApplication=يحتوي هذا المجلد على تطبيق مختلف. يرجى اختيار مجلد آخر.
+NoTargetApplication=هذا مثبت إضافي. المجلد الذي\nحددته لا يحتوي على التطبيق الهدف.\nيرجى اختيار مجلد آخر.
+DifferentApplication2=يحتوي مجلد التثبيت على تطبيق مختلف.\nتعذر إجراء التثبيت.
+NoTargetApplication2=تعذر العثور على التطبيق الهدف لهذا برنامج التثبيت الإضافي على النظام الخاص بك.\nتعذر إجراء التثبيت.
+InternetConnection=اتصال الإنترنت
+DirectConnection=لدي اتصال مباشر بالإنترنت
+ProxyConnection=أتصل بالإنترنت عن طريق خادم بروكسي
+ProxyAuthentication=مطلوب مصادقة خادم بروكسي
+ProxyHost=المضيف خادم بروكسي
+ProxyPort=منفذ البروكسي
+UserName=اسم المستخدم
+Password=كلمة المرور
+PortValueError=يمكن فقط استخدام أرقام ما بين 1 و 65536.
+DownloadError=تعذر الاتصال بخادم التنزيل.
+ConnectionParametersRequest=يرجى إدخال بارامترات اتصال الإنترنت الخاصة بك:
+ProxySettings=إعدادات خادم بروكسي
+EnterInformation=يرجى إدخال جميع المعلومات اللازمة.
+ComponentHideDescription=إخفاء الوصف
+ComponentShowDescription=إظهار الوصف
+ComponentDownloadedFromInternet=تم تنزيل المكون من الإنترنت
+ComponentIncludedInInstaller=المكون مضمن في برنامج التثبيت
+exe4j.MessageBoxTitle=خطأ
+exe4j.NoJvmFound=تعذر العثور على جهاز Java افتراضي (JVM) على النظام الخاص بك.\nيرجى تعريف EXE4J_JAVA_HOME\nليشير إلى بيئة JDK أو JRE أو تنزيل بيئة وقت تشغيل Java من موقع www.java.com‏.
+exe4j.JvmInPath=جهاز Java الافتراضي الذي تم العثور عليه في المسار الخاص بك تالف.\nيرجى إعادة التثبيت أو تعريف EXE4J_JAVA_HOME\nليشير إلى بيئة JDK أو JRE مثبتة.
+# {0} is the name of an environment variable
+exe4j.JvmEnvVar=متغير بيئة {0} لا \nيشير إلى بيئة  JDK أو بيئة JRE عاملة.
+# {0} is a directory name
+exe4j.JvmDefinedPath=جهاز Java الافتراضي الذي تم العثور عليه في {0} تالف.\nيرجى إعادة تثبيت أو تعريف EXE4J_JAVA_HOME\n ليشير إلى بيئة JDK أو JRE مثبتة.
+exe4j.JvmStart=تعذر بدء تشغيل جهاز Java الافتراضي. الحد الأقصى للتراكم (-Xmx) قد يكون كبير جدا أو قد يقوم برنامج مكافحة الفيروسات أو أداة جدار الحماية بحظر التنفيذ.
+# do not translate "heap" and "-Xmx"
+exe4j.JvmStart2=تعذر بدء تشغيل جهاز Java الافتراضي. الحد الأقصى للتراكم (-Xmx) قد يكون كبير جدا أو قد يقوم برنامج مكافحة الفيروسات أو أداة جدار الحماية بحظر التنفيذ.
+# {0} is a file name
+exe4j.FileNotFound=ملف أو مجلد {0} غير موجود أو فارغ\n
+exe4j.WrongParameters=استخدام بارامتر خاطئ
+# {0} is the name of an environment variable
+exe4j.EnvVarNotDefined=يجب أن يتم تعريف متغير بيئة {0}
+# {0} is an internal error code
+exe4j.InternalError=حدث خطأ داخلي (رمز الخطأ: {0})
+exe4j.MainClassNotFound=تعذر تحميل الفئة الرئيسية.
+exe4j.MainMethodNotFound=تعذر العثور على الأسلوب الرئيسي.
+exe4j.ErrorDialogCaption=خطأ
+exe4j.ErrorDialogOk=موافق
+# {0} is an application name
+exe4j.ErrorDialogText=حدث خطأ أثناء بدء تشغيل {0}‏:
+WizardInstallationType=حدد نوع التثبيت
+SelectInstallationType=ما نوع التثبيت الذي تريد إجراءه؟
+SelectInstallationTypeLabel=حدد نوع التثبيت الذي تريد إجراءه. انقر على التالي عندما تكون مستعدا للاستمرار.
+StandardInstallation=عملية التثبيت القياسية
+StandardInstallationDescription=تم تثبيت جميع المكونات اللازمة للاستخدام العادي. لم يتم تثبيت بعض المكونات نادرة الاستخدام للحفاظ على مساحة القرص الصلب.
+FullInstallationDescription=تم تثبيت جميع المكونات التي يتضمنها برنامج التثبيت هذا.
+CustomInstallationDescription=في الخطوة التالية يمكنك تخصيص المكونات التي ينبغي تثبيتها. التحديد الأولي مضبوطة على التثبيت القياسي.
+SelectAll=اختر الكل
+SelectNone=بلا تحديد
+# See the NoProgramGroupCheck2 message, this is just the positive version of the question with a question mark
+ConsoleProgramGroupCheck=إنشاء مجلد قائمة ابدأ؟
+# See the NoSymlinksCheck message, this is just the positive version of the question with a question mark
+ConsoleSymlinksCheck=إنشاء ارتباطات رمزية؟
+# {0} is the name of the application
+updater.WindowTitle=برنامج التحديث - {0}
+# {0} is the name of the application
+updater.WelcomeTitle= مرحبا إلى برنامج التحديث {0}
+updater.WelcomeInfoText=سيفحص هذا إذا كان هناك تحديث متوفر من أجل {0}‏.
+updater.CheckForUpdateTitle=جاري التحقق من التحديثات
+updater.CheckForUpdateSubtitle=يرجى الانتظار بينما يقوم برنامج التحديث بالتحقيقات إذا كان التحديث متوفرا.
+updater.CheckForUpdateLabel=جاري التحقق من التحديثات...
+# {0} is a URL
+updater.CheckForUpdateError=تعذر تنزيل تحديث المعلومات من\n\n{0}\n\nيرجى التحقق من اتصالك بالشبكة.
+updater.UpToDateTitle=لديك أحدث إصدار
+# {0} is the name of the application
+updater.UpToDateInfoText=تستخدم أحدث إصدار من {0}
+updater.NewVersionAvailableTitle=إصدار جديد متوفر
+updater.NewVersionAvailableSubtitle=هناك إصدار جديد متوفر من {0}، يرجى مراجعة التفاصيل بالأسفل.
+updater.CurrentVersionLabel=الإصدار الحالي:
+updater.NewVersionLabel=الإصدار الجديد:
+updater.ShowComments=إظهار التعليقات
+updater.DownloadLocationLabel=في الخطوة التالية سيتم تنزيل برنامج التحديث. سيتم إخبارك قبل تشغيل برنامج التثبيت. إذا كنت لا ترغب في تنزيل برنامج التحديث، انقر الآن على إلغاء.
+updater.DownloadToLabel=تنزيل إلى:
+updater.DownloadSizeLabel=حجم ملف التنزيل:
+updater.CommentsTitle=التعليقات
+updater.CommentsSubTitle=يرجى قراءة التعليقات بخصوص التحديث بالأسفل.
+updater.CommentsLabel=التعليقات
+updater.DownloadTitle=تنزيل برنامج التثبيت
+updater.DownloadSubTitle=يرجى الانتظار حتى يتم تنزيل تحديث برنامج التثبيت
+# {0} is a URL
+updater.DownloadError=حدث خطأ أثناء التنزيل من\n\n{0}\n\nيرجى التحقق من اتصالك بالشبكة.
+updater.FinishTitle=تم التنزيل
+updater.FinishInfoText=تم تنزيل تحديث {0} إلى جهاز الكمبيوتر الخاص بك.
+updater.LaunchError=تعذر تشغيل تحديث برنامج التثبيت
+updater.LaunchUpdaterQuestion=هل تريد تشغيل تحديث برنامج التثبيت الآن؟
+updater.LaunchUpdaterLabel=نعم، قم بتنفيذ تحديث برنامج التثبيت الآن
+updater.DoNotLaunchUpdaterLabel=لا، سأقوم بتنفيذ تحديث برنامج التثبيت لاحقا
+updater.OpenContainingFolderLabel=افتح المجلد المتضمن
+WaitLabel=يرجى الانتظار ...
+# {0} is the name of the application
+ConsoleWelcomeLabel=سيثبت هذا {0} على جهاز الكمبيوتر الخاص بك.
+# {0} is the name of the application
+SelectTasksUninstallLabel=حدد المهام الإضافية التي تريد أن يقوم برنامج الإعداد بإجراءها أثناء إلغاء التثبيت {0}، ثم انقر على التالي.
+RollbackWindowTitle=التراجع عن التغييرات
+ExitUninstallerMessage=لم يتم إتمام عملية إلغاء التثبيت. إذا قمت بالخروج الآن، لن يتم إلغاء تثبيت البرنامج.\n\nيمكنك تشغيل برنامج إلغاء التثبيت مرة أخرى في وقت آخر لإتمام إلغاء التثبيت.\n\الخروج من برنامج إلغاء التثبيت؟
+ExitApplication=هل تريد فعلا الخروج؟
+exe4j.PowerUserRequired=يجب أن تكون مستخدما متقدما على الأقل لتشغيل هذا البرنامج.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired=يجب أن يتم تسجيل دخولك على أنك root للنظام عند تثبيت هذا البرنامج.
+# "root" is the Unix super-user, do not translate
+RootPrivilegesRequired2=تتطلب هذه العملية امتيازات root النظام.
+UseSudo=استخدم sudo (يرجى إدخال كلمة المرور الخاصة بك)
+# "root" is the Unix super-user, do not translate
+UseSu=استخدم su (يرجى إدخال كلمة مرور root النظام)
+languages.zh_CN=الصينية (المبسطة)
+languages.zh_TW=الصينية (التقليدية)
+languages.hr=الكرواتية
+languages.cs=التشيكية
+languages.da=الدانماركية
+languages.nl=الهولندية
+languages.en=الإنجليزية
+languages.fi=الفنلندية
+languages.fr=الفرنسية
+languages.de=الألمانية
+languages.el=اليونانية
+languages.hu=المجرية
+languages.it=الإيطالية
+languages.ja=اليابانية
+languages.ko=الكورية
+languages.no=النرويجية
+languages.pl=البولندية
+languages.pt=البرتغالية
+languages.pt_BR=البرتغالية (البرازيلية)
+languages.ru=الروسية
+languages.es=الأسبانية
+languages.sv=السويدية
+languages.tr=التركية
+languages.ro=الرومانية
+LanguageSelectionDialogTitle=اختيار اللغة
+LanguageSelectionLabel=يرجى اختيار لغة:
+ConsoleMultipleSelectionLabel=يرجى إدخال قائمة يفصل بين بنودها فاصلة للقيم المحددة أو [Enter] لاستخدام وضع الضبط الافتراضي:
+# This is the "Enter" key on the keyboard
+ConsoleEnter=Enter
+RequiredDiskSpaceLabel=المساحة المطلوبة على القرص الصلب:
+FreeDiskSpaceLabel=المساحة المتوفرة على القرص الصلب:
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.NoJvmFound3264=تعذر العثور على جهاز Java الافتراضي (JVM) على النظام الخاص بك.\nيرجى تعريف EXE4J_JAVA_HOME\nليشير إلى {0}-bit برنامج التثبيت JDK أو بيئة وقت تشغيل Java أو تنزيل بيئة وقت تشغيل Java من www.java.com.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+exe4j.JvmInPath3264=جهاز Java الافتراضي الذي تم العثور عليه في المسار الخاص بك تالف.\nيرجى إعادة تثبيت أو تعريفEXE4J_JAVA_HOME
+# {0} is the name of an environment variable, don't translate 32-bit
+exe4j.JvmEnvVar32=متغير بيئة {0} لا\nيشير إلى نسخة 32-bit عاملة من JDK أو JRE‏.
+# {0} is the name of an environment variable, don't translate 64-bit
+exe4j.JvmEnvVar64=متغير بيئة {0} لا\nيشير إلى نسخة 64-bit عاملة من JDK أو JRE‏.
+# {0} is a directory name, don't translate 32-bit
+exe4j.JvmDefinedPath32=جهاز Java الافتراضي الذي تم العثور عليه في {0} تالف.\nيرجى إعادة تثبيت أو تعريفEXE4J_JAVA_HOME\nليشير إلى نسخة 32-bit مثبتة من JDK أو JRE‏.
+# {0} is a directory name, don't translate 64-bit
+exe4j.JvmDefinedPath64=جهاز Java الافتراضي الذي تم العثور عليه في {0} تالف.\nيرجى إعادة تثبيت أو تعريفEXE4J_JAVA_HOME\nليشير إلى نسخة 64-bit مثبتة من JDK أو JRE‏.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateOrDownloadJre3=لم يتمكن معالج install4j من العثور على بيئة تشغيل Java(TM) على النظام الخاص بك. يمكنك تحديد مكان نسخة مناسبة {0}-bit من بيئة JRE أو تنزيله.
+# don't translate {0}-bit, it is either 32-bit or 64-bit
+LocateJre3=لم يتمكن معالج install4j من العثور على بيئة تشغيل Java(TM) على النظام الخاص بك. يرجى تحديد مكان نسخة مناسبة {0}-bit من بيئة JRE‏.
+MinimumVersion=الحد الأدنى للإصدار:
+MaximumVersion=الحد الأقصى للإصدار:
+ReadLicenseFirst=يرجى قراءة الترخيص بأكمله أولا.
+UnattendedRunningFailure=التطبيق قيد التشغيل. يرجى إغلاق جميع المثيلات وتشغيل برنامج التثبيت مرة أخرى.
+# don't translate -DproxyAuthPassword=[password]
+ProxyPasswordRequired=كلمة مرور خادم البروكسي مطلوبة. يرجى تحديد البارامتر-DproxyAuthPassword=[password].
+EnterCredentialsTitle=أدخل بيانات الاعتماد
+# {0} is a URL
+EnterCredentialsLabel=يرجى إدخال بيانات الاعتماد الخاصة بك لموقع تنزيل {0}
+# don't translate -DserverAuthUser=[user] / -DproxyAuthPassword=[password]
+ServerPasswordRequired=كلمة مرور الخادم مطلوبة. يرجى تحديد البارامترات-DserverAuthUser=[user] و -DserverAuthPassword=[password].
+CheckForUpdatesLabel=تحقق من التحديثات:
+updateSchedule.start=مع كل تشغيل
+updateSchedule.daily=يوميا
+updateSchedule.weekly=أسبوعيا
+updateSchedule.monthly=شهريا
+updateSchedule.never=أبدا
+DirectoryChooserLabel=أدخل اسم المجلد الجديد:
+DirectoryChooserTitle=إنشاء مجلد جديد
+DirectoryChooserTooltip=مجلد جديد
+#Same as ConsoleProgramGroupCheck, only not phrased as a question
+ProgramGroupCheck=إنشاء مجلد قائمة ابدأ
+#Same as ConsoleSymlinksCheck, only not phrased as a question
+SymlinksCheck=إنشاء ارتباطات رمزية
+ButtonIgnore=تجاهل
+ButtonRetry=إعادة المحاولة
+ButtonQuit=إنهاء
+ButtonCreateUser=إنشاء مستخدم
+UserNameLabel=اسم المستخدم:
+PasswordLabel=كلمة المرور:
+DescriptionLabel=الوصف:
+LocalGroupNameLabel=مجموعة محلية:
+CreateUserHeader=إنشاء مستخدم محلي جديد بالخصائص التالية:
+CreateUserError=حدث خطأ أثناء إنشاء المستخدم.
+CreateUserErrorAccessDenied=تم رفض الدخول.
+CreateUserErrorGroupNotFound=لم يتم العثور على المجموعة المحددة.
+CreateUserErrorPasswordRequirements=لم يتم الوفاء بمتطلبات كلمة المرور.
+CreateUserErrorGroupExists=المجموعة المحددة موجودة بالفعل.
+CreateUserSuccess=تم إنشاء المستخدم بنجاح.
+# Similar to SetupAppRunningError
+SetupAppRunningErrorAddOn=الإعداد اكتشف أن التطبيق قيد التشغيل حاليا.\n\nيرجى إغلاق مثلياته الآن، ثم النقر فوق موافق للاستمرار، أو على إلغاء للخروج.
+# A response file contains previous user input
+HelpResponseFile=استخدم ملف الاستجابة
+# "Console" is a command line window, like a DOS box
+HelpConsoleMode=التشغيل في وضع وحدة التحكم
+# "Unattended" means silently, without user input
+HelpUnattendedMode=التشغيل في وضع غير مراقب
+HelpUnattendedDir=في وضع غير مراقب، قم بتحديد مجلد التثبيت
+HelpUnattendedOverwrite=في وضع غير مراقب، استبدل جميع الملفات
+HelpUnattendedSplash=في وضع غير مراقب، قم بإظهار نافذة التقدم
+HelpUnattendedConsole=في وضع غير مراقب، افتح وحدة التحكم التي تظهر زر أوضاع التشغيل الإخراج
+# "GUI" means graphical user interface
+HelpGuiMode=التشغيل في وضع GUI
+HelpManual=قم بتحديد بيئة وقت تشغيل Java
+HelpSystemProperties=اضبط خصائص النظام
+HelpHelp=عرض المساعدة هذه
+HelpHeaderLabel=خيارات خط الأمر التالية متوفرة:
+# {0} is a list of numbers, the whole message should be in parentheses
+ConsoleComponentHelpLabel=(لعرض وصف المكون، يرجى إدخال أحد {0})
+PreviousInstallationLabel=تم اكتشاف تثبيت سابق. هل تريد تحديث هذا التثبيت؟
+RadioUpdateInstallation=نعم، قم بتحديث التثبيت الموجود
+RadioNewInstallation=لا، قم بالتثبيت في مجلد مختلف
+WelcomeLabel3=سيثبت هذا {0} على جهاز الكمبيوتر الخاص بك. سيقودك برنامج المساعدة خطوة بخطوة خلال التثبيت.
+# {0} is a directory
+NoWritePermissions2=ليس لديك أذونات كتابية لهذا المجلد\n\n{0}\n\nPيرجى اختيار مجلد آخر.
+# Translate "directory", but not "-dir"
+DestinationDirHelp=يمكنك تحديد المجلد الهدف بكتابة -dir [المجلد].
+UnattendedInstallationDir=تم تحديد مجلد التثبيت إلى {0}‏.
+ProgramGroupExists=مجموعة البرامج المحددة موجودة بالفعل. هل تريد أن تستخدمها على أي حال؟
+ButtonExit=الخروج
+ButtonContinue=الاستمرار
+UninstallerFinish=جاري إنهاء إلغاء التثبيت ...
+ProcessElevationTitle=Starting process with elevated permissions
+TextfieldEmptyWarning=يجب ألا يكون الحقل النصي هذا فارغا.
+# {0} and {1} are application names, "Retry" must be like in ButtonRetry, "Cancel" like in ButtonCancel
+AppRunningError={0} اكتشف أن {1} قيد التشغيل حاليا.\n\nيرجى إغلاق العمليات التالية، ثم انقر على إعادة المحاولة للاستمرار، أو على إلغاء للخروج.
+AppRunningErrorAddOn={0} قد اكتشف أن التطبيق قيد التشغيل حاليا.\n\nPيرجى إغلاق العمليات التالية، ثم انقر على إعادة المحاولة، أو انقر على إلغاء للخروج.
+ButtonCloseProcesses=إغلاق العمليات
+ButtonTerminateProcesses=قم بإيقاف العمليات
+RunningProcessesDetected=تم اكتشاف العمليات قيد التشغيل
+DownloadFileCorrupt=الملف المنزل تالف. هل تريد المحاولة مرة أخرى؟
+DownloadInterrupted=تم مقاطعة التنزيل. هل تريد المحاولة مرة أخرى؟
+DownloadContentError=تعذر تنزيل ملفات المحتوى. هل تريد المحاولة مرة أخرى؟
+# Do not translate "dock", it is a UI element on macOS
+AddToDock=أضف إلى dock
+UploadingWithFileName=جاري رفع {0} ...
+Uploading=جاري الرفع ...
+UploadInterrupted=تم مقاطعة الرفع. هل تريد المحاولة مرة أخرى؟
+InstallerName= برنامج التثبيت {0}
+PasswordsDoNotMatch=كلمات المرور غير مطابقة.
+# Like PasswordLabel above only for a repetition, with colon at the end
+RepeatPasswordLabel=تكرار كلمة المرور:
+UninstallerPreparing=التجهيز لإلغاء التثبيت
+# Same as RootPrivilegesRequired, only use "execute" instead of "install"
+RootPrivilegesRequiredExecute=يجب أن يتم تسجيل دخولك كمدير للنظام عند تثبيت هذا البرنامج.
+# Same as StatusRunProgram, only use "execute" instead of "install"
+StatusRunProgramExecute=جاري إنهاء التثبيت...
+CreateUserErrorUserExists=هذا المستخدم موجود بالفعل.
+# Same as AdminPrivilegesRequired, only use "execute" instead of "install"
+AdminPrivilegesRequiredExecute=يجب أن يكون لديك امتيازات مدير النظام لتشغيل هذا البرنامج.

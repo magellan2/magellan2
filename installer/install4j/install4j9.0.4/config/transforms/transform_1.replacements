@@ -1,0 +1,11 @@
+%VERSION%=\${compiler:sys.version}
+%SHORT_NAME%=\${compiler:sys.shortName}
+%SETNAME%=\${compiler:sys.setName}
+%PLATFORM%=\${compiler:sys.platform}
+%LANGUAGE_ID%=\${compiler:sys.languageId}
+%WITH_JRE%=\${compiler:sys.withJre}
+%DATE%=\${compiler:sys.date}
+%INSTALL4J_EXEDIR%=\${launcher:sys.launcherDirectory}
+%INSTALL4J_JVM_HOME%=\${launcher:sys.jvmHome}
+%INSTALL4J_PATHLIST_SEPARATOR%=\${launcher:sys.pathlistSeparator}
+%(\w+)%=\${compiler:$1}

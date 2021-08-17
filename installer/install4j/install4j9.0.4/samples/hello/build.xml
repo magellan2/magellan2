@@ -1,0 +1,15 @@
+<project name="hello" default="media">
+
+  <!-- TODO specify install4j installation directory below -->
+  <!--  <property name="install4jHomeDir" location="CHANGEME"/> -->
+  <fail message="Specify install4jHomeDir in build.xml" unless="install4jHomeDir"/>
+
+  <target name="media">
+    <taskdef name="install4j"
+             classname="com.install4j.Install4JTask"
+             classpath="${install4jHomeDir}/bin/ant.jar"/>
+
+    <install4j projectfile="hello.install4j"/>
+  </target>
+
+</project>

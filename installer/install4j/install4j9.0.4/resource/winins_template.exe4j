@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4J version="2.0">
+  <executable name="installer" type="2" iconSet="true" iconFile="install4j.ico" executableDir="." redirectStderr="false" stderrFile="" redirectStdout="false" stdoutFile="" failOnStderrOutput="false" executableMode="5" changeWorkingDirectory="true" workingDirectory=".">
+    <messageSet language="English" />
+  </executable>
+  <splashScreen show="false" />
+  <java mainClass="com.install4j.runtime.installer.Installer" vmParameters="" arguments="" allowVMPassthroughParameters="true" minVersion="1.3" maxVersion="">
+    <searchSequence>
+      <registry />
+      <envVar name="JAVA_HOME" />
+      <envVar name="JDK_HOME" />
+      <path />
+    </searchSequence>
+    <classPath>
+      <archive location="i4jruntime.jar" failOnError="false" />
+    </classPath>
+    <nativeLibraryDirectories>
+      <directory name="${launcher:sys.launcherTempDirectory}/user" />
+    </nativeLibraryDirectories>
+  </java>
+</exe4J>
+

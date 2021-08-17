@@ -1,0 +1,11 @@
+# This is the file that the single .vmoptions files include
+# It will be installed to a user-writable location by the hello world 
+# installer.
+#
+# Comments in .vmoptions files are prefixed by a hash, each VM option is on 
+# a separate line
+
+# 32 MB maximum heap size should be enough for displaying hello world
+-Xmx32m
+# an additional message that will be displayed by the hello_cli executable
+-Dadditional.message=This is a greeting from the .vmoptions file

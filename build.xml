@@ -1,4 +1,7 @@
-<project name="magellan" default="distribute">
+<project name="magellan"
+         default="distribute"
+         xmlns:if="ant:if"
+         xmlns:unless="ant:unless">
 	<description>
     This is the ANT compile script for magellan. This script helps you
     to compile a distributable version of magellan.
@@ -10,6 +13,8 @@
       - test_and_distribute
       - javadoc (not implemented yet)
     </description>
+
+	<property environment="env" />
 
 	<property name="VERSION.MAJOR" value="2" />
 	<property name="VERSION.MINOR" value="1" />
@@ -269,7 +274,7 @@
 	<!-- *  This target compiles and packs the magellan library.       * -->
 	<!-- *                                                             * -->
 	<!-- *************************************************************** -->
-	<target name="build_test">
+	<target name="build_test" unless="${quick_mode}">
 		<echo message="Compiling tests..." />
 
 		<mkdir dir="${classes}" />
@@ -371,7 +376,8 @@
 	<!-- *************************************************************** -->
 	<target name="run_tests"
 	        description="This target runs the unit tests."
-	        depends="update_version, build_library, build_client, build_plugins, build_test">
+	        depends="update_version, build_library, build_client, build_plugins, build_test"
+	        unless="${quick_mode}">
 
 		<mkdir dir="${junit.output.dir}" />
 
@@ -414,6 +420,15 @@
 	<target name="prepare_build"
 	        depends="clear-all, increase_build_number, update_version">
 
+	</target>
+
+	<target name="zip_release">
+		<echo message="Creating ZIP Distribution" />
+		<delete file="${basedir}/magellan_v${VERSION.FULL}.zip"
+		        failonerror="false" />
+		<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
+			<fileset dir="${release}" includes="**" />
+		</zip>
 	</target>
 
 	<target name="build_jar_and_distribute"
@@ -470,12 +485,7 @@
 			</classpath>
 		</java>
 -->
-		<echo message="Creating ZIP Distribution" />
-		<delete file="${basedir}/magellan_v${VERSION.FULL}.zip"
-		        failonerror="false" />
-		<zip destfile="${basedir}/magellan_v${VERSION.FULL}.zip">
-			<fileset dir="${release}" includes="**" />
-		</zip>
+		<antcall target="zip_release" />
 
 		<echo message="Creating MacOS Distribution" />
 		<delete file="${basedir}/magellan_v${VERSION.FULL}_macos.zip"
@@ -578,7 +588,7 @@
 	<!-- *************************************************************** -->
 	<!-- *    CREATE JAVADOC                                           * -->
 	<!-- *************************************************************** -->
-	<target name="doc" description="==> Creates the JavaDocs">
+	<target name="doc" description="==> Creates the JavaDocs" unless="${quick_mode}">
 		<echo message="Running JavaDoc" />
 		<jar jarfile="magellan-src.jar"
 		     basedir="${basedir}"
@@ -612,7 +622,7 @@
 				<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
              if you need javadoc for src-test, please investigate! -->
 				<exclude name="src-test/**" />
-                <exclude name="installer/**" />
+				<exclude name="installer/**" />
 			</fileset>
 		</javadoc>
 	</target>
@@ -633,7 +643,7 @@
 	<!-- *************************************************************** -->
 	<!-- *     CLEAR ALL                                               * -->
 	<!-- *************************************************************** -->
-	<target name="clear-all">
+	<target name="clear-all" unless="${quick_mode}">
 		<antcall target="clear-directory">
 			<param name="dir" value="${classes}" />
 		</antcall>
@@ -649,6 +659,34 @@
 			<fileset dir="${basedir}" includes="default-??????*/**" />
 			<fileset dir="${basedir}" includes="default??????*/**" />
 		</delete>
+	</target>
+
+    <taskdef name="install4j"
+             classname="com.install4j.Install4JTask"
+             classpath="installer/install4j/install4j9.0.4/bin/ant.jar" />
+
+	<target name="checkinstall4j" >
+		<fail unless:set="env.INSTALL4J_KEY" message="INSTALL4J_KEY must be set to license key!"/>
+        <fail unless:set="build.number" message="build.number not defined"/>
+	</target>
+
+	<target name="installer4j" depends="checkinstall4j">
+		<!--        <install4j projectFile="install4j-testing/magellan2.install4j" buildIds="30" license="${env.INSTALL4J_KEY}" > -->
+		<install4j projectFile="install4j-testing/magellan2.install4j"
+		           buildIds="28,29,30"
+		           license="${env.INSTALL4J_KEY}">
+			<variable name="version.major" value="${VERSION.MAJOR}" />
+			<variable name="version.minor" value="${VERSION.MINOR}" />
+			<variable name="version.sub" value="${VERSION.SUB}" />
+			<variable name="version.build" value="${build.number}" />
+			<variable name="version.post" value="${VERSION.POST}" />
+		</install4j>
+	</target>
+
+	<target name="distribute_install4j"
+	        description=" This target compiles, tests and packs the whole magellan application."
+	        depends="prepare_build, run_tests, doc, build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data, installer4j, zip_release">
+		<antcall target="clear-all" />
 	</target>
 
 </project>

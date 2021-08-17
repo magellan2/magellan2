@@ -14,18 +14,18 @@ jobs:
     - name: get version
       id: get-version
       run: |
-        wget https://github.com/${{ github.repository }}/releases/download/${{ steps.get-version.outputs.TAG }}/VERSION
+        TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
+        wget https://github.com/${{ github.repository }}/releases/download/$TAG/VERSION
         VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )
         echo "::set-output name=VERSION::$VERSION"
-        TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
         echo "::set-output name=TAG::$TAG"
 
     - name: prepare meta
       id: prepare-meta
       run: |
         set -x
-        if [[ "${{ steps.get-version.outputs.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ steps.get-version.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
+        if [[ "${{ steps.get-version.outputs.TAG }}" =~ .*-([0-9]*[.])?([a-zA-Z][a-zA-Z]*).* ]]; then
+          TYPE=$(echo ${{ steps.get-version.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\?\([a-zA-Z][a-zA-Z]*\).*/\2/")
         else
           TYPE=stable
         fi

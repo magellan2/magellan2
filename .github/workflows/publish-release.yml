@@ -89,7 +89,11 @@ jobs:
       shell: bash --noprofile --norc -o pipefail {0}
 
     - name: Build with ant
-      run: ant -noinput -buildfile build.xml
+      env: 
+        INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
+      run: |
+        ant -noinput -buildfile build.xml distribute_install4j
+        mv install4j-testing/Magellan_installer* .
 
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog
@@ -104,8 +108,8 @@ jobs:
       id: prepare-meta
       run: |
         set -x
-        if [[ "${{ steps.sanity_check.outputs.TAG }}" =~ .*-([0-9]*[.])?\([a-zA-Z][a-zA-Z]*\).* ]]; then
-          TYPE=$(echo ${{ steps.sanity_check.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\([a-zA-Z][a-zA-Z]*\).*/\2/")
+        if [[ "${{ steps.sanity_check.outputs.TAG }}" =~ .*-([0-9]*[.])?([a-zA-Z][a-zA-Z]*).* ]]; then
+          TYPE=$(echo ${{ steps.sanity_check.outputs.TAG }} | sed -e "s/.*-\([0-9]*[.]\)\?\([a-zA-Z][a-zA-Z]*\).*/\2/")
         else
           TYPE=stable
         fi
@@ -133,12 +137,14 @@ jobs:
           RELEASENOTES.txt
           CHANGELOG.txt
           VERSION
-          magellan_v${{ steps.get-version.outputs.VERSION }}.jar
           magellan_v${{ steps.get-version.outputs.VERSION }}.zip
+          Magellan_installer_windows-x64_v${{ steps.get-version.outputs.VERSION }}.exe
+          Magellan_installer_unix_v${{ steps.get-version.outputs.VERSION }}.sh
+          Magellan_installer_macos_v${{ steps.get-version.outputs.VERSION }}.dmg
 
 #    - name: trigger meta action
 #      run: |
-#        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan-meta/dispatches \
+#        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
 #          -H 'Accept: application/vnd.github.everst-preview+json' \
 #          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
 #          --data '{
@@ -147,7 +153,7 @@ jobs:
 #              "ref" : "${{ github.ref }}",
 #              "sha": "${{ github.sha }}",
 #              "caller_repository" : "${{ github.repository }}",
-#              "meta_repository" : "${{ github.repository_owner }}/magellan-meta",
+#              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
 #              "tag" : "${{ steps.sanity_check.outputs.TAG }}",
 #              "version" : "${{ steps.get-version.outputs.VERSION }}",
 #              "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'

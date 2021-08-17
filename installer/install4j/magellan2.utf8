@@ -1,0 +1,6 @@
+test=Testing
+components.magellan.description=This is the main application with all libraries and icons.
+components.skins.description=Some more skins ("Look & Feel") to try out.
+components.echeck.description=A tool for order verification. It is largely unnecessary if you have the 'Open Tasks' dock active.
+components.javadoc.description=Documentation for programmers. Not needed for most users, but especially useful if you'd like to use the Extended Commands plugin.
+programgroup.magellan.web.site=Magellan Web Site

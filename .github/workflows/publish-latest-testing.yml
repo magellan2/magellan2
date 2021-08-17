@@ -4,7 +4,10 @@ name: Create pre-release
 on:
   push:
     branches:
-      - "master"
+      - "testing"
+
+env:
+  ANTDEF : '-Dquick_mode=true'
 
 jobs:
   build:
@@ -32,7 +35,7 @@ jobs:
 
     - name: Test with ant
       run: |
-         ant -noinput -buildfile build.xml run_tests
+         ant $ANTDEF -noinput -buildfile build.xml run_tests
          fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
          if [ -n "$fails" ]; then
            echo Errors in $fails
@@ -92,7 +95,7 @@ jobs:
       env: 
         INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
-        ant -noinput -buildfile build.xml distribute_install4j
+        ant  $ANTDEF -noinput -buildfile build.xml distribute_install4j
         mv install4j-testing/Magellan_installer* .
 
     - name: Read RELEASENOTES and CHANGELOG
@@ -126,7 +129,9 @@ jobs:
           echo "invalid type $TYPE"
           exit 1
         fi
+        ACTION=$(git branch --show-current)
         echo "::set-output name=TYPE::$TYPE"
+        echo "::set-output name=ACTION::$ACTION"
 
     - name: Create release
       uses: meeDamian/github-release@2.0
@@ -158,6 +163,7 @@ jobs:
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
+              "action" : "${{ steps.prepare-meta.outputs.ACTION }}",
               "ref" : "${{ github.ref }}",
               "sha": "${{ github.sha }}",
               "caller_repository" : "${{ github.repository }}",

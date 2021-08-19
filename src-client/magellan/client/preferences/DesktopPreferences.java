@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -48,8 +47,7 @@ import magellan.library.utils.Resources;
 /**
  * Encapsulates the preferences tab for the desktop.
  */
-public class DesktopPreferences extends AbstractPreferencesAdapter implements ActionListener,
-    ExtendedPreferencesAdapter {
+public class DesktopPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
   private MagellanDesktop desktop;
 
   private JPanel center;
@@ -116,12 +114,6 @@ public class DesktopPreferences extends AbstractPreferencesAdapter implements Ac
 
     scList = new ArrayList<PreferencesAdapter>(1);
     scList.add(new DesktopShortCutPreferences(desktop, client));
-  }
-
-  /**
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public void actionPerformed(java.awt.event.ActionEvent p1) {
   }
 
   /**

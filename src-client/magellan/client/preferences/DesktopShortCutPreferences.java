@@ -10,27 +10,31 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -51,7 +55,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.DefaultCellEditor;
@@ -66,11 +74,17 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
@@ -90,7 +104,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
   protected JTable table;
   protected DefaultTableModel model;
   protected Collator collator;
-  protected Set<KeyStroke> ownShortcuts;
+  protected HashMap<KeyStroke, Object> ownShortcuts;
   protected Set<KeyStroke> otherShortcuts;
 
   /**
@@ -106,140 +120,263 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
 
     if (desktop.getShortCutListeners() != null) {
-      Object columns[] =
-          { Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"),
-              Resources.get("desktop.magellandesktop.prefs.shortcuts.header2") };
+      table = getShortCutTable();
 
-      Map<Object, List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
-      Iterator<Entry<KeyStroke, Object>> entryIterator =
-          desktop.getShortCutListeners().entrySet().iterator();
-
-      while (entryIterator.hasNext()) {
-        Entry<KeyStroke, Object> entry = entryIterator.next();
-        Object value = entry.getValue();
-
-        if (!listeners.containsKey(value)) {
-          listeners.put(value, new LinkedList<KeyStroke>());
-        }
-
-        // try to find a translation
-        KeyStroke oldStroke = entry.getKey();
-        KeyStroke newStroke = desktop.findTranslation(oldStroke);
-
-        if (newStroke != null) {
-          listeners.get(value).add(newStroke);
-        } else {
-          listeners.get(value).add(oldStroke);
-        }
-      }
-
-      Object data[][] = new Object[desktop.getShortCutListeners().size() + listeners.size()][2];
-
-      List<Object> list2 = new LinkedList<Object>(listeners.keySet());
-
-      Collections.sort(list2, new ListenerComparator());
-
-      Iterator<Object> listenerIterator = list2.iterator();
-
-      int i = 0;
-
-      while (listenerIterator.hasNext()) {
-        Object key = listenerIterator.next();
-        ShortcutListener sl = null;
-
-        if (key instanceof ShortcutListener) {
-          sl = (ShortcutListener) key;
-          data[i][0] = sl.getListenerDescription();
-
-          if (data[i][0] == null) {
-            data[i][0] = sl;
-          }
-        } else {
-          data[i][0] = key;
-        }
-
-        data[i][1] = null;
-
-        i++;
-
-        List<KeyStroke> list = listeners.get(key);
-
-        Collections.sort(list, new KeyStrokeComparator());
-
-        Iterator<KeyStroke> it2 = list.iterator();
-
-        while (it2.hasNext()) {
-          KeyStroke obj = it2.next();
-          data[i][0] = obj;
-
-          if (sl != null) {
-            if (desktop.getShortCutTranslations().containsKey(obj)) {
-              obj = desktop.getTranslation(obj);
-            }
-
-            try {
-              data[i][1] = sl.getShortcutDescription(obj);
-
-              if (data[i][1] == null) {
-                data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-              }
-            } catch (RuntimeException re) {
-              data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-            }
-          } else {
-            data[i][1] = key;
-          }
-
-          i++;
-        }
-      }
-
-      model = new DefaultTableModel(data, columns);
-
-      StrokeRenderer sr = new StrokeRenderer();
-      DefaultTableColumnModel tcm = new DefaultTableColumnModel();
-      TableColumn column = new TableColumn();
-      column.setHeaderValue(columns[0]);
-      column.setCellRenderer(sr);
-      column.setCellEditor(new DefaultCellEditor(new JTextField()) {
-        @Override
-        public boolean isCellEditable(EventObject anEvent) {
-          return false;
-        }
-      });
-      tcm.addColumn(column);
-      column = new TableColumn(1);
-      column.setHeaderValue(columns[1]);
-      column.setCellRenderer(sr);
-      column.setCellEditor(new DefaultCellEditor(new JTextField()) {
-        @Override
-        public boolean isCellEditable(EventObject anEvent) {
-          return false;
-        }
-      });
-      tcm.addColumn(column);
-
-      table = new JTable(model, tcm);
-      setLayout(new BorderLayout());
-      this.add(new JScrollPane(table), BorderLayout.CENTER);
+      JTextField filter = getFilter(table);
       table.addMouseListener(getMousePressedMouseListener());
-    }
 
+      setLayout(new GridBagLayout());
+      GridBagConstraints con = new GridBagConstraints();
+      con.gridx = 0;
+      con.gridy = 0;
+      con.fill = GridBagConstraints.BOTH;
+      con.weightx = 1;
+      con.weighty = 1;
+      con.gridwidth = 2;
+      this.add(new JScrollPane(table), con);
+      con.fill = GridBagConstraints.NONE;
+      con.weightx = .5;
+      con.weighty = 0;
+      con.gridwidth = 1;
+      con.gridy++;
+      con.anchor = GridBagConstraints.WEST;
+      JPanel searchPanel = new JPanel();
+      searchPanel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.search")));
+      searchPanel.add(filter);
+      // con.gridx++;
+      con.weightx = 1;
+      this.add(searchPanel, con);
+
+      con.gridy++;
+      con.gridx = 0;
+      con.weightx = 0;
+      con.fill = GridBagConstraints.NONE;
+      this.add(new JButton(new AbstractAction(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.action")) {
+        public void actionPerformed(ActionEvent e) {
+          new InformDialog(client).setVisible(true);
+        }
+      }), con);
+
+    }
     // find all java keystrokes
 
-    ownShortcuts = new HashSet<KeyStroke>(desktop.getShortCutListeners().keySet());
+    if (desktop.getShortCutListeners() != null) {
+      ownShortcuts = new HashMap<KeyStroke, Object>(desktop.getShortCutListeners());
+    } else {
+      ownShortcuts = new HashMap<KeyStroke, Object>();
+    }
+
     otherShortcuts = new HashSet<KeyStroke>();
     addKeyStrokes(client, otherShortcuts);
-    otherShortcuts.removeAll(ownShortcuts);
+    otherShortcuts.removeAll(ownShortcuts.keySet());
     otherShortcuts.removeAll(desktop.getShortCutTranslations().keySet());
+  }
 
-    // (new InformDialog(client)).setVisible(true);
+  private JTable getShortCutTable() {
+    Vector<String> columns = new Vector<String>(3);
+    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"));
+    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header2"));
+    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header3"));
 
-    // JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    // JButton help = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.help"));
-    // help.addActionListener(this);
-    // south.add(help);
-    // this.add(south, BorderLayout.SOUTH);
+    model = new DefaultTableModel(getShortCutMap(), columns);
+
+    StrokeRenderer sr = new StrokeRenderer();
+    DefaultTableColumnModel tcm = new DefaultTableColumnModel();
+    TableColumn column = new TableColumn();
+    column.setHeaderValue(columns.get(0));
+    column.setCellRenderer(sr);
+    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+      @Override
+      public boolean isCellEditable(EventObject anEvent) {
+        return false;
+      }
+    });
+    tcm.addColumn(column);
+    column = new TableColumn(1);
+    column.setHeaderValue(columns.get(1));
+    column.setCellRenderer(sr);
+    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+      @Override
+      public boolean isCellEditable(EventObject anEvent) {
+        return false;
+      }
+    });
+    tcm.addColumn(column);
+
+    column = new TableColumn(2);
+    column.setHeaderValue(columns.get(2));
+    column.setCellRenderer(sr);
+    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+      @Override
+      public boolean isCellEditable(EventObject anEvent) {
+        return false;
+      }
+    });
+    tcm.addColumn(column);
+
+    return new JTable(model, tcm);
+  }
+
+  private JTextField getFilter(JTable table) {
+    RowSorter<? extends TableModel> rs = table.getRowSorter();
+    if (rs == null) {
+      table.setAutoCreateRowSorter(true);
+      rs = table.getRowSorter();
+    }
+
+    TableRowSorter<? extends TableModel> rowSorter =
+        (rs instanceof TableRowSorter) ? (TableRowSorter<? extends TableModel>) rs : null;
+
+    if (rowSorter == null)
+      throw new RuntimeException("Cannot find appropriate rowSorter: " + rs);
+
+    final JTextField tf = new JTextField(15);
+
+    tf.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        update(e);
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        update(e);
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        update(e);
+      }
+
+      private void update(DocumentEvent e) {
+        String text = tf.getText().trim();
+        if (text.length() == 0) {
+          rowSorter.setRowFilter(null);
+        } else {
+          Matcher matcher = Pattern.compile("(?i)" + text).matcher("");
+
+          rowSorter.setRowFilter(new RowFilter<TableModel, Integer>() {
+
+            @Override
+            public boolean include(Entry<? extends TableModel, ? extends Integer> entry) {
+              if (entry.getValue(1) == null)
+                return true;
+
+              matcher.reset(entry.getStringValue(0));
+              if (matcher.find())
+                return true;
+              matcher.reset(entry.getStringValue(1));
+              if (matcher.find())
+                return true;
+              return false;
+            }
+          });
+        }
+      }
+    });
+
+    return tf;
+  }
+
+  private Vector<Vector<?>> getShortCutMap() {
+    Map<Object, List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
+    Iterator<Entry<KeyStroke, Object>> entryIterator =
+        desktop.getShortCutListeners().entrySet().iterator();
+
+    while (entryIterator.hasNext()) {
+      Entry<KeyStroke, Object> entry = entryIterator.next();
+      Object value = entry.getValue();
+
+      if (!listeners.containsKey(value)) {
+        listeners.put(value, new LinkedList<KeyStroke>());
+      }
+
+      // try to find a translation
+      KeyStroke oldStroke = entry.getKey();
+      KeyStroke newStroke = desktop.findTranslation(oldStroke);
+
+      if (newStroke != null) {
+        listeners.get(value).add(newStroke);
+      } else {
+        listeners.get(value).add(oldStroke);
+      }
+    }
+
+    Vector<Vector<?>> data = new Vector<Vector<?>>();
+
+    List<Object> listenerList = new LinkedList<Object>(listeners.keySet());
+
+    Collections.sort(listenerList, new ListenerComparator());
+
+    for (Object key : listenerList) {
+      ShortcutListener sl = null;
+      if (key instanceof ShortcutListener) {
+        sl = (ShortcutListener) key;
+      }
+
+      Object category = getShortCutCategory(key);
+
+      List<KeyStroke> keyStrokeList = listeners.get(key);
+
+      Collections.sort(keyStrokeList, new KeyStrokeComparator());
+
+      for (KeyStroke obj : keyStrokeList) {
+        Object description = getShortCutDescription(obj, sl);
+
+        Vector<Object> row = new Vector<Object>(3);
+        row.add(obj);
+        row.add(description);
+        row.add(category);
+        data.add(row);
+      }
+    }
+
+    return data;
+  }
+
+  private Object getShortCutCategory(Object key) {
+    Object category = null;
+    if (key == null)
+      return "null";
+    if (key instanceof ShortcutListener) {
+      ShortcutListener sl = (ShortcutListener) key;
+      category = sl.getListenerDescription();
+
+      if (category == null) {
+        category = sl;
+      }
+    } else if (key instanceof Action) {
+      Action action = (Action) key;
+      category = action.getValue(Action.SHORT_DESCRIPTION);
+      if (category == null) {
+        category = action.getValue("tooltip");
+      }
+    }
+    if (category == null) {
+      category = key.toString();
+    }
+    return category.toString();
+  }
+
+  private String getShortCutDescription(KeyStroke key, ShortcutListener sl) {
+    if (sl == null)
+      return key.toString();
+
+    if (desktop.getShortCutTranslations().containsKey(key)) {
+      key = desktop.getTranslation(key);
+    }
+
+    String description;
+    try {
+      description = sl.getShortcutDescription(key);
+
+      if (description == null) {
+        description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
+      }
+    } catch (RuntimeException re) {
+      description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
+    }
+    return description;
   }
 
   protected void addKeyStrokes(Component c, Set<KeyStroke> set) {
@@ -424,7 +561,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     Component top = getTopLevelAncestor();
     TranslateStroke td = null;
 
-    if (model.getValueAt(row, 0) instanceof KeyStroke) {
+    if (table.getValueAt(row, 0) instanceof KeyStroke) {
       if (top instanceof Frame) {
         td = new TranslateStroke((Frame) top);
       } else if (top instanceof Dialog) {
@@ -444,10 +581,21 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
   private boolean changeStroke(KeyStroke newStroke, KeyStroke stroke, int row) {
     if ((newStroke != null) && !newStroke.equals(stroke)) {
-      if (ownShortcuts.contains(newStroke)) {
+      if (ownShortcuts.get(newStroke) != null) {
+        KeyStroke translation = desktop.getTranslation(newStroke);
+        if (translation != null) {
+          ;//
+        }
+        Object listener = desktop.getShortCutListeners().get(newStroke);
+        String description;
+        if (listener instanceof ShortcutListener || listener == null) {
+          description = getShortCutDescription(newStroke, (ShortcutListener) listener);
+        } else {
+          description = listener.toString();
+        }
+
         JOptionPane.showMessageDialog(this, Resources.get(
-            "desktop.magellandesktop.prefs.shortcuts.error", desktop.getShortCutListeners().get(
-                newStroke)));
+            "desktop.magellandesktop.prefs.shortcuts.error", description, getShortCutCategory(listener)));
       } else {
         boolean doIt = true;
 
@@ -461,8 +609,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         }
 
         if (doIt) {
-          ownShortcuts.remove(stroke);
-          ownShortcuts.add(newStroke);
+          ownShortcuts.put(newStroke, ownShortcuts.remove(stroke));
           if (desktop.getShortCutTranslations().containsKey(stroke)) {
             KeyStroke oldStroke = desktop.getShortCutTranslations().get(stroke);
             desktop.removeTranslation(stroke);
@@ -480,7 +627,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           }
 
           if (row >= 0) {
-            model.setValueAt(newStroke, row, 0);
+            table.setValueAt(newStroke, row, 0);
           }
         }
         return doIt;
@@ -527,14 +674,16 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         }
       }
 
-      JTextArea java = new JTextArea(buf.toString());
-      java.setEditable(false);
-      java.setLineWrap(true);
-      java.setWrapStyleWord(true);
-      con.add(new JScrollPane(java), BorderLayout.CENTER);
+      JTextArea shortcutInfo = new JTextArea(buf.toString());
+      shortcutInfo.setColumns(80);
+      shortcutInfo.setRows(20);
+      shortcutInfo.setEditable(false);
+      shortcutInfo.setLineWrap(true);
+      shortcutInfo.setWrapStyleWord(true);
+      con.add(new JScrollPane(shortcutInfo), BorderLayout.CENTER);
 
       JPanel button = new JPanel(new FlowLayout(FlowLayout.CENTER));
-      JButton ok = new JButton("prefs.shortcuts.dialog.ok");
+      JButton ok = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.ok"));
       ok.addActionListener(this);
       button.add(ok);
       con.add(button, BorderLayout.SOUTH);
@@ -824,10 +973,19 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       setFont(norm);
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-      if (value instanceof KeyStroke) {
+      if (value instanceof KeyStroke && column == 0) {
+        if (otherShortcuts.contains(value)) {
+          setFont(bold);
+          setForeground(Color.RED);
+        } else {
+          setFont(norm);
+          setForeground(Color.BLACK);
+        }
         setText(getKeyStroke((KeyStroke) value));
       } else if (column == 0) {
         setFont(bold);
+      } else if (column == 2) {
+        column = 2;
       }
 
       return this;

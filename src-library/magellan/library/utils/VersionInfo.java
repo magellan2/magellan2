@@ -145,7 +145,7 @@ public class VersionInfo {
         HTTPClient client = new HTTPClient(properties);
         HTTPResult result = client.get(versionsUrl);
         if (result != null && result.getStatus() == 200) {
-          String type = checkNightly ? "nightly" : "stable";
+          String type = checkNightly ? "latest" : "stable";
 
           Properties props = JsonAdapter.parsePropertiesMap(result.getResult(), true);
           newestVersion = props.getProperty("versions." + type + ".raw");

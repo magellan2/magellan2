@@ -37,6 +37,7 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -44,15 +45,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
@@ -62,6 +61,7 @@ import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -78,9 +78,9 @@ import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -89,8 +89,10 @@ import javax.swing.table.TableRowSorter;
 import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
+import magellan.client.preferences.DesktopShortCutPreferences.ShortcutModel.StrokeInfo;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This is a container for all preferences regarding Shortcuts in Magellan.
@@ -99,19 +101,176 @@ import magellan.library.utils.Resources;
  * @version 1.0, 15.02.2008
  */
 public class DesktopShortCutPreferences extends JPanel implements PreferencesAdapter {
+  private static Logger log = Logger.getInstance(DesktopShortCutPreferences.class);
+
+  private static final boolean SHOW_SYSTEM_KEYS = false;
+
+  /**
+   * Table model for shortcuts
+   */
+  public static class ShortcutModel extends AbstractTableModel {
+
+    /**
+     * records relevant info about a KeyStroke
+     */
+    public static class StrokeInfo implements Comparable<StrokeInfo> {
+
+      private KeyStroke stroke;
+      private KeyStroke originalStroke;
+      private KeyStroke strokeId;
+      private String category;
+      private String description;
+
+      protected StrokeInfo(KeyStroke stroke, KeyStroke strokeId, ShortcutListener sl) {
+        this.stroke = stroke;
+        originalStroke = stroke;
+        this.strokeId = strokeId;
+
+        category = sl.getListenerDescription();
+
+        if (category == null) {
+          category = sl.toString();
+        }
+        try {
+          description = sl.getShortcutDescription(stroke);
+          if (description == null) {
+            description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
+          }
+        } catch (RuntimeException re) {
+          description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
+        }
+      }
+
+      protected StrokeInfo(KeyStroke key, KeyStroke translation, Action action) {
+        stroke = key;
+        originalStroke = key;
+        strokeId = translation;
+
+        description = (String) action.getValue(Action.SHORT_DESCRIPTION);
+        if (description == null) {
+          description = (String) action.getValue("tooltip");
+        }
+        if (description == null) {
+          description = (String) action.getValue(Action.NAME);
+        }
+
+        if (description == null) {
+          description = action.toString();
+        }
+        category = "";
+      }
+
+      KeyStrokeComparator strokeCmp = new KeyStrokeComparator();
+
+      public int compareTo(StrokeInfo o) {
+        if (o == null)
+          return -1;
+        int cmp = category.compareTo(o.category);
+        if (cmp != 0)
+          return cmp;
+        cmp = description.compareTo(o.description);
+        if (cmp != 0)
+          return cmp;
+        return strokeCmp.compare(stroke, o.stroke);
+      }
+
+    }
+
+    private ArrayList<StrokeInfo> shortcuts;
+
+    protected ShortcutModel() {
+      shortcuts = new ArrayList<StrokeInfo>();
+      // initialized later
+    }
+
+    protected void init(MagellanDesktop desktop) {
+      shortcuts.clear();
+
+      for (Entry<KeyStroke, Object> entry : desktop.getShortCutListeners().entrySet()) {
+
+        KeyStroke keyId = entry.getKey();
+        KeyStroke currentKey = desktop.findTranslation(keyId);
+        if (currentKey == null) {
+          currentKey = keyId;
+        }
+
+        if (entry.getValue() instanceof ShortcutListener) {
+          shortcuts.add(new StrokeInfo(currentKey, keyId, (ShortcutListener) entry.getValue()));
+        } else if (entry.getValue() instanceof Action) {
+          shortcuts.add(new StrokeInfo(currentKey, keyId, (Action) entry.getValue()));
+        } else {
+          log.error("unknown shortcut listener for " + keyId);
+        }
+      }
+      Collections.sort(shortcuts);
+      fireTableDataChanged();
+    }
+
+    public int getRowCount() {
+      return shortcuts.size();
+    }
+
+    public int getColumnCount() {
+      return 3;
+    }
+
+    public Object getValueAt(int rowIndex, int columnIndex) {
+      StrokeInfo shortcut = shortcuts.get(rowIndex);
+      switch (columnIndex) {
+      case 0:
+        return shortcut.stroke;
+      case 1:
+        return shortcut.description;
+      case 2:
+        return shortcut.category;
+      // case 3:
+      // return shortcut.strokeId;
+      default:
+        throw new IndexOutOfBoundsException(columnIndex);
+      }
+    }
+
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+      StrokeInfo shortcut = shortcuts.get(rowIndex);
+      switch (columnIndex) {
+      case 0:
+        shortcut.stroke = (KeyStroke) aValue;
+        break;
+      default:
+        throw new IndexOutOfBoundsException(columnIndex);
+      }
+      fireTableCellUpdated(rowIndex, columnIndex);
+    }
+
+    private StrokeInfo getStrokeInfo(int row) {
+      return shortcuts.get(row);
+    }
+
+    protected void setDefaults() {
+      for (StrokeInfo info : shortcuts) {
+        info.stroke = info.strokeId;
+      }
+      fireTableDataChanged();
+    }
+  }
+
   private MagellanDesktop desktop;
 
   protected JTable table;
-  protected DefaultTableModel model;
+  protected ShortcutModel model;
   protected Collator collator;
-  protected HashMap<KeyStroke, Object> ownShortcuts;
-  protected Set<KeyStroke> otherShortcuts;
+  protected HashMap<KeyStroke, Integer> ownShortcuts = new HashMap<KeyStroke, Integer>();
+  protected Set<KeyStroke> otherShortcuts = new HashSet<KeyStroke>();
+
+  private Client client;
 
   /**
    * Creates a new ShortcutList object.
    */
   public DesktopShortCutPreferences(MagellanDesktop desktop, Client client) {
     this.desktop = desktop;
+    this.client = client;
 
     try {
       collator = Collator.getInstance(magellan.library.utils.Locales.getGUILocale());
@@ -119,34 +278,44 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       collator = Collator.getInstance();
     }
 
-    if (desktop.getShortCutListeners() != null) {
-      table = getShortCutTable();
+    table = getShortCutTable();
 
-      JTextField filter = getFilter(table);
-      table.addMouseListener(getMousePressedMouseListener());
+    JTextField filter = getFilter(table);
+    filter.setMaximumSize(filter.getPreferredSize());
+    table.addMouseListener(getMousePressedMouseListener());
 
-      setLayout(new GridBagLayout());
-      GridBagConstraints con = new GridBagConstraints();
-      con.gridx = 0;
-      con.gridy = 0;
-      con.fill = GridBagConstraints.BOTH;
-      con.weightx = 1;
-      con.weighty = 1;
-      con.gridwidth = 2;
-      this.add(new JScrollPane(table), con);
-      con.fill = GridBagConstraints.NONE;
-      con.weightx = .5;
-      con.weighty = 0;
-      con.gridwidth = 1;
-      con.gridy++;
-      con.anchor = GridBagConstraints.WEST;
-      JPanel searchPanel = new JPanel();
-      searchPanel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.search")));
-      searchPanel.add(filter);
-      // con.gridx++;
-      con.weightx = 1;
-      this.add(searchPanel, con);
+    Box searchPanel = Box.createHorizontalBox();
+    // searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.LINE_AXIS));
+    searchPanel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.search")));
+    searchPanel.add(filter);
+    searchPanel.add(Box.createHorizontalGlue());
+    searchPanel.add(new JButton(new AbstractAction(Resources.get(
+        "desktop.magellandesktop.prefs.shortcuts.dialog.defaults")) {
+      public void actionPerformed(ActionEvent e) {
+        setDefaults();
+      }
+    }));
 
+    setLayout(new GridBagLayout());
+    GridBagConstraints con = new GridBagConstraints();
+    con.gridx = 0;
+    con.gridy = 0;
+    con.fill = GridBagConstraints.BOTH;
+    con.weightx = 1;
+    con.weighty = 1;
+    con.gridwidth = 2;
+    this.add(new JScrollPane(table), con);
+    con.fill = GridBagConstraints.HORIZONTAL;
+    con.weightx = .5;
+    con.weighty = 0;
+    con.gridwidth = 1;
+    con.gridy++;
+    con.anchor = GridBagConstraints.WEST;
+    // con.gridx++;
+    con.weightx = 1;
+    this.add(searchPanel, con);
+
+    if (SHOW_SYSTEM_KEYS) {
       con.gridy++;
       con.gridx = 0;
       con.weightx = 0;
@@ -156,20 +325,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           new InformDialog(client).setVisible(true);
         }
       }), con);
-
     }
-    // find all java keystrokes
+  }
 
-    if (desktop.getShortCutListeners() != null) {
-      ownShortcuts = new HashMap<KeyStroke, Object>(desktop.getShortCutListeners());
-    } else {
-      ownShortcuts = new HashMap<KeyStroke, Object>();
-    }
-
-    otherShortcuts = new HashSet<KeyStroke>();
-    addKeyStrokes(client, otherShortcuts);
-    otherShortcuts.removeAll(ownShortcuts.keySet());
-    otherShortcuts.removeAll(desktop.getShortCutTranslations().keySet());
+  protected void setDefaults() {
+    model.setDefaults();
   }
 
   private JTable getShortCutTable() {
@@ -177,51 +337,34 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"));
     columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header2"));
     columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header3"));
+    // columns.add("translation");
 
-    model = new DefaultTableModel(getShortCutMap(), columns);
+    model = new ShortcutModel();
 
     StrokeRenderer sr = new StrokeRenderer();
     DefaultTableColumnModel tcm = new DefaultTableColumnModel();
-    TableColumn column = new TableColumn();
-    column.setHeaderValue(columns.get(0));
-    column.setCellRenderer(sr);
-    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
-      @Override
-      public boolean isCellEditable(EventObject anEvent) {
-        return false;
-      }
-    });
-    tcm.addColumn(column);
-    column = new TableColumn(1);
-    column.setHeaderValue(columns.get(1));
-    column.setCellRenderer(sr);
-    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
-      @Override
-      public boolean isCellEditable(EventObject anEvent) {
-        return false;
-      }
-    });
-    tcm.addColumn(column);
 
-    column = new TableColumn(2);
-    column.setHeaderValue(columns.get(2));
-    column.setCellRenderer(sr);
-    column.setCellEditor(new DefaultCellEditor(new JTextField()) {
-      @Override
-      public boolean isCellEditable(EventObject anEvent) {
-        return false;
-      }
-    });
-    tcm.addColumn(column);
+    for (int i = 0; i < columns.size(); ++i) {
+      TableColumn column = new TableColumn(i);
+      column.setHeaderValue(columns.get(i));
+      column.setCellRenderer(sr);
+      column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+          return false;
+        }
+      });
+      tcm.addColumn(column);
+    }
 
     return new JTable(model, tcm);
   }
 
-  private JTextField getFilter(JTable table) {
-    RowSorter<? extends TableModel> rs = table.getRowSorter();
+  private JTextField getFilter(JTable aTable) {
+    RowSorter<? extends TableModel> rs = aTable.getRowSorter();
     if (rs == null) {
-      table.setAutoCreateRowSorter(true);
-      rs = table.getRowSorter();
+      aTable.setAutoCreateRowSorter(true);
+      rs = aTable.getRowSorter();
     }
 
     TableRowSorter<? extends TableModel> rowSorter =
@@ -278,107 +421,6 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     return tf;
   }
 
-  private Vector<Vector<?>> getShortCutMap() {
-    Map<Object, List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
-    Iterator<Entry<KeyStroke, Object>> entryIterator =
-        desktop.getShortCutListeners().entrySet().iterator();
-
-    while (entryIterator.hasNext()) {
-      Entry<KeyStroke, Object> entry = entryIterator.next();
-      Object value = entry.getValue();
-
-      if (!listeners.containsKey(value)) {
-        listeners.put(value, new LinkedList<KeyStroke>());
-      }
-
-      // try to find a translation
-      KeyStroke oldStroke = entry.getKey();
-      KeyStroke newStroke = desktop.findTranslation(oldStroke);
-
-      if (newStroke != null) {
-        listeners.get(value).add(newStroke);
-      } else {
-        listeners.get(value).add(oldStroke);
-      }
-    }
-
-    Vector<Vector<?>> data = new Vector<Vector<?>>();
-
-    List<Object> listenerList = new LinkedList<Object>(listeners.keySet());
-
-    Collections.sort(listenerList, new ListenerComparator());
-
-    for (Object key : listenerList) {
-      ShortcutListener sl = null;
-      if (key instanceof ShortcutListener) {
-        sl = (ShortcutListener) key;
-      }
-
-      Object category = getShortCutCategory(key);
-
-      List<KeyStroke> keyStrokeList = listeners.get(key);
-
-      Collections.sort(keyStrokeList, new KeyStrokeComparator());
-
-      for (KeyStroke obj : keyStrokeList) {
-        Object description = getShortCutDescription(obj, sl);
-
-        Vector<Object> row = new Vector<Object>(3);
-        row.add(obj);
-        row.add(description);
-        row.add(category);
-        data.add(row);
-      }
-    }
-
-    return data;
-  }
-
-  private Object getShortCutCategory(Object key) {
-    Object category = null;
-    if (key == null)
-      return "null";
-    if (key instanceof ShortcutListener) {
-      ShortcutListener sl = (ShortcutListener) key;
-      category = sl.getListenerDescription();
-
-      if (category == null) {
-        category = sl;
-      }
-    } else if (key instanceof Action) {
-      Action action = (Action) key;
-      category = action.getValue(Action.SHORT_DESCRIPTION);
-      if (category == null) {
-        category = action.getValue("tooltip");
-      }
-    }
-    if (category == null) {
-      category = key.toString();
-    }
-    return category.toString();
-  }
-
-  private String getShortCutDescription(KeyStroke key, ShortcutListener sl) {
-    if (sl == null)
-      return key.toString();
-
-    if (desktop.getShortCutTranslations().containsKey(key)) {
-      key = desktop.getTranslation(key);
-    }
-
-    String description;
-    try {
-      description = sl.getShortcutDescription(key);
-
-      if (description == null) {
-        description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-      }
-    } catch (RuntimeException re) {
-      description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-    }
-    return description;
-  }
-
   protected void addKeyStrokes(Component c, Set<KeyStroke> set) {
     if (c instanceof JComponent) {
       KeyStroke str[] = ((JComponent) c).getRegisteredKeyStrokes();
@@ -405,32 +447,54 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    // TODO
-    // as long as shortcuts cannot be changed from outside the preferences, this is safe to not
-    // implement.
+    model.init(desktop);
+
+    addShortcuts();
+  }
+
+  private void addShortcuts() {
+    // find all java keystrokes
+    ownShortcuts.clear();
+
+    otherShortcuts.clear();
+    addKeyStrokes(client, otherShortcuts);
+
+    for (int i = 0; i < model.getRowCount(); ++i) {
+      KeyStroke stroke = (KeyStroke) model.getValueAt(i, 0);
+      ownShortcuts.put(stroke, i);
+      otherShortcuts.remove(stroke);
+    }
   }
 
   /**
-   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    // shortcuts are changed immediately on change
+    for (int row = 0; row < model.getRowCount(); ++row) {
+      StrokeInfo strokeInfo = model.getStrokeInfo(row);
+      if (strokeInfo.originalStroke != strokeInfo.stroke) {
+        desktop.changeTranslation(strokeInfo.strokeId, strokeInfo.originalStroke, strokeInfo.stroke);
+      }
+    }
   }
 
   /**
-   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("desktop.magellandesktop.prefs.shortcuts.title");
   }
 
+  /**
+   * compares listener by description
+   */
   protected class ListenerComparator implements Comparator<Object> {
     /**
      * 
@@ -466,6 +530,9 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
   }
 
+  /**
+   * compare KeyStrokes by number of modifiers / modifiers / keycode
+   */
   protected static class KeyStrokeComparator implements Comparator<KeyStroke> {
     /**
      * 
@@ -506,35 +573,24 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
   }
 
-  protected static class ListTableModel extends DefaultTableModel {
-    /**
-     * Creates a new ListTableModel object.
-     */
-    public ListTableModel(Object data[][], Object columns[]) {
-      super(data, columns);
-    }
-
-    /**
-     * 
-     */
-    @Override
-    public boolean isCellEditable(int r, int c) {
-      return false;
-    }
+  protected static String getKeyStroke(KeyStroke stroke) {
+    return getKeyStroke(stroke.getModifiers(), stroke.getKeyCode());
   }
 
-  protected String getKeyStroke(KeyStroke stroke) {
-    String s = null;
+  protected static String getKeyStroke(int modifiers, int keyCode) {
 
-    if (stroke.getModifiers() != 0) {
-      s =
-          InputEvent.getModifiersExText(stroke.getModifiers()) + " + "
-              + KeyEvent.getKeyText(stroke.getKeyCode());
-    } else {
-      s = KeyEvent.getKeyText(stroke.getKeyCode());
-    }
+    if (keyCode == KeyEvent.VK_UNDEFINED || isModifier(keyCode))
+      return InputEvent.getModifiersExText(modifiers);
+    else if (modifiers != 0)
+      return InputEvent.getModifiersExText(modifiers) + " + "
+          + KeyEvent.getKeyText(keyCode);
+    else
+      return KeyEvent.getKeyText(keyCode);
+  }
 
-    return s;
+  private static boolean isModifier(int key) {
+    return ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
+        || (key == KeyEvent.VK_ALT_GRAPH));
   }
 
   protected MouseListener getMousePressedMouseListener() {
@@ -543,13 +599,14 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       public void mousePressed(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() > 0) {
           Point p = mouseEvent.getPoint();
-
-          if ((table.columnAtPoint(p) == 0) && (table.rowAtPoint(p) >= 0)) {
+          int col = table.columnAtPoint(p);
+          int modelCol = table.convertColumnIndexToModel(col);
+          if (modelCol == 0 && table.rowAtPoint(p) >= 0) {
             int row = table.rowAtPoint(p);
-            Object value = table.getValueAt(row, 0);
+            Object value = table.getValueAt(row, col);
 
             if (value instanceof KeyStroke) {
-              editStroke((KeyStroke) value, row);
+              editStroke((KeyStroke) value, table.convertRowIndexToModel(row));
             }
           }
         }
@@ -557,45 +614,41 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     };
   }
 
-  protected void editStroke(KeyStroke stroke, int row) {
+  protected void editStroke(KeyStroke stroke, int modelRow) {
     Component top = getTopLevelAncestor();
     TranslateStroke td = null;
 
-    if (table.getValueAt(row, 0) instanceof KeyStroke) {
+    if (model.getValueAt(modelRow, 0) instanceof KeyStroke) {
       if (top instanceof Frame) {
-        td = new TranslateStroke((Frame) top);
+        td = new TranslateStroke((Frame) top, stroke);
       } else if (top instanceof Dialog) {
-        td = new TranslateStroke((Dialog) top);
+        td = new TranslateStroke((Dialog) top, stroke);
       } else
         throw new RuntimeException("top level ancestor is neither frame nor dialog.");
+      td.setDefault(model.getStrokeInfo(modelRow).strokeId);
 
-      td.setVisible(true);
+      KeyStroke newStroke = stroke;
+      while (newStroke != null) {
+        td.setVisible(true);
+        newStroke = td.getStroke();
 
-      KeyStroke newStroke = td.getStroke();
-
-      if (newStroke != null) {
-        changeStroke(newStroke, stroke, row);
+        if (newStroke != null) {
+          if (changeStroke(newStroke, stroke, modelRow)) {
+            newStroke = null;
+          }
+        }
       }
     }
   }
 
-  private boolean changeStroke(KeyStroke newStroke, KeyStroke stroke, int row) {
+  private boolean changeStroke(KeyStroke newStroke, KeyStroke stroke, int modelRow) {
     if ((newStroke != null) && !newStroke.equals(stroke)) {
       if (ownShortcuts.get(newStroke) != null) {
-        KeyStroke translation = desktop.getTranslation(newStroke);
-        if (translation != null) {
-          ;//
-        }
-        Object listener = desktop.getShortCutListeners().get(newStroke);
-        String description;
-        if (listener instanceof ShortcutListener || listener == null) {
-          description = getShortCutDescription(newStroke, (ShortcutListener) listener);
-        } else {
-          description = listener.toString();
-        }
-
         JOptionPane.showMessageDialog(this, Resources.get(
-            "desktop.magellandesktop.prefs.shortcuts.error", description, getShortCutCategory(listener)));
+            "desktop.magellandesktop.prefs.shortcuts.error",
+            model.getValueAt(ownShortcuts.get(newStroke), 1),
+            table.getValueAt(ownShortcuts.get(newStroke), 2)));
+        return false;
       } else {
         boolean doIt = true;
 
@@ -609,25 +662,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         }
 
         if (doIt) {
-          ownShortcuts.put(newStroke, ownShortcuts.remove(stroke));
-          if (desktop.getShortCutTranslations().containsKey(stroke)) {
-            KeyStroke oldStroke = desktop.getShortCutTranslations().get(stroke);
-            desktop.removeTranslation(stroke);
-            stroke = oldStroke;
-          }
+          ownShortcuts.remove(model.getValueAt(modelRow, 0));
+          ownShortcuts.put(newStroke, modelRow);
 
-          if (desktop.getShortCutListeners().containsKey(stroke)
-              && (desktop.getShortCutListeners().get(stroke) instanceof Action)) {
-            ((Action) desktop.getShortCutListeners().get(stroke))
-                .putValue("accelerator", newStroke);
-          }
-
-          if (!newStroke.equals(stroke)) {
-            desktop.registerTranslation(newStroke, stroke);
-          }
-
-          if (row >= 0) {
-            table.setValueAt(newStroke, row, 0);
+          if (modelRow >= 0) {
+            model.setValueAt(newStroke, modelRow, 0);
           }
         }
         return doIt;
@@ -704,40 +743,62 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
   protected static class TranslateStroke extends JDialog implements ActionListener {
     protected KeyTextField text;
     protected JButton cancel;
-    protected KeyStroke stroke = null;
+    private JButton reset;
+    protected KeyStroke stroke;
+    private KeyStroke defaultStroke;
 
     /**
      * Creates a new TranslateStroke object.
      */
-    public TranslateStroke(Frame parent) {
+    public TranslateStroke(Frame parent, KeyStroke stroke) {
       super(parent, true);
-      init();
+      init(stroke);
+    }
+
+    public void setDefault(KeyStroke stroke) {
+      defaultStroke = stroke;
+      reset.setEnabled(stroke != null);
     }
 
     /**
      * Creates a new TranslateStroke object.
      */
-    public TranslateStroke(Dialog parent) {
+    public TranslateStroke(Dialog parent, KeyStroke stroke) {
       super(parent, true);
-      init();
+      init(stroke);
     }
 
-    protected void init() {
+    protected void init(KeyStroke stroke) {
       JPanel con = new JPanel(new BorderLayout());
       JLabel label = new JLabel(
           Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label"));
       con.add(label, BorderLayout.NORTH);
       text = new KeyTextField();
+      text.setText(stroke);
+      text.addKeyListener(new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+          if (e.getModifiersEx() == 0 &&
+              (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
+            terminate(e.getKeyCode() == KeyEvent.VK_ENTER);
+          }
+        }
+      });
       label.setLabelFor(text);
       con.add(text, BorderLayout.CENTER);
 
-      JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+      Box buttons = Box.createHorizontalBox();
       JButton ok = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.ok"));
       buttons.add(ok);
       ok.addActionListener(this);
       cancel = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.cancel"));
       buttons.add(cancel);
       cancel.addActionListener(this);
+      buttons.add(Box.createHorizontalGlue());
+      reset = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.default"));
+      reset.setEnabled(defaultStroke != null);
+      buttons.add(reset);
+      reset.addActionListener(this);
       con.add(buttons, BorderLayout.SOUTH);
       setContentPane(con);
       pack();
@@ -745,12 +806,9 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       setLocationRelativeTo(getParent());
     }
 
-    /**
-     * 
-     */
-    public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-      if (actionEvent.getSource() != cancel) {
-        if (text.getKeyCode() != 0) {
+    protected void terminate(boolean success) {
+      if (success) {
+        if (text.getKeyCode() != KeyEvent.VK_UNDEFINED) {
           stroke = KeyStroke.getKeyStroke(text.getKeyCode(), text.getModifiers());
         }
       } else {
@@ -762,6 +820,17 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
     /**
      * 
+     */
+    public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
+      if (actionEvent.getSource() == reset) {
+        text.init(defaultStroke);
+      } else {
+        terminate(actionEvent.getSource() != cancel);
+      }
+    }
+
+    /**
+     * Returns the user input.
      */
     public KeyStroke getStroke() {
       return stroke;
@@ -781,21 +850,22 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       addKeyListener(this);
     }
 
+    public void setText(KeyStroke stroke) {
+      setText(stroke.getModifiers(), stroke.getKeyCode());
+    }
+
     /**
      * 
      */
-    public void init(int modifiers, int key) {
-      this.key = key;
-      this.modifiers = modifiers;
+    public void init(KeyStroke stroke) {
+      key = stroke.getKeyCode();
+      modifiers = stroke.getModifiers();
 
-      String s = InputEvent.getModifiersExText(modifiers);
+      setText(modifiers, key);
+    }
 
-      if ((s != null) && (s.length() > 0)) {
-        s += ('+' + KeyEvent.getKeyText(key));
-      } else {
-        s = KeyEvent.getKeyText(key);
-      }
-
+    private void setText(int modifiers, int key) {
+      String s = DesktopShortCutPreferences.getKeyStroke(modifiers, key);
       setText(s);
     }
 
@@ -803,55 +873,26 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
      * 
      */
     public void keyReleased(KeyEvent p1) {
-      // maybe should delete any input if there's no "stable"(non-modifying) key
+      // delete any input if there's no "stable"(non-modifying) key
+      if (isModifier(key)) {
+        modifiers = KeyEvent.VK_UNDEFINED;
+        key = KeyEvent.VK_UNDEFINED;
+        setText(modifiers, key);
+      }
     }
 
     /**
      * 
      */
     public void keyPressed(KeyEvent p1) {
+      if (p1.getModifiersEx() == 0 &&
+          (p1.getKeyCode() == KeyEvent.VK_ENTER || p1.getKeyCode() == KeyEvent.VK_ESCAPE))
+        // ignore ENTER
+        return;
       modifiers = p1.getModifiersEx();
       key = p1.getKeyCode();
 
-      // avoid double string
-      if ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
-          || (key == KeyEvent.VK_ALT_GRAPH)) {
-        int xored = 0;
-
-        switch (key) {
-        case KeyEvent.VK_SHIFT:
-          xored = InputEvent.SHIFT_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_CONTROL:
-          xored = InputEvent.CTRL_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_ALT:
-          xored = InputEvent.ALT_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_ALT_GRAPH:
-          xored = InputEvent.ALT_GRAPH_DOWN_MASK;
-
-          break;
-        }
-
-        modifiers ^= xored;
-      }
-
-      String s = InputEvent.getModifiersExText(modifiers);
-
-      if ((s != null) && (s.length() > 0)) {
-        s += ('+' + KeyEvent.getKeyText(key));
-      } else {
-        s = KeyEvent.getKeyText(key);
-      }
-
-      setText(s);
+      setText(modifiers, key);
       p1.consume();
     }
 
@@ -859,7 +900,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
      * 
      */
     public void keyTyped(KeyEvent p1) {
-      // keyPressed used
+      p1.consume();
     }
 
     /**
@@ -905,7 +946,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     @Override
     public void cancelCellEditing() {
       if (oldValue instanceof KeyStroke) {
-        textField.init(((KeyStroke) oldValue).getModifiers(), ((KeyStroke) oldValue).getKeyCode());
+        textField.init((KeyStroke) oldValue);
       }
       super.cancelCellEditing();
     }
@@ -914,8 +955,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     public boolean stopCellEditing() {
       if (oldValue instanceof KeyStroke)
         if (!changeStroke((KeyStroke) getCellEditorValue(), (KeyStroke) oldValue, -1)) {
-          textField
-              .init(((KeyStroke) oldValue).getModifiers(), ((KeyStroke) oldValue).getKeyCode());
+          textField.init((KeyStroke) oldValue);
         }
 
       return super.stopCellEditing();
@@ -940,7 +980,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         int row, int column) {
       if (value instanceof KeyStroke) {
         oldValue = value;
-        textField.init(((KeyStroke) value).getModifiers(), ((KeyStroke) value).getKeyCode());
+        textField.init((KeyStroke) value);
         return textField;
       } else {
         oldValue = value;
@@ -973,19 +1013,18 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       setFont(norm);
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-      if (value instanceof KeyStroke && column == 0) {
+      int modelColumn = table.convertColumnIndexToModel(column);
+
+      if (value instanceof KeyStroke && modelColumn == 0) {
         if (otherShortcuts.contains(value)) {
           setFont(bold);
           setForeground(Color.RED);
         } else {
-          setFont(norm);
           setForeground(Color.BLACK);
         }
         setText(getKeyStroke((KeyStroke) value));
-      } else if (column == 0) {
+      } else if (modelColumn == 0) {
         setFont(bold);
-      } else if (column == 2) {
-        column = 2;
       }
 
       return this;

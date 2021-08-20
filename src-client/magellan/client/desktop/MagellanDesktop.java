@@ -441,6 +441,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
                   .nextToken()));
           registerTranslation(newStroke, oldStroke);
         } catch (RuntimeException exc) {
+          log.warn("invalid Dekstop.KeyTranslations: " + s);
         }
       }
     }
@@ -481,23 +482,24 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     if (newStroke.equals(oldStroke))
       return;
 
-    if (!shortCutTranslations.containsKey(oldStroke)) {
-      keyHandler.removeStroke(oldStroke);
-    }
-
-    keyHandler.addTranslationStroke(newStroke);
-    shortCutTranslations.put(newStroke, oldStroke);
+    changeTranslation(oldStroke, oldStroke, newStroke);
   }
 
-  /**
-   *
-   */
-  public void removeTranslation(KeyStroke stroke) {
-    if (shortCutTranslations.containsKey(stroke)) {
-      KeyStroke old = shortCutTranslations.get(stroke);
-      keyHandler.removeStroke(stroke);
-      keyHandler.install(old);
-      shortCutTranslations.remove(stroke);
+  public void changeTranslation(KeyStroke strokeId, KeyStroke currentStroke, KeyStroke newStroke) {
+    if (!shortCutTranslations.containsKey(currentStroke)) {
+      if (strokeId != currentStroke) {
+        log.error("invalid assumption " + strokeId + " != " + currentStroke + " - " + newStroke);
+      }
+    }
+    keyHandler.removeStroke(currentStroke);
+    shortCutTranslations.remove(currentStroke);
+    keyHandler.addTranslationStroke(newStroke);
+    shortCutTranslations.put(newStroke, strokeId);
+
+    ///////////////////////
+    Object handler = shortCutListeners.get(strokeId);
+    if (handler instanceof Action) {
+      ((Action) handler).putValue("accelerator", newStroke);
     }
   }
 
@@ -512,6 +514,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    *
    */
   public KeyStroke findTranslation(KeyStroke oldStroke) {
+    // FIXME use Bidimap
     Iterator<KeyStroke> it = shortCutTranslations.keySet().iterator();
 
     while (it.hasNext()) {

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -400,6 +401,46 @@ class SkillSpec {
  */
 class E3CommandParser {
 
+  public static class ItemSorter implements Comparator<Item> {
+
+    private String[] priorities;
+
+    public ItemSorter(String[] priorities) {
+      this.priorities = priorities;
+    }
+
+    public int compare(Item o1, Item o2) {
+      int p1 = 0, p2 = 0;
+      String t1 = o1.getItemType().getOrderName();
+      for (String type : priorities) {
+        if (t1.equals(type)) {
+          break;
+        }
+        p1++;
+      }
+      if (p1 == priorities.length) {
+        p1 = -1;
+      }
+      String t2 = o2.getItemType().getOrderName();
+      for (String type : priorities) {
+        if (t2.equals(type)) {
+          break;
+        }
+        p2++;
+      }
+      if (p2 == priorities.length) {
+        p2 = -2;
+      }
+      if (p1 == p2)
+        if (t1.compareTo(t2) == 0)
+          return o2.getAmount() - o1.getAmount();
+        else
+          return t1.compareTo(t2);
+      return p1 - p2;
+    }
+
+  }
+
   /**
    * A standard soldier's endurance skill should be this fraction of his (first row) weapon skill
    */
@@ -511,6 +552,43 @@ class E3CommandParser {
   public static String COMMENT = "$kommentar";
 
   private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
+
+  private String[] WEAPON_PRIORITIES =
+      new String[] {
+          "Adamantiumaxt",
+          "Laenschwert",
+          "Kriegsaxt",
+          "Bihänder",
+          "Schwert",
+          "Rostige~Kriegsaxt",
+          "Rostiger~Bihänder",
+          "Schartiges~Schwert",
+          "Hellebarde",
+          "Mallornspeer",
+          "Speer",
+          "Rostige~Hellebarde",
+          "Mallornlanze",
+          "Lanze",
+          "Mallornarmbrust",
+          "Armbrust",
+          "Elfenbogen",
+          "Mallornbogen",
+          "Bogen"
+      };
+  private String[] SHIELD_PRIORITIES =
+      new String[] {
+          "Laenschild",
+          "Schild",
+          "Rostiger~Schild"
+      };
+  private String[] ARMOR_PRIORITIES =
+      new String[] {
+          "Adamantiumrüstung",
+          "Laenkettenhemd",
+          "Plattenpanzer",
+          "Kettenhemd",
+          "Rostiges~Kettenhemd"
+      };
 
   private OrderParser parser;
   private Logger log;
@@ -3310,6 +3388,10 @@ class E3CommandParser {
     if (armors.isEmpty()) {
       addNewError("keine Rüstungen bekannt");
     }
+
+    Collections.sort(weapons, new ItemSorter(WEAPON_PRIORITIES));
+    Collections.sort(shields, new ItemSorter(SHIELD_PRIORITIES));
+    Collections.sort(armors, new ItemSorter(ARMOR_PRIORITIES));
 
     if (weaponSkill != null) {
       List<SkillSpec> targetSkills = new LinkedList<SkillSpec>();

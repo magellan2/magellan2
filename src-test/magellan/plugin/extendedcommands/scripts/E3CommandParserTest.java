@@ -2272,6 +2272,62 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   /**
+   * Test method for {@link E3CommandParser#commandSoldier(String...)}.
+   */
+  @Test
+  public final void testCommandSoldierEquipmentOrder() {
+    Unit unit2 = builder.addUnit(data, "s", "Soldat", unit.getFaction(), unit.getRegion());
+    unit2.setPersons(10);
+    builder.addItem(data, unit2, "Schartiges Schwert", 1);
+    builder.addItem(data, unit2, "Schwert", 5);
+    builder.addItem(data, unit, "Schwert", 10);
+    builder.addItem(data, unit, "Kriegsaxt", 10);
+    builder.addItem(data, unit, "Schartiges Schwert", 10);
+    builder.addItem(data, unit, "Schild", 10);
+    builder.addItem(data, unit, "Rostiger Schild", 10);
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit2.addOrder("// $cript Soldat");
+    builder.addSkill(unit2, "Hiebwaffen", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("GIB s 4 Schwert", unit, 1);
+    assertOrder("GIB s 10 Schild", unit, 2);
+    assertEquals(6, unit2.getOrders2().size());
+    // 0, 1 is $cript, comment
+    assertOrder("LERNE Hiebwaffen", unit2, 2);
+    assertOrder("RESERVIERE 1 Schartiges~Schwert", unit2, 3);
+    assertOrder("RESERVIERE 5 Schwert", unit2, 4);
+    assertOrder("; braucht 10 mehr Kettenhemd, Soldat (s) needs 0/10 Kettenhemd (100)", unit2, 5);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandSoldier(String...)}.
+   */
+  @Test
+  public final void testCommandSoldierEquipmentOrder2() {
+    builder.addItem(data, unit, "Speer", 10);
+    builder.addItem(data, unit, "Hellebarde", 10);
+    builder.addItem(data, unit, "Kriegsaxt", 10);
+    builder.addItem(data, unit, "Schild", 10);
+    builder.addItem(data, unit, "Rostiger Schild", 10);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript Soldat");
+    builder.addSkill(unit, "Stangenwaffen", 1);
+    builder.addSkill(unit, "Hiebwaffen", 0);
+    parser.execute(unit.getFaction());
+
+    assertEquals(7, unit.getOrders2().size());
+    // 0, 1, 2 is comment, $cript, comment
+    assertOrder("LERNE Stangenwaffen", unit, 3);
+    assertOrder("RESERVIERE JE 1 Hellebarde", unit, 4);
+    assertOrder("RESERVIERE JE 1 Schild", unit, 5);
+  }
+
+  /**
    * Test method for {@link E3CommandParser#commandControl(String...)}.
    */
   @Test
@@ -3177,7 +3233,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(7, unit.getOrders2().size());
     assertOrder("; $stm$T ALLES 0", unit, 2);
     assertOrder("; $stm$L 100.0 Hiebwaffen 20 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 3);
-    assertOrder("RESERVIERE JE 1 Schwert", unit, 4);
+    assertOrder("RESERVIERE JE 1 Bihänder", unit, 4);
     assertWarning("braucht 100/200 mehr Silber", unit, 5);
     assertWarning("braucht 1 mehr Schild", unit, 6);
 

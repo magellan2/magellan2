@@ -1,3 +1,8 @@
+2021-08-22 / Build 752 - stm (stm2@users.sourceforge.net)
+    * new installer with install4j
+    * order parser: allow BETRETE/BENNEN/BESCHREIBE GEBÄUDE
+    * searchable shortcut preferences
+
 2021-07-15 / Build 748 - stm (stm2@users.sourceforge.net)
     * do not choke on missing L&F class
     * made Nimbus L&F respect order editor backgrounds

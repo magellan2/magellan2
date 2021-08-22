@@ -1582,7 +1582,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Returns the relation of two map layers.
    * 
    * @return the <code>CoordinateID</code> of the toLevel region which is accessible by the
-   *         fromLevel region with CoordinateID <0, 0, fromLevel>.
+   *         fromLevel region with CoordinateID (0, 0, fromLevel).
    */
   public LevelRelation getLevelRelation(int fromLevel, int toLevel) {
     Map<Integer, LevelRelation> relations = levelRelations.get(toLevel);

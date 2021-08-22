@@ -23,9 +23,9 @@ import magellan.library.utils.Resources;
  * <p>
  * Three possible constructors:
  * <ul>
- * <li>RegionType object &rarr; direct test</li>
- * <li>StringID -> compares given region's type ID</li>
- * <li>String -> creates a StringID</li>
+ * <li>RegionType object: direct test</li>
+ * <li>StringID: compares given region's type ID</li>
+ * <li>String: creates a StringID</li>
  * </ul>
  * </p>
  * 

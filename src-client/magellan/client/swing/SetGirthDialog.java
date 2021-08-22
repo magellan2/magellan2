@@ -65,23 +65,24 @@ public class SetGirthDialog extends JDialog {
   private MapMetric metric;
 
   /**
-   * Creates new form SetOriginDialog
+   * Creates new form.
    * 
    * @param parent the <code>Frame</code> from which the dialog is displayed
-   * @param idBox pre-set value of the input fields; if <code>null</code> there will be empty input
+   * @param preset pre-set value of the input fields; if <code>null</code> there will be empty input
    *          fields
    * @param level if this is <code>null</code>, the level input will be editable, otherwise it will
    *          be fixed to this value
+   * @param metric
    */
-  public SetGirthDialog(java.awt.Frame parent, BBox idBox, Integer level, MapMetric metric) {
+  public SetGirthDialog(java.awt.Frame parent, BBox preset, Integer level, MapMetric metric) {
     super(parent, true);
     approved = false;
     this.metric = metric;
     newBoxes = new BBoxes(metric);
-    if (idBox != null) {
+    if (preset != null) {
       defaultBox = metric.createBBox();
-      defaultBox.setX(idBox.getMinx(), idBox.getMaxx());
-      defaultBox.setY(idBox.getMiny(), idBox.getMaxy());
+      defaultBox.setX(preset.getMinx(), preset.getMaxx());
+      defaultBox.setY(preset.getMiny(), preset.getMaxy());
     }
     this.level = level;
     initComponents();

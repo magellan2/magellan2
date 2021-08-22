@@ -21,7 +21,7 @@ package magellan.library.utils;
 import java.util.Map;
 
 /**
- * A Taggable object works much like a Map<String, String>. Use it for for assigning additional tags
+ * A Taggable object works much like a Map&lt;String, String&gt;. Use it for for assigning additional tags
  * to report objects which are not official tags.
  * 
  * @author Andreas

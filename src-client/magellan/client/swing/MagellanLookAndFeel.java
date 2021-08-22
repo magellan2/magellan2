@@ -240,7 +240,7 @@ public class MagellanLookAndFeel {
   }
 
   /**
-   * Set global Look & Feel.
+   * Set global Look &amp; Feel.
    *
    * @param laf LaF identifier
    * @return true if LaF could be changed

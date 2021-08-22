@@ -49,8 +49,7 @@ public class JsonAdapter {
       iterateProperties(bundle, "", root, 0, hierarchic);
     } catch (IOException e) {
       String jsonS = new String(jsonString);
-      log.error("invalid resource file " + jsonS.substring(0, Math.min(100, jsonS.length())));
-      e.printStackTrace();
+      log.error("invalid resource file " + jsonS.substring(0, Math.min(100, jsonS.length())), e);
       throw e;
     }
     return bundle;

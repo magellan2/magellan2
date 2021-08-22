@@ -163,8 +163,8 @@ public class NullUserInterface implements UserInterface {
   }
 
   @Override
-  public BBox askForGirth(BBox best, int layer, MapMetric metric) {
-    return best;
+  public BBox askForGirth(BBox preset, int layer, MapMetric metric) {
+    return preset;
   }
 
   /**

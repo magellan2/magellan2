@@ -133,11 +133,12 @@ public interface UserInterface {
   public void showDialog(String title, String message, int messageType, int options);
 
   /**
-   * Displays a {@link SetGirthDialog}.
+   * Displays a dialog to ask for map bounds. See SetGirthDialog.
    * 
-   * @param best see {@link SetGirthDialog}.
-   * @param layer see {@link SetGirthDialog}.
-   * @return {@link SetGirthDialog}.
+   * @param preset pre-set bounding box
+   * @param layer the map layer, for example 0 for normal space, 1 for astral space
+   * @param metric
+   * @return the new box. <code>null</code> if none was given.
    */
-  public BBox askForGirth(BBox best, int layer, MapMetric metric);
+  public BBox askForGirth(BBox preset, int layer, MapMetric metric);
 }

@@ -1185,7 +1185,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * but only selection type is different from SelectionEvent.ST_REGIONS. In this case the tree
    * selection is set to the selected objects (as long as they are contained in the tree anyway).
    * Keep in mind, that this will produce the active object _NOT_ to be selected, if <code>selectedObjects
-   * != null && !selectedObjects.contains(activeObject)</code> !!!
+   * != null &amp;&amp; !selectedObjects.contains(activeObject)</code> !!!
    *
    * @param se
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)

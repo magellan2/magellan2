@@ -492,8 +492,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
   }
 
-  public BBox askForGirth(BBox best, int layer, MapMetric metric) {
-    final SetGirthDialog dialog = new SetGirthDialog(null, best, layer, metric);
+  /**
+   * Displays a {@link SetGirthDialog}.
+   */
+  public BBox askForGirth(BBox preset, int layer, MapMetric metric) {
+    final SetGirthDialog dialog = new SetGirthDialog(null, preset, layer, metric);
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
 

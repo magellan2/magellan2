@@ -97,7 +97,7 @@ public interface Region extends UnitContainer, Selectable {
 
     /**
      * Returns the greater of the two visibilities. The order of visibilities is
-     * <code>UNIT > TRAVEL > LIGHTHOUSE > NEIGHBOR > WRAP > NULL </code>.
+     * <code>UNIT &gt; TRAVEL &gt; LIGHTHOUSE &gt; NEIGHBOR &gt; WRAP &gt; NULL </code>.
      */
     public static Visibility getMax(Visibility vis1, Visibility vis2) {
       return vis1.ordinal() >= vis2.ordinal() ? vis1 : vis2;

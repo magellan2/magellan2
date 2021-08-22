@@ -24,14 +24,14 @@ import java.util.Set;
 import magellan.library.utils.logging.Logger;
 
 /**
- * I'm not really sure why this class is here. It implements Map<String, String>. It's probably just
+ * I'm not really sure why this class is here. It implements Map&lt;String, String&gt;. It's probably just
  * a pre-java-1.5 typesafe variant plus the <code>getTag</code> and <code>putTag</code> methods.
  * <code>entrySet()</code> returns <code>null</code> and <code>equals()</code> always returns
  * <code>false</code>.
  * 
  * @author $Author: $
  * @version $Revision: 171 $
- * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
+ * @deprecated (stm) Nobody seems to really need this class. A simple Map&lt;String, String&gt; would do.
  *             The implementation is very inefficient.
  */
 @Deprecated
@@ -250,12 +250,12 @@ public class TagMap implements Map<String, String> {
     int j = 0;
     String old = null;
 
-    for (int i = 0; i < tags.length; i++) {
-      if (!tags[i].key.equals(obj)) {
-        temp[j] = tags[i];
+    for (Tag tag : tags) {
+      if (!tag.key.equals(obj)) {
+        temp[j] = tag;
         j++;
       } else {
-        old = tags[i].value;
+        old = tag.value;
       }
     }
 

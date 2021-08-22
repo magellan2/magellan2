@@ -93,7 +93,6 @@ jobs:
         INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
         ant -noinput -buildfile build.xml distribute_install4j
-        mv install4j-testing/Magellan_installer* .
 
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog

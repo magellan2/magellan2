@@ -176,6 +176,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
     }
 
+    public static final int SHORTCUT_COLUMN = 0;
+    public static final int DESCRIPTION_COLUMN = 1;
+    public static final int CATEGORY_COLUMN = 2;
+    public static final int COLUMNS = 3;
+
     private ArrayList<StrokeInfo> shortcuts;
 
     protected ShortcutModel() {
@@ -211,17 +216,18 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     }
 
     public int getColumnCount() {
-      return 3;
+      return ShortcutModel.COLUMNS;
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
       StrokeInfo shortcut = shortcuts.get(rowIndex);
+
       switch (columnIndex) {
-      case 0:
+      case SHORTCUT_COLUMN:
         return shortcut.stroke;
-      case 1:
+      case DESCRIPTION_COLUMN:
         return shortcut.description;
-      case 2:
+      case CATEGORY_COLUMN:
         return shortcut.category;
       // case 3:
       // return shortcut.strokeId;
@@ -234,7 +240,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
       StrokeInfo shortcut = shortcuts.get(rowIndex);
       switch (columnIndex) {
-      case 0:
+      case SHORTCUT_COLUMN:
         shortcut.stroke = (KeyStroke) aValue;
         break;
       default:
@@ -333,13 +339,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
   }
 
   private JTable getShortCutTable() {
-    Vector<String> columns = new Vector<String>(3);
-    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"));
-    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header2"));
-    columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header3"));
-    // columns.add("translation");
-
     model = new ShortcutModel();
+    Vector<String> columns = new Vector<String>(model.getColumnCount());
+    for (int i = 1; i <= columns.capacity(); ++i) {
+      columns.add(Resources.get("desktop.magellandesktop.prefs.shortcuts.header" + i));
+    }
 
     StrokeRenderer sr = new StrokeRenderer();
     DefaultTableColumnModel tcm = new DefaultTableColumnModel();
@@ -405,12 +409,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
               if (entry.getValue(1) == null)
                 return true;
 
-              matcher.reset(entry.getStringValue(0));
-              if (matcher.find())
-                return true;
-              matcher.reset(entry.getStringValue(1));
-              if (matcher.find())
-                return true;
+              for (int i = 0; i < ShortcutModel.COLUMNS; ++i) {
+                matcher.reset(entry.getStringValue(i));
+                if (matcher.find())
+                  return true;
+              }
               return false;
             }
           });
@@ -460,7 +463,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     addKeyStrokes(client, otherShortcuts);
 
     for (int i = 0; i < model.getRowCount(); ++i) {
-      KeyStroke stroke = (KeyStroke) model.getValueAt(i, 0);
+      KeyStroke stroke = (KeyStroke) model.getValueAt(i, ShortcutModel.SHORTCUT_COLUMN);
       ownShortcuts.put(stroke, i);
       otherShortcuts.remove(stroke);
     }
@@ -601,7 +604,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           Point p = mouseEvent.getPoint();
           int col = table.columnAtPoint(p);
           int modelCol = table.convertColumnIndexToModel(col);
-          if (modelCol == 0 && table.rowAtPoint(p) >= 0) {
+          if (modelCol == ShortcutModel.SHORTCUT_COLUMN && table.rowAtPoint(p) >= 0) {
             int row = table.rowAtPoint(p);
             Object value = table.getValueAt(row, col);
 
@@ -618,7 +621,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
     Component top = getTopLevelAncestor();
     TranslateStroke td = null;
 
-    if (model.getValueAt(modelRow, 0) instanceof KeyStroke) {
+    if (model.getValueAt(modelRow, ShortcutModel.SHORTCUT_COLUMN) instanceof KeyStroke) {
       if (top instanceof Frame) {
         td = new TranslateStroke((Frame) top, stroke);
       } else if (top instanceof Dialog) {
@@ -646,8 +649,8 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       if (ownShortcuts.get(newStroke) != null) {
         JOptionPane.showMessageDialog(this, Resources.get(
             "desktop.magellandesktop.prefs.shortcuts.error",
-            model.getValueAt(ownShortcuts.get(newStroke), 1),
-            table.getValueAt(ownShortcuts.get(newStroke), 2)));
+            model.getValueAt(ownShortcuts.get(newStroke), ShortcutModel.DESCRIPTION_COLUMN),
+            model.getValueAt(ownShortcuts.get(newStroke), ShortcutModel.CATEGORY_COLUMN)));
         return false;
       } else {
         boolean doIt = true;
@@ -666,7 +669,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           ownShortcuts.put(newStroke, modelRow);
 
           if (modelRow >= 0) {
-            model.setValueAt(newStroke, modelRow, 0);
+            model.setValueAt(newStroke, modelRow, ShortcutModel.SHORTCUT_COLUMN);
           }
         }
         return doIt;
@@ -1015,7 +1018,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
       int modelColumn = table.convertColumnIndexToModel(column);
 
-      if (value instanceof KeyStroke && modelColumn == 0) {
+      if (value instanceof KeyStroke && modelColumn == ShortcutModel.SHORTCUT_COLUMN) {
         if (otherShortcuts.contains(value)) {
           setFont(bold);
           setForeground(Color.RED);

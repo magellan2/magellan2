@@ -539,7 +539,9 @@
 	<!-- *************************************************************** -->
 	<target name="quick_build"
 	        description=" Quickly compile and pack."
-	        depends="prepare_build, build_library, build_client, build_plugins, build_jar_and_distribute">
+	        depends="prepare_build, build_library, build_client, build_plugins, doc, 
+                     build_library_jar, build_client_jar, build_plugins_jar, build_help, 
+		             copy_release_data, zip_release">
 
 		<antcall target="clear-all" />
 	</target>
@@ -662,13 +664,13 @@
 		</delete>
 	</target>
 
-    <taskdef name="install4j"
+	<taskdef name="install4j"
              classname="com.install4j.Install4JTask"
              classpath="${install4j}/install4j9.0.4/bin/ant.jar" />
 
 	<target name="checkinstall4j" >
 		<fail unless:set="env.INSTALL4J_KEY" message="INSTALL4J_KEY not set; run export INSTALL4J_KEY=L..."/>
-        <fail unless:set="build.number" message="build.number not defined"/>
+		<fail unless:set="build.number" message="build.number not defined"/>
 	</target>
 
 	<target name="installer4j" depends="prepare_build, checkinstall4j">
@@ -681,11 +683,11 @@
 			<variable name="version.build" value="${build.number}" />
 			<variable name="version.post" value="${VERSION.POST}" />
 		</install4j>
-        <move todir="." overwrite="true">
-            <fileset dir="${install4j}">
-                <include name="Magellan_installer*" />
-            </fileset>
-        </move>
+		<move todir="." overwrite="true">
+			<fileset dir="${install4j}">
+				<include name="Magellan_installer*" />
+			</fileset>
+		</move>
 
 	</target>
 

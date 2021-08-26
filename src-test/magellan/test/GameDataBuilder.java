@@ -401,6 +401,8 @@ public class GameDataBuilder {
     final UnitID id = UnitID.createUnitID(number, data.base);
 
     final Unit unit = MagellanFactory.createUnit(id, data);
+    if (data.getUnit(id) != null)
+      throw new RuntimeException("Unit " + id + " already exists.");
     data.addUnit(unit);
 
     unit.setName(name);

@@ -891,6 +891,32 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("GIB 1 4 Silber", unit2, 2);
   }
 
+  @Test
+  public void testBenoetigePrio2() throws Exception {
+    Unit unitB = builder.addUnit(data, "w", "Braucher", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit, "Silber", 1000);
+    builder.addItem(data, unitB, "Silber", 1000);
+
+    unit.clearOrders();
+    unitB.clearOrders();
+
+    unit.addOrder("// $cript BerufDepotVerwalter 900");
+    unit.addOrder("// $cript BenoetigeFremd " + unitB.getID() + " 0 20000 Silber");
+    unitB.addOrder("// $cript Versorge 1");
+    unitB.addOrder("// $cript Benoetige JE 100 Silber");
+    unitB.addOrder("// $cript Benoetige 0 400 Silber");
+
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertEquals(6, unitB.getOrders2().size());
+    assertOrder("RESERVIERE 920 Silber", unit, 3);
+    assertOrder("GIB w 80 Silber", unit, 4);
+    assertOrder("RESERVIERE 100 Silber", unitB, 3);
+    assertMessage("braucht 19020 mehr Silber", unitB, 4);
+    assertMessage("braucht 400 mehr Silber", unitB, 5);
+  }
+
   /**
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */

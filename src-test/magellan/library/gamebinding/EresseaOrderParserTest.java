@@ -1017,7 +1017,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SpracheReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.LanguageReader}
    */
   @Test
   public void testSpracheReader() {

@@ -344,6 +344,11 @@ class SupplyMap {
   public void clear() {
     supplyMap.clear();
   }
+
+  @Override
+  public String toString() {
+    return supplyMap.toString();
+  }
 }
 
 interface ReserveVisitor {
@@ -2957,31 +2962,39 @@ class E3CommandParser {
       if (need.getPriority() > needs[prioStart].getPriority())
         throw new RuntimeException("needs not sorted");
 
-      {
-        if (state == 0) {
-          reserveNeed(need, true, reserves);
-        } else {
-          giveNeed(need, true);
-        }
+      switch (state) {
+      case 0:
+        reserveNeed(need, true, reserves);
+        break;
 
+      case 1:
+        giveNeed(need, true);
+        break;
+      case 2:
         if (need.getAmount() != Integer.MAX_VALUE) {
-          if (state == 0) {
-            reserveNeed(need, false, reserves);
-          } else {
-            giveNeed(need, false);
-          }
-        } else {
-          // now, finally, satisfy infinite needs
-          if (state == 0) {
-            reserveNeed(need, false, reserves);
-          } else {
-            giveNeed(need, false);
-          }
+          reserveNeed(need, false, reserves);
         }
+        break;
+      case 3:
+        if (need.getAmount() != Integer.MAX_VALUE) {
+          giveNeed(need, false);
+        }
+        break;
+      case 4:
+        if (need.getAmount() == Integer.MAX_VALUE) {
+          // now, finally, satisfy infinite needs
+          reserveNeed(need, false, reserves);
+        }
+        break;
+      case 5:
+        if (need.getAmount() == Integer.MAX_VALUE) {
+          giveNeed(need, false);
+        }
+        break;
       }
 
       if (n == needs.length - 1 || needs[n + 1].getPriority() < needs[prioStart].getPriority()) {
-        if (state == 0) {
+        if (state < 5) {
           n = prioStart - 1;
           ++state;
         } else {

@@ -10,6 +10,7 @@ package magellan.client;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -19,6 +20,9 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitHandler;
+import java.awt.desktop.QuitResponse;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -1338,6 +1342,27 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               log.error("Could not check version.", e);
             }
 
+            if (Desktop.isDesktopSupported()) {
+              Desktop desktop = Desktop.getDesktop();
+
+              for (Desktop.Action a : Desktop.Action.values()) {
+                log.finer(a.toString() + ": " + desktop.isSupported(a));
+              }
+              if (desktop.isSupported(Desktop.Action.APP_SUDDEN_TERMINATION)) {
+                desktop.disableSuddenTermination();
+              }
+              if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+                log.fine("Set quit handler");
+                desktop.setQuitHandler(new QuitHandler() {
+                  @Override
+                  public void handleQuitRequestWith(QuitEvent evt, QuitResponse res) {
+                    log.fine("Got quit request");
+                    c.quit(evt, res, true);
+                  }
+                });
+              }
+            }
+
             c.application = new DefaultApplication();
             c.application.addPreferencesMenuItem();
             c.application.setEnabledPreferencesMenu(true);
@@ -1717,28 +1742,48 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    *          <code>true</code>.
    */
   public void quit(final boolean storeSettings) {
+    quit(null, null, storeSettings);
+  }
+
+  protected void quit(QuitEvent evt, QuitResponse res, boolean storeSettings) {
     final ProgressBarUI ui = new ProgressBarUI(this);
     final int response;
+    log.fine("Request to quit by " + (evt != null ? evt.getSource() : null) + " " + SwingUtilities
+        .isEventDispatchThread());
     if (reportState != null && reportState.isStateChanged()) {
       response = askToSave();
     } else {
       response = JOptionPane.NO_OPTION;
     }
 
-    if (response == JOptionPane.CANCEL_OPTION)
+    if (response == JOptionPane.CANCEL_OPTION) {
+      if (res != null) {
+        log.fine("Cancelling quit response");
+        res.cancelQuit();
+      }
       return;
+    }
 
     ui.show();
-    new Thread(new Runnable() {
+    Runnable runner = new Runnable() {
 
       public void run() {
         if (response == JOptionPane.CANCEL_OPTION) {
           ui.ready();
+          if (res != null) {
+            log.fine("Cancelling quit response");
+            res.cancelQuit();
+          }
           return; // cancel or exception
         } else if (response == JOptionPane.YES_OPTION) {
           try {
-            if (!saveSynchronously())
+            if (!saveSynchronously()) {
+              if (res != null) {
+                log.fine("Cancelling quit response");
+                res.cancelQuit();
+              }
               return;
+            }
           } finally {
             ui.ready();
           }
@@ -1794,9 +1839,23 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             Client.log.error(ioe);
           }
         }
+        if (res != null) {
+          log.fine("Telling requester to quit");
+          res.performQuit();
+        }
+        log.fine("Exiting");
         System.exit(0);
       }
-    }).start();
+    };
+    try {
+      if (SwingUtilities.isEventDispatchThread()) {
+        SwingUtilities.invokeLater(runner);
+      } else {
+        SwingUtilities.invokeAndWait(runner);
+      }
+    } catch (Throwable t) {
+      log.error(t);
+    }
   }
 
   /**

@@ -60,6 +60,7 @@ public class ContextManager extends MouseAdapter implements GameDataListener {
   public ContextManager(JTree source, EventDispatcher dispatcher) {
     this.source = source;
     this.dispatcher = dispatcher;
+    // FIXME should use source.setComponentPopupMenu(popup);
     source.addMouseListener(this);
     dispatcher.addGameDataListener(this);
   }

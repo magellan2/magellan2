@@ -287,10 +287,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           voidRegion = getGameData().voids().get(c);
         }
 
-        // FIXME on Mac platforms CTRL+Button1 is the popup trigger, which conflicts with this
+        // Caveat: on Mac platforms CTRL+Button1 is the popup trigger, which conflicts with this
         // behaviour
-        if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
-          if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+        if (me.isPopupTrigger()) {
+          showContextMenu(region, c, me.getX(), me.getY());
+        } else if ((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+          if (((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0 ||
+              (me.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) && !me.isPopupTrigger()) {
             if (region != null) {
               // add region to selection -- do not add wrappers or voids
               if (selectedRegions.containsKey(region.getID()) == false) {
@@ -316,22 +319,14 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               repaint();
             }
           }
-        } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
-          if (region != null) {
-            // show context menu for real region
-            conMenu.init(region, selectedRegions.values());
-            conMenu.show(Mapper.this, me.getX(), me.getY());
-          } else {
-            // show context menu for no region
-            conMenu.clear(c);
-            conMenu.show(Mapper.this, me.getX(), me.getY());
-          }
+        } else if ((me.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+          showContextMenu(region, c, me.getX(), me.getY());
         }
       }
 
       @Override
       public void mouseReleased(MouseEvent me) {
-        if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
+        if ((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
           prevDragRegion = null;
         }
       }
@@ -340,8 +335,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseDragged(MouseEvent me) {
-        if (((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0)
-            && ((me.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
+        if (((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0)
+            && ((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)) {
           if (!pathPersistence) {
             pathRegions.clear();
           }
@@ -398,6 +393,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
                 - cellGeometry.getUnscaledCellPositionY(0, 0) > 0 ? -1 : 1;
 
         switch (e.getKeyCode()) {
+        case KeyEvent.VK_CONTEXT_MENU:
+          if (activeCoordinate != null) {
+            Rectangle pos = mapper.getCellRect(activeCoordinate);
+            int x = pos.x + pos.width, y = pos.y + pos.height;
+            showContextMenu(activeRegion, activeCoordinate, x, y);
+          }
+          break;
         case KeyEvent.VK_UP:
         case KeyEvent.VK_NUMPAD9:
           translationCoord = CoordinateID.create(0, ysgn);
@@ -441,6 +443,23 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
           break;
 
+        case KeyEvent.VK_SPACE:
+          Region region = getActiveRegion();
+          if (region != null) {
+            // add region to selection -- do not add wrappers or voids
+            if (selectedRegions.containsKey(region.getID()) == false) {
+              selectedRegions.put(region.getID(), region);
+            } else {
+              selectedRegions.remove(region.getID());
+            }
+
+            getGameData().setSelectedRegionCoordinates(selectedRegions);
+            dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
+            repaint();
+          }
+
+          break;
+
         default:
           break;
         }
@@ -474,6 +493,23 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         ToolTipManager.sharedInstance().setDismissDelay(defaultDismissTimeout);
       }
     });
+  }
+
+  protected void showContextMenu(Region region, CoordinateID c, int x, int y) {
+    Rectangle visible = getVisibleRect();
+    x = Math.max(visible.x, Math.min(visible.x + visible.width - 10, x));
+    y = Math.max(visible.y, Math.min(visible.y + visible.height - 10, y));
+
+    if (region != null) {
+      // show context menu for real region
+      conMenu.init(region, selectedRegions.values());
+      conMenu.show(Mapper.this, x, y);
+    } else {
+      // show context menu for no region
+      conMenu.clear(c);
+      conMenu.show(Mapper.this, x, y);
+    }
+
   }
 
   /**

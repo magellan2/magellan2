@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.4" transformSequenceNumber="9">
   <directoryPresets config="../../etc/images/about" />
-  <application name="Magellan 2 - Testing" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" shortName="Magellan" publisher="Magellan Development Team" publisherWeb="https://magellan2.github.io" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}.${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="11">
+  <application name="Magellan 2" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" shortName="Magellan" publisher="Magellan Development Team" publisherWeb="https://magellan2.github.io" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}.${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="11">
     <languages>
       <principalLanguage id="en" customLocalizationFile="./magellan2.utf8" />
       <additionalLanguages>

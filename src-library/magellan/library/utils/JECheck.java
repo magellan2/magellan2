@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -88,12 +89,6 @@ public class JECheck extends Reader {
 
     commandLine.add("-O" + tempFile.getAbsolutePath());
 
-    // commandLine.add("-P" + eCheckExe.getParentFile().getAbsolutePath());
-
-    // // TODO: make optionizable
-    // commandLine.add("-nolost");
-    // commandLine.add("-noroute");
-
     StringTokenizer optiontokens = new StringTokenizer(options);
 
     while (optiontokens.hasMoreTokens()) {
@@ -101,22 +96,7 @@ public class JECheck extends Reader {
     }
 
     if (orders != null) {
-      /*
-       * do this so the -m option is not necessarily specified in the arguments but prevent problems
-       * with older versions
-       */
-      Version eVersion = null;
-      try {
-        eVersion = JECheck.getVersion(eCheckExe, settings);
-        if (eVersion.isError()) {
-          log.warn("incompatible version " + eVersion.toString());
-        }
-      } catch (Exception e) {
-        JECheck.log.error("could not retrieve ECheck version.");
-      }
-      if (eVersion == null || eVersion.compareTo(new Version("4.0.6")) >= 0) {
-        commandLine.add("-m");
-      }
+      commandLine.add("-m");
       commandLine.add(orders.getAbsolutePath());
     }
 
@@ -310,17 +290,19 @@ public class JECheck extends Reader {
     Collection<ECheckMessage> msgs = new LinkedList<ECheckMessage>();
     BufferedReader in = new LineNumberReader(echeckOutput);
     String line = null;
+    String version = null;
+    String faction = null;
     int errors = -1;
     int warnings = -1;
+
     boolean error = false;
     String fakeMessage = "-" + JECheck.FIELD_SEP + "-1" + JECheck.FIELD_SEP + String.valueOf(ECheckMessage.MESSAGE)
         + JECheck.FIELD_SEP;
 
     try {
-      line = JECheck.getLine(in);
-
-      if (line == null)
-        throw new java.text.ParseException("ECheck output is empty", 0);
+      do {
+        line = JECheck.getLine(in);
+      } while (line != null && line.isEmpty());
 
       //
       // 2002.05.05 pavkovic: some more documentation:
@@ -340,88 +322,101 @@ public class JECheck extends Reader {
       // Error in file meldungen.txt line 13: `BEHIND'
       // yes, both languages
 
-      while (line.startsWith("Fehler") || line.startsWith("Error")) {
-        line = JECheck.getLine(in);
-      }
-
-      if (line.indexOf(":faction:") == -1) {
-        line += JECheck.getLine(in);
-      }
-
-      /* parse header <filename>:faction:<factionid> */
-      StringTokenizer tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
-
-      if (tokenizer.countTokens() == 4) {
-        tokenizer.nextToken();
-
-        if (!tokenizer.nextToken().equalsIgnoreCase("version")) {
-          error = true;
-        }
-      } else {
-        error = true;
-      }
-
-      /* check for error in header */
-      if (error) {
-        JECheck.log.info("Version line missing or corrupt: " + line);
-      } else {
-        /* parse messages */
-        line = JECheck.getLine(in);
-      }
-
-      while (line != null) {
-        tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
-
-        if (tokenizer.countTokens() >= 4) {
-          ECheckMessage msg = new ECheckMessage(line);
-          msgs.add(msg);
-        } else {
-          break;
-        }
-
-        line = JECheck.getLine(in);
-      }
+      StringTokenizer tokenizer = null;
 
       if (line == null) {
-        if (msgs.size() > 0) {
-          msgs.add(new ECheckMessage(fakeMessage + Resources.get("jecheck.msg.nofooter")));
-        } else
-          throw new java.text.ParseException("The ECheck output seems to miss a footer", 0);
-      }
+        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.empty.text", line)));
+        return msgs;
+      } else {
 
-      /* parse footer */
-      if (tokenizer.countTokens() == 3) {
-        tokenizer.nextToken();
+        while (line != null) {
+          if (line.isEmpty()) {
+            line = JECheck.getLine(in);
+            continue;
+          }
 
-        if (tokenizer.nextToken().equalsIgnoreCase("warnings")) {
-          warnings = Integer.parseInt(tokenizer.nextToken());
-        } else {
-          error = true;
+          if (line.startsWith("Fehler") || line.startsWith("Error")) {
+            // ignore errors
+            msgs.add(new ECheckMessage(fakeMessage + "Error in ECheck output: " + line));
+            line = JECheck.getLine(in);
+          } else if (line.indexOf(":faction:") >= 0) {
+            // ignore faction line
+            if (faction != null) {
+              msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.multiplefactions.text", 0)));
+            }
+            faction = line.split(":", -1)[2];
+            line = JECheck.getLine(in);
+          } else {
+            tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
+
+            if (tokenizer.countTokens() >= 4) {
+              tokenizer.nextToken();
+
+              if (tokenizer.nextToken().equalsIgnoreCase("version")) {
+                if (version != null) {
+                  JECheck.log.warn("More than one version line");
+                }
+                // parse version
+                version = tokenizer.nextToken();
+                line = JECheck.getLine(in);
+              } else {
+                /* check for error in header */
+                if (version == null) {
+                  JECheck.log.info("Version line missing or corrupt: " + line);
+                }
+                ECheckMessage msg = new ECheckMessage(line);
+                msgs.add(msg);
+                line = JECheck.getLine(in);
+              }
+            } else if (tokenizer.countTokens() == 3) {
+              // footer?
+              break;
+            } else {
+              msgs.add(new ECheckMessage(fakeMessage + "unexpected ECheck output|" + line));
+              line = JECheck.getLine(in);
+            }
+          }
         }
 
-        line = JECheck.getLine(in);
-
-        if (line != null) {
-          tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
-
-          if (tokenizer.countTokens() == 3) {
+        if (line == null) {
+          if (msgs.size() > 0) {
+            msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.badfooter.text", 0)));
+          }
+        } else {
+          /* parse footer */
+          if (tokenizer != null && tokenizer.countTokens() == 3) {
             tokenizer.nextToken();
 
-            if (tokenizer.nextToken().equalsIgnoreCase("errors")) {
-              errors = Integer.parseInt(tokenizer.nextToken());
+            if (tokenizer.nextToken().equalsIgnoreCase("warnings")) {
+              warnings = Integer.parseInt(tokenizer.nextToken());
+            } else {
+              error = true;
+            }
+
+            line = JECheck.getLine(in);
+
+            if (line != null) {
+              tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
+
+              if (tokenizer.countTokens() == 3) {
+                tokenizer.nextToken();
+
+                if (tokenizer.nextToken().equalsIgnoreCase("errors")) {
+                  errors = Integer.parseInt(tokenizer.nextToken());
+                } else {
+                  error = true;
+                }
+              } else {
+                error = true;
+              }
             } else {
               error = true;
             }
           } else {
             error = true;
           }
-        } else {
-          error = true;
         }
-      } else {
-        error = true;
       }
-
     } finally {
       in.close();
     }
@@ -458,6 +453,9 @@ public class JECheck extends Reader {
       } else
         throw new java.text.ParseException(Resources.get("echeckpanel.msg.nowarningmatch.text"), 0);
     }
+    if (faction == null) {
+      msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nofactionline.text")));
+    }
     return msgs;
   }
 
@@ -467,20 +465,8 @@ public class JECheck extends Reader {
    *
    * @throws IOException DOCUMENT-ME
    */
-  private static String getLine(BufferedReader in) throws IOException {
-    String line = null;
-
-    while (in.ready()) {
-      line = in.readLine();
-
-      if (line == null) {
-        continue;
-      } else {
-        break;
-      }
-    }
-
-    return line;
+  protected static String getLine(BufferedReader in) throws IOException {
+    return in.readLine();
   }
 
   /**
@@ -635,36 +621,21 @@ public class JECheck extends Reader {
    */
   public static Version getVersion(File eCheckExe, Properties settings) throws IOException {
     Version v = null;
-    String version = null;
     String line = null;
     BufferedReader br = null;
 
     try {
       br = new BufferedReader(new JECheck(eCheckExe, null, "-h", settings));
-      line = br.readLine().toLowerCase();
+      line = br.readLine();
       br.close();
-
-      int verStart = line.indexOf("version ") + "version ".length();
-      int verEnd = line.indexOf(",", verStart);
-
-      if ((verStart > 0) && (verEnd > verStart)) {
-        version = line.substring(verStart, verEnd);
-        // Fiete: problems wirth version 4.3.2-3, build 2-3 cannot convert to int
-        // solution: ignore -3 asuming, only in build number a "-" will occure
-        int verEnd2 = version.indexOf("-");
-        if (verEnd2 > 1) {
-          version = version.substring(0, verEnd2);
-        }
-        v = new Version(version, ".");
-      }
-    } catch (Exception e) {
+      java.util.regex.Matcher m = Pattern.compile("[^.0-9]([0-9]+([.][0-9]+)+)").matcher(line);
+      m.find();
+      v = new Version(m.group(1));
+    } catch (Throwable e) {
       v = null;
       JECheck.log.error(e);
       throw new IOException("Cannot retrieve version information: " + e.toString());
     }
-
-    if (v == null)
-      throw new IOException("Cannot retrieve version information");
 
     return v;
   }
@@ -687,8 +658,8 @@ public class JECheck extends Reader {
    */
   public static Version getRequiredVersion() {
     try {
-      return new Version("4.1.2", ".");
-    } catch (Exception e) {
+      return new Version("4.1.2");
+    } catch (Throwable e) {
       log.error("incompatible version", e);
       return null; // incompatible Version class ... that's a problem
     }

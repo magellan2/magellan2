@@ -363,9 +363,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       if (!JECheck.checkVersion(exeFile, settings)) {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
-        Object msgArgs[] = { JECheck.getRequiredVersion() };
-        JOptionPane.showMessageDialog(getRootPane(), java.text.MessageFormat.format(Resources
-            .get("echeckpanel.msg.wrongversion.text"), msgArgs), Resources
+        JOptionPane.showMessageDialog(getRootPane(), Resources
+            .get("echeckpanel.msg.wrongversion.text", JECheck.getRequiredVersion()), Resources
                 .get("echeckpanel.msg.wrongversion.title"), JOptionPane.ERROR_MESSAGE);
 
         return;

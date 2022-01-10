@@ -38,6 +38,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.Date;
 import magellan.library.utils.Locales;
 import magellan.library.utils.logging.Logger;
 import magellan.plugin.extendedcommands.ExtendedCommandsProvider;
@@ -3016,24 +3017,29 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCommandCollector() {
-    data.getDate().setDate(200);
+    int[] dates = new int[] { 100, 101, 200, 201 };
+    String[] amounts = new String[] { null, "wenige", "viele" };
+    int[] seasons = new int[] { Date.SUMMER, Date.SUMMER, Date.WINTER, Date.WINTER };
+    String[][] matrix = { { "FORSCHE", "FORSCHE", "FORSCHE" }, { "FORSCHE", "FORSCHE", "MACHE" },
+        { "FORSCHE", "FORSCHE", "FORSCHE" }, { "FORSCHE", "FORSCHE", "FORSCHE" } };
 
-    unit.clearOrders();
-    unit.addOrder("// $cript Sammler 5");
-    parser.execute(unit.getFaction());
-    assertOrder("FORSCHE KR훃TER", unit, 2);
+    for (int d = 0; d < dates.length; ++d) {
+      int date = dates[d];
+      data.getDate().setDate(date);
+      assertEquals(seasons[d], data.getDate().getSeason());
+      for (int a = 0; a < amounts.length; ++a) {
+        String amount = amounts[a];
 
-    unit.clearOrders();
-    unit.addOrder("// $cript Sammler 5");
-    parser.execute(unit.getFaction());
-    assertOrder("FORSCHE KR훃TER", unit, 2);
+        unit.getRegion().setHerbAmount(amount);
+        assertEquals(amount, unit.getRegion().getHerbAmount());
 
-    data.getDate().setDate(201);
-    unit.getRegion().setHerbAmount("viele");
-    unit.clearOrders();
-    unit.addOrder("// $cript Sammler 5");
-    parser.execute(unit.getFaction());
-    assertOrder("MACHE KR훃TER", unit, 2);
+        unit.clearOrders();
+        unit.addOrder("// $cript Sammler 5");
+        parser.execute(unit.getFaction());
+        assertOrder("Date, season, amount = " + date + ", " + seasons[d] + ", " + amount, matrix[d][a] + " KR훃TER",
+            unit, 2);
+      }
+    }
 
     unit.clearOrders();
     unit.getRegion().setType(getRules().getRegionType(EresseaConstants.RT_OCEAN));

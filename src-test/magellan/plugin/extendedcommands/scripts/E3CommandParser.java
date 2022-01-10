@@ -59,6 +59,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaRelationFactory;
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.RulesException;
+import magellan.library.rules.Date;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
@@ -2689,11 +2690,13 @@ class E3CommandParser {
     }
     removeOrdersLike(MAKEOrder + " " + "[^T].*", true);
     removeOrdersLike(getResearchOrder() + ".*", true);
+    Date dateBefore = world.getDate().clone();
+    dateBefore.setDate(world.getDate().getDate() - 1);
     if (modulo != Integer.MAX_VALUE
         && (world.getDate().getDate() % modulo == 0 || currentRegion.getHerbAmount() == null
-            || (!currentRegion
-                .getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals(
-                    "sehr viele")))) {
+            || (dateBefore.getSeason() == Date.WINTER && world.getDate().getSeason() == Date.WINTER)
+            || (!currentRegion.getHerbAmount().equals("viele")
+                && !currentRegion.getHerbAmount().equals("sehr viele")))) {
       addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KRÄUTER"), true);

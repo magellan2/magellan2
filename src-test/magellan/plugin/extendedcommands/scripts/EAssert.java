@@ -50,6 +50,15 @@ public class EAssert {
     }
   }
 
+  public static void assertOrder(String message, String expected, Unit u, int lineNr) {
+    assertTrue("expected " + expected + ", but not enough orders", u.getOrders2().size() > lineNr);
+    String actual = u.getOrders2().get(lineNr).getText();
+    if (!(actual.startsWith(expected) && (actual.length() == expected.length() || actual.substring(
+        expected.length()).trim().startsWith(";")))) {
+      assertEquals(message, expected, actual);
+    }
+  }
+
   public static void assertError(String expected, Unit u, int lineNr) {
     assertError(expected, u, lineNr, "; TODO", "(Fehler");
   }

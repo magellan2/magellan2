@@ -1,3 +1,9 @@
+2022-01-12 / Build 756 - stm (stm2@users.sourceforge.net)
+    * enabled region selection with space, fixed map context menu for Mac
+    * made JECheck more tolerant
+    * changed default preferences (show island nodes, add autocompletion example, new docking layout)
+    * switch default encoding to UTF-8
+
 2021-08-22 / Build 752 - stm (stm2@users.sourceforge.net)
     * new installer with install4j
     * order parser: allow BETRETE/BENNEN/BESCHREIBE GEBÄUDE

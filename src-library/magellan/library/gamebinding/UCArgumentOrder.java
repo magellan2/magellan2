@@ -10,23 +10,27 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.library.gamebinding;
 
 import java.util.List;
 
+import magellan.library.Building;
 import magellan.library.EntityID;
+import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.relation.UnitContainerRelation;
@@ -89,6 +93,14 @@ public class UCArgumentOrder extends SimpleOrder {
     return container;
   }
 
+  /**
+   * @param data
+   * @param unit
+   * @param type
+   * @param sameRegionOnly
+   * @return The unit continer. It can be safely cast to {@link Building}, {@link Ship}, {@link Faction}, or
+   *         {@link Region}, according to they value of type.
+   */
   protected UnitContainer getContainer(GameData data, Unit unit, int type, boolean sameRegionOnly) {
     switch (type) {
     case T_BUILDING:

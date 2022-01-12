@@ -19,7 +19,6 @@ import magellan.library.Ship;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
@@ -1283,8 +1282,8 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (isID(t.getText(), false) == true) {
         EntityID target = EntityID.createEntityID(t.getText(), getData().base);
-        UnitContainer tContainer = getData().getShip(target);
-        order = new UCArgumentOrder(getTokens(), text, target, UCArgumentOrder.T_SHIP);
+        Ship tContainer = getData().getShip(target);
+        order = new FollowShipOrder(getTokens(), text, target);
         retVal = tContainer != null && readFinalID(t);
       } else {
         unexpected(t);

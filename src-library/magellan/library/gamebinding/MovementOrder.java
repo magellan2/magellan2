@@ -32,6 +32,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.gamebinding.EresseaRelationFactory.EresseaExecutionState;
+import magellan.library.relation.FollowShipRelation;
 import magellan.library.relation.FollowUnitRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
@@ -78,8 +79,7 @@ public class MovementOrder extends SimpleOrder {
     execute(state, data, unit, unit, new HashSet<Unit>(), line, Integer.MAX_VALUE);
   }
 
-  private void execute(ExecutionState state, GameData data, Unit unit, Unit origin,
-      Set<Unit> followers, int line,
+  private void execute(ExecutionState state, GameData data, Unit unit, Unit origin, Set<Unit> followers, int line,
       int maxLength) {
     MovementRelation mRel =
         data.getGameSpecificStuff().getMovementEvaluator().getMovement(unit, directions, maxLength);
@@ -97,6 +97,27 @@ public class MovementOrder extends SimpleOrder {
 
     Set<Unit> passengers = new HashSet<Unit>();
     if (unit.getModifiedShip() != null && unit.getModifiedShip().getModifiedOwnerUnit() == unit) {
+      for (Unit follower : unit.getRegion().units()) {
+        if (follower != unit && follower.getModifiedShip() != null
+            && follower.getModifiedShip().getModifiedOwnerUnit() == follower) {
+
+          for (FollowShipRelation fRel : follower.getRelations(FollowShipRelation.class)) {
+            if (fRel.target == unit.getModifiedShip()) {
+              if (origin.equals(follower)) {
+                setWarning(origin, line, Resources.get("order.move.warning.follow"));
+              } else if (!unit.equals(follower)) {
+                if (followers.contains(follower)) {
+                  setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
+                } else {
+                  followers.add(follower);
+                  execute(state, data, follower, origin, followers, fRel.line, mRel.getInitialMovement().size());
+                }
+              }
+            }
+          }
+        }
+      }
+
       for (Unit passenger : unit.getModifiedShip().modifiedUnits()) {
         if (passenger != unit && passenger.getRelations(MovementRelation.class).isEmpty()) {
           passengers.add(passenger);
@@ -121,8 +142,7 @@ public class MovementOrder extends SimpleOrder {
             setWarning(unit, line, Resources.get("order.move.warning.unitfollowsself"));
           } else {
             followers.add(follower);
-            execute(state, data, follower, origin, followers, fRel.line, mRel.getInitialMovement()
-                .size());
+            execute(state, data, follower, origin, followers, fRel.line, mRel.getInitialMovement().size());
           }
         }
       }

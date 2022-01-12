@@ -670,15 +670,16 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
           nextRegion = unit.getRegion().getData().getRegion(nextCoord);
         }
 
-        if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)
-            || initialMovement.size() + 1 > maxLength) {
+        if (!metric.update(currentCoord, currentRegion, nextCoord, nextRegion)) {
           if (invalidRegion == null && stopped < 2) { // two PAUSES -> end of route -> do not warn
             invalidRegion = nextRegion;
           }
           if (futureMovement.isEmpty()) {
             futureMovement.add(currentCoord);
           }
-        } else if (metric.getRounds() > 0) {
+        } else if (metric.getRounds() > 0
+        // || initialMovement.size() + 1 > maxLength
+        ) {
           if (futureMovement.isEmpty()) {
             futureMovement.add(currentCoord);
           }

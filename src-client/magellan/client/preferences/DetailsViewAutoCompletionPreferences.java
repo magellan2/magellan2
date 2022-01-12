@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
@@ -70,6 +70,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.SelfCleaningProperties;
 
 /**
  * @author ...
@@ -224,18 +225,18 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     List<String> l = new LinkedList<String>(selfDefinedCompletions.keySet());
     Collections.sort(l);
 
-    DefaultListModel listModel = new DefaultListModel();
+    DefaultListModel<String> listModel = new DefaultListModel<String>();
 
     for (String string : l) {
       listModel.addElement(string);
     }
 
-    final JList completionNames = new JList(listModel);
+    final JList<String> completionNames = new JList<String>(listModel);
     completionNames.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     completionNames.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          String str = (String) completionNames.getSelectedValue();
+          String str = completionNames.getSelectedValue();
           StringBuilder display = new StringBuilder();
 
           if (str != null) {
@@ -282,8 +283,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     delete.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int index = completionNames.getSelectedIndex();
-        String name = (String) completionNames.getSelectedValue();
-        ((DefaultListModel) completionNames.getModel()).remove(index);
+        String name = completionNames.getSelectedValue();
+        ((DefaultListModel<String>) completionNames.getModel()).remove(index);
 
         if (completionNames.getModel().getSize() == 0) {
           delete.setEnabled(false);
@@ -317,7 +318,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
         if (!name.equals("") && !value.equals("")) {
           selfDefinedCompletions.put(name, value);
 
-          DefaultListModel lstModel = (DefaultListModel) completionNames.getModel();
+          DefaultListModel<String> lstModel = (DefaultListModel<String>) completionNames.getModel();
 
           if (!lstModel.contains(name)) {
             lstModel.addElement(name);
@@ -478,6 +479,16 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     // update selfDefinedCompletion table of AutoCompletion
     source.getSelfDefinedCompletionsMap().clear();
     source.getSelfDefinedCompletionsMap().putAll(selfDefinedCompletions);
+  }
+
+  public static void applyDefault(SelfCleaningProperties settings) {
+    settings.setProperty(
+        PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT,
+        "1");
+    settings.setProperty(
+        "AutoCompletion.SelfDefinedCompletions.name0", "TODO");
+    settings.setProperty(
+        "AutoCompletion.SelfDefinedCompletions.value0", "; TODO");
   }
 
   /**
@@ -703,4 +714,5 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       return retVal;
     }
   }
+
 }

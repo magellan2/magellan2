@@ -141,6 +141,7 @@ import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.extern.MainMenuProvider;
 import magellan.client.preferences.ClientPreferences;
+import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
@@ -533,6 +534,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // #RRGGBB
     settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
     // #RRGGBB
+
+    DetailsViewAutoCompletionPreferences.applyDefault(settings);
 
     // try to set path to ECheck
     initECheckPath(settings);

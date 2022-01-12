@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.utils;
 
 import java.util.Collection;
@@ -177,13 +177,13 @@ public class TreeBuilder {
   private Collection<Region> sortRegions(Collection<Region> regions) {
     if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true")))
         .booleanValue()) {
-      if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates").equals(
+      if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands").equals(
           "coordinates")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Collections.sort(sortedRegions, IDComparator.DEFAULT);
 
         return sortedRegions;
-      } else if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates")
+      } else if (settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands")
           .equals("islands")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Comparator<Unique> idCmp = IDComparator.DEFAULT;

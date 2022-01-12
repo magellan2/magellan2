@@ -2395,7 +2395,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public static boolean isShowIslands(Properties settings) {
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.REGIONOVERVIEW_DISPLAYISLANDS, true)
         && PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true)
-        && settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates")
+        && settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands")
             .equalsIgnoreCase("islands");
   }
 }

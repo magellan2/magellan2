@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
@@ -441,6 +441,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
   /*
    * (non-Javadoc)
+   * 
    * @see com.eressea.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
@@ -457,9 +458,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         "EMapOverviewPanel.treeBuilderWithComments", true));
 
     rdbSortRegionsCoordinates.setSelected(settings.getProperty(
-        PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "coordinates").equals("coordinates"));
-    rdbSortRegionsIslands.setSelected(settings.getProperty(PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA,
-        "coordinates").equals("islands"));
+        PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands").equals("coordinates"));
+    rdbSortRegionsIslands.setSelected(settings.getProperty(
+        PropertiesHelper.REGIONOVERVIEW_SORTCRITERIA, "islands").equals("islands"));
     chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings,
         PropertiesHelper.REGIONOVERVIEW_DISPLAYISLANDS, true));
 
@@ -502,8 +503,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         "EMapOverviewPanel.useBestSkill", true));
     useTopmostSkill.setSelected(!useBestSkill.isSelected());
 
-    rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria",
-        "skills").equals("names"));
+    rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals(
+        "names"));
     updateButtonGroups();
 
     // this is strictly not necessary
@@ -736,18 +737,16 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
      */
     public void applyPreferences() {
       if (radioButtons[0].isSelected()) {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
-            & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_FLAG));
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode() & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_FLAG));
       } else {
         overviewPanel.setExpandMode(overviewPanel.getExpandMode() | EMapOverviewPanel.EXPAND_FLAG);
       }
 
       if (checkBox.isSelected()) {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
-            | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG);
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode() | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG);
       } else {
-        overviewPanel.setExpandMode(overviewPanel.getExpandMode()
-            & (0xFFFFFFFF ^ EMapOverviewPanel.EXPAND_IFINSIDE_FLAG));
+        overviewPanel.setExpandMode(overviewPanel.getExpandMode() & (0xFFFFFFFF
+            ^ EMapOverviewPanel.EXPAND_IFINSIDE_FLAG));
       }
 
       int i = overviewPanel.getExpandMode() >> 2;
@@ -759,8 +758,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       }
 
       overviewPanel
-          .setExpandMode((overviewPanel.getExpandMode() & (EMapOverviewPanel.EXPAND_FLAG | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG))
-              | (i << 2));
+          .setExpandMode((overviewPanel.getExpandMode()
+              & (EMapOverviewPanel.EXPAND_FLAG | EMapOverviewPanel.EXPAND_IFINSIDE_FLAG)) | (i << 2));
 
       try {
         overviewPanel.setExpandTrustLevel(Integer.parseInt(trustlevel.getText()));
@@ -839,11 +838,6 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       con.gridy++;
       this.add(Box.createVerticalStrut(checkBox.getPreferredSize().height + 5), con);
 
-      /*
-       * con.gridx = 0; con.gridheight = con.gridy + 1; con.gridy = 0; con.fill =
-       * GridBagConstraints.VERTICAL; JComponent c = new JSeparator(JSeparator.VERTICAL);
-       * c.setMaximumSize(new Dimension(3, 1000)); this.add(c, con);
-       */
       registerListener();
     }
 
@@ -861,7 +855,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     }
 
     /**
-     * Appliy settings to EmapOverviewPanel.
+     * Apply settings to EmapOverviewPanel.
      */
     public void applyPreferences() {
       if (radioButtons[0].isSelected()) {
@@ -888,9 +882,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         i = 3;
       }
 
-      overviewPanel
-          .setCollapseMode((overviewPanel.getCollapseMode() & (EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED))
-              | (i << 2));
+      overviewPanel.setCollapseMode((overviewPanel.getCollapseMode()
+          & (EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED)) | (i << 2));
 
       saveCollapseProperty();
     }

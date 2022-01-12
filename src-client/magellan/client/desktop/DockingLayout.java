@@ -128,8 +128,7 @@ public class DockingLayout {
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       List<Element> subnodes = Utils.getChildNodes(root);
       DockingLayout.log.info("Found " + subnodes.size() + " Docking layouts.");
-      for (int i = 0; i < subnodes.size(); i++) {
-        Element node = subnodes.get(i);
+      for (Element node : subnodes) {
         DockingLayout.load(layouts, node, viewMap, views, dfBuilder);
       }
     } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
@@ -224,8 +223,7 @@ public class DockingLayout {
       DockingWindow child = null;
 
       List<Element> subnodes = Utils.getChildNodes(root);
-      for (int i = 0; i < subnodes.size(); i++) {
-        Element node = subnodes.get(i);
+      for (Element node : subnodes) {
         child = open(window, node);
         if (child == null) {
           continue;
@@ -330,8 +328,7 @@ public class DockingLayout {
   protected synchronized FloatingWindow loadFloatingWindow(RootWindow window, Element root) {
     DockingWindow child = null;
     List<Element> subnodes = Utils.getChildNodes(root);
-    for (int i = 0; i < subnodes.size(); i++) {
-      Element element = subnodes.get(i);
+    for (Element element : subnodes) {
       child = open(window, element);
       if (child != null) {
         break;
@@ -371,8 +368,7 @@ public class DockingLayout {
 
     if (windowBar != null) {
       List<Element> subnodes = Utils.getChildNodes(root);
-      for (int i = 0; i < subnodes.size(); i++) {
-        Element element = subnodes.get(i);
+      for (Element element : subnodes) {
         DockingWindow child = open(window, element);
         if (child != null) {
           windowBar.addTab(child);
@@ -562,98 +558,132 @@ public class DockingLayout {
    */
   public static Element createDefaultLayout(String name, boolean isActive) throws LayoutException {
     StringBuffer buffer = new StringBuffer();
-    buffer.append("<rootwindow name='" + name + "' isActive='" + isActive + "'>\r\n");
-    buffer.append(" <splitwindow divider='0.3' horizontal='true'>\r\n");
-    buffer.append("  <split>\r\n");
-    buffer.append("   <splitwindow divider='0.6' horizontal='false'>\r\n");
-    buffer.append("    <split>\r\n");
-    buffer.append("     <tabwindow>\r\n");
-    buffer.append("      <tab isActive='true'>\r\n");
-    buffer.append("       ").append("<view title='").append(
-        toHTML(MagellanDesktop.OVERVIEW_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("      </tab>\r\n");
-    buffer.append("     </tabwindow>\r\n");
-    buffer.append("    </split>\r\n");
-    buffer.append("    <split>\r\n");
-    buffer.append("     <tabwindow>\r\n");
-    buffer.append("      <tab isActive='true'>\r\n");
-    buffer.append("       ").append("<view title='").append(
-        toHTML(MagellanDesktop.MINIMAP_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("      </tab>\r\n");
-    buffer.append("      <tab isActive='false'>\r\n");
-    buffer.append("       ").append("<view title='").append(
-        toHTML(MagellanDesktop.HISTORY_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("      </tab>\r\n");
-    buffer.append("     </tabwindow>\r\n");
-    buffer.append("    </split>\r\n");
-    buffer.append("   </splitwindow>\r\n");
-    buffer.append("  </split>\r\n");
-    buffer.append("  <split>\r\n");
-    buffer.append("   <splitwindow divider='0.5' horizontal='true'>\r\n");
-    buffer.append("    <split>\r\n");
-    buffer.append("     <splitwindow divider='0.6' horizontal='false'>\r\n");
-    buffer.append("      <split>\r\n");
-    buffer.append("       <tabwindow>\r\n");
-    buffer.append("        <tab isActive='true'>\r\n");
-    buffer.append("         ").append("<view title='").append(
-        toHTML(MagellanDesktop.MAP_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("        </tab>\r\n");
-    buffer.append("       </tabwindow>\r\n");
-    buffer.append("      </split>\r\n");
-    buffer.append("      <split>\r\n");
-    buffer.append("       <tabwindow>\r\n");
-    buffer.append("        <tab isActive='true'>\r\n");
-    buffer.append("         ").append("<view title='").append(
-        toHTML(MagellanDesktop.MESSAGES_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("        </tab>\r\n");
-    buffer.append("        <tab isActive='false'>\r\n");
-    buffer.append("         ").append("<view title='").append(
-        toHTML(MagellanDesktop.ECHECK_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("        </tab>\r\n");
-    buffer.append("        <tab isActive='false'>\r\n");
-    buffer.append("         ").append("<view title='").append(
-        toHTML(MagellanDesktop.TASKS_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("        </tab>\r\n");
-    buffer.append("       </tabwindow>\r\n");
-    buffer.append("      </split>\r\n");
-    buffer.append("     </splitwindow>\r\n");
-    buffer.append("    </split>\r\n");
-    buffer.append("    <split>\r\n");
-    buffer.append("     <splitwindow divider='0.5' horizontal='false'>\r\n");
-    buffer.append("      <split>\r\n");
-    buffer.append("       <splitwindow divider='0.5' horizontal='false'>\r\n");
-    buffer.append("        <split>\r\n");
-    buffer.append("         <tabwindow>\r\n");
-    buffer.append("          <tab isActive='true'>\r\n");
-    buffer.append("           ").append("<view title='").append(
-        toHTML(MagellanDesktop.NAMEDESCRIPTION_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("          </tab>\r\n");
-    buffer.append("         </tabwindow>\r\n");
-    buffer.append("        </split>\r\n");
-    buffer.append("        <split>\r\n");
-    buffer.append("         <tabwindow>\r\n");
-    buffer.append("          <tab isActive='true'>\r\n");
-    buffer.append("           ").append("<view title='").append(
-        toHTML(MagellanDesktop.DETAILS_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("          </tab>\r\n");
-    buffer.append("         </tabwindow>\r\n");
-    buffer.append("        </split>\r\n");
-    buffer.append("       </splitwindow>\r\n");
-    buffer.append("      </split>\r\n");
-    buffer.append("      <split>\r\n");
-    buffer.append("       <tabwindow>\r\n");
-    buffer.append("        <tab isActive='true'>\r\n");
-    buffer.append("         ").append("<view title='").append(
-        toHTML(MagellanDesktop.ORDERS_IDENTIFIER)).append("'/>\r\n");
-    buffer.append("        </tab>\r\n");
-    buffer.append("       </tabwindow>\r\n");
-    buffer.append("      </split>\r\n");
-    buffer.append("     </splitwindow>\r\n");
-    buffer.append("    </split>\r\n");
-    buffer.append("   </splitwindow>\r\n");
-    buffer.append("  </split>\r\n");
-    buffer.append(" </splitwindow>\r\n");
-    buffer.append("</rootwindow>\r\n");
+    buffer
+        .append("<rootwindow name='" + name + "' isActive='" + isActive + "'>\r\n");
+    buffer
+        .append("   <windowbar direction='Down'>\r\n" +
+            "   </windowbar>\r\n" +
+            "   <splitwindow divider='0.3' horizontal='true'>\r\n" +
+            "    <split>\r\n" +
+            "     <splitwindow divider='0.6' horizontal='false'>\r\n" +
+            "      <split>\r\n" +
+            "       <tabwindow>\r\n" +
+            "        <tab isActive='true'>\r\n" +
+            "         <view title='")
+        .append(toHTML(MagellanDesktop.OVERVIEW_IDENTIFIER)).append("'>\r\n" +
+            "         </view>\r\n" +
+            "        </tab>\r\n" +
+            "       </tabwindow>\r\n" +
+            "      </split>\r\n" +
+            "      <split>\r\n" +
+            "       <tabwindow>\r\n" +
+            "        <tab isActive='true'>\r\n" +
+            "         <view title='")
+        .append(toHTML(MagellanDesktop.MAP_IDENTIFIER)).append("'>\r\n" +
+            "         </view>\r\n" +
+            "        </tab>\r\n" +
+            "        <tab isActive='false'>\r\n" +
+            "         <view title='")
+        .append(toHTML(MagellanDesktop.MINIMAP_IDENTIFIER)).append("'>\r\n" +
+            "         </view>\r\n" +
+            "        </tab>\r\n" +
+            "       </tabwindow>\r\n" +
+            "      </split>\r\n" +
+            "     </splitwindow>\r\n" +
+            "    </split>\r\n" +
+            "    <split>\r\n" +
+            "     <splitwindow divider='0.67' horizontal='false'>\r\n" +
+            "      <split>\r\n" +
+            "       <splitwindow divider='0.5' horizontal='true'>\r\n" +
+            "        <split>\r\n" +
+            "         <tabwindow>\r\n" +
+            "          <tab isActive='true'>\r\n" +
+            "           <view title='")
+        .append(toHTML(MagellanDesktop.DETAILS_IDENTIFIER)).append("'>\r\n" +
+            "           </view>\r\n" +
+            "          </tab>\r\n" +
+            "         </tabwindow>\r\n" +
+            "        </split>\r\n" +
+            "        <split>\r\n" +
+            "         <splitwindow divider='0.2' horizontal='false'>\r\n" +
+            "          <split>\r\n" +
+            "           <tabwindow>\r\n" +
+            "            <tab isActive='true'>\r\n" +
+            "             <view title='")
+        .append(toHTML(MagellanDesktop.NAMEDESCRIPTION_IDENTIFIER)).append("'>\r\n" +
+            "             </view>\r\n" +
+            "            </tab>\r\n" +
+            "           </tabwindow>\r\n" +
+            "          </split>\r\n" +
+            "          <split>\r\n" +
+            "           <splitwindow divider='0.67' horizontal='false'>\r\n" +
+            "            <split>\r\n" +
+            "             <tabwindow>\r\n" +
+            "              <tab isActive='true'>\r\n" +
+            "               <view title='")
+        .append(toHTML(MagellanDesktop.ORDERS_IDENTIFIER)).append("'>\r\n" +
+            "               </view>\r\n" +
+            "              </tab>\r\n" +
+            "             </tabwindow>\r\n" +
+            "            </split>\r\n" +
+            "            <split>\r\n" +
+            "             <tabwindow>\r\n" +
+            "              <tab isActive='true'>\r\n" +
+            "               <view title='")
+        .append(toHTML(MagellanDesktop.MESSAGES_IDENTIFIER)).append("'>\r\n"
+            +
+            "               </view>\r\n" +
+            "              </tab>\r\n" +
+            "             </tabwindow>\r\n" +
+            "            </split>\r\n" +
+            "           </splitwindow>\r\n" +
+            "          </split>\r\n" +
+            "         </splitwindow>\r\n" +
+            "        </split>\r\n" +
+            "       </splitwindow>\r\n" +
+            "      </split>\r\n" +
+            "      <split>\r\n" +
+            "       <splitwindow divider='0.67' horizontal='true'>\r\n"
+            +
+            "        <split>\r\n" +
+            "         <tabwindow>\r\n" +
+            "          <tab isActive='true'>\r\n" +
+            "           <view title='")
+        .append(toHTML(MagellanDesktop.TASKS_IDENTIFIER)).append("'>\r\n" +
+            "           </view>\r\n" +
+            "          </tab>\r\n" +
+            "         </tabwindow>\r\n" +
+            "        </split>\r\n" +
+            "        <split>\r\n" +
+            "         <splitwindow divider='0.5' horizontal='true'>\r\n"
+            +
+            "          <split>\r\n" +
+            "           <tabwindow>\r\n" +
+            "            <tab isActive='true'>\r\n" +
+            "             <view title='")
+        .append(toHTML(
+            MagellanDesktop.HISTORY_IDENTIFIER)).append("'>\r\n" +
+                "             </view>\r\n" +
+                "            </tab>\r\n" +
+                "           </tabwindow>\r\n" +
+                "          </split>\r\n" +
+                "          <split>\r\n" +
+                "           <tabwindow>\r\n" +
+                "            <tab isActive='true'>\r\n" +
+                "             <view title='")
+        .append(toHTML(MagellanDesktop.BOOKMARKS_IDENTIFIER)).append("'>\r\n" +
+            "             </view>\r\n" +
+            "            </tab>\r\n" +
+            "           </tabwindow>\r\n" +
+            "          </split>\r\n" +
+            "         </splitwindow>\r\n" +
+            "        </split>\r\n" +
+            "       </splitwindow>\r\n" +
+            "      </split>\r\n" +
+            "     </splitwindow>\r\n" +
+            "    </split>\r\n" +
+            "   </splitwindow>\r\n" +
+            " </rootwindow>\r\n");
 
     DocumentBuilder builder;
     try {

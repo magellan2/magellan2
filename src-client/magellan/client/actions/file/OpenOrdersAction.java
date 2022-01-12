@@ -116,7 +116,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
                       new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
                       FileType.DEFAULT_ENCODING.toString());
               r.read(stream);
-            } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
+            } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", true)) {
               // new: force UTF
               Reader stream =
                   new InputStreamReader(

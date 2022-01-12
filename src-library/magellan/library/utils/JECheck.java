@@ -144,13 +144,11 @@ public class JECheck extends Reader {
       if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
         // new: force our default = ISO
         outputReader =
-            new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING
-                .toString());
-      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", false)) {
+            new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING.toString());
+      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTFopenOrders", true)) {
         // new: force our default = ISO
         outputReader =
-            new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING
-                .toString());
+            new InputStreamReader(new FileInputStream(tempFile), Encoding.UTF8.toString());
       } else {
         // old = default = system dependent
         outputReader = new BOMReader(new FileInputStream(tempFile), null);

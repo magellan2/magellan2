@@ -391,7 +391,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOrunEcheck", false)) {
         // new: force our default = ISO
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.ISO.toString());
-      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8runEcheck", false)) {
+      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8runEcheck", true)) {
         // new: force our default = UTF8
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.UTF8.toString());
       } else {

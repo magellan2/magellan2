@@ -1631,7 +1631,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     String charset = "" + Encoding.DEFAULT;
     if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
       charset = "" + Encoding.ISO;
-    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", true)) {
       charset = "" + Encoding.UTF8;
     } else {
       charset = "" + System.getProperty("file.encoding");
@@ -1775,7 +1775,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
       // new: force our default = ISO
       contentType = "text/plain; charset=" + Encoding.ISO;
-    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", true)) {
       // new: force our default = UTF-8
       contentType = "text/plain; charset=" + Encoding.UTF8;
     } else {
@@ -2004,7 +2004,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
       // new: force our default = ISO
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
-    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", true)) {
       // new: force our default = UTF-8 TextEncoding.UTF8saveOrders
       stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
     } else {

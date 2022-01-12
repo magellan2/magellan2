@@ -96,7 +96,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         new JCheckBox(Resources
             .get("util.textencodingpreferences.checkbox.textEncodingUTFopenOrders.label"),
             PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
-                "TextEncoding.UTFopenOrders", false));
+                "TextEncoding.UTFopenOrders", true));
     textEncodingPrefrencesPanel.add(openUTFOrders, c);
 
     c.gridy++;
@@ -113,7 +113,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         new JCheckBox(Resources
             .get("util.textencodingpreferences.checkbox.textEncodingUTFsaveOrders.label"),
             PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
-                "TextEncoding.UTF8saveOrders", false));
+                "TextEncoding.UTF8saveOrders", true));
     textEncodingPrefrencesPanel.add(saveUTFOrders, c);
 
     c.gridy++;
@@ -129,7 +129,7 @@ public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter im
         new JCheckBox(Resources
             .get("util.textencodingpreferences.checkbox.textEncodingUTFECheck.label"),
             PropertiesHelper.getBoolean(ClientTextEncodingPreferences.settings,
-                "TextEncoding.UTF8runEcheck", false));
+                "TextEncoding.UTF8runEcheck", true));
     textEncodingPrefrencesPanel.add(runUTFEcheck, c);
 
     c.gridy++;

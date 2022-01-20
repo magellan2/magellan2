@@ -1720,7 +1720,7 @@ class E3CommandParser {
 
     tokens = Arrays.copyOf(tokens, tokenCount);
 
-    if (tokens.length < 2 || tokens.length > 5) {
+    if (tokens.length < 2 || tokens.length > 6) {
       addNewError("falsche Anzahl Argumente");
       return;
     }
@@ -1744,19 +1744,34 @@ class E3CommandParser {
           }
         }
       } else if (EACHOrder.equals(tokens[1])) {
-        if (tokens.length != 4) {
-          addNewError("ungültige Argumente für Benoetige JE x Ding");
-        } else {
-          if (unit.getPersons() <= 0)
-            if (w.contains(Warning.C_AMOUNT)) {
-              addNewWarning("Benoetige JE für leere Einheit");
-            } else {
-              addNewMessage("Benoetige JE für leere Einheit");
-            }
-          int amount = (int) Math.ceil(unit.getPersons() * Double.parseDouble(tokens[2]));
-          String item = tokens[3];
-          addNeed(item, unit, amount, amount, priority, w);
+        if (unit.getPersons() <= 0)
+          if (w.contains(Warning.C_AMOUNT)) {
+            addNewWarning("Benoetige JE für leere Einheit");
+          } else {
+            addNewMessage("Benoetige JE für leere Einheit");
+          }
+        int amount = (int) Math.ceil(unit.getPersons() * Double.parseDouble(tokens[2]));
+        int maxTokens = 4;
+        int amount2 = amount;
+        if (tokens.length > 4) {
+          ++maxTokens;
+          boolean each2 = false;
+          int numberToken = 3;
+          if (EACHOrder.equals(tokens[3])) {
+            each2 = true;
+            ++numberToken;
+            ++maxTokens;
+            amount2 = (int) Math.ceil(unit.getPersons() * Double.parseDouble(tokens[4]));
+          } else {
+            String item = tokens[4];
+            amount2 = getAmountWithHorse(unit, tokens[3], item);
+          }
         }
+        if (tokens.length > maxTokens) {
+          addNewError("zu viele Parameter");
+        }
+        String item = tokens[maxTokens - 1];
+        addNeed(item, unit, amount, amount2, priority, w);
       } else if (KRAUTOrder.equals(tokens[1])) {
         if (tokens.length > 2) {
           addNewError("zu viele Parameter");

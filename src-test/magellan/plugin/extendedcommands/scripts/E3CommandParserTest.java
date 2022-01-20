@@ -752,17 +752,6 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     // assertSame(2, unit.getOrders2().size());
     // assertSame(4, unit2.getOrders2().size());
 
-    // test one Benoetige order with fractional JE
-    unit.clearOrders();
-    unit2.clearOrders();
-    unit.setPersons(20);
-    unit.addOrder("// $cript Benoetige JE 0.33 Silber");
-    parser.execute(unit.getFaction());
-
-    assertEquals(3, unit.getOrders2().size()); // unit has 2 silver at this point
-    assertEquals(1, unit2.getOrders2().size());
-    assertOrder("GIB 1 5 Silber", unit2, 0);
-
     unit.clearOrders();
     unit.addOrder("// $cript Benoetige 1 2");
     parser.execute(unit.getFaction());
@@ -773,6 +762,48 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     parser.execute(unit.getFaction());
     assertError("zu wenig Argumente", unit, 2);
+  }
+
+  @Test
+  public final void testCommandBenoetigeJe() {
+    // add other unit with Silber
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit2, "Silber", 100);
+
+    // test one Benoetige order with JE
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.setPersons(3);
+    unit.addOrder("// $cript Benoetige JE 2 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders2().size());
+    assertEquals(1, unit2.getOrders2().size());
+    assertOrder("GIB 1 6 Silber", unit2, 0);
+
+    // test one Benoetige order with 2x JE
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.setPersons(3);
+    unit.addOrder("// $cript Benoetige JE 2 JE 3 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(2, unit.getOrders2().size());
+    assertEquals(2, unit2.getOrders2().size());
+    assertOrder("GIB 1 6 Silber", unit2, 0);
+    assertOrder("GIB 1 3 Silber", unit2, 1);
+
+    // test one Benoetige order with fractional JE
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.setPersons(20);
+    builder.addItem(data, unit, "Silber", 2);
+    unit.addOrder("// $cript Benoetige JE 0.33 Silber");
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size()); // unit has 2 silver at this point
+    assertEquals(1, unit2.getOrders2().size());
+    assertOrder("GIB 1 5 Silber", unit2, 0);
   }
 
   /**

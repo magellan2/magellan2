@@ -20,9 +20,10 @@ import magellan.library.Unit;
  * A relation indicating that a captain transfers a certain amount of ships to another ship.
  */
 public class ShipTransferRelation extends TransferRelation {
-  /** the transferred ship / fleet */
+  /** the transferred ship / convoi */
   public Ship ship;
-  private Ship targetShip;
+  /** target of the transfer */
+  public Ship targetShip;
   private int newDamage;
 
   /**

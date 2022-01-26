@@ -345,19 +345,25 @@ public class GiveOrder extends UnitArgumentOrder {
   }
 
   private int updateDamage(Ship ship, Ship targetShip, int transferAmount) {
-    int damageFrom = getModifiedDamage100(ship);
-    int damageTo = getModifiedDamage100(targetShip);
-    int amountTo = targetShip.getModifiedAmount();
-    // round damage up
-    return 10000 - (int) (10000 -
-        (damageTo * amountTo + damageFrom * transferAmount) / (double) (transferAmount + amountTo));
+    if (ship.getAmount() == 0)
+      return 0;
+    int damageFrom = getModifiedDamage(ship);
+    return damageFrom * transferAmount / ship.getAmount();
   }
 
-  private int getModifiedDamage100(Ship ship) {
-    int damage = ship.getDamageRatio() * 100;
+  private int getModifiedDamage(Ship ship) {
+    int damage = ship.getCapacity();
+    if (damage == -1) {
+      damage = ship.getDamageRatio() * ship.getShipType().getCapacity() * ship.getAmount();
+    }
+    damage = ship.getShipType().getCapacity() * 100 * ship.getAmount() - damage;
+
     for (ShipTransferRelation tr : ship.getRelations(ShipTransferRelation.class)) {
-      if (!ship.equals(tr.ship)) {
-        damage = tr.getDamage();
+      if (ship.equals(tr.ship)) {
+        damage -= tr.getDamage();
+      }
+      if (ship.equals(tr.targetShip)) {
+        damage += tr.getDamage();
       }
     }
     return damage;

@@ -288,7 +288,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     unit.clearOrders();
     unit.addOrder("GIB 0 2 SCHIFF");
     Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
-    ship.setDamageRatio(3);
+    damage(ship, 3);
     changeAmount(ship, 3);
 
     builder.addTo(unit, ship);
@@ -611,7 +611,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
   public void testGiveAllOcean() {
     Region ocean = builder.addRegion(data, "1 0", null, "Ozean", 1);
     Ship ship = builder.addShip(data, ocean, "ship", "Trireme", "Trireme", 200);
-    ship.setAmount(2);
+    changeAmount(ship, 2);
 
     unit.setRegion(ocean);
     builder.addTo(unit, ship);
@@ -702,12 +702,12 @@ public class GiveOrderTest extends MagellanTestWithResources {
 
     Ship ship = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
     Ship ship2 = builder.addShip(data, region0, "conv", "Trireme", "Konvoi", 200);
-    ship.setDamageRatio(20);
-    ship2.setAmount(2);
+    damage(ship, 20);
+    changeAmount(ship2, 2);
     Ship ship3 = builder.addShip(data, region0, "sing", "Trireme", "Trireme", 200);
     Ship ship4 = builder.addShip(data, region0, "conv", "Trireme", "Konvoi", 200);
-    ship4.setAmount(2);
-    ship4.setDamageRatio(20);
+    changeAmount(ship4, 2);
+    damage(ship4, 20);
 
     // transfer ship from fleet to fleet
     builder.addTo(unit, ship);
@@ -721,17 +721,22 @@ public class GiveOrderTest extends MagellanTestWithResources {
     process(region0);
 
     assertEquals(3, ship2.getModifiedAmount());
-    assertEquals(400, ship2.getModifiedSize());
+    assertEquals(600, ship2.getModifiedSize());
     assertEquals(560000.0, ship2.getModifiedMaxCapacity(), 200);
-    assertTrue(560000 >= ship2.getModifiedMaxCapacity());
+    assertEquals(560000, ship2.getModifiedMaxCapacity());
     // assertEquals(6.67, ship2.getDamageRatio());
 
     assertEquals(3, ship4.getModifiedAmount());
-    assertEquals(400, ship4.getModifiedSize());
+    assertEquals(600, ship4.getModifiedSize());
     assertEquals(520000.0, ship4.getModifiedMaxCapacity(), 400);
-    assertTrue(520000 >= ship4.getModifiedMaxCapacity());
+    assertEquals(520000, ship4.getModifiedMaxCapacity());
     // assertEquals(13.33, ship4.getDamageRatio());
 
+  }
+
+  private void damage(Ship ship, int percent) {
+    ship.setDamageRatio(percent);
+    ship.setCapacity((int) (ship.getCapacity() * (1.0 - percent / 100.0)));
   }
 
   private void process(Region region) {
@@ -740,7 +745,8 @@ public class GiveOrderTest extends MagellanTestWithResources {
   }
 
   private void changeAmount(Ship ship, int amount) {
-    ship.setAmount(amount);
+    ship.setCapacity(amount * ship.getCapacity() / ship.getAmount());
     ship.setSize(amount * ship.getShipType().getMaxSize());
+    ship.setAmount(amount);
   }
 }

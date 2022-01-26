@@ -169,18 +169,24 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    *         in silver
    */
   public int getModifiedMaxCapacity() {
-    return getMaxCapacity(getShipType().getCapacity() * 100 * getModifiedAmount(), getModifiedDamageRatio100());
+    return getShipType().getCapacity() * 100 * getModifiedAmount() - getModifiedDamage();
   }
 
-  private int getModifiedDamageRatio100() {
-    int dr = damageRatio * 100;
+  private int getModifiedDamage() {
+    int damage = getCapacity();
+    if (damage == -1) {
+      damage = getDamageRatio() * getShipType().getCapacity() * getAmount();
+    }
+    damage = getShipType().getCapacity() * 100 * getAmount() - damage;
     for (ShipTransferRelation tr : getShipTransferRelations()) {
-      if (!equals(tr.ship)) {
-        dr = tr.getDamage();
+      if (equals(tr.ship)) {
+        damage -= tr.getDamage();
+      }
+      if (equals(tr.targetShip)) {
+        damage += tr.getDamage();
       }
     }
-
-    return Math.max(0, Math.min(10000, dr));
+    return damage;
   }
 
   /**

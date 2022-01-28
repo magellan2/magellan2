@@ -35,6 +35,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
 import magellan.library.Region;
+import magellan.library.Region.Visibility;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.MagellanFactory;
@@ -303,5 +304,56 @@ public class GameDataMergerTest extends MagellanTestWithResources {
     assertTrue(merged.getUnit(u3.getID()) != null);
     assertEquals(1, merged.getOldUnits().size());
     assertEquals(merged.getOldUnits().iterator().next().getID(), u1.getID());
+  }
+
+  @Test
+  public void mergeVisibilitySameRound() throws Exception {
+    builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(2, true);
+    Region r = builder.addRegion(gd1, "1, 0", "Unit", "Ebene", 2);
+    r.setVisibility(Visibility.UNIT);
+    builder.addUnit(gd1, "Viewer", r);
+    r = builder.addRegion(gd1, "2, 0", "Neighbor", "Ebene", 2);
+    r.setVisibility(Visibility.NEIGHBOR);
+    r = builder.addRegion(gd1, "3, 0", "Travel", "Ebene", 3);
+    r.setVisibility(Visibility.TRAVEL);
+    r = builder.addRegion(gd1, "3, 0", "Lighthouse", "Ebene", 3);
+    r.setVisibility(Visibility.LIGHTHOUSE);
+    r = builder.addRegion(gd1, "4, 0", "None", "Ebene", 4);
+    r.setVisibility(Visibility.NULL);
+    GameData gd2 = builder.createSimpleGameData(2, false);
+    GameData merged = GameDataMerger.merge(gd1, gd2);
+
+    for (Region r2 : merged.getRegions()) {
+      if (r2.getCoordX() != 0) {
+        r = gd1.getRegion(r2.getCoordinate());
+        assertEquals(r2.getName() + " visibility", r.getVisibility(), r2.getVisibility());
+      }
+    }
+  }
+
+  @Test
+  public void mergeVisibility() throws Exception {
+    builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(2, true);
+    Region r = builder.addRegion(gd1, "1, 0", "Unit", "Ebene", 2);
+    r.setVisibility(Visibility.UNIT);
+    builder.addUnit(gd1, "Viewer", r);
+    r = builder.addRegion(gd1, "2, 0", "Neighbor", "Ebene", 2);
+    r.setVisibility(Visibility.NEIGHBOR);
+    r = builder.addRegion(gd1, "3, 0", "Travel", "Ebene", 3);
+    r.setVisibility(Visibility.TRAVEL);
+    r = builder.addRegion(gd1, "3, 0", "Lighthouse", "Ebene", 3);
+    r.setVisibility(Visibility.LIGHTHOUSE);
+    r = builder.addRegion(gd1, "4, 0", "None", "Ebene", 4);
+    r.setVisibility(Visibility.NULL);
+    GameData gd2 = builder.createSimpleGameData(3, false);
+    GameData merged = GameDataMerger.merge(gd1, gd2);
+
+    for (Region r2 : merged.getRegions()) {
+      if (r2.getCoordX() != 0) {
+        assertEquals(r2.getName() + " too visible", Visibility.NULL, r2.getVisibility());
+      }
+    }
   }
 }

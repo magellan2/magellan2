@@ -708,36 +708,40 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     addRegionUnits(" ", false);
     addRegionShipCommanders(" ");
     addRegionBuildingOwners(" ");
+    addCompletion(new Completion("0", Completion.DEFAULT_PRIORITY + 1));
   }
 
   /** Add completions for command GibUID. */
-  public void cmpltGibUID(boolean omitTemp) {
+  public void cmpltGibUID(OrderToken token) {
+    boolean omitTemp = token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP));
+    boolean isZero = token.getText().equals("0");
     if (omitTemp) {
       addRegionUnits(" ", omitTemp);
       return;
     }
 
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_ALL), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT)));
 
-    /*
-     * if (unit.getBuilding() != null && unit.equals(unit.getBuilding().getOwnerUnit()) ||
-     * unit.getShip() != null && unit.equals(unit.getShip().getOwnerUnit())) {
-     */
-    // if we do not move into or stay in a ship or building we can't give control to another unit
-    if (unit.getShip() != null || unit.getModifiedShip() != null || unit.getBuilding() != null
-        || unit
-            .getModifiedBuilding() != null) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CONTROL)));
+    if (!isZero) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_UNIT)));
+
+      // if we do not move into or stay in a ship or building we can't give control to another unit
+      if (unit.getShip() != null || unit.getModifiedShip() != null || unit.getBuilding() != null
+          || unit
+              .getModifiedBuilding() != null) {
+        completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_CONTROL)));
+      }
     }
 
-    // }
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_HERBS)));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_EACH) + " "
-        + getTranslation("gamebinding.eressea.eresseaordercompleter.amount"),
-        getOrderTranslation(EresseaConstants.OC_EACH), " "));
-    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_EACH) + " 1",
-        getOrderTranslation(EresseaConstants.OC_EACH) + " 1", " "));
+
+    if (!isZero) {
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_EACH) + " "
+          + getTranslation("gamebinding.eressea.eresseaordercompleter.amount"),
+          getOrderTranslation(EresseaConstants.OC_EACH), " "));
+      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_EACH) + " 1",
+          getOrderTranslation(EresseaConstants.OC_EACH) + " 1", " "));
+    }
     completions.add(new Completion(
         getTranslation("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }

@@ -1454,8 +1454,7 @@ public class EresseaOrderParser extends AbstractOrderParser {
       }
 
       if (shallComplete(token, t)) {
-        getCompleter().cmpltGibUID(
-            token.getText().equalsIgnoreCase(getOrderTranslation(EresseaConstants.OC_TEMP)));
+        getCompleter().cmpltGibUID(token);
       }
       return retVal;
     }

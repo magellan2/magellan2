@@ -33,6 +33,7 @@ import magellan.library.GameData;
 import magellan.library.Order;
 import magellan.library.Orders;
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.UnitRelation;
@@ -131,7 +132,6 @@ public class OrderSyntaxInspector extends AbstractInspector {
    */
   @Override
   public List<Problem> findProblems(Unit unit) {
-
     Orders orders = unit.getOrders2();
     List<Problem> errors = new ArrayList<Problem>();
 
@@ -140,6 +140,8 @@ public class OrderSyntaxInspector extends AbstractInspector {
     // so I change that from error to warning
 
     // OrderParser parser = getParser();
+    StringID[] dangerTokens = new StringID[] { EresseaConstants.OC_QUIT, EresseaConstants.OC_NEXT,
+        EresseaConstants.OC_FACTION, EresseaConstants.OC_ERESSEA, EresseaConstants.OC_RESTART };
 
     int line = 0;
     boolean longOrder = false;
@@ -159,6 +161,15 @@ public class OrderSyntaxInspector extends AbstractInspector {
         errors.add(ProblemFactory.createProblem(Severity.WARNING,
             OrderSyntaxProblemTypes.PARSE_WARNING.getType(), unit, this, getWarningMessage(
                 OrderSyntaxProblemTypes.PARSE_WARNING, order), line));
+      }
+
+      for (StringID danger : dangerTokens) {
+        if (orders.isToken(order, 0, danger)) {
+          String dangerS = getGameSpecificStuff().getOrderChanger().getOrderO(unit.getLocale(), danger).getText();
+          errors.add(ProblemFactory.createProblem(Severity.WARNING, OrderSemanticsProblemTypes.SEMANTIC_WARNING.type,
+              unit, this, Resources.get("tasks.ordersyntaxinspector.dangerous", dangerS), line));
+          break;
+        }
       }
 
       longOrder |= order.isLong() && !orders.isToken(order, 0, EresseaConstants.OC_ATTACK);

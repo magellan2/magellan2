@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
@@ -3048,11 +3049,18 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCommandCollector() {
-    int[] dates = new int[] { 100, 101, 200, 201 };
+    int[] dates = new int[] { 100, 101, 193, 194, 195, 220, 221 };
     String[] amounts = new String[] { null, "wenige", "viele" };
-    int[] seasons = new int[] { Date.SUMMER, Date.SUMMER, Date.WINTER, Date.WINTER };
-    String[][] matrix = { { "FORSCHE", "FORSCHE", "FORSCHE" }, { "FORSCHE", "FORSCHE", "MACHE" },
-        { "FORSCHE", "FORSCHE", "FORSCHE" }, { "FORSCHE", "FORSCHE", "FORSCHE" } };
+    int[] seasons = new int[] { Date.SUMMER, Date.SUMMER,
+        Date.WINTER, Date.WINTER, Date.WINTER, Date.WINTER, Date.WINTER };
+    String[][] matrix = {
+        { "FORSCHE", "FORSCHE", "FORSCHE" }, // % 50
+        { "FORSCHE", "FORSCHE", "MACHE" }, // -
+        { "FORSCHE", "FORSCHE", "MACHE" }, // start winter
+        { "FORSCHE", "FORSCHE", "FORSCHE" }, // winter % 2
+        { "FORSCHE", "FORSCHE", "MACHE" }, // winter % 2 = 1
+        { "FORSCHE", "FORSCHE", "MACHE" }, // start winter
+        { "FORSCHE", "FORSCHE", "MACHE" } }; // start winter + 1
 
     for (int d = 0; d < dates.length; ++d) {
       int date = dates[d];
@@ -3065,7 +3073,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
         assertEquals(amount, unit.getRegion().getHerbAmount());
 
         unit.clearOrders();
-        unit.addOrder("// $cript Sammler 5");
+        unit.addOrder("// $cript Sammler 50");
         parser.execute(unit.getFaction());
         assertOrder("Date, season, amount = " + date + ", " + seasons[d] + ", " + amount, matrix[d][a] + " KRÄUTER",
             unit, 2);
@@ -3463,6 +3471,54 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("LERNE Wahrnehmung", unit, 3);
     assertTrue(unit.isOrdersConfirmed());
 
+  }
+
+  @Test
+  public final void testGG() {
+    int N = 1000;
+    Random rng = new Random();
+    for (double pC = .5; pC < .9; pC += .1) {
+      for (double pJ = pC; pJ < 1; pJ += .05) {
+        int[] scoreC = new int[] { 0, 0, 0 };
+        int[] scoreJ = new int[] { 0, 0, 0 };
+        for (int i = 0; i < N; ++i) {
+          int q[] = new int[] { 4, 5, 6 };
+          int d[] = new int[] { 4, 3, 2 };
+          int done = q.length;
+          while (done > 0) {
+            boolean aC = rng.nextDouble() <= pC, aJ = rng.nextDouble() <= pJ;
+            for (int v = 0; v < q.length; ++v) {
+              if (d[v] > 0 && q[v] > 0) {
+                if (aC) {
+                  q[v]--;
+                  d[v]++;
+                }
+                if (aJ) {
+                  d[v]--;
+                }
+                if (d[v] == 0 || q[v] == 0) {
+                  done--;
+                }
+              }
+            }
+          }
+          for (int v = 0; v < q.length; ++v) {
+            if (q[v] == 0) {
+              ++scoreC[v];
+            }
+            if (d[v] == 0) {
+              ++scoreJ[v];
+            }
+          }
+
+        }
+        System.out.print(String.format("%.3f\t%.3f", pC, pJ));
+        for (int v = 0; v < scoreC.length; ++v) {
+          System.out.print(String.format("\t%.3f\t%.3f", (double) scoreC[v] / N, (double) scoreJ[v] / N));
+        }
+        System.out.println();
+      }
+    }
   }
 
 }

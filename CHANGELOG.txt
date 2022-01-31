@@ -1,3 +1,6 @@
+2022-01-25 / Build 758 - stm (stm2@users.sourceforge.net)
+    * use more precise capacity instead of damage value for ship capacity calculations
+
 2022-01-12 / Build 756 - stm (stm2@users.sourceforge.net)
     * enabled region selection with space, fixed map context menu for Mac
     * made JECheck more tolerant

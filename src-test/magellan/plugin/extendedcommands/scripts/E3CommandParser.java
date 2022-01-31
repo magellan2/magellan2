@@ -2707,11 +2707,12 @@ class E3CommandParser {
     removeOrdersLike(getResearchOrder() + ".*", true);
     Date dateBefore = world.getDate().clone();
     dateBefore.setDate(world.getDate().getDate() - 1);
-    if (modulo != Integer.MAX_VALUE
-        && (world.getDate().getDate() % modulo == 0 || currentRegion.getHerbAmount() == null
-            || (dateBefore.getSeason() == Date.WINTER && world.getDate().getSeason() == Date.WINTER)
-            || (!currentRegion.getHerbAmount().equals("viele")
-                && !currentRegion.getHerbAmount().equals("sehr viele")))) {
+    if ((dateBefore.getSeason() == Date.WINTER && world.getDate().getSeason() == Date.WINTER)) {
+      modulo = 2;
+    }
+    if ((modulo != Integer.MAX_VALUE && world.getDate().getDate() % modulo == 0)
+        || currentRegion.getHerbAmount() == null
+        || (!currentRegion.getHerbAmount().equals("viele") && !currentRegion.getHerbAmount().equals("sehr viele"))) {
       addNewOrder(getResearchOrder(), true);
     } else {
       addNewOrder(MAKEOrder + " " + getLocalizedOrder(EresseaConstants.OC_HERBS, "KRÄUTER"), true);

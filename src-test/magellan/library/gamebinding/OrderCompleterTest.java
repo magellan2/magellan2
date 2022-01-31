@@ -78,6 +78,10 @@ public class OrderCompleterTest extends MagellanTestWithResources {
     completer = new EresseaOrderCompleter(data, completion);
     parser = new EresseaOrderParser(data, completer);
     completer.setParser(getParser());
+    getParser().setCompleter(completer);
+
+    completer.unit = unit;
+    completer.region = unit.getRegion();
   }
 
   /**
@@ -114,6 +118,52 @@ public class OrderCompleterTest extends MagellanTestWithResources {
   @Test
   public void testUnterhalteReader() {
 
+  }
+
+  @Test
+  public void testPasswortCompleter() {
+    checkCompletions("PASSWORT ", "\"<Passwort>", "\"");
+    checkCompletions("PASSWORT \"",
+        "\"<Passwort>", "\"",
+        "\"", "\"");
+    checkCompletions("PASSWORT \"a",
+        "\"<Passwort>\"", "\"\"",
+        "\"a\"", "\"a\"");
+    checkCompletions("PASSWORT \"a\"",
+        "\"<Passwort>\"", "\"\"",
+        "\"a\"", "\"a\"");
+    checkCompletions("PASSWORT \"a\" ");
+  }
+
+  @Test
+  public void testStirbCompleter() {
+    checkCompletions("STIRB ", "\"<Passwort>", "\"");
+    checkCompletions("STIRB \"", "\"<Passwort>", "\"", "\"", "\"");
+    checkCompletions("STIRB \"a", "\"<Passwort>\"", "\"\"", "\"a\"", "\"a\"");
+    checkCompletions("STIRB \"a\"",
+        "\"<Passwort>\"", "\"\"",
+        "\"a\"", "\"a\"",
+        "PARTEI", "PARTEI");
+    checkCompletions("STIRB \"a\" ", "PARTEI");
+    checkCompletions("STIRB \"a\" PARTEI ",
+        "Faction_867718 (iLja)", "iLja; Faction_867718",
+        "iLja (Faction_867718)", "iLja; Faction_867718");
+    checkCompletions("STIRB \"a\" PARTEI x ");
+  }
+
+  private List<Completion> checkCompletions(String string, String... expected) {
+    if (expected.length == 1) {
+      expected = new String[] { expected[0], expected[0] };
+    }
+    getParser().parse(string, getLocale());
+    List<Completion> completions = completer.getCompletions();
+    assertTrue(expected.length % 2 == 0);
+    for (int i = 0; i < Math.min(completions.size(), expected.length / 2); ++i) {
+      assertEquals("name " + i, expected[2 * i], completions.get(i).getName());
+      assertEquals("value " + i, expected[2 * i + 1], completions.get(i).getValue());
+    }
+    assertEquals(expected.length / 2, completions.size());
+    return completions;
   }
 
   public EresseaOrderParser getParser() {

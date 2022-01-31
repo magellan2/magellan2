@@ -31,6 +31,7 @@ import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -107,12 +108,12 @@ public class EresseaOrderParser extends AbstractOrderParser {
     addCheckedCommand(EresseaConstants.OC_MOVE, new NachReader(this));
     // normalerweise nicht erlaubt...
     addCheckedCommand(EresseaConstants.OC_NEXT, new InvalidReader(this));
-    addCheckedCommand(EresseaConstants.OC_RESTART, new NeustartReader(this));
+    addCheckedCommand(EresseaConstants.OC_RESTART, new InvalidReader(this));
 
     addCheckedCommand(EresseaConstants.OC_NUMBER, new NummerReader(this));
 
     addCheckedCommand(EresseaConstants.OC_OPTION, new OptionReader(this));
-    addCheckedCommand(EresseaConstants.OC_FACTION, new ParteiReader(this));
+    addCheckedCommand(EresseaConstants.OC_FACTION, new InvalidReader(this));
     addCheckedCommand(EresseaConstants.OC_PASSWORD, new PasswortReader(this));
 
     addCheckedCommand(EresseaConstants.OC_PLANT, new PflanzeReader(this));
@@ -2442,9 +2443,10 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
           @Override
           protected boolean checkNext() {
-            if (isString(nextToken))
+            if (valid && isString(nextToken))
               // password
-              return readDescription(nextToken, false) != null;
+              return readDescription(Resources.get("gamebinding.eressea.eresseaordercompleter.password"),
+                  nextToken, false, true) != null;
             else {
               unexpected(nextToken);
               return false;
@@ -2676,12 +2678,14 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isFinal(t)) {
+      retVal = readDescription(Resources.get("gamebinding.eressea.eresseaordercompleter.password"), t, false,
+          false) != null;
+
+      if (!retVal) {
         // PASSWORT without parameters is allowed
         retVal = checkFinal(t);
-      } else if (isString(t)) {
-        retVal = readDescription(t, false) != null;
-      } else {
+      }
+      if (!retVal) {
         unexpected(t);
       }
 
@@ -3179,19 +3183,43 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
-        // password
-        retVal = new StringChecker(true, true, true, false) {
-          @Override
-          protected void complete() {
-            getCompleter().cmpltStirb();
-          }
-        }.read(t);
-      } else {
+      retVal = readDescription(Resources.get("gamebinding.eressea.eresseaordercompleter.password"), t, false,
+          false) != null;
+
+      if (!retVal) {
         unexpected(t);
-        if (shallComplete(token, t)) {
-          getCompleter().cmpltStirb();
+      } else {
+        t = getLastToken();
+        retVal = readPassword(t);
+      }
+
+      return retVal;
+    }
+
+    protected boolean readPassword(OrderToken nextToken) {
+      boolean retVal = false;
+
+      if (isFinal(nextToken)) {
+        retVal = true;
+      }
+
+      if (nextToken.equalsToken(getOrderTranslation(EresseaConstants.OC_FACTION))) {
+        OrderToken t = getNextToken();
+
+        if (isID(t.getText()) == true) {
+          retVal = readFinalID(t, false);
+        } else {
+          unexpected(t);
         }
+
+        if (shallComplete(nextToken, t)) {
+          getCompleter().addFactions("");
+        }
+        return retVal;
+      }
+
+      if (getCompleter() != null && !nextToken.followedBySpace()) {
+        getCompleter().cmpltStirbPw();
       }
 
       return retVal;

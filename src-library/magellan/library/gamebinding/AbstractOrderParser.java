@@ -37,7 +37,6 @@ import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
-import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.OrderType;
@@ -681,6 +680,7 @@ public abstract class AbstractOrderParser implements OrderParser {
     protected OrderToken closingToken;
     protected OrderToken nextToken;
     private boolean preferQuotes;
+    private boolean allowNotLast;
 
     /**
      * Creates a StringChecker with default behaviour.
@@ -800,10 +800,12 @@ public abstract class AbstractOrderParser implements OrderParser {
      */
     protected void complete() {
       if (valid || openingToken == null && content.length() == 0) {
-        getCompleter().addCompletion(
-            new Completion(content, "", Completion.DEFAULT_PRIORITY + 2, allowEmpty
-                && content.length() == 0 && openingToken == null ? 1 : 0));
+        addStringClosing("");
       }
+    }
+
+    protected void addStringClosing(String postfix) {
+      getCompleter().addStringClosing(content, postfix, allowEmpty, openingToken);
     }
 
     /**
@@ -818,7 +820,11 @@ public abstract class AbstractOrderParser implements OrderParser {
       if (!allowQuotes) {
         retVal &= openingToken == null && closingToken == null;
       }
-      return retVal && checkFinal(nextToken);
+      return retVal && (allowNotLast || checkFinal(nextToken));
+    }
+
+    protected void allowNotLast() {
+      allowNotLast = true;
     }
 
   }
@@ -876,17 +882,30 @@ public abstract class AbstractOrderParser implements OrderParser {
    * @return The string (without quotes) if a valid description was found, otherwise <code>null</code>
    */
   protected String readDescription(OrderToken t, boolean allowEmpty) {
+    return readDescription(null, t, allowEmpty, true);
+  }
+
+  protected String readDescription(String template, OrderToken t, boolean allowEmpty, boolean isFinal) {
     if (isString(t)) {
-      StringChecker checker = new StringChecker(true, true, true, allowEmpty);
+      StringChecker checker = new StringChecker(true, true, true, allowEmpty) {
+        @Override
+        protected void complete() {
+          getCompleter().cmpltDescription(template);
+          if (openingToken != null) {
+            addStringClosing(" ");
+          }
+        }
+      };
+      if (!isFinal) {
+        checker.allowNotLast();
+      }
+
       if (checker.read(t))
         return checker.content;
       else
         return null;
     } else {
       unexpected(t);
-      if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltDescription();
-      }
     }
 
     return null;

@@ -304,7 +304,7 @@ ORDER "SPY"
 "SPY";locale_en
 
 ORDER "QUIT"
-"STIRB Password";syntax
+"STIRB Password [PARTEI f1]";syntax
 "STIRB";locale_de
 "QUIT";locale_en
 

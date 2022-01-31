@@ -38,7 +38,6 @@ import org.junit.Test;
 import magellan.client.completion.AutoCompletion;
 import magellan.library.Faction;
 import magellan.library.Region;
-import magellan.library.completion.Completer;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.AbstractOrderParser.TokenBucket;
 import magellan.library.utils.OrderToken;
@@ -98,7 +97,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   @Test
   public void testEresseaOrderParserGameDataEresseaOrderCompleter() {
     EresseaOrderParser localParser =
-        new EresseaOrderParser(data, (EresseaOrderCompleter) getCompleter());
+        new EresseaOrderParser(data, getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
     assertSame(63, localParser.getCommands().size());
@@ -811,16 +810,26 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("NACH e", false);
   }
 
+  /**
+   * Test method for NÄCHSTER.
+   */
+  @Test
+  public void testNaechsterReader() {
+    checkOrder(getOrderTranslation(EresseaConstants.OC_NEXT), false);
+  }
+
   // new FinalKeywordReader());
   /**
    * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.NeustartReader}.
    */
   @Test
   public void testNeustartReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.OC_RESTART) + " Trolle \"passwort\"");
-    checkOrder("NEUSTART Zwerge \"\"", false);
-    checkOrder("NEUSTART Zwerge", false);
-    checkOrder("NEUSTART", false);
+    checkOrder(getOrderTranslation(EresseaConstants.OC_RESTART), false);
+    // command disabled
+    // checkOrder(getOrderTranslation(EresseaConstants.OC_RESTART) + " Trolle \"passwort\"");
+    // checkOrder("NEUSTART Zwerge \"\"", false);
+    // checkOrder("NEUSTART Zwerge", false);
+    // checkOrder("NEUSTART", false);
   }
 
   /**
@@ -855,6 +864,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    */
   @Test
   public void testParteiReader() {
+    checkOrder(getOrderTranslation(EresseaConstants.OC_FACTION) + " x \"pw\"", false);
     checkOrder(getOrderTranslation(EresseaConstants.OC_FACTION), false); // TODO???
   }
 
@@ -1035,6 +1045,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   @Test
   public void testStirbReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_QUIT) + " \"abc\"");
+    checkOrder("STIRB \"123\" PARTEI y");
+    checkOrder("STIRB \"123\" PARTEI", false);
+    checkOrder("STIRB PARTEI x", false);
     checkOrder("STIRB", false);
     checkOrder("STIRB 123", false);
   }
@@ -1374,7 +1387,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    * @return Returns parser.
    */
   @Override
-  protected AbstractOrderParser getParser() {
+  protected EresseaOrderParser getParser() {
     return parser;
   }
 
@@ -1394,7 +1407,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    * @return Returns completer.
    */
   @Override
-  protected Completer getCompleter() {
+  protected EresseaOrderCompleter getCompleter() {
     return completer;
   }
 

@@ -1667,6 +1667,11 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     }
   }
 
+  /** Add completions for command Stirb. */
+  public void cmpltStirbPw() {
+    completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_PARAMETER_FACTION), " "));
+  }
+
   /** Add completions for command Tarne. */
   public void cmpltTarne(boolean quoted) {
     if (!quoted) {

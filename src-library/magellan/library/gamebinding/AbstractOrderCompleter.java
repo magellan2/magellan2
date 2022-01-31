@@ -1045,9 +1045,13 @@ public abstract class AbstractOrderCompleter implements Completer {
     completions.addAll(completerSettingsProvider.getSelfDefinedCompletions());
   }
 
+  public void cmpltDescription(String hint) {
+    completions.add(new Completion(hint != null ? (oneQuote + hint + oneQuote) : twoQuotes, twoQuotes, ""));
+  }
+
   /** Add completions for command Description. */
   public void cmpltDescription() {
-    completions.add(new Completion(twoQuotes, twoQuotes, " ", Completion.DEFAULT_PRIORITY, 2));
+    cmpltDescription(null);
   }
 
   /**
@@ -1174,6 +1178,13 @@ public abstract class AbstractOrderCompleter implements Completer {
     }
 
     return result.toString();
+  }
+
+  public void addStringClosing(String content, String postfix, boolean allowEmpty, OrderToken openingToken) {
+    addCompletion(
+        new Completion(content, postfix, Completion.DEFAULT_PRIORITY + 2, allowEmpty
+            && content.length() == 0 && openingToken == null ? 1 : 0));
+
   }
 
 }

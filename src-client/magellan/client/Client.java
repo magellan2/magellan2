@@ -10,18 +10,14 @@ package magellan.client;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.desktop.QuitEvent;
-import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitResponse;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +25,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
@@ -78,11 +73,6 @@ import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.FontUIResource;
-
-import org.simplericity.macify.eawt.Application;
-import org.simplericity.macify.eawt.ApplicationEvent;
-import org.simplericity.macify.eawt.ApplicationListener;
-import org.simplericity.macify.eawt.DefaultApplication;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
@@ -230,8 +220,7 @@ import magellan.library.utils.transformation.BoxTransformer.BBoxes;
  * @author $Author: $
  * @version $Revision: 388 $
  */
-public class Client extends JFrame implements ShortcutListener, PreferencesFactory,
-    ApplicationListener {
+public class Client extends JFrame implements ShortcutListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(Client.class);
 
   /** The name of the magellan settings file. */
@@ -322,10 +311,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** contains the list of all loadable plugins */
   protected Collection<MagellanPlugIn> plugIns = new ArrayList<MagellanPlugIn>();
 
-  /** Contains at startup the application icon of Magellan - most time only on a mac */
-  private BufferedImage appIcon = null;
-  /** Contains the macify application context of Magellan. */
-  private Application application = null;
+  private Macifier macifier;
 
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
@@ -1342,37 +1328,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               log.error("Could not check version.", e);
             }
 
-            if (Desktop.isDesktopSupported()) {
-              Desktop desktop = Desktop.getDesktop();
-
-              for (Desktop.Action a : Desktop.Action.values()) {
-                log.finer(a.toString() + ": " + desktop.isSupported(a));
-              }
-              if (desktop.isSupported(Desktop.Action.APP_SUDDEN_TERMINATION)) {
-                desktop.disableSuddenTermination();
-              }
-              if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
-                log.fine("Set quit handler");
-                desktop.setQuitHandler(new QuitHandler() {
-                  @Override
-                  public void handleQuitRequestWith(QuitEvent evt, QuitResponse res) {
-                    log.fine("Got quit request");
-                    c.quit(evt, res, true);
-                  }
-                });
-              }
-            }
-
-            c.application = new DefaultApplication();
-            c.application.addPreferencesMenuItem();
-            c.application.setEnabledPreferencesMenu(true);
-            c.application.addAboutMenuItem();
-            c.application.setEnabledAboutMenu(true);
-            c.application.addApplicationListener(c);
-
-            Client.log.info("Is Mac extension working: " + c.application.isMac());
-
-            // c.appIcon = c.application.getApplicationIconImage();
+            c.macify();
 
             File crFile = null;
 
@@ -1421,6 +1377,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             bailOut(t);
           }
         }
+
       });
     } catch (Throwable exc) { // any fatal error
       bailOut(exc);
@@ -1750,6 +1707,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     final int response;
     log.fine("Request to quit by " + (evt != null ? evt.getSource() : null) + " " + SwingUtilities
         .isEventDispatchThread());
+    log.fine(new RuntimeException("logging"));
     if (reportState != null && reportState.isStateChanged()) {
       response = askToSave();
     } else {
@@ -1788,6 +1746,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             ui.ready();
           }
         }
+        log.fine("Closing down...");
+        log.fine(new RuntimeException("logging"));
 
         for (MagellanPlugIn plugIn : getPlugIns()) {
           plugIn.quit(storeSettings);
@@ -1848,7 +1808,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     };
     try {
-      if (SwingUtilities.isEventDispatchThread()) {
+      if (res != null) {
+        runner.run();
+      } else if (SwingUtilities.isEventDispatchThread()) {
         SwingUtilities.invokeLater(runner);
       } else {
         SwingUtilities.invokeAndWait(runner);
@@ -3087,180 +3049,39 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
+  private void macify() {
+    macifier = new Macifier(this);
+    log.info("Is Mac extension working: " + macifier.isMac());
+
+    log.info(macifier.isDesktopSupported() ? "Desktop supported" : "Desktop not supported");
+  }
+
   /**
-   * Handles mac specific about menu action event
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handleAbout(org.simplericity.macify.eawt.ApplicationEvent)
+   * Display the preferences dialog.
+   * 
+   * @return if the dialog was shown.
    */
-  public void handleAbout(ApplicationEvent event) {
-    Client.log.info("app open about event");
-    event.setHandled(true);
+  public boolean showPreferences() {
+    optionAction.menuActionPerformed(null);
+    return true;
+  }
+
+  /**
+   * Display the InfoDialog.
+   * 
+   * @return true if the dialog was shown.
+   */
+  public boolean showInfoDialog() {
     new InfoDialog(Client.INSTANCE).setVisible(true);
-  }
-
-  /**
-   * Handles mac specific open application event (I think, we don't use it)
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handleOpenApplication(ApplicationEvent event) {
-    Client.log.info("app open event");
-  }
-
-  /**
-   * Handles mac specific file open operation (if someone opens a cr in the finder)
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handleOpenFile(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handleOpenFile(ApplicationEvent event) {
-    Client.log.info("app open file event");
-    // not implemented
-  }
-
-  /**
-   * Handles mac specific preferences menu action event
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handlePreferences(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handlePreferences(ApplicationEvent event) {
-    Client.log.info("app open prev event");
-    event.setHandled(true);
-    Client.INSTANCE.optionAction.menuActionPerformed(null);
-  }
-
-  /**
-   * Handles mac specific print event
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handlePrintFile(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handlePrintFile(ApplicationEvent event) {
-    Client.log.info("app print file event");
-  }
-
-  /**
-   * Handles mac specific quit menu event
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handleQuit(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handleQuit(ApplicationEvent event) {
-    Client.log.info("app quit event");
-    event.setHandled(true);
-    quit(true);
-  }
-
-  /**
-   * Handles a reopen event - what ever that means
-   *
-   * @see org.simplericity.macify.eawt.ApplicationListener#handleReOpenApplication(org.simplericity.macify.eawt.ApplicationEvent)
-   */
-  public void handleReOpenApplication(ApplicationEvent event) {
-    Client.log.info("app reopen event");
-  }
-
-  /**
-   * Replaces the application icon in a Mac application with the default mac icon of Magellan. This
-   * can be used, when the icon was changed (f.e. with the blue circle)
-   *
-   * @see #setAdditionalIconInfo(int)
-   */
-  public void setDefaultIconInfo() {
-    if (application == null)
-      return;
-    if (appIcon == null) {
-      appIcon = application.getApplicationIconImage();
-      if (appIcon == null)
-        return;
-    }
-    BufferedImage originalIcon = appIcon;
-
-    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
-        BufferedImage.TYPE_INT_ARGB);
-
-    Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
-    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    graphics.setColor(Color.decode("#0000E4"));
-
-    graphics.drawImage(originalIcon, 0, 0, null);
-
-    application.setApplicationIconImage(newIcon);
-  }
-
-  /**
-   * Adds a small hint to the icon (only available on mac os)
-   */
-  public void setAdditionalIconInfo(int data) {
-    if (application == null)
-      return;
-    if (appIcon == null) {
-      // appIcon = application.getApplicationIconImage();
-      if (appIcon == null)
-        return;
-    }
-    BufferedImage originalIcon = appIcon;
-
-    int width = originalIcon.getWidth() / 4;
-
-    BufferedImage newIcon = new BufferedImage(originalIcon.getWidth(), originalIcon.getHeight(),
-        BufferedImage.TYPE_INT_ARGB);
-
-    Graphics2D graphics = (Graphics2D) newIcon.getGraphics();
-
-    graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    graphics.setColor(Color.decode("#0000E4"));
-
-    graphics.drawImage(originalIcon, 0, 0, null);
-
-    graphics.fillOval(originalIcon.getWidth() - width, 0, width - 5, width - 5);
-
-    graphics.setColor(Color.WHITE);
-    graphics.setFont(new Font("Helvetica", Font.BOLD, (width / 4)));
-    graphics.drawString(Integer.toString(data), originalIcon.getWidth() - (width - (width / 4)),
-        width - (int) (width / 2.5));
-
-    graphics.dispose();
-
-    application.setApplicationIconImage(newIcon);
+    return true;
   }
 
   /**
    * This method updates the app icon based on not confirmed units
    */
   protected void updateAppIconCaption() {
-
-    GameData data = getData();
-    if (data == null)
-      return;
-
-    int units = 0;
-    int done = 0;
-
-    for (Unit u : data.getUnits()) {
-      if (TrustLevels.isPrivileged(u.getFaction())) {
-        units++;
-
-        if (u.isOrdersConfirmed()) {
-          done++;
-        }
-      }
-
-      // also count temp units
-      for (TempUnit tempUnit : u.tempUnits()) {
-        Unit u2 = tempUnit;
-
-        if (TrustLevels.isPrivileged(u2.getFaction())) {
-          units++;
-
-          if (u2.isOrdersConfirmed()) {
-            done++;
-          }
-        }
-      }
-    }
-
-    if (units > 0 && done < units) {
-      setAdditionalIconInfo(units - done);
-    } else {
-      setDefaultIconInfo();
+    if (macifier != null && macifier.isMac()) {
+      macifier.updateAppIconCaption(getData());
     }
   }
 

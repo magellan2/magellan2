@@ -81,6 +81,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private JCheckBox checkForNightlyUpdates;
   private JCheckBox loadlastreport;
   protected List<PreferencesAdapter> subAdapters;
+  private JComboBox<String> logLevel;
 
   /**
    * Creates a new ClientPreferences object.
@@ -135,15 +136,16 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     // check for updates
     c.gridx = 0;
     c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
+    c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
+    c.gridwidth = 2;
     checkForUpdates =
         new JCheckBox(Resources.get("clientpreferences.misc.checkforupdates.caption"),
             PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, true));
     checkForUpdates.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(checkForUpdates, c);
-    c.gridx = 1;
+    c.gridx = 2;
     c.gridy = line;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
@@ -164,12 +166,6 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     checkForNightlyUpdates.setHorizontalAlignment(SwingConstants.LEFT);
     checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
     panel.add(checkForNightlyUpdates, c);
-    c.gridx = 1;
-    c.gridy = line;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
     line++;
 
     checkForUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK);
@@ -187,12 +183,6 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
                 PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true));
     loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(loadlastreport, c);
-    c.gridx = 1;
-    c.gridy = line;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
     line++;
 
     // create void regions
@@ -206,12 +196,6 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
             PropertiesHelper.getBoolean(settings, "map.creating.void", false));
     createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(createVoidRegions, c);
-    c.gridx = 1;
-    c.gridy = line;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
     line++;
 
     // progress in titlebar
@@ -224,12 +208,23 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
         new JCheckBox(Resources.get("clientpreferences.progress.caption"), source.isShowingStatus());
     showProgress.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(showProgress, c);
-    c.gridx = 1;
+    line++;
+
+    // log level
+    c.gridx = 0;
     c.gridy = line;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    c.weightx = 0.0;
+    c.gridwidth = 1;
+    JLabel logLabel = new JLabel(Resources.get("clientpreferences.loglevel.caption"));
+    logLevel = new JComboBox<String>(new String[] { "Error", "Warn" });
+    logLevel.setEditable(false);
+    initLogLevel();
+
+    panel.add(logLabel, c);
+    ++c.gridx;
+    panel.add(logLevel, c);
     line++;
 
     return panel;
@@ -377,12 +372,20 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   /**
    * TODO: implement it
    * 
-   * @deprecated not implemented!
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   @Deprecated
   public void initPreferences() {
     // TODO: implement it
+    initLogLevel();
+  }
+
+  private void initLogLevel() {
+    logLevel.removeAllItems();
+    for (int l = Logger.OFF; l <= Logger.MAX_LEVEL; ++l) {
+      logLevel.addItem(Logger.getLevel(l));
+    }
+    logLevel.setSelectedItem(Logger.getLevel(Logger.getLevel()));
   }
 
   /**
@@ -451,6 +454,9 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
         .valueOf(loadlastreport.isSelected()));
 
     source.setShowStatus(showProgress.isSelected());
+
+    Logger.setLongLevel(logLevel.getSelectedItem().toString());
+    settings.setProperty("Client.logLevel", Logger.getShortLevel(Logger.getLevel()));
   }
 
   /**

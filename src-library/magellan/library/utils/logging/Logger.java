@@ -19,7 +19,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 //import org.apache.log4j.*;
@@ -30,8 +32,6 @@ import java.util.Set;
  * @author Ilja Pavkovic
  */
 public class Logger {
-  // private Category ivTraceLog;
-
   /** This log level entirely stops all logging */
   public static final int OFF = 0;
 
@@ -63,6 +63,26 @@ public class Logger {
   public static final int AWT = 9;
 
   public static final int MAX_LEVEL = 9;
+
+  public enum Level {
+    OFF("O"), FATAL("F"), ERROR("E"), WARN("W"), INFO("I"), FINE("N"), FINER("R"), FINEST("S"), DEBUG("D"), AWT("A");
+
+    String abbrev;
+
+    Level(String abbrev) {
+      this.abbrev = abbrev;
+    }
+  };
+
+  private static Map<String, Integer> longLevels, shortLevels;
+  {
+    longLevels = new HashMap<String, Integer>(MAX_LEVEL + 1);
+    shortLevels = new HashMap<String, Integer>(MAX_LEVEL + 1);
+    for (Level l : Level.values()) {
+      longLevels.put(l.name(), l.ordinal());
+      shortLevels.put(l.abbrev, l.ordinal());
+    }
+  }
 
   private static Logger DEFAULT = new Logger("");
   private static int verboseLevel = Logger.INFO;
@@ -118,50 +138,22 @@ public class Logger {
     Logger.verboseLevel = level;
   }
 
+  public static void setLongLevel(String longLevel) {
+    Integer l = longLevels.get(longLevel);
+    if (l != null) {
+      Logger.setLevel(l);
+    }
+  }
+
   /**
    * 
    */
-  public static void setLevel(String aLevel) {
-    String level = aLevel.toUpperCase();
+  public static void setLevel(String shortLevel) {
+    String level = shortLevel.toUpperCase();
 
-    if (level.startsWith("O")) {
-      Logger.setLevel(Logger.OFF);
-    }
-
-    if (level.startsWith("F")) {
-      Logger.setLevel(Logger.FATAL);
-    }
-
-    if (level.startsWith("E")) {
-      Logger.setLevel(Logger.ERROR);
-    }
-
-    if (level.startsWith("W")) {
-      Logger.setLevel(Logger.WARN);
-    }
-
-    if (level.startsWith("I")) {
-      Logger.setLevel(Logger.INFO);
-    }
-
-    if (level.startsWith("N")) {
-      Logger.setLevel(Logger.FINE);
-    }
-
-    if (level.startsWith("R")) {
-      Logger.setLevel(Logger.FINER);
-    }
-
-    if (level.startsWith("S")) {
-      Logger.setLevel(Logger.FINEST);
-    }
-
-    if (level.startsWith("D")) {
-      Logger.setLevel(Logger.DEBUG);
-    }
-
-    if (level.startsWith("A")) {
-      Logger.setLevel(Logger.AWT);
+    Integer l = shortLevels.get(level);
+    if (l != null) {
+      Logger.setLevel(l);
     }
   }
 
@@ -176,37 +168,25 @@ public class Logger {
    * @return The string representation of <code>level</code>
    */
   public static String getLevel(int level) {
+    return getEnumLevel(level).name();
+  }
+
+  /**
+   * @return The one-letter string representation of <code>level</code>
+   */
+  public static String getShortLevel(int level) {
+    return getEnumLevel(level).abbrev;
+  }
+
+  public static Level getEnumLevel(int level) {
     if (level <= Logger.OFF)
-      return "OFF";
+      return Level.OFF;
 
-    switch (level) {
-    case FATAL:
-      return "FATAL";
+    Level[] levels = Level.values();
+    if (level < levels.length)
+      return levels[level];
 
-    case ERROR:
-      return "ERROR";
-
-    case WARN:
-      return "WARN";
-
-    case INFO:
-      return "INFO";
-
-    case FINE:
-      return "FINE";
-
-    case FINER:
-      return "FINER";
-
-    case FINEST:
-      return "FINEST";
-
-    case DEBUG:
-      return "DEBUG";
-
-    default:
-      return "ALL";
-    }
+    return Level.AWT;
   }
 
   /**

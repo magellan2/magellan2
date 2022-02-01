@@ -1422,6 +1422,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // now redirect stderr through our log
     Log LOG = new Log(parameters.settingsDir);
 
+    if (parameters.logLevel == null) {
+      Properties settings = Client.loadSettings(parameters.settingsDir, Client.SETTINGS_FILENAME);
+      if (settings != null) {
+        String level = settings.getProperty("Client.logLevel");
+        if (level != null) {
+          Logger.setLevel(level);
+          Client.log.info("Client.main (settings): Set logging to " + level);
+        }
+      }
+    }
+
     // logging with level warning to get this information even if user selected low debug level...
     Logger.activateDefaultLogListener(true);
     Client.log.warn("Start writing error file with encoding " + LOG.getEncoding() + ", log level "
@@ -1478,6 +1489,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public boolean help = false;
     /** Whether to show the profile manager dialog */
     public boolean startPM = false;
+    /** manual log level */
+    public String logLevel;
   }
 
   /**
@@ -1511,6 +1524,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (level != null) {
           level = level.toUpperCase();
           Logger.setLevel(level);
+          result.logLevel = level;
           Client.log.info("Client.main: Set logging to " + level);
 
           if ("A".equals(level)) {
@@ -3208,5 +3222,4 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       taskPanel.addInspectorInterceptor(interceptor);
     }
   }
-
 }

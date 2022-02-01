@@ -1672,7 +1672,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     ignoredProblems = new HashSet<ProblemType>();
 
     String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
-    if (criteria == null) {
+    if (criteria != null) {
       Logger.getInstance(this.getClass()).warn("deprecated property "
           + PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
       settings.remove(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);

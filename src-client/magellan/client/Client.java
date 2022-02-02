@@ -16,9 +16,8 @@ import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.SecondaryLoop;
 import java.awt.Toolkit;
-import java.awt.desktop.QuitEvent;
-import java.awt.desktop.QuitResponse;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -160,6 +159,7 @@ import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
+import magellan.client.utils.Macifier;
 import magellan.client.utils.MagellanFinder;
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
@@ -1699,15 +1699,36 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    *          <code>true</code>.
    */
   public void quit(final boolean storeSettings) {
-    quit(null, null, storeSettings);
+    quit(new QuitListener() {
+
+      public void performQuit() {
+        log.fine("Exiting");
+        System.exit(0);
+      }
+
+      public void cancelQuit() {
+        // nop
+      }
+    }, storeSettings);
   }
 
-  protected void quit(QuitEvent evt, QuitResponse res, boolean storeSettings) {
+  /**
+   * Adapter to java.avt.QuitResponse
+   */
+  public interface QuitListener {
+    /** Signal that quitting should be aborted */
+    void cancelQuit();
+
+    /** Signal that quitting can be performed */
+    void performQuit();
+  }
+
+  public void quit(QuitListener ql, boolean storeSettings) {
     final ProgressBarUI ui = new ProgressBarUI(this);
     final int response;
-    log.fine("Request to quit by " + (evt != null ? evt.getSource() : null) + " " + SwingUtilities
-        .isEventDispatchThread());
-    log.fine(new RuntimeException("logging"));
+    log.fine(new RuntimeException("logging ..."));
+
+    // ask to save report
     if (reportState != null && reportState.isStateChanged()) {
       response = askToSave();
     } else {
@@ -1715,108 +1736,106 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     if (response == JOptionPane.CANCEL_OPTION) {
-      if (res != null) {
-        log.fine("Cancelling quit response");
-        res.cancelQuit();
-      }
+      log.fine("Cancelling quit response");
+      ql.cancelQuit();
       return;
     }
 
-    ui.show();
+    // we cannot return as this might cause termination bevor the saving thread has completed
+    SecondaryLoop eLoop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
+    final boolean savingDone[] = new boolean[] { false };
+
     Runnable runner = new Runnable() {
-
       public void run() {
-        if (response == JOptionPane.CANCEL_OPTION) {
-          ui.ready();
-          if (res != null) {
-            log.fine("Cancelling quit response");
-            res.cancelQuit();
-          }
-          return; // cancel or exception
-        } else if (response == JOptionPane.YES_OPTION) {
-          try {
-            if (!saveSynchronously()) {
-              if (res != null) {
-                log.fine("Cancelling quit response");
-                res.cancelQuit();
-              }
-              return;
-            }
-          } finally {
-            ui.ready();
-          }
-        }
-        log.fine("Closing down...");
-        log.fine(new RuntimeException("logging"));
-
-        for (MagellanPlugIn plugIn : getPlugIns()) {
-          plugIn.quit(storeSettings);
-        }
-
-        PropertiesHelper.saveRectangle(getProperties(), Client.this.getBounds(), "Client");
-        saveExtendedState();
-        setVisible(false);
-
-        if (panels != null) {
-          for (JPanel jPanel : panels) {
-            InternationalizedDataPanel p = (InternationalizedDataPanel) jPanel;
-            p.quit();
-          }
-        }
-
-        NameGenerator.quit();
-
-        if (fileHistory != null) {
-          fileHistory.storeFileHistory();
-        }
-
-        // store settings to file
-        if (storeSettings) {
-          // save the desktop
-          desktop.save();
-
-          try {
-            // if necessary, use settings file in local directory
-            File settingsFile = new File(Client.getSettingsDirectory(), Client.SETTINGS_FILENAME);
-
-            if (settingsFile.exists() && settingsFile.canWrite()) {
-              try {
-                File backup = FileBackup.create(settingsFile);
-                Client.log.info("Created backupfile " + backup);
-              } catch (IOException ie) {
-                Client.log.warn("Could not create backupfile for file " + settingsFile);
-              }
-            }
-
-            if (settingsFile.exists() && !settingsFile.canWrite())
-              throw new IOException("cannot write " + settingsFile);
-            else {
-              Client.log.info("Storing Magellan configuration to " + settingsFile);
-
-              getProperties().store(new FileOutputStream(settingsFile), "");
-            }
-          } catch (IOException ioe) {
-            Client.log.error(ioe);
-          }
-        }
-        if (res != null) {
-          log.fine("Telling requester to quit");
-          res.performQuit();
-        }
-        log.fine("Exiting");
-        System.exit(0);
+        doQuit(storeSettings, response, ui, ql);
+        eLoop.exit();
+        savingDone[0] = true;
       }
     };
     try {
-      if (res != null) {
-        runner.run();
-      } else if (SwingUtilities.isEventDispatchThread()) {
-        SwingUtilities.invokeLater(runner);
-      } else {
-        SwingUtilities.invokeAndWait(runner);
+      new Thread(runner).start();
+      // start secondary event loop to stay responsive
+      if (!eLoop.enter()) {
+        log.warn("Could not start secondary loop.");
+        // fallback: do not return until saving is complete
+        while (!savingDone[0]) {
+          Thread.sleep(100);
+        }
       }
+      log.fine("returning");
     } catch (Throwable t) {
       log.error(t);
+    }
+  }
+
+  protected void doQuit(boolean storeSettings, int response, ProgressBarUI ui, QuitListener ql) {
+    ui.show();
+    try {
+      log.fine("Closing down...");
+      log.fine(new RuntimeException("logging"));
+
+      if (response == JOptionPane.YES_OPTION) {
+        if (!saveSynchronously()) {
+          log.fine("Cancelling quit response");
+          ql.cancelQuit();
+          return;
+        }
+      }
+
+      for (MagellanPlugIn plugIn : getPlugIns()) {
+        plugIn.quit(storeSettings);
+      }
+
+      PropertiesHelper.saveRectangle(getProperties(), Client.this.getBounds(), "Client");
+      saveExtendedState();
+      setVisible(false);
+
+      if (panels != null) {
+        for (JPanel jPanel : panels) {
+          InternationalizedDataPanel p = (InternationalizedDataPanel) jPanel;
+          p.quit();
+        }
+      }
+
+      NameGenerator.quit();
+
+      if (fileHistory != null) {
+        fileHistory.storeFileHistory();
+      }
+
+      // store settings to file
+      if (storeSettings) {
+        // save the desktop
+        desktop.save();
+
+        try {
+          // if necessary, use settings file in local directory
+          File settingsFile = new File(Client.getSettingsDirectory(), Client.SETTINGS_FILENAME);
+
+          if (settingsFile.exists() && settingsFile.canWrite()) {
+            try {
+              File backup = FileBackup.create(settingsFile);
+              Client.log.info("Created backupfile " + backup);
+            } catch (IOException ie) {
+              Client.log.warn("Could not create backupfile for file " + settingsFile);
+            }
+          }
+
+          if (settingsFile.exists() && !settingsFile.canWrite())
+            throw new IOException("cannot write " + settingsFile);
+          else {
+            Client.log.info("Storing Magellan configuration to " + settingsFile);
+
+            getProperties().store(new FileOutputStream(settingsFile), "");
+          }
+        } catch (IOException ioe) {
+          Client.log.error(ioe);
+        }
+      }
+      log.fine("Telling requester to quit");
+      ql.performQuit();
+    } finally {
+      ui.ready();
     }
   }
 

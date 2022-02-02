@@ -2413,10 +2413,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * do occur.
    */
   private void updatedGameData() {
-    updateTitleCaption();
     updateConfirmMenu();
     updatePlugIns();
-    updateAppIconCaption();
+    updateTitleCaption();
 
     if (getData().getCurTempID() == -1) {
       String s = getProperties().getProperty("ClientPreferences.TempIDsInitialValue", "");
@@ -2885,13 +2884,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     public void orderConfirmationChanged(OrderConfirmEvent e) {
       if ((getData() != null) && isShowingStatus()) {
         updateTitleCaption();
-        updateAppIconCaption();
       }
 
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
-        updateAppIconCaption();
       }
     }
 
@@ -2904,7 +2901,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
-        updateAppIconCaption();
       }
     }
 
@@ -2917,7 +2913,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
         updateTitleCaption();
-        updateAppIconCaption();
       }
     }
 
@@ -2947,7 +2942,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         if (!stateChanged) {
           stateChanged = true;
           updateTitleCaption();
-          updateAppIconCaption();
         } else {
           stateChanged = true;
         }
@@ -3070,7 +3064,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private void macify() {
     macifier = new Macifier(this);
-    log.info("Is Mac extension working: " + macifier.isMac());
 
     log.info(macifier.isDesktopSupported() ? "Desktop supported" : "Desktop not supported");
   }
@@ -3093,15 +3086,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public boolean showInfoDialog() {
     new InfoDialog(Client.INSTANCE).setVisible(true);
     return true;
-  }
-
-  /**
-   * This method updates the app icon based on not confirmed units
-   */
-  protected void updateAppIconCaption() {
-    if (macifier != null && macifier.isMac()) {
-      macifier.updateAppIconCaption(getData());
-    }
   }
 
   /**

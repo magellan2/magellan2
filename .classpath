@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="lib/commons-codec-1.14.jar" sourcepath="libsrc/commons-codec-1.14-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/idw-gpl-1.6.1.jar" sourcepath="libsrc/idw-gpl-1.6.1-src.zip"/>
-	<classpathentry kind="lib" path="lib/macify-1.4.jar" sourcepath="libsrc/macify-1.4-sources.jar"/>
 	<classpathentry kind="lib" path="lib/javahelp-2.0.05.jar" sourcepath="libsrc/javahelp-2.0.05-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-2.11.0.jar" sourcepath="libsrc/jackson-core-2.11.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-databind-2.11.0.jar" sourcepath="libsrc/jackson-databind-2.11.0-sources.jar"/>

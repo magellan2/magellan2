@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -286,19 +287,12 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
 
   public void hyperlinkUpdate(HyperlinkEvent e) {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      URI uri;
       try {
-        // Loads the new page represented by link clicked
-        final URI uri = e.getURL().toURI();
-
-        // only in Java6 available, so we try to load it.
-        // otherwise, we do nothing...
-        final Class<?> c = Class.forName("java.awt.Desktop");
-        if (c != null) {
-          final Object desktop = c.getMethod("getDesktop").invoke(null);
-          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
-        }
-      } catch (final Exception exc) {
-        // we do nothing here...
+        uri = e.getURL().toURI();
+        Macifier.browse(uri);
+      } catch (URISyntaxException e1) {
+        log.error(e1);
       }
     }
   }

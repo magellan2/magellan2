@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1187,9 +1186,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         public void hyperlinkUpdate(HyperlinkEvent e) {
           if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
             try {
-              java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
-            } catch (IOException | URISyntaxException e1) {
-              log.warn(e1);
+              Macifier.browse(e.getURL().toURI());
+            } catch (Exception ex) {
+              log.warn(ex);
             }
           }
         }

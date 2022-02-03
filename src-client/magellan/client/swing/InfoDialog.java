@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -32,11 +33,13 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import magellan.client.Client;
+import magellan.client.Macifier;
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.Resources;
 import magellan.library.utils.VersionInfo;
+import magellan.library.utils.logging.Logger;
 
 /**
  *
@@ -125,19 +128,12 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
 
   public void hyperlinkUpdate(HyperlinkEvent e) {
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      URI uri;
       try {
-        // Loads the new page represented by link clicked
-        URI uri = e.getURL().toURI();
-
-        // only in Java6 available, so we try to load it.
-        // otherwise, we do nothing...
-        Class<?> c = Class.forName("java.awt.Desktop");
-        if (c != null) {
-          Object desktop = c.getMethod("getDesktop").invoke(null);
-          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
-        }
-      } catch (Exception exc) {
-        // we do nothing here...
+        uri = e.getURL().toURI();
+        Macifier.browse(uri);
+      } catch (URISyntaxException e1) {
+        Logger.getInstance(this.getClass()).error(e1);
       }
     }
 

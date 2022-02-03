@@ -24,6 +24,7 @@
 package magellan.plugin.extendedcommands;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +43,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import magellan.client.Client;
+import magellan.client.Macifier;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -157,13 +159,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         // Loads the new page represented by link clicked
         URI uri = help.getPage().toURI();
 
-        // only in Java6 available, so we try to load it.
-        // otherwise, we do nothing...
-        Class<?> c = Class.forName("java.awt.Desktop");
-        if (c != null) {
-          Object desktop = c.getMethod("getDesktop").invoke(null);
-          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
-        }
+        Macifier.browse(uri);
       } catch (Throwable exception) {
         log.error(exception);
       }
@@ -192,18 +188,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
   }
 
   public boolean isBrowserAvailable() {
-    try {
-      // only in Java6 available, so we try to load it.
-      // otherwise, we do nothing...
-      Class<?> c = Class.forName("java.awt.Desktop");
-      if (c != null) {
-        c.getMethod("getDesktop").invoke(null);
-      }
-      return true;
-    } catch (Throwable exception) {
-      log.error(exception);
-      return false;
-    }
+    return Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
   }
 
   /**

@@ -23,9 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -37,6 +35,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import magellan.client.Macifier;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -168,27 +167,9 @@ public class TextAreaDialog extends InternationalizedDialog implements Hyperlink
         // Loads the new page represented by link clicked
         URI uri = e.getURL().toURI();
 
-        // only in Java6 available, so we try to load it.
-        // otherwise, we do nothing...
-        Class<?> c = Class.forName("java.awt.Desktop");
-        if (c != null) {
-          Object desktop = c.getMethod("getDesktop").invoke(null);
-          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
-        }
-      } catch (IllegalArgumentException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (SecurityException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (IllegalAccessException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (InvocationTargetException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (NoSuchMethodException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (ClassNotFoundException e1) {
-        log.error("hyperlink update error", e1);
-      } catch (URISyntaxException e1) {
-        log.error("hyperlink update error", e1);
+        Macifier.browse(uri);
+      } catch (Exception e1) {
+        log.error(e1);
       }
     }
   }

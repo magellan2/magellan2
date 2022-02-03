@@ -31,6 +31,7 @@ import java.awt.desktop.PreferencesHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitResponse;
+import java.net.URI;
 
 import magellan.client.Client.QuitListener;
 import magellan.library.utils.logging.Logger;
@@ -134,6 +135,21 @@ public class Macifier implements QuitHandler, AboutHandler, PreferencesHandler {
   public void handleAbout(AboutEvent e) {
     log.fine("Got about request");
     client.showInfoDialog();
+  }
+
+  public static boolean browse(URI uri) {
+    if (Desktop.isDesktopSupported()) {
+      Desktop desktop = Desktop.getDesktop();
+      if (desktop.isSupported(Desktop.Action.BROWSE)) {
+        try {
+          desktop.browse(uri);
+          return true;
+        } catch (Exception exc) {
+          log.warn(exc);
+        }
+      }
+    }
+    return false;
   }
 
 }

@@ -16,7 +16,6 @@ import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
-import java.awt.SecondaryLoop;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -159,7 +158,6 @@ import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
-import magellan.client.utils.Macifier;
 import magellan.client.utils.MagellanFinder;
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
@@ -1616,6 +1614,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Thread.sleep(500);
       }
     } catch (InterruptedException e) {
+      log.info("save thread interrupted", e);
       Thread.currentThread().interrupt();
       return false;
     }
@@ -1664,7 +1663,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
       Client.log.info("Client.saveReport Using encoding: " + getData().getEncoding());
-      ProgressBarUI ui = new ProgressBarUI(this);
+      UserInterface ui = new ProgressBarUI(this);
       crw = new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer.parseInt(
           getProperties().getProperty("Client.CRBackups.count", FileBackup.DEFAULT_BACKUP_LEVEL
               + "")));
@@ -1726,7 +1725,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void quit(QuitListener ql, boolean storeSettings) {
     final ProgressBarUI ui = new ProgressBarUI(this);
     final int response;
-    log.fine(new RuntimeException("logging ..."));
+    log.fine(new RuntimeException("quit was called from ..."));
 
     // ask to save report
     if (reportState != null && reportState.isStateChanged()) {
@@ -1741,102 +1740,83 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       return;
     }
 
-    // we cannot return as this might cause termination bevor the saving thread has completed
-    SecondaryLoop eLoop = Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
-    final boolean savingDone[] = new boolean[] { false };
-
-    Runnable runner = new Runnable() {
+    new Thread(new Runnable() {
       public void run() {
-        doQuit(storeSettings, response, ui, ql);
-        eLoop.exit();
-        savingDone[0] = true;
+        doQuit(storeSettings, response == JOptionPane.YES_OPTION, ui, ql);
       }
-    };
-    try {
-      new Thread(runner).start();
-      // start secondary event loop to stay responsive
-      if (!eLoop.enter()) {
-        log.warn("Could not start secondary loop.");
-        // fallback: do not return until saving is complete
-        while (!savingDone[0]) {
-          Thread.sleep(100);
-        }
-      }
-      log.fine("returning");
-    } catch (Throwable t) {
-      log.error(t);
-    }
+    }).start();
+
+    log.fine("returning");
   }
 
-  protected void doQuit(boolean storeSettings, int response, ProgressBarUI ui, QuitListener ql) {
-    ui.show();
-    try {
-      log.fine("Closing down...");
-      log.fine(new RuntimeException("logging"));
+  protected void doQuit(boolean storeSettings, boolean save, UserInterface ui, QuitListener ql) {
+    log.fine("Closing down...");
 
-      if (response == JOptionPane.YES_OPTION) {
-        if (!saveSynchronously()) {
-          log.fine("Cancelling quit response");
-          ql.cancelQuit();
-          return;
-        }
+    if (save) {
+      ui.setProgress("saving", 1);
+      if (!saveSynchronously()) {
+        log.fine("Cancelling quit response");
+        ql.cancelQuit();
+        return;
       }
-
-      for (MagellanPlugIn plugIn : getPlugIns()) {
-        plugIn.quit(storeSettings);
-      }
-
-      PropertiesHelper.saveRectangle(getProperties(), Client.this.getBounds(), "Client");
-      saveExtendedState();
-      setVisible(false);
-
-      if (panels != null) {
-        for (JPanel jPanel : panels) {
-          InternationalizedDataPanel p = (InternationalizedDataPanel) jPanel;
-          p.quit();
-        }
-      }
-
-      NameGenerator.quit();
-
-      if (fileHistory != null) {
-        fileHistory.storeFileHistory();
-      }
-
-      // store settings to file
-      if (storeSettings) {
-        // save the desktop
-        desktop.save();
-
-        try {
-          // if necessary, use settings file in local directory
-          File settingsFile = new File(Client.getSettingsDirectory(), Client.SETTINGS_FILENAME);
-
-          if (settingsFile.exists() && settingsFile.canWrite()) {
-            try {
-              File backup = FileBackup.create(settingsFile);
-              Client.log.info("Created backupfile " + backup);
-            } catch (IOException ie) {
-              Client.log.warn("Could not create backupfile for file " + settingsFile);
-            }
-          }
-
-          if (settingsFile.exists() && !settingsFile.canWrite())
-            throw new IOException("cannot write " + settingsFile);
-          else {
-            Client.log.info("Storing Magellan configuration to " + settingsFile);
-
-            getProperties().store(new FileOutputStream(settingsFile), "");
-          }
-        } catch (IOException ioe) {
-          Client.log.error(ioe);
-        }
-      }
-      log.fine("Telling requester to quit");
-      ql.performQuit();
-    } finally {
-      ui.ready();
+      log.fine("save returned");
     }
+
+    ui.setProgress("plugins", 1);
+    for (MagellanPlugIn plugIn : getPlugIns()) {
+      plugIn.quit(storeSettings);
+    }
+
+    ui.setProgress("windows", 1);
+    PropertiesHelper.saveRectangle(getProperties(), Client.this.getBounds(), "Client");
+    saveExtendedState();
+    setVisible(false);
+
+    if (panels != null) {
+      for (JPanel jPanel : panels) {
+        InternationalizedDataPanel p = (InternationalizedDataPanel) jPanel;
+        p.quit();
+      }
+    }
+
+    NameGenerator.quit();
+
+    if (fileHistory != null) {
+      fileHistory.storeFileHistory();
+    }
+
+    ui.setProgress("settings", 1);
+    // store settings to file
+    if (storeSettings) {
+      // save the desktop
+      desktop.save();
+
+      try {
+        // if necessary, use settings file in local directory
+        File settingsFile = new File(Client.getSettingsDirectory(), Client.SETTINGS_FILENAME);
+
+        if (settingsFile.exists() && settingsFile.canWrite()) {
+          try {
+            File backup = FileBackup.create(settingsFile);
+            Client.log.info("Created backupfile " + backup);
+          } catch (IOException ie) {
+            Client.log.warn("Could not create backupfile for file " + settingsFile);
+          }
+        }
+
+        if (settingsFile.exists() && !settingsFile.canWrite())
+          throw new IOException("cannot write " + settingsFile);
+        else {
+          Client.log.info("Storing Magellan configuration to " + settingsFile);
+
+          getProperties().store(new FileOutputStream(settingsFile), "");
+        }
+      } catch (IOException ioe) {
+        Client.log.error(ioe);
+      }
+    }
+    log.fine("Telling requester to quit");
+    ql.performQuit();
   }
 
   /**

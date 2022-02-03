@@ -21,7 +21,7 @@
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
-package magellan.client.utils;
+package magellan.client;
 
 import java.awt.Desktop;
 import java.awt.desktop.AboutEvent;
@@ -31,19 +31,18 @@ import java.awt.desktop.PreferencesHandler;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitHandler;
 import java.awt.desktop.QuitResponse;
-import java.awt.image.BufferedImage;
 
-import magellan.client.Client;
 import magellan.client.Client.QuitListener;
 import magellan.library.utils.logging.Logger;
 
+/**
+ * Handles Desktop requests, mostly needed on Macs.
+ *
+ */
 public class Macifier implements QuitHandler, AboutHandler, PreferencesHandler {
-
   private static Logger log = Logger.getInstance(Macifier.class);
   private Client client;
 
-  /** Contains at startup the application icon of Magellan - most time only on a mac */
-  private BufferedImage appIcon = null;
   private Desktop desktop;
 
   /**
@@ -78,33 +77,60 @@ public class Macifier implements QuitHandler, AboutHandler, PreferencesHandler {
   }
 
   /**
-   * @return
+   * Returns whether {@link java.awt.Desktop} is supported on the current platform.
    */
   public boolean isDesktopSupported() {
     return Desktop.isDesktopSupported();
   }
 
+  /**
+   * @see java.awt.desktop.QuitHandler#handleQuitRequestWith(java.awt.desktop.QuitEvent, java.awt.desktop.QuitResponse)
+   */
   public void handleQuitRequestWith(QuitEvent evt, QuitResponse res) {
     log.fine("Request to quit by " + (evt != null ? evt.getSource() : null));
+
+    final boolean savingDone[] = new boolean[] { false };
     QuitListener ql = new QuitListener() {
 
       public void performQuit() {
+        log.fine("Do quit");
         res.performQuit();
+        savingDone[0] = true;
       }
 
       public void cancelQuit() {
+        log.fine("Cancel quit");
         res.cancelQuit();
+        savingDone[0] = true;
       }
     };
+
     client.quit(ql, true);
 
+    // we tried to use Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop(), but it did not work on
+    // MacOs due to "Invalid parameter not satisfying: [self canBeconMainWindow]"
+
+    // do not return until shutdown is complete and either performQuit or cancelQuit has been called.
+    while (!savingDone[0]) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        // try again
+      }
+    }
   }
 
+  /**
+   * @see java.awt.desktop.PreferencesHandler#handlePreferences(java.awt.desktop.PreferencesEvent)
+   */
   public void handlePreferences(PreferencesEvent e) {
     log.fine("Got preferences request");
     client.showPreferences();
   }
 
+  /**
+   * @see java.awt.desktop.AboutHandler#handleAbout(java.awt.desktop.AboutEvent)
+   */
   public void handleAbout(AboutEvent e) {
     log.fine("Got about request");
     client.showInfoDialog();

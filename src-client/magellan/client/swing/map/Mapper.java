@@ -205,6 +205,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   private String id;
 
+  private RegionImageCellRenderer regionImageRenderer;
+
+  private TextCellRenderer regionTextRenderer;
+
   /**
    * Creates a new Mapper object.
    *
@@ -582,6 +586,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           .warn(
               "Mapper.setRenderer(): null renderer set has been set for unknown rendering plane!");
     }
+  }
+
+  public MapCellRenderer getRenderer(int plane) {
+    if (plane < 0 || plane >= planes.length || planes[plane] == null)
+      return null;
+    return planes[plane].getRenderer();
   }
 
   /**
@@ -1675,13 +1685,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   private Collection<MapCellRenderer> initAvailableRenderers(CellGeometry geo,
       Properties aSettings, Collection<MapCellRenderer> cRenderers) {
     Collection<MapCellRenderer> renderers = new LinkedList<MapCellRenderer>();
-    renderers.add(new RegionImageCellRenderer(geo, context));
+    renderers.add(regionImageRenderer = new RegionImageCellRenderer(geo, context));
     renderers.add(new RegionShapeCellRenderer(geo, context));
     renderers.add(arr = new AdvancedRegionShapeCellRenderer(geo, context));
     renderers.add(new BorderCellRenderer(geo, context));
     renderers.add(new BuildingCellRenderer(geo, context));
     renderers.add(new ShipCellRenderer(geo, context));
-    renderers.add(new TextCellRenderer(geo, context));
+    renderers.add(regionTextRenderer = new TextCellRenderer(geo, context));
     renderers.add(new TradeTextCellRenderer(geo, context));
     renderers.add(atr = new AdvancedTextCellRenderer(geo, context));
     renderers.add(new PathCellRenderer(geo, context));
@@ -1967,6 +1977,20 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         log.info(exc);
       }
     }
+  }
+
+  /**
+   * Returns the standard text renderer.
+   */
+  public TextCellRenderer getRegionTextRenderer() {
+    return regionTextRenderer;
+  }
+
+  /**
+   * Returns the region image renderer.
+   */
+  public RegionImageCellRenderer getRegionImageRenderer() {
+    return regionImageRenderer;
   }
 
   /**

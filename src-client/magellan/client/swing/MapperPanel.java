@@ -38,11 +38,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -1202,7 +1204,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Creates a popup menu for changing tooltips
+   * Creates a popup menu for changing tooltips.
    */
   private void changeTooltip() {
     final List<String> list = mapper.getAllTooltipDefinitions();
@@ -1212,8 +1214,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       defs.put(it.next(), it.next());
     }
 
-    showDialog(new ArrayList<String>(defs.keySet()), Resources.get(
-        "mapperpanel.shortcuts.changetooltipmenu.caption"), null,
+    showDialog(new ArrayList<String>(defs.keySet()), Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"),
+        null, null, "", NO_MODE,
         new Loader() {
           public void load(String name) {
             mapper.setTooltipDefinition(name, defs.get(name));
@@ -1221,105 +1223,133 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           }
         }, current[0]);
   }
-  // if (list == null)
-  // return;
-  //
-  // JPopupMenu menu = new JPopupMenu("tooltips");
-  // JMenuItem popupCaption =
-  // new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
-  // popupCaption.setEnabled(false);
-  // menu.add(popupCaption);
-  //
-  // for (int i = 0; i < 10; ++i) {
-  // final int number = i;
-  // JMenuItem item =
-  // new JMenuItem(new AbstractAction(String.valueOf(number) + " "
-  // + (2 * i >= list.size() ? "---" : list.get(2 * i))) {
-  //
-  // public void actionPerformed(ActionEvent e) {
-  // if (list.size() > (2 * number)) {
-  // mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
-  // }
-  // }
-  // });
-  // item.setMnemonic(Character.forDigit(i, 10));
-  // menu.add(item);
-  // if (list.size() > (2 * number)) {
-  // item.setEnabled(true);
-  // } else {
-  // item.setEnabled(false);
-  // }
-  // }
-  // menu.show(this, getLocation().x, getLocation().y);
-  // }
 
   /**
-   * Creates a popup menu for changing tooltips.
+   * Creates a popup menu for changing the region renderer.
    */
   private void changeATR() {
     final AdvancedTextCellRenderer atr = mapper.getATR();
     final List<String> sets = atr.getAllSetNames();
-    showDialog(sets, Resources.get("mapperpanel.shortcuts.changeatr.caption"), atr, new Loader() {
-      public void load(String name) {
-        atr.loadSet(name);
-      }
-    }, atr.getCurrentSet());
+    showDialog(sets, Resources.get("mapperpanel.shortcuts.changeatr.caption"), atr,
+        mapper.getRegionTextRenderer(), Resources.get("map.textcellrenderer.name"), TEXT_MODE,
+        new Loader() {
+          public void load(String name) {
+            atr.loadSet(name);
+          }
+        }, atr.getCurrentSet());
   }
 
   /**
-   * Creates a popup menu for changing tooltips.
+   * Creates a popup menu for changing the text renderer.
    */
   private void changeARR() {
     final AdvancedRegionShapeCellRenderer arr = mapper.getARR();
     final List<String> sets = arr.getAllSetNames();
-    showDialog(sets, Resources.get("mapperpanel.shortcuts.changearr.caption"), arr, new Loader() {
-      public void load(String name) {
-        arr.loadSet(name);
-      }
-    }, arr.getCurrentSet());
+    showDialog(sets, Resources.get("mapperpanel.shortcuts.changearr.caption"), arr,
+        mapper.getRegionImageRenderer(), Resources.get("map.regionimagecellrenderer.name"), REGION_MODE,
+        new Loader() {
+          public void load(String name) {
+            arr.loadSet(name);
+          }
+        }, arr.getCurrentSet());
   }
 
   interface Loader {
     void load(String name);
   }
 
-  private void showDialog(final List<String> sets, String caption,
-      final MapCellRenderer newRenderer, final Loader loader, String currentSet) {
+  private int NO_MODE = -1, REGION_MODE = 0, TEXT_MODE = 1;
+  private MapCellRenderer[] previousRenderer = new MapCellRenderer[2];
+
+  private void showDialog(final List<String> sets, String caption, final MapCellRenderer newRenderer,
+      MapCellRenderer defaultRenderer, String defaultName, int mode, final Loader loader, String currentSet) {
     if (sets == null)
       return;
 
-    JPopupMenu menu = new JPopupMenu("tooltips");
+    JPopupMenu menu = new JPopupMenu("renderers");
     JMenuItem popupCaption = new JMenuItem(caption);
     popupCaption.setEnabled(false);
     menu.add(popupCaption);
 
+    Set<Integer> mnemonics = new HashSet<Integer>();
+    if (defaultRenderer != null) {
+      JMenuItem item = getDefaultItem(defaultRenderer, mnemonics);
+      menu.add(item);
+    }
+    if (mode >= 0 && previousRenderer[mode] != null && previousRenderer[mode] != defaultRenderer) {
+      JMenuItem item = getDefaultItem(previousRenderer[mode], mnemonics);
+      menu.add(item);
+    }
     for (int i = 0; i < sets.size(); ++i) {
       final int number = i;
       String name = sets.get(number);
-      JMenuItem item = new JMenuItem(new AbstractAction(String.valueOf(number + 1) + " " + name) {
-
-        public void actionPerformed(ActionEvent e) {
-
-          if (sets.size() > number) {
-            if (newRenderer != null) {
-              mapper.setRenderer(newRenderer);
-            }
-            loader.load(sets.get(number));
-
-            Mapper.setRenderContextChanged(true);
-            DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
-          }
-        }
-      });
-      if (number < 10) {
-        item.setMnemonic(Character.forDigit((number + 1) % 10, 10));
-      }
-      if (sets.get(number).equals(currentSet)) {
-        item.setFont(item.getFont().deriveFont(Font.BOLD));
-      }
+      JMenuItem item = getQuickItem(number, name, newRenderer, defaultRenderer, loader, currentSet, mode, mnemonics);
       menu.add(item);
     }
+
     menu.show(this, getLocation().x, getLocation().y);
+  }
+
+  private JMenuItem getDefaultItem(MapCellRenderer renderer, Set<Integer> mnemonics) {
+    String defaultName = renderer.getName();
+    JMenuItem item = new JMenuItem(new AbstractAction(defaultName) {
+
+      public void actionPerformed(ActionEvent e) {
+        mapper.setRenderer(renderer);
+        Mapper.setRenderContextChanged(true);
+        DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
+      }
+    });
+    findMnemonic(item, mnemonics);
+    return item;
+  }
+
+  private void findMnemonic(JMenuItem item, Set<Integer> mnemonics) {
+    String iname = item.getText();
+    if (iname == null)
+      return;
+    for (int i = 0; i < iname.length(); ++i) {
+      int m = KeyEvent.getExtendedKeyCodeForChar(iname.charAt(i));
+      if (m != KeyEvent.VK_SPACE && !mnemonics.contains(m)) {
+        item.setMnemonic(m);
+        mnemonics.add(m);
+        break;
+      }
+    }
+  }
+
+  private JMenuItem getQuickItem(int number, String name, MapCellRenderer newRenderer, MapCellRenderer defaultRenderer,
+      Loader loader, String currentSet, int mode, Set<Integer> mnemonics) {
+
+    String iname;
+    if (number < 10) {
+      iname = String.valueOf(number + 1) + " " + name;
+    } else {
+      iname = name;
+    }
+    JMenuItem item = new JMenuItem(new AbstractAction(iname) {
+
+      public void actionPerformed(ActionEvent e) {
+        if (newRenderer != null) {
+          MapCellRenderer oldRenderer = mapper.getRenderer(newRenderer.getPlaneIndex());
+          if (oldRenderer != null && oldRenderer != newRenderer && oldRenderer != defaultRenderer) {
+            previousRenderer[mode] = oldRenderer;
+          }
+          mapper.setRenderer(newRenderer);
+        }
+        loader.load(name);
+
+        Mapper.setRenderContextChanged(true);
+        DesktopEnvironment.repaintComponent(MagellanDesktop.MAP_IDENTIFIER);
+
+      }
+    });
+
+    findMnemonic(item, mnemonics);
+    if (name.equals(currentSet)) {
+      item.setFont(item.getFont().deriveFont(Font.BOLD));
+    }
+    return item;
   }
 
   private float getNextTickValue() {

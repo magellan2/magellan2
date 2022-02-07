@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import javax.swing.JMenu;
 import javax.swing.JScrollPane;
@@ -159,6 +161,9 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     if (getGameData().getFactions() == null)
       return;
 
+    showBattles(parent, null, (b) -> i.getRegion(b.getID()) != null);
+
+    // showFactionMessages(parent, )
     // collect messages
     List<Message> sortedMessages = new LinkedList<Message>();
 
@@ -201,6 +206,8 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       return;
 
     DefaultMutableTreeNode node = null;
+
+    showBattles(parent, (b) -> b.getID().equals(r.getCoordinate()));
 
     // for all categories of messages for a region, create
     // a node for the category and add the messages as sub-
@@ -290,7 +297,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
           for (Message msg : f.getMessages()) {
             for (String key : msg.getAttributeKeys()) {
               String attribute = msg.getAttribute(key);
-              CoordinateID c = CoordinateID.parse(attribute, ",");
+              CoordinateID c = CoordinateID.parse(attribute, " ");
 
               if (c == null) {
                 c = CoordinateID.parse(attribute, " ");
@@ -335,16 +342,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       }
     }
 
-    if ((f.getBattles() != null) && (f.getBattles().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.battles"));
-      parent.add(node);
-
-      Iterator<Battle> battles = f.getBattles().iterator();
-
-      while (battles.hasNext() == true) {
-        show(battles.next(), node);
-      }
-    }
+    showBattles(parent, f, (b) -> true);
 
     if ((f.getMessages() != null) && (f.getMessages().size() > 0)) {
       node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.messages"));
@@ -406,6 +404,41 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
             // ignore msg
           }
         }
+      }
+    }
+  }
+
+  private void showBattles(DefaultMutableTreeNode parent, Predicate<Battle> battleFilter) {
+    Collection<Battle> battles = new HashSet<Battle>();
+    for (Faction f : getGameData().getFactions()) {
+      getBattles(f, battleFilter, battles);
+    }
+    showBattles(parent, battles);
+  }
+
+  private void showBattles(DefaultMutableTreeNode parent, Faction f, Predicate<Battle> battleFilter) {
+    Collection<Battle> battles = new HashSet<Battle>();
+    getBattles(f, battleFilter, battles);
+    showBattles(parent, battles);
+  }
+
+  private void getBattles(Faction f, Predicate<Battle> battleFilter, Collection<Battle> battles) {
+    if (f.getBattles() != null) {
+      for (Battle b : f.getBattles()) {
+        if (battleFilter.test(b)) {
+          battles.add(b);
+        }
+      }
+    }
+  }
+
+  private void showBattles(DefaultMutableTreeNode parent, Collection<Battle> battles) {
+    if (!battles.isEmpty()) {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.battles"));
+      parent.add(node);
+
+      for (Battle b : battles) {
+        show(b, node);
       }
     }
   }

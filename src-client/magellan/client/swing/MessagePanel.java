@@ -53,6 +53,7 @@ import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Message;
@@ -64,6 +65,7 @@ import magellan.library.UnitID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
+import magellan.library.utils.UnionCollection;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.MessageTypeComparator;
 
@@ -161,40 +163,81 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     if (getGameData().getFactions() == null)
       return;
 
-    showBattles(parent, null, (b) -> i.getRegion(b.getID()) != null);
+    showBattles(parent, (b) -> i.getRegion(b.getID()) != null);
 
-    // showFactionMessages(parent, )
-    // collect messages
-    List<Message> sortedMessages = new LinkedList<Message>();
+    showFactionMessages(parent, getIslandPredicate(i));
+  }
+
+  private Predicate<Message> getIslandPredicate(Island island) {
+    return getMessagePredicate((c) -> island.getRegion(c) != null);
+  }
+
+  private Predicate<Message> getRegionPredicate(Region r) {
+    return getMessagePredicate((c) -> r.getID().equals(c));
+  }
+
+  private Predicate<Message> getIdPredicate(ID id) {
+    int idValue;
+    if (id instanceof IntegerID) {
+      idValue = ((IntegerID) id).intValue();
+      return (msg) -> {
+        for (String key : msg.getAttributeKeys()) {
+          try {
+            int i = Integer.parseInt(msg.getAttribute(key));
+
+            // it would be cleaner to compare UnitID
+            // objects here but that's too expensive
+            if (idValue == i)
+              return true;
+          } catch (NumberFormatException e) {
+            // ignore msg
+          }
+        }
+        return false;
+      };
+    } else
+      return (msg) -> false;
+  }
+
+  private Predicate<Message> getMessagePredicate(Predicate<CoordinateID> cFilter) {
+    return (msg) -> {
+      for (String key : msg.getAttributeKeys()) {
+        String attribute = msg.getAttribute(key);
+        CoordinateID c = CoordinateID.parse(attribute, ",");
+
+        if (c == null) {
+          c = CoordinateID.parse(attribute, " ");
+        }
+
+        if ((c != null) && (cFilter.test(c)))
+          return true;
+      }
+      return false;
+    };
+  }
+
+  protected void showFactionMessages(DefaultMutableTreeNode parent, Predicate<Message> filter) {
+    List<Message> allMessages = new LinkedList<Message>();
 
     for (Faction f : getGameData().getFactions()) {
       if (f.getMessages() != null) {
-        Iterator<Message> msgs = f.getMessages().iterator();
-
-        while (msgs.hasNext()) {
-          Message msg = msgs.next();
-
-          for (String key : msg.getAttributeKeys()) {
-            String attribute = msg.getAttribute(key);
-            CoordinateID c = CoordinateID.parse(attribute, ",");
-
-            if (c == null) {
-              c = CoordinateID.parse(attribute, " ");
-            }
-
-            if ((c != null) && (i.getRegion(c) != null)) {
-              sortedMessages.add(msg);
-            }
+        for (Message msg : f.getMessages()) {
+          if (filter.test(msg)) {
+            allMessages.add(msg);
           }
         }
       }
     }
 
-    if (!sortedMessages.isEmpty()) {
+    showFactionMessages(parent, allMessages);
+  }
+
+  protected void showFactionMessages(DefaultMutableTreeNode parent, Collection<Message> messages) {
+    if (messages != null && !messages.isEmpty()) {
       DefaultMutableTreeNode node =
           new DefaultMutableTreeNode(Resources.get("messagepanel.node.factionmessages"));
       parent.add(node);
-      addCategorizedMessages(sortedMessages, node);
+      addCategorizedMessages(messages, node);
     }
   }
 
@@ -205,116 +248,59 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     if (r == null)
       return;
 
-    DefaultMutableTreeNode node = null;
-
     showBattles(parent, (b) -> b.getID().equals(r.getCoordinate()));
 
-    // for all categories of messages for a region, create
-    // a node for the category and add the messages as sub-
-    // nodes if the category is not empty
-    if ((r.getMessages() != null) && (r.getMessages().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.messages"));
+    showMessages(parent, r.getMessages(), Resources.get("messagepanel.node.messages"));
+
+    showStrings(parent, r.getEffects(), Resources.get("messagepanel.node.effects"));
+
+    showMessages(parent, r.getPlayerMessages(), Resources.get("messagepanel.node.dispatches"));
+
+    showMessages(parent, r.getEvents(), Resources.get("messagepanel.node.events"));
+
+    showMessages(parent, r.getSurroundings(), Resources.get("messagepanel.node.surroundings"));
+
+    showMessages(parent, UnionCollection.union(r.getTravelThru(), r.getTravelThruShips()),
+        Resources.get("messagepanel.node.travelthru"));
+
+    showFactionMessages(parent, getRegionPredicate(r));
+  }
+
+  private void showStrings(DefaultMutableTreeNode parent, Collection<String> effects, String name) {
+    if (effects != null && effects.size() > 0) {
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
       parent.add(node);
 
-      Iterator<Message> iter = r.getMessages().iterator();
-
-      while (iter.hasNext() == true) {
-        show(iter.next(), node);
+      for (String str : effects) {
+        show(str, node);
       }
     }
+  }
 
-    if ((r.getEffects() != null) && (r.getEffects().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
-      parent.add(node);
+  private void showMessages(DefaultMutableTreeNode parent, Collection<Message> messages, String name) {
+    showMessages(parent, messages, name, null);
+  }
 
-      Iterator<String> iter = r.getEffects().iterator();
+  /**
+   * Add all messages that pass a filter. If <code>name == null</code>, add directly under parent, otherwise create a
+   * sub node with the given name.
+   */
+  private void showMessages(DefaultMutableTreeNode parent, Collection<Message> messages, String name,
+      Predicate<Message> filter) {
+    if (messages != null && messages.size() > 0) {
 
-      while (iter.hasNext() == true) {
-        show(iter.next(), node);
-      }
-    }
-
-    if ((r.getPlayerMessages() != null) && (r.getPlayerMessages().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.dispatches"));
-      parent.add(node);
-
-      Iterator<Message> iter = r.getPlayerMessages().iterator();
-
-      while (iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next()));
-      }
-    }
-
-    if ((r.getEvents() != null) && (r.getEvents().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.events"));
-      parent.add(node);
-
-      Iterator<Message> iter = r.getEvents().iterator();
-
-      while (iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next()));
-      }
-    }
-
-    if ((r.getSurroundings() != null) && (r.getSurroundings().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.surroundings"));
-      parent.add(node);
-
-      Iterator<Message> iter = r.getSurroundings().iterator();
-
-      while (iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next()));
-      }
-    }
-
-    if (((r.getTravelThru() != null) && (r.getTravelThru().size() > 0))
-        || ((r.getTravelThruShips() != null) && (r.getTravelThruShips().size() > 0))) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.travelthru"));
-      parent.add(node);
-
-      if (r.getTravelThru() != null) {
-        Iterator<Message> iter = r.getTravelThru().iterator();
-
-        while (iter.hasNext() == true) {
-          node.add(new DefaultMutableTreeNode(iter.next()));
-        }
-      }
-
-      if (r.getTravelThruShips() != null) {
-        Iterator<Message> iter = r.getTravelThruShips().iterator();
-
-        while (iter.hasNext() == true) {
-          node.add(new DefaultMutableTreeNode(iter.next()));
-        }
-      }
-    }
-
-    if (getGameData().getFactions() != null) {
-      List<Message> sortedMessages = new LinkedList<Message>();
-
-      for (Faction f : getGameData().getFactions()) {
-        if (f.getMessages() != null) {
-          for (Message msg : f.getMessages()) {
-            for (String key : msg.getAttributeKeys()) {
-              String attribute = msg.getAttribute(key);
-              CoordinateID c = CoordinateID.parse(attribute, " ");
-
-              if (c == null) {
-                c = CoordinateID.parse(attribute, " ");
-              }
-
-              if ((c != null) && r.getID().equals(c)) {
-                sortedMessages.add(msg);
-              }
-            }
-          }
-        }
-      }
-
-      if (!sortedMessages.isEmpty()) {
-        node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.factionmessages"));
+      DefaultMutableTreeNode node;
+      if (name != null) {
+        node = new DefaultMutableTreeNode(name);
         parent.add(node);
-        addCategorizedMessages(sortedMessages, node);
+      } else {
+        node = parent;
+      }
+
+      for (Message msg : messages) {
+        if (filter == null || filter.test(msg)) {
+          show(msg, node);
+        }
       }
     }
   }
@@ -326,29 +312,11 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     if (f == null)
       return;
 
-    DefaultMutableTreeNode node = null;
-
-    // for all categories of messages for a faction, create
-    // a node for the category and add the messages as sub-
-    // nodes if the category is not empty
-    if ((f.getErrors() != null) && (f.getErrors().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.errors"));
-      parent.add(node);
-
-      Iterator<String> msgs = f.getErrors().iterator();
-
-      while (msgs.hasNext() == true) {
-        show(msgs.next(), node);
-      }
-    }
+    showStrings(parent, f.getErrors(), Resources.get("messagepanel.node.errors"));
 
     showBattles(parent, f, (b) -> true);
 
-    if ((f.getMessages() != null) && (f.getMessages().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.messages"));
-      parent.add(node);
-      addCategorizedMessages(f.getMessages(), node);
-    }
+    showFactionMessages(parent, f.getMessages());
   }
 
   /**
@@ -358,54 +326,28 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     if (u == null)
       return;
 
-    DefaultMutableTreeNode node = null;
+    showStrings(parent, u.getEffects(), Resources.get("messagepanel.node.effects"));
 
-    if ((u.getEffects() != null) && (u.getEffects().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
-      parent.add(node);
-
-      Iterator<String> iter = u.getEffects().iterator();
-
-      while (iter.hasNext() == true) {
-        show(iter.next(), node);
-      }
-    }
-
-    if ((u.getUnitMessages() != null) && (u.getUnitMessages().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.unitdispatches"));
-      parent.add(node);
-
-      Iterator<Message> iter = u.getUnitMessages().iterator();
-
-      while (iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next()));
-      }
-    }
+    showMessages(parent, u.getUnitMessages(), Resources.get("messagepanel.node.unitdispatches"));
 
     Faction f = u.getFaction();
 
-    if ((f != null) && (f.getMessages() != null)) {
-      Iterator<Message> msgs = f.getMessages().iterator();
-
-      while (msgs.hasNext()) {
-        Message msg = msgs.next();
-
-        for (String key : msg.getAttributeKeys()) {
-          try {
-            int i = Integer.parseInt(msg.getAttribute(key));
-
-            // it would be cleaner to compare UnitID
-            // objects here but that's too expensive
-            if ((u.getID()).intValue() == i) {
-              node = new DefaultMutableTreeNode(msg);
-              parent.add(node);
-            }
-          } catch (NumberFormatException e) {
-            // ignore msg
-          }
-        }
-      }
+    if (f != null) {
+      showMessages(parent, f.getMessages(), null, getIdPredicate(u.getID()));
     }
+  }
+
+  /**
+   * Show the messages related to the specified Building or Ship.
+   */
+  private void show(UnitContainer uc, DefaultMutableTreeNode parent) {
+    if (uc == null)
+      return;
+
+    showStrings(parent, uc.getEffects(), Resources.get("messagepanel.node.effects"));
+
+    // this is sort of slow
+    showFactionMessages(parent, getIdPredicate(uc.getID()));
   }
 
   private void showBattles(DefaultMutableTreeNode parent, Predicate<Battle> battleFilter) {
@@ -470,57 +412,6 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       Message msg = msgs.next();
       subNode = new DefaultMutableTreeNode(msg);
       node.add(subNode);
-    }
-  }
-
-  /**
-   * Show the messages related to the specified Building or Ship.
-   */
-  private void show(UnitContainer uc, DefaultMutableTreeNode parent) {
-    if (uc == null)
-      return;
-
-    DefaultMutableTreeNode node = null;
-    List<Message> sortedMessages = new LinkedList<Message>();
-
-    if ((uc.getEffects() != null) && (uc.getEffects().size() > 0)) {
-      node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
-      parent.add(node);
-
-      Iterator<String> iter = uc.getEffects().iterator();
-
-      while (iter.hasNext() == true) {
-        show(iter.next(), node);
-      }
-    }
-
-    // TODO do something more efficient than searching all faction messages here!?
-    if (getGameData().getFactions() != null) {
-      for (Faction f : getGameData().getFactions()) {
-        if (f.getMessages() != null) {
-          Iterator<Message> msgs = f.getMessages().iterator();
-
-          while (msgs.hasNext()) {
-            Message msg = msgs.next();
-
-            for (String key : msg.getAttributeKeys()) {
-              try {
-                IntegerID id = IntegerID.create(msg.getAttribute(key));
-
-                if (id.equals(uc.getID())) {
-                  sortedMessages.add(msg);
-                }
-              } catch (NumberFormatException e) {
-                // ignore message
-              }
-            }
-          }
-        }
-      }
-
-      if (!sortedMessages.isEmpty()) {
-        addCategorizedMessages(sortedMessages, parent);
-      }
     }
   }
 
@@ -728,11 +619,11 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    * 
    */
   public JMenu getMenu() {
-    JMenu tree = new JMenu(Resources.get("messagepanel.menu.caption"));
-    tree.setMnemonic(Resources.get("messagepanel.menu.mnemonic").charAt(0));
-    tree.add(nodeFactory.getContextMenu());
+    JMenu menu = new JMenu(Resources.get("messagepanel.menu.caption"));
+    menu.setMnemonic(Resources.get("messagepanel.menu.mnemonic").charAt(0));
+    menu.add(nodeFactory.getContextMenu());
 
-    return tree;
+    return menu;
   }
 
   /**

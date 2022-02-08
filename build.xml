@@ -1,5 +1,5 @@
 <project name="magellan"
-         default="distribute"
+         default="distribute_install4j"
          xmlns:if="ant:if"
          xmlns:unless="ant:unless">
 	<description>
@@ -20,7 +20,7 @@
 	<property name="VERSION.MINOR" value="1" />
 	<property name="VERSION.SUB" value="0" />
 	<!-- possible values include stable, rc, and betaX -->
-	<property name="VERSION.POST" value="rc" />
+	<property name="VERSION.POST" value=".rc" />
 
 	<property name="VERSION.POINTED"
 	          value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}" />
@@ -86,7 +86,7 @@
 	<target name="update_version">
 		<property file=".build.number" />
 		<property name="VERSION.FULL"
-		          value="${VERSION.POINTED}-${build.number}.${VERSION.POST}" />
+		          value="${VERSION.POINTED}-${build.number}${VERSION.POST}" />
 		<property name="VERSION.COMPAT"
 		          value="${VERSION.POINTED} (build ${build.number})" />
 

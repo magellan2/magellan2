@@ -97,7 +97,7 @@ jobs:
     - name: Read RELEASENOTES and CHANGELOG
       id: changelog
       run: |
-        value=$(cat RELEASENOTES.txt | iconv -f ISO-8859-1)
+        value=$(cat RELEASENOTES.txt | iconv -f ISO-8859-1; echo -e '\n## Excerpt from CHANGELOG.txt\n\n'; head -20 CHANGELOG.txt | iconv -f ISO-8859-1; echo -e '\n...\n')
         value="${value//'%'/'%25'}"
         value="${value//$'\n'/'%0A'}"
         value="${value//$'\r'/'%0D'}"
@@ -118,19 +118,17 @@ jobs:
         fi
         echo "::set-output name=TYPE::$TYPE"
 
-    - name: Create release
-      uses: meeDamian/github-release@2.0
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
+        target_commitish: master
+        tag_name: ${{ steps.get-version.outputs.TAG }}
         draft: true
         prerelease: false
-        allow_override: false
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commitish: master
-        tag: ${{ steps.sanity_check.outputs.TAG }}
+        fail_on_unmatched_files: false
         name: Release v${{ steps.get-version.outputs.VERSION }} (${{ steps.prepare-meta.outputs.TYPE }})
         body: ${{ steps.changelog.outputs.BODY }}
-        gzip: folders
-        files: >
+        files: |
           LICENSE.txt
           README.md
           RELEASENOTES.txt

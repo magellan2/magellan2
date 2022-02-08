@@ -104,13 +104,18 @@ jobs:
         echo "::set-output name=BODY::$value"
 
     - name: Publish git tag "vX.Y-latest"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        TAG=${{ steps.get-version.outputs.TAG }}
         git config user.name "$GITHUB_ACTOR"
         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
         git remote -v
-        git tag -f "${{ steps.get-version.outputs.TAG }}"
+        # should we delete the old release and assets?
+        # gh release delete ${TAG} -y || echo "continuing ..."
+        git tag -f "${TAG}"
         REMOTE="https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
-        git push --force "$REMOTE" "${{ steps.get-version.outputs.TAG }}"
+        git push --force "$REMOTE" "${TAG}"
 
     - name: prepare meta
       id: prepare-meta
@@ -127,18 +132,15 @@ jobs:
         fi
         echo "::set-output name=TYPE::$TYPE"
 
-    - name: Create release
-      uses: meeDamian/github-release@2.0
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
+        target_commitish: master
+        tag_name: ${{ steps.get-version.outputs.TAG }}
         prerelease: true
-        allow_override: true
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commitish: master
-        tag: ${{ steps.get-version.outputs.TAG }}
-        name: Pre-Release  v${{ steps.get-version.outputs.VERSION }}
+        name: Pre-Release v${{ steps.get-version.outputs.VERSION }} (${{ steps.prepare-meta.outputs.TYPE }})
         body: ${{ steps.changelog.outputs.BODY }}
-        gzip: folders
-        files: >
+        files: |
           LICENSE.txt
           README.md
           RELEASENOTES.txt

@@ -351,7 +351,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   }
 
   private void showBattles(DefaultMutableTreeNode parent, Predicate<Battle> battleFilter) {
-    Collection<Battle> battles = new HashSet<Battle>();
+    Collection<Battle> battles = new LinkedList<Battle>();
     for (Faction f : getGameData().getFactions()) {
       getBattles(f, battleFilter, battles);
     }

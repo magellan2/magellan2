@@ -1186,7 +1186,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         public void hyperlinkUpdate(HyperlinkEvent e) {
           if (e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) {
             try {
-              Macifier.browse(e.getURL().toURI());
+              if (e.getURL() != null) {
+                Macifier.browse(e.getURL().toURI());
+              }
             } catch (Exception ex) {
               log.warn(ex);
             }

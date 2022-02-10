@@ -289,8 +289,9 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
       URI uri;
       try {
-        uri = e.getURL().toURI();
-        Macifier.browse(uri);
+        if (e.getURL() != null) {
+          Macifier.browse(e.getURL().toURI());
+        }
       } catch (URISyntaxException e1) {
         log.error(e1);
       }

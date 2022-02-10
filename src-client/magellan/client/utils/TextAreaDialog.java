@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.net.URI;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -165,9 +164,9 @@ public class TextAreaDialog extends InternationalizedDialog implements Hyperlink
     if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
       try {
         // Loads the new page represented by link clicked
-        URI uri = e.getURL().toURI();
-
-        Macifier.browse(uri);
+        if (e.getURL() != null) {
+          Macifier.browse(e.getURL().toURI());
+        }
       } catch (Exception e1) {
         log.error(e1);
       }

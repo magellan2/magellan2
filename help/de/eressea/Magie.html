@@ -1,0 +1,859 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Magie</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Magie
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            Magie ist ein mystischer und machtvoller Weg, Dinge zu ver&#228;ndern, 
+            zu erschaffen und kann im <a href="Krieg.html" title="Krieg">Kampf</a> 
+            den Feid zu schw&#228;chen oder Verb&#252;ndete zu st&#228;rken.
+          </p>
+          <p>
+            Es gibt f&#252;nf <a href="Magiegebiete.html" title="Magiegebiete">Magiegebiete</a>: 
+            <a href="Illaunzauber.html" title="Illaunzauber">Illaun</a>, <a href="Tybiedzauber.html" title="Tybiedzauber">Tybied</a>, 
+            <a href="Gwyrrdzauber.html" title="Gwyrrdzauber">Gwyrrd</a>, <a href="Cerddorzauber.html" title="Cerddorzauber">Cerddor</a> 
+            und <a href="Draigzauber.html" title="Draigzauber">Draig</a>. Jede 
+            Partei mu&#223; sich f&#252;r ein Magiegebiet entscheiden. Dies geschieht 
+            mit Hilfe des Befehls <a href="LERNE.html" title="LERNE">LERNE 
+            MAGIE &quot;Magiegebiet&quot;</a> im Spiel. Ein einmal gew&#228;hltes 
+            Magiegebiet kann nicht ver&#228;ndert werden. Alle Magier einer <a class="mw-redirect" href="Parteien.html" title="Partei">Partei</a> 
+            erlernen automatisch das von der Partei gew&#228;hlte Magiegebiet, es 
+            ist nicht m&#246;glich, ein anderes Magiegebiet zu erlernen. Es ist 
+            deshalb nat&#252;rlich nicht m&#246;glich das Magiegebiet zu wechseln wenn 
+            bereits eine Einheit Magie gelernt hat.
+          </p>
+          <p>
+            Es darf maximal f&#252;nf Magier pro Partei geben, lediglich 
+            Elfenparteien d&#252;rfen sechs Magier besitzen. Magiereinheiten d&#252;rfen 
+            immer nur eine Person haben. Magier k&#246;nnen keine Personen 
+            &#252;bergeben, auch nicht an leere Temp Einheiten. Das Talent Magie zu 
+            erlernen kostet (50+25*(1+Stufe)*Stufe) Silber pro Person und 
+            Runde.
+          </p>
+          <table align="center" border="0" cellspacing="1">
+            <caption>
+              Lernkosten 
+            </caption>
+            <tr style="background-color: #aaaaaa">
+              <th>
+                N&#228;chste Stufe
+              </th>
+              <th>
+                1
+              </th>
+              <th>
+                2
+              </th>
+              <th>
+                3
+              </th>
+              <th>
+                4
+              </th>
+              <th>
+                5
+              </th>
+              <th>
+                6
+              </th>
+              <th>
+                7
+              </th>
+              <th>
+                8
+              </th>
+              <th>
+                9
+              </th>
+              <th>
+                10
+              </th>
+              <th>
+                11
+              </th>
+              <th>
+                12
+              </th>
+              <th>
+                13
+              </th>
+              <th>
+                14
+              </th>
+              <th>
+                15
+              </th>
+              <th>
+                ...
+              </th>
+              <th>
+                20
+              </th>
+              <th>
+                ...
+              </th>
+              <th>
+                30
+              </th>
+              <th>
+                ...
+              </th>
+              <th>
+                40
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Kosten
+              </td>
+              <td>
+                100
+              </td>
+              <td>
+                200
+              </td>
+              <td>
+                350
+              </td>
+              <td>
+                550
+              </td>
+              <td>
+                800
+              </td>
+              <td>
+                1100
+              </td>
+              <td>
+                1450
+              </td>
+              <td>
+                1850
+              </td>
+              <td>
+                2300
+              </td>
+              <td>
+                2800
+              </td>
+              <td>
+                3350
+              </td>
+              <td>
+                3950
+              </td>
+              <td>
+                4600
+              </td>
+              <td>
+                5300
+              </td>
+              <td>
+                6050
+              </td>
+              <td>
+                ...
+              </td>
+              <td>
+                10550
+              </td>
+              <td>
+                ...
+              </td>
+              <td>
+                23300
+              </td>
+              <td>
+                ...
+              </td>
+              <td>
+                41050
+              </td>
+            </tr>
+          </table>
+          <p>
+            Ein ungelernter Magier bezahlt also 100 Silber f&#252;r seine ersten 
+            Lektionen; hat er schon Stufe 5 im Magietalent, so muss er 1100 
+            Silber pro Lernwoche bezahlen. <b>Achtung:</b> Die Lernkosten 
+            beziehen sich immer auf die gelernte Stufe vor der Anwendung 
+            eventueller Rassenboni oder- mali. Ein Elf zahlt also f&#252;r seinen 
+            ersten Lernversuch, der ihn auf T2 bringt 100 und nicht 200 
+            Silber, ein Goblin mit seinem -1 zahlt f&#252;r den 2. Lernversuch 
+            jedoch bereits 200 Silber obwohl er noch immer auf Stufe 0 ist.
+          </p>
+          <p>
+            <b>Achtung, Zwerge:</b> Seit dem Wegfall der Lerntage gibt keinen 
+            Weg herauszufinden, ob der Magier nun Stufe 0 ist, weil er T1 hat 
+            oder weil er T2 hat. Die Lernkosten steigen in letzterem Fall 
+            jedoch auf 350 Silber! Also lieber etwas gro&#223;z&#252;giger planen.
+          </p>
+          <p>
+            Lernen in einer <a href="Andere_Geb_ude.html" title="Andere Gebäude">Akademie</a> 
+            kostet das Doppelte. Unterrichtet werden k&#246;nnen nur Magier des 
+            gleichen Magiegebietes wie der Lehrer. Ein Draig-Magier kann also 
+            keinen Illaun-Magier lehren.
+          </p>
+          <p>
+            Hat ein Magier nicht genug Silber zum Lernen, lernt er in der 
+            Woche nur anteilig entsprechend der Silbermenge, die er bezahlen 
+            kann.
+          </p>
+          <p>
+            Mit jeder Stufe, die der Magier erreicht, kann er neue Spr&#252;che 
+            bekommen. Es gibt zur Zeit einen Spruch in jeder Stufe, in 
+            Ausnahmef&#228;llen auch einmal mehrere oder gar keinen. Hat man eine 
+            neue Stufe erreicht, so werden die Spr&#252;che in der Auswertung 
+            beschrieben. Hat man die Beschreibung vergessen, kann man sie sich 
+            mit dem Befehl <a href="ZEIGE.html" title="ZEIGE">ZEIGE</a> 
+            nochmals zeigen lassen.
+          </p>
+          <p>
+            Eine so angezeigte Spruchbeschreibung sieht ungef&#228;hr so aus:
+          </p>
+          <pre>                 Gro&#223;e Explosion
+
+ Beschreibung:
+ Dieser Zauber zerst&#246;rt eine komplette Insel. Der Magier wird dabei
+ in eine zuf&#228;llige Region teleportiert.
+
+ Art: Normaler Zauber
+ Komponenten:
+   1500 Aura
+   10 permanente Aura
+   1 Drachenkopf
+ Modifikationen: Keine
+ Stufe: 20
+ Rang: 5
+
+ Syntax:
+ ZAUBERE &quot;Gro&#223;e Explosion&quot;</pre>
+          <p>
+            (Nein, diesen Spruch gibt es nicht!)
+          </p>
+          <div class="toc" id="toc">
+            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+            
+
+            <div class="toctitle" dir="ltr" lang="de">
+              <h2>
+                Inhaltsverzeichnis
+              </h2>
+              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+              </span>
+            </div>
+            <ul>
+              <li class="toclevel-1 tocsection-1">
+                <a href="#Art"><span class="tocnumber">1</span> <span class="toctext">Art</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-2">
+                <a href="#Aura"><span class="tocnumber">2</span> <span class="toctext">Aura</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-3">
+                <a href="#Modifikationen"><span class="tocnumber">3</span> <span class="toctext">Modifikationen</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-4">
+                <a href="#Komponenten"><span class="tocnumber">4</span> <span class="toctext">Komponenten</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-5">
+                <a href="#Fernzauber"><span class="tocnumber">5</span> <span class="toctext">Fernzauber</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-6">
+                <a href="#Personen-_und_Objektzauber"><span class="tocnumber">6</span> 
+                <span class="toctext">Personen- und Objektzauber</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-7">
+                <a href="#Rang"><span class="tocnumber">7</span> <span class="toctext">Rang</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-8">
+                <a href="#Patzer"><span class="tocnumber">8</span> <span class="toctext">Patzer</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-9">
+                <a href="#Magieresistenz"><span class="tocnumber">9</span> <span class="toctext">Magieresistenz</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-10">
+                <a href="#Magierturm"><span class="tocnumber">10</span> <span class="toctext">Magierturm</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-11">
+                <a href="#Vertraute"><span class="tocnumber">11</span> <span class="toctext">Vertraute</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-12">
+                <a href="#Der_Astralraum"><span class="tocnumber">12</span> <span class="toctext">Der 
+                Astralraum</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-13">
+                <a href="#Listen_aller_Zauber"><span class="tocnumber">13</span> 
+                <span class="toctext">Listen aller Zauber</span></a>
+              </li>
+            </ul>
+          </div>
+          <h2>
+            <span class="mw-headline" id="Art">Art</span>
+          </h2>
+          <p>
+            Normale Zauber werden mit dem Befehl <a href="ZAUBERE.html" title="ZAUBERE">ZAUBERE</a> 
+            gezaubert. <a href="ZAUBERE.html" title="ZAUBERE">ZAUBERE</a> ist 
+            ein pseudolanger Befehl vergleichbar mit <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a>. 
+            Eine Einheit kann also mehrmals pro Runde zaubern, allerdings 
+            keinen anderen langen Befehl ausf&#252;hren. Das ganze hat aber einen 
+            Haken: Die Aura-Kosten der Zauber erh&#246;hen sich. Der erste Zauber, 
+            den ein Magier in einer Runde zaubert, kostet die normale, beim 
+            Zauber angegebene Aura. Der zweite kostet das doppelte, der dritte 
+            das vierfache, der vierte das achtfache usw. Kampfzauber werden 
+            davon gesondert behandelt, sie erh&#246;hen die Kosten f&#252;r normale 
+            Zauber nicht und kosten selbst auch immer nur die angegebene Aura. 
+            F&#252;r das Lernen von Magie durch Anwendung spielt es keine Rolle, ob 
+            der Zauberer einen oder mehrere Zauber gewirkt hat.
+          </p>
+          <p>
+            Au&#223;erdem gibt es drei verschiedene Arten von Kampfzaubern: <b>Pr&#228;kampfzauber</b>, 
+            <b>Kampfzauber</b>, und <b>Postkampfzauber</b>. Alle drei Zauber 
+            k&#246;nnen mit dem Befehl <a href="KAMPFZAUBER.html" title="KAMPFZAUBER">KAMPFZAUBER</a> 
+            &quot;Zauber&quot; gesetzt werden. L&#246;schen kann man einen bestimmten mit <a href="KAMPFZAUBER.html" title="KAMPFZAUBER">KAMPFZAUBER 
+            &quot;Zauber&quot; NICHT</a> oder alle gesetzten Kampfzauber mit <a href="KAMPFZAUBER.html" title="KAMPFZAUBER">KAMPFZAUBER 
+            NICHT</a>.
+          </p>
+          <p>
+            Hat ein Magier einen gesetzten Pr&#228;- oder Postkampfzauber und wird 
+            in einen Kampf gezogen, so zaubert er einmal, vor Beginn bzw. nach 
+            Ende des Kampfes, diesen Zauber. Dies tut er auch dann wenn er auf 
+            k&#228;mpfe nicht oder fliehe steht. Dann jedoch nur, wenn der Magier 
+            explizit mit dem Befehl <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a> 
+            angegriffen worden ist!
+          </p>
+          <p>
+            Seinen normalen Kampfzauber zaubert er einmal in jeder Kampfrunde, 
+            immer vorausgesetzt nat&#252;rlich, er besitzt noch ausreichend Aura. 
+            Kampfzauber z&#228;hlen dabei nicht zu den in der Runde gezauberten 
+            Zaubern, sie kosten immer nur ihre normalen Kosten und erh&#246;hen die 
+            Kosten normaler Zauber in derselben Runde nicht.
+          </p>
+          <p>
+            &#220;berlebt der Magier den Kampf und hat er noch ausreichend Aura, 
+            zaubert er anschlie&#223;end den Postkampfzauber.
+          </p>
+          <p>
+            Kampfzauber k&#246;nnen nicht wie normale Zauber gezaubert werden, sie 
+            wirken nur im Kampf. Damit ein Magier durch <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a> 
+            in den Kampf eingreifen kann, muss dieser in der ersten oder 
+            besser in der zweiten Reihe k&#228;mpfen (siehe <a href="K_MPFE.html" title="KÄMPFE">K&#196;MPFE</a>).
+          </p>
+          <h2>
+            <span class="mw-headline" id="Aura">Aura</span>
+          </h2>
+          <p>
+            Aura ist die magische Kraft, mit deren Hilfe ein Zauberer seine 
+            Magie aus&#252;bt. Aura wird durch das Zaubern verbraucht und 
+            regeneriert sich mit der Zeit wieder. Ein Magier kann eine 
+            bestimmte maximale Menge Aura aufnehmen. Wie viel, wird - ebenso 
+            wie die Auraregeneration - durch das Magietalent des Magiers 
+            bestimmt. Die genauen Angaben f&#252;r jeden Magier stehen in seinem 
+            Report, als Faustregel gilt aber, da&#223; ein Magier etwa Talent^2 
+            Aura aufnehmen kann und pro Woche im Durchschnitt etwa 
+            Talent-Stufe Aura regeneriert (das kann aber zwischen fast gar 
+            nichts und Talent-Stufe schwanken). Magische Rassen regenerieren 
+            Aura schneller, nichtmagische Rassen deutlich langsamer.
+          </p>
+          <p>
+            Die maximale Aura ist nicht unver&#228;nderlich: Zum einen gibt es 
+            einen Zauber, mit dessen Hilfe ein Magier Aura auf einen anderen 
+            Magier transferieren kann. Der Zielmagier kann dadurch kurzfristig 
+            mehr Aura erhalten, als er normalerweise maximal aufnehmen kann. 
+            Dadurch kann er Zauber wirken, deren Kosten &#252;ber seiner 
+            Maximalaura liegen. &#220;bersch&#252;ssige Aura geht aber am Ende einer 
+            Runde wieder verloren.
+          </p>
+          <p>
+            Au&#223;erdem gibt es Zauber (und m&#246;glicherweise andere Dinge), die den 
+            Magier permanente Aura kosten, wie etwa das obige Beispiel. Das 
+            hei&#223;t, dass der Magier fortan weniger maximale Aura speichern 
+            kann. In der Regel sind das sehr m&#228;chtige Zauberspr&#252;che oder 
+            Artefaktmagie, die permanente Effekte hervorrufen.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Modifikationen">Modifikationen</span>
+          </h2>
+          <p>
+            Bei einigen Zaubern kann man eine Stufe angeben, auf der man den 
+            Zauber sprechen m&#246;chte. Diese muss gleich oder niedriger sein als 
+            die Stufe des Magiers und kann auch unter der normalen Stufe des 
+            Zaubers liegen. So kann man den Zauber auf einer niedrigeren Stufe 
+            als sein eigenes Talent zaubern. Sehr viele Zauber haben 
+            stufenabh&#228;ngige Wirkungen und Kosten, und es kann sinnvoll sein, 
+            einen Zauber auf einer niedrigeren Stufe als der maximal m&#246;glichen 
+            zu zaubern.
+          </p>
+          <pre> ZAUBERE STUFE &lt;nr&gt; &quot;Zauber&quot;</pre>
+          <p>
+            Diese Modifikation funktioniert auch bei Kampfzaubern:
+          </p>
+          <pre> KAMPFZAUBER STUFE &lt;nr&gt; &quot;Kampfzauber&quot;</pre>
+          <p>
+            Das macht vor allem Sinn, wenn man sich etwas Aura aufsparen will 
+            um f&#252;r einen Postkampfzauber noch etwas Aura &#252;brig zu haben.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Komponenten">Komponenten</span>
+          </h2>
+          <p>
+            Steht dort einfach nur Anzahl Aura, so hei&#223;t das, dass die Kosten 
+            fix sind: Gro&#223;e Explosion kostet immer 1500 Aura. Steht dort eine 
+            Angabe wie etwa 3 Aura * Stufe, dann hei&#223;t das, dass f&#252;r einmal 
+            Zaubern 3 multipliziert mit der Stufe, auf welcher der Zauber 
+            gesprochen wird, Aurakosten anfallen. Die Stufe entspricht in 
+            aller Regel (aber nicht immer) dem Magietalent des Magiers der den 
+            Zauber spricht. Erfordert der Spruch permanente Aura, so 
+            verringert sich die Maximale Aura des Magiers um diesen Wert. 
+            Weitere Komponenten k&#246;nnen Kr&#228;uter, Rohstoffe, Silber, Tr&#228;nke oder 
+            auch seltene Gegenst&#228;nde sein.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Fernzauber">Fernzauber</span>
+          </h2>
+          <p>
+            Bei Fernzaubern besteht die M&#246;glichkeit, den Zauber in einer 
+            anderen Region als die des Magiers wirken zu lassen. Bei diesen 
+            Zaubern kann man dann die folgende Syntax benutzen:
+          </p>
+          <pre> ZAUBERE REGION &lt;x&gt; &lt;y&gt; &quot;Zauber&quot;</pre>
+          <p>
+            In diesem Fall wird der Zauber in der angegebenen Region 
+            'gez&#252;ndet'. Diese Modifikation erh&#246;ht die Kosten aller Komponenten 
+            des Zaubers allerdings drastisch: Die Kosten f&#252;r 
+            Materialkomponenten werden mit 2<sup>Entfernung</sup> zwischen dem 
+            Ort des Magiers und dem Ziel multipliziert. Spricht der Magier in 
+            einer Runde mehrere Spr&#252;che, werden die Aurakosten mit 2<sup>X-1</sup> 
+            multipliziert, wobei X die Anzahl des Spruches ist. Folgende 
+            Tabellen zur Illustration:
+          </p>
+          <table align="center" border="0" cellspacing="1">
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Entfernung (Regionen)
+              </th>
+              <th>
+                0
+              </th>
+              <th>
+                1
+              </th>
+              <th>
+                2
+              </th>
+              <th>
+                3
+              </th>
+              <th>
+                4
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Anzahl der ben&#246;tigten Komponenten
+              </td>
+              <td>
+                1 Stein<br>5 Eisen<br>10 Holz
+              </td>
+              <td>
+                2 Steine<br>10 Eisen<br>20 Holz
+              </td>
+              <td>
+                4 Steine<br>20 Eisen<br>40 Holz
+              </td>
+              <td>
+                8 Steine<br>40 Eisen<br>80 Holz
+              </td>
+              <td>
+                16 Steine<br>80 Eisen<br>160 Holz
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <table align="center" border="0" cellspacing="1">
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Entfernung (Regionen)
+              </th>
+              <th>
+                0
+              </th>
+              <th>
+                1
+              </th>
+              <th>
+                2
+              </th>
+              <th>
+                3
+              </th>
+              <th>
+                4
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Aurakosten (1. Spruch)
+              </td>
+              <td>
+                1 Aura
+              </td>
+              <td>
+                2 Aura
+              </td>
+              <td>
+                4 Aura
+              </td>
+              <td>
+                8 Aura
+              </td>
+              <td>
+                16 Aura
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Aurakosten (2. Spruch)
+              </td>
+              <td>
+                2 Aura
+              </td>
+              <td>
+                4 Aura
+              </td>
+              <td>
+                8 Aura
+              </td>
+              <td>
+                16 Aura
+              </td>
+              <td>
+                32 Aura
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Aurakosten (3. Spruch)
+              </td>
+              <td>
+                4 Aura
+              </td>
+              <td>
+                8 Aura
+              </td>
+              <td>
+                16 Aura
+              </td>
+              <td>
+                32 Aura
+              </td>
+              <td>
+                64 Aura
+              </td>
+            </tr>
+          </table>
+          <p>
+            Die beiden Modifikatoren k&#246;nnen auch verkn&#252;pft werden:
+          </p>
+          <pre> ZAUBERE REGION &lt;x&gt; &lt;y&gt; STUFE &lt;nr&gt; &quot;Zauber&quot;</pre>
+          <p>
+            Dabei ist wichtig, da&#223; man erst die Region und dann die Stufe 
+            angibt.
+          </p>
+          <p>
+            Neben den Fernzaubern gibt es auch noch zwei andere Klassen von 
+            besonderen Spr&#252;chen. Generell k&#246;nnen Zauber <b>nicht von 
+            ablegenden Schiffen</b> aus gezaubert werden. Eine Ausnahme bilden 
+            nur die als <b>Schiffszauber</b> bezeichneten Spr&#252;che. Und 
+            Spr&#252;che, die als <b>Seezauber</b> gekennzeichnet sind, k&#246;nnen 
+            auch von Nicht-Meermenschen auf dem Ozean gezaubert werden.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Personen-_und_Objektzauber">Personen- 
+            und Objektzauber</span>
+          </h2>
+          <p>
+            Mit einigen Zaubern kann man Personen und Objekte magisch 
+            beeinflussen. Hierbei ist zu beachten, dass die allermeisten 
+            Zauber, die auf befreundete Einheiten gezaubert werden sollen, 
+            erfordern, dass die Zieleinheit mit <a href="KONTAKTIERE.html" title="KONTAKTIERE">KONTAKTIERE</a> 
+            den Magier kontaktiert. Teleports und andere Verzauberungen k&#246;nnen 
+            ja gut gemeint sein, aber oft auch zu Missetaten benutzt werden, 
+            und mit <a href="KONTAKTIERE.html" title="KONTAKTIERE">KONTAKTIERE</a> 
+            signalisiert das Ziel, dass es mit der Verzauberung einverstanden 
+            ist.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Rang">Rang</span>
+          </h2>
+          <p>
+            Die Reihenfolge der normalen Zauber ergibt sich aus dem Rang des 
+            Zaubers. Es werden innerhalb einer Runde immer diejenigen Zauber 
+            mit einem niedrigeren Rang vor denjenigen mit einem h&#246;heren 
+            ausgef&#252;hrt. Dabei ist Rang 1 der niedrigste und Rang 9 der 
+            h&#246;chste. Die meisten Zauber haben den Standardrang 5, 
+            Antimagiezauber aber haben fast alle Rang 2, werden also 
+            gegebenenfalls vor den normalen Zaubern gezaubert. Zauber gleichen 
+            Rangs werden in der im Zug angegebenen Reihenfolge gezaubert.
+          </p>
+          <p>
+            <b>Beispiel:</b>
+          </p>
+          <p>
+            Es g&#228;be drei Zauber, genannt &quot;Aaaa&quot;, &quot;Beee&quot; und &quot;Ceee&quot;.
+          </p>
+          <p>
+            &quot;Aaaa&quot; hat Rang 5 und kostet 10 Aura.
+          </p>
+          <p>
+            &quot;Beee&quot; hat Rang 2 und kostet 20 Aura.
+          </p>
+          <p>
+            &quot;Ceee&quot; hat Rang 5 und kostet 5 Aura.
+          </p>
+          <p>
+            Angenommen ein Magier hat die Befehle
+          </p>
+          <pre>   ZAUBERE &quot;Ceee&quot;
+   ZAUBERE &quot;Beee&quot;
+   ZAUBERE &quot;Aaaa&quot;</pre>
+          <p>
+            in dieser Reihenfolge. Zuerst wird &quot;Beee&quot; gezaubert, denn der 
+            Zauber hat Rang 2. Es ist der erste Zauber des Magiers in dieser 
+            Woche, daher kostet er 20 Aura. Dann wird &quot;Ceee&quot; gezaubert, denn 
+            &quot;Aaaa&quot; und &quot;Ceee&quot; haben den selben Rang und &quot;Ceee&quot; steht vor 
+            &quot;Aaaa&quot;. &quot;Ceee&quot; ist der zweite Zauber, er kostet also 5*2^1=10 
+            Aura. Nun kommt noch &quot;Aaaa&quot;. &quot;Aaaa&quot; ist der dritte Zauber, er 
+            kostet also 10*2^2=40 Aura.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Patzer">Patzer</span>
+          </h2>
+          <p>
+            Es gibt viel Nichtoffensichtliches im Magiesystem und in den 
+            Spr&#252;chen. Generell gilt: Viele Spr&#252;che beinhalten direkte oder 
+            indirekte Risiken. Zudem kann ein Zauberer einen Spruch auch 
+            verpatzen.
+          </p>
+          <p>
+            Ein Spruch kann also einfach so fehlschlagen, auch wenn eigentlich 
+            alle Komponenten vorhanden sind und die Aura des Magiers 
+            ausreicht. Das ist kein Bug und gibt auch eine ganz normale 
+            Meldung im Report (&quot;Der Zauber schl&#228;gt fehl.&quot;). Fehlen Komponenten 
+            oder Aura wird dies in der Meldung auch erw&#228;hnt.
+          </p>
+          <p>
+            Die Wahrscheinlichkeit f&#252;r einen Patzer h&#228;ngt von vielen Faktoren 
+            ab, unter anderem von der Stufe, Schwierigkeitsgrad des Spruchs im 
+            Verh&#228;ltnis zur Stufe, auf der der Spruch vom Magier gezaubert 
+            wird, dem Magiegebiet, dem Spruch, der Umgebung, dem Ziel usw.
+          </p>
+          <p>
+            Patzer k&#246;nnen &#228;u&#223;erst unangenehme Nebenwirkungen haben! &#220;berlebt 
+            ein Magier jedoch einen Patzer sind diese normalerweise nicht 
+            permanent.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Magieresistenz">Magieresistenz</span>
+          </h2>
+          <p>
+            Die Magieresistenz einer Person/Einheit ist die jeder Person 
+            innewohnende F&#228;higkeit, einem gegen sie gerichteten Zauber zu 
+            widerstehen, und wie stark eine Person von magischem Schaden im 
+            Kampf betroffen wird. Grunds&#228;tzlich ist die Magieresistenz gleich 
+            der nat&#252;rlichen Magieresistenz der <a href="Rassen.html" title="Rassen">Rassen</a>. 
+            Die Magieresistenz gegen einen Verzauberungsversuch wird 
+            zus&#228;tzlich von der Erfahrung der Einheit beeinflusst. Hierbei gibt 
+            es einen Bonus, der vom h&#246;chsten Talentwert der Person abh&#228;ngt und 
+            durch das Talent des Magiers, der den Spruch wirkt, modifiziert 
+            wird. Der Grundwert ist abh&#228;ngig vom Zauber, liegt aber in der 
+            Regel bei 50%, wenn Magier und Opfer das gleiche Talent haben.
+          </p>
+          <p>
+            Die Kampfmagieresistenz wird wiederum von bestimmten Waffen oder 
+            R&#252;stungen beeinflu&#223;t. Gegen magischen Schaden wirken sonst nur 
+            magischer Schutz und die nat&#252;rliche R&#252;stung.
+          </p>
+          <p>
+            Auch &quot;unbelebte Materie&quot;, also Regionen, Schiffe, Geb&#228;ude usw. 
+            haben bisweilen eine Magieresistenz.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Magierturm">Magierturm</span>
+          </h2>
+          <p>
+            Ein <a href="Andere_Geb_ude.html#Magierturm" title="Andere Gebäude">Magierturm</a> 
+            erh&#246;ht die Aura-Regeneration um 75% und erh&#246;ht die effektive Stufe 
+            jedes Zaubers, der in ihnen gezaubert wird, um 1 &#8212; gegebenenfalls 
+            zus&#228;tzlich zu einem Ring der Macht &#8212; ohne die Kosten zu erh&#246;hen. 
+            Au&#223;erdem wird die Wahrscheinlichkeit eines Zauberpatzers deutlich 
+            verringert.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Vertraute">Vertraute</span>
+          </h2>
+          <p>
+            <b>Hinweis:</b> Wenn Du die Anleitung zum ersten Mal liest, kannst 
+            Du diesen Abschnitt getrost &#252;berspringen. Vertraute sind nur f&#252;r 
+            Parteien mit einem gewissen Alter interessant.
+          </p>
+          <p>
+            Einem erfahrenen Magier wird irgendwann auf seinen Wanderungen ein 
+            ungew&#246;hnliches Exemplar einer Gattung begegnen, welches sich dem 
+            Magier anschlie&#223;en wird. Welcher Gattung dieses Wesen angeh&#246;rt, 
+            h&#228;ngt vor allem von der Geisteshaltung des Magiers und dessen 
+            Herkunft ab.
+          </p>
+          <p>
+            Vertraute sind stets besonders intelligente Vertreter ihrer 
+            Gattung, jedoch sind sie selten aus sich heraus magiebegabt. 
+            Dennoch sind Vertraute in der Lage Zauber zu wirken. Sie bedienen 
+            sich jedoch sowohl bei den Zaubern, als auch bei der Aura und 
+            anderen Komponenten stets beim Magier. Die maximale Entfernung f&#252;r 
+            auf solche weise gewirkte Zauber entspricht dem Talent des 
+            Magiers. Vertraute unterliegen bei diesen Zaubern jedoch gewissen 
+            Einschr&#228;nkungen. Die Stufe des Zaubers kann nicht gr&#246;&#223;er als das 
+            Magietalent des Vertrauten oder das halbe Talent des Magiers sein. 
+            Auch verdoppeln sich die Kosten f&#252;r den Spruch.
+          </p>
+          <p>
+            In seltenen F&#228;llen jedoch k&#246;nnen es magiebegabte Wesen sein, 
+            welche sich als Vertraute binden lassen, und die mit der Zeit 
+            eigene Zauberspr&#252;che erlernen welche dann mit der Aura des 
+            Vertrauten selbst gewirkt werden. Diese Zauber k&#246;nnen sich v&#246;llig 
+            von denjenigen unterscheiden, die ihr Meister beherrscht. Auch 
+            solche Vertraute besitzen jedoch zus&#228;tzlich die F&#228;higkeit, auf die 
+            Zauber ihres Magiers zugreifen zu k&#246;nnen.
+          </p>
+          <p>
+            Au&#223;erdem k&#246;nnen viele Vertraute bestimmte Talente lernen oder 
+            haben besondere F&#228;higkeiten. Aufgrund ihrer grundlegend anderen 
+            Sichtweise, k&#246;nnen sie jedoch ihr Wissen nicht durch Lehren 
+            weitergeben. Der Vertraute verleiht dem Magier einen Bonus in H&#246;he 
+            des halben Talentwertes auf jedes Talent (ausgenommen Magie), 
+            welches der Vertraute beherrscht. Einem Magier sei jedenfalls 
+            angeraten, sich diese F&#228;higkeiten seines Vertrauten &#252;ber ein <a href="ZEIGE.html" title="ZEIGE">ZEIGE</a> 
+            genau in Erinnerung zu rufen.
+          </p>
+          <p>
+            Mehr Details zu Vertrauten kann man <a href="Vertraute.html" title="Vertraute">hier</a> 
+            finden.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Der_Astralraum">Der Astralraum</span>
+          </h2>
+          <p>
+            <b>Hinweis:</b> Auch diesen Abschnitt kannst du auslassen, wenn du 
+            die Anleitung zum ersten Mal liest, denn es dauert viele Wochen, 
+            bis eine Partei den Astralraum bereisen kann.
+          </p>
+          <p>
+            So unterschiedlich wie die Meinungen, worum es sich dabei 
+            eigentlich handelt, sind auch die Namen, die dieser zweiten Ebene 
+            des Seins verliehen worden sind: Manche nennen sie die <i>Welt der 
+            Geisterwesen</i>, andere wiederum die <i>astrale Welt</i>, am 
+            bekanntesten jedoch ist der Begriff <i>Astralraum</i>.
+          </p>
+          <p>
+            Nur durch Magie kann die Wirklichkeit derart ver&#228;ndert werden, 
+            dass Lebewesen in diese andere Welt, in welcher auch die 
+            Naturgesetze v&#246;llig andere sind, &#252;bertreten. Hierbei k&#246;nnen sie 
+            keine Steine, Pferde, Wagen oder Katapulte mitnehmen. Einzig 
+            Elfenpferde scheinen als magische Gesch&#246;pfe im Astralraum 
+            &#252;berleben zu k&#246;nnen. Die Sinne verm&#246;gen nicht, konkrete 
+            Wahrnehmungen zu erkennen. Das Auge erblickt die Umgebung blo&#223; als 
+            schemenhafte Nebel, und alle Ger&#228;usche sind dumpf und ged&#228;mpft.
+          </p>
+          <p>
+            Wer den Astralraum betritt, verschwindet vollst&#228;ndig aus der 
+            realen Welt. Diese Tatsache mag der einzige Grund sein, dass der 
+            Astralraum &#252;berhaupt noch ein praktischer Anwendungsbereich der 
+            Magie geblieben ist. Wer es schafft, den &#220;bergang zwischen 
+            Astralraum und Wirklichkeit durch seine magischen Kr&#228;fte zum 
+            richtigen Zeitpunkt verwischen zu lassen, kann daraus gro&#223;e 
+            Vorteile erlangen - sei es durch die Wahrnehmung von Dingen auf 
+            der jeweils anderen Seite, ohne selbst dabei gesehen zu werden, 
+            oder durch die schnelle Reise &#252;ber gro&#223;e Entfernungen. Wer sich 
+            n&#228;mlich einmal in den Schemen zurechtfindet, wird feststellen, 
+            dass er darin um ein vielfaches schneller voran kommt. Die 
+            Entfernungen scheinen dem Wanderer im Astralraum deutlich k&#252;rzer 
+            als sonst.
+          </p>
+          <p>
+            Doch sei jeder vor dem unbedachten &#220;bertritt in den Astralraum 
+            gewarnt, wird dieser doch von schrecklichen Wesen bewohnt, welche 
+            durch gew&#246;hnliche Waffen nicht zu besiegen sind, und die ihren 
+            Opfern unbarmherzig Willen und Ged&#228;chtnis rauben. Nur wer m&#228;chtige 
+            magische Waffen oder Verb&#252;ndete mit sich f&#252;hrt oder sich vor 
+            unfreundlichen Blicken au&#223;erordentlich gut zu verbergen mag, wird 
+            vor diesen Schrecken des Astralraums gefeit sein.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Listen_aller_Zauber">Listen aller 
+            Zauber</span>
+          </h2>
+          <p>
+            Zu den Anfangszeiten von Eressea, waren die genauen Spruchlisten 
+            geheim, um &quot;das gespannte Zittern haben zu k&#246;nnen ob und welche 
+            neuen Spr&#252;che man beim erreichen einer neuen Stufe erh&#228;lt&quot;. 
+            Inzwischen l&#228;uft Eressea aber so lange, dass es einen zu gro&#223;en 
+            Nachteil f&#252;r neue Spieler gegen&#252;ber Veteranen bedeuten w&#252;rde, wenn 
+            die Spr&#252;che nicht bekannt w&#228;ren. Deshalb gibt es nun eine <a href="Zauberliste_E2.html" title="Zauberliste E2">Liste 
+            aller Zauber</a> und <a href="Zauberbeschreibungen_E2.html" title="Zauberbeschreibungen E2">Zauberbeschreibungen</a>.
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <table>
+            <tr>
+              <td align="left" style="background-color: #ffffaa">
+                Weiterlesen:
+              </td>
+              <td style="background-color: #ffffcc">
+                <a href="Magiegebiete.html" title="Magiegebiete">Magiegebiete</a>
+              </td>
+            </tr>
+          </table>
+          <!-- 
+NewPP limit report
+Cached time: 20220210145531
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.026 seconds
+Real time usage: 0.027 seconds
+Preprocessor visited node count: 78/1000000
+Preprocessor generated node count: 163/1000000
+Post?expand include size: 138/2097152 bytes
+Template argument size: 24/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 342/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    1.008      1 Vorlage:Weiter
+100.00%    1.008      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1574-0!canonical and timestamp 20220210145531 and revision id 6821
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,527 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Schiff</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Schiff
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            Schiffe werden dem Befehl <a href="MACHE.html" title="MACHE"><tt><b>MACHE</b> 
+            [<i>stufen</i>] <i>schiffstyp</i></tt></a> gebaut. Existierende, 
+            unfertige oder besch&#228;digte Schiffe werden mit <tt><b>MACHE</b> 
+            [<i>stufen</i>] SCHIFF [<i>schiff-nr</i>]</tt> weitergebaut. Daf&#252;r 
+            braucht man Holz. Je komplexer das Schiff, um so schwerer ist es 
+            zu erbauen und zu kommandieren. Dies ist in der Tabelle weiter 
+            unten zusammengefasst. Um mit dem Bau eines Schiffes zu beginnen 
+            oder an einem Schiff weiterzubauen bzw. es zu reparieren, braucht 
+            man mindestens das angegebene Schiffbautalent. In der Tabelle ist 
+            aufgef&#252;hrt, wie viel Holz ben&#246;tigt wird, um ein Schiff zu bauen. 
+            Eine Einheit kann pro Runde (Talentstufe x Personen / 
+            Mindesttalent) Holz verbauen.
+          </p>
+          <p>
+            Auch Schiffe haben Nummern, die man f&#252;r die Befehle gebraucht. 
+            Hier ein Beispiel f&#252;r ein Schiff:
+          </p>
+          <pre>   Stolz der Sieben Winde (18), Langboot, (254/500). Dieses sch&#246;ne
+   Schiff war das erste, welches die H&#228;ndlerfamilie Pl&#246;tzbogen
+   einsetzte.  Kapit&#228;n Gorm steht auf dem Achterdeck und erteilt
+   Befehle an die Matrosen. Er hat alles voll im Griff.</pre>
+          <p>
+            Unter einem Schiff sind die Einheiten einger&#252;ckt, die sich auf dem 
+            Schiff befinden. Die erste Einheit, der Kapit&#228;n, hat das Kommando 
+            &#252;ber das Schiff. Er bestimmt, welche anderen Einheiten das Schiff 
+            betreten d&#252;rfen. Der Kapit&#228;n darf sein Schiff <a href="BENENNE.html" title="BENENNE">umbenennen</a> 
+            oder <a href="BESCHREIBE.html" title="BESCHREIBE">beschreiben</a>, 
+            und er z&#228;hlt auch als Matrose.
+          </p>
+          <p>
+            Im Gegensatz zu Geb&#228;uden k&#246;nnen Schiffe nicht erweitert werden. 
+            Hat man sich also einmal entschlossen, ein Langboot zu bauen, so 
+            kann man dies sp&#228;ter nicht zu einer Karavelle umbauen.
+          </p>
+          <p>
+            <b>Wichtig:</b> Alle Schiffe gr&#246;&#223;er als ein Boot (das betrifft 
+            auch Langboote) k&#246;nnen nur in Ebenen und W&#228;ldern anlegen. Alle 
+            anderen Regionstypen (z.B. Berge, Hochl&#228;nder, S&#252;mpfe) brauchen 
+            einen <a href="Andere_Geb_ude.html" title="Andere Gebäude">Hafen</a>, 
+            damit dort Schiffe anlegen k&#246;nnen. Wenn ein Schiff versucht, in 
+            einer ungeeigneten Region anzulegen, nimmt es <a href="#Schiffsschaden">Schaden</a>. 
+            Ablegen k&#246;nnen Schiffe &#252;berall, man kann also Schiffe in allen 
+            K&#252;stenregionen bauen und dann zu Wasser lassen.
+          </p>
+          <p>
+            Einheiten, die auf einem Schiff auf dem Ozean sind, k&#246;nnen im 
+            Allgemeinen keine langen Befehle ausf&#252;hren. Der Kapit&#228;n des 
+            Schiffes kann nat&#252;rlich jederzeit den Befehl <tt><a href="NACH.html" title="NACH">NACH</a></tt> 
+            bzw. <tt><a href="ROUTE.html" title="ROUTE">ROUTE</a></tt> geben, 
+            um das Schiff zu steuern. Lediglich Meermenschen k&#246;nnen auch auf 
+            dem Ozean lange Befehle ausf&#252;hren, wobei manche nat&#252;rlich unsinnig 
+            sind, wie z.B. <tt><a href="TREIBE.html" title="TREIBE">TREIBE</a></tt>, 
+            <tt><a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTE</a></tt> 
+            oder <a href="MACHE.html" title="MACHE"><tt>MACHE HOLZ</tt></a>. 
+            Bis zu 100 Meermenschen k&#246;nnen in einer Ozean-Region mit dem 
+            Befehl <tt><a href="ARBEITE.html" title="ARBEITE">ARBEITE</a></tt> 
+            je 10 Silber verdienen.
+          </p>
+          <p>
+            Befindet sich das Schiff an Land, k&#246;nnen alle Einheiten an Bord 
+            etwas tun; sie gehen sozusagen zur Arbeit an Land. Dies k&#246;nnen sie 
+            auch noch dann, wenn das Schiff in der selben Runde ablegt. Sie 
+            k&#246;nnen, wenn die Region von einer nicht-alliierten Partei bewacht 
+            wird, allerdings kein Geld verdienen, weder mit ARBEITE, 
+            UNTERHALTE noch mit TREIBE.
+          </p>
+          <p>
+            Ist ein Schiff zu schwer beladen, kann es nicht ablegen. Ist es 
+            auf See, treibt es ab. Bei eigenen Schiffen steht hinter dem 
+            Schiffstyp die Beladung und die Kapazit&#228;t (im Beispiel 254 
+            Gewichtseinheiten von 500).
+          </p>
+          <table border="0" cellpadding="3" cellspacing="0">
+            <caption>
+              Schiffe - Reichweite, Kapazit&#228;t, Talente 
+            </caption>
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Typ
+              </th>
+              <th>
+                Reichweite
+              </th>
+              <th>
+                Kapazit&#228;t
+              </th>
+              <th>
+                Kapit&#228;n/Besatzung
+              </th>
+              <th>
+                Bautalent
+              </th>
+              <th>
+                Bauholz
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Boot
+              </td>
+              <td align="right">
+                2
+              </td>
+              <td align="right">
+                50
+              </td>
+              <td align="right">
+                1/2
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                5
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Langboot
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="right">
+                1/10
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                50
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Drachenschiff
+              </td>
+              <td align="right">
+                5*
+              </td>
+              <td align="right">
+                1000
+              </td>
+              <td align="right">
+                2/50
+              </td>
+              <td align="right">
+                2
+              </td>
+              <td align="right">
+                100
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Karavelle
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                3000
+              </td>
+              <td align="right">
+                3/30
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                250
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Trireme
+              </td>
+              <td align="right">
+                7
+              </td>
+              <td align="right">
+                2000
+              </td>
+              <td align="right">
+                4/120
+              </td>
+              <td align="right">
+                4
+              </td>
+              <td align="right">
+                200
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Galeone
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                20000
+              </td>
+              <td align="right">
+                5/250**
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                2000
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                * Drachenschiffgeschwindigkeit abh&#228;ngig vom Kapit&#228;nstalent
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                ** F&#252;r das Gesamttalent der Galeone werden nur Einheiten ab T2 
+                in Segeln herangezogen
+              </td>
+            </tr>
+          </table>
+          <table border="0" cellpadding="3" cellspacing="0">
+            <caption>
+              Drachenschiffgeschwindigkeit 
+            </caption>
+            <tr style="background-color: #aaaaaa">
+              <td>
+                Kapit&#228;n
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                6
+              </td>
+              <td>
+                18
+              </td>
+              <td>
+                54
+              </td>
+              <td>
+                162
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th>
+                Reichweite
+              </th>
+              <th>
+                5
+              </th>
+              <th>
+                6
+              </th>
+              <th>
+                7
+              </th>
+              <th>
+                8
+              </th>
+              <th>
+                9
+              </th>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <div align="center" style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: black; border-bottom-style: solid; border-bottom-width: 0px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px">
+            <small><b><a href="Das_dritte_Zeitalter.html" title="Das dritte Zeitalter">E3A 
+            &#8212; Das Dritte Zeitalter</a></b></small>
+          </div>
+          <div style="border-top-color: black; border-top-style: solid; border-top-width: 0px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-left: 5px">
+            Schiffe wurden in E3 komplett &#252;berarbeitet. Bitte lest dazu 
+            Folgendes: <a href="Das_dritte_Zeitalter.html#Schiffe" title="Das dritte Zeitalter">Schiffe 
+            in E3</a>
+          </div>
+          <h2>
+            <span class="mw-headline" id="Schiffsschaden">Schiffsschaden</span>
+          </h2>
+          <p>
+            Eine Seereise ist gef&#228;hrlich, und Schiffe k&#246;nnen auf hoher See - 
+            oder wenn sich niemand um sie k&#252;mmert - Schaden nehmen. Au&#223;erdem 
+            gibt es in den Meeren Seeschlagen, die vorbeifahrende Schiffe 
+            angreifen und dadurch Schaden verursachen k&#246;nnen.
+          </p>
+          <p>
+            Der Schaden wird in Prozent angegeben und reduziert die Kapazit&#228;t 
+            prozentual um den angegebenen Schaden; es wird abgerundet. Die 
+            Geschwindigkeit, inklusive aller Beschleunigungsboni 
+            (Meermenschenkapit&#228;n, Artefakte, Zauber), wird ebenfalls 
+            prozentual reduziert; hierbei wird jedoch stets aufgerundet.
+          </p>
+          <p>
+            Beispiel: Ein Boot mit Meermenschenkapit&#228;n ist zu 17% besch&#228;digt.
+          </p>
+          <ul>
+            <li>
+              Die Kapazit&#228;t reduziert sich dadurch auf (50)*0,83=41,5 
+              (abrunden) 41GE.
+            </li>
+            <li>
+              Die Geschwindigkeit (1+2)*0,83=2,49 (aufrunden) bleibt also bei 
+              3.
+            </li>
+          </ul>
+          <p>
+            Nimmt ein Schiff 100% Schaden, so sinkt es mit Mann und Maus. Bei 
+            folgenden Ereignissen nimmt ein Schiff Schaden:
+          </p>
+          <ul>
+            <li>
+              das Schiff ist in einen Kampf verwickelt 0%-20% (siehe <a class="mw-redirect" href="Krieg.html#Kampf_auf_und_von_Schiffen" title="Kampf auf Schiffen">Kampf 
+              auf Schiffen</a>)
+            </li>
+            <li>
+              das Schiff wird durch einen m&#228;chtigen Zauber besch&#228;digt (bis 90%)
+            </li>
+            <li>
+              das Schiff nimmt durch Flutwellen Sch&#228;den (50%)
+            </li>
+            <li>
+              wenn das Schiff auf Klippen aufl&#228;uft, nimmt es 10% Schaden
+            </li>
+            <li>
+              ist das Schiff auf See nicht ausreichend bemannt, nimmt es 30% 
+              Schaden
+            </li>
+            <li>
+              ist das Schiff ohne Besitzer, nimmt es 5% Schaden
+            </li>
+            <li>
+              treibt das Schiff ab, nimmt es 2% Schaden
+            </li>
+            <li>
+              ist das Schiff deutlich &#252;berladen (10%-400%+) nimmt es 5%-37% 
+              Schaden
+            </li>
+          </ul>
+          <p>
+            Ein Schaden am Schiff kann mit <a href="MACHE.html" title="MACHE"><tt><b>MACHE</b> 
+            [<i>stufen</i>] SCHIFF [<i>schiff-nr</i>]</tt></a> ausgebessert 
+            werden, genauso, als sei das Schiff noch nicht fertig gebaut.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Konvoi">Konvoi</span>
+          </h2>
+          <p>
+            Analog dazu, wie man mehrere Personen in einer Einheit haben kann, 
+            bestehen Konvois aus mehreren Schiffen des gleichen Typs, zum 
+            Beispiel
+          </p>
+          <pre>   Karavelle (2seh), 73 Karavellen, (12776/85410), 61% besch&#228;digt.</pre>
+          <p>
+            Daf&#252;r <a href="GIB.html" title="GIB">&#252;bergibt</a> man 
+            dem Kapit&#228;n eines Schiffes ein oder mehr Schiffe des gleichen Typs 
+            mit dem Befehl 'GIB capt 1 SCHIFF'. Die empfangende Einheit wird 
+            Kommandant eines Konvois. Die &#252;bergebende und empfangende Einheit 
+            m&#252;ssen der selben Partei angeh&#246;ren, HELFE ALLES oder KONTAKTIERE 
+            gen&#252;gt nicht. Der Kapit&#228;n eines Konvois kommandiert alle seine 
+            Schiffe gemeinsam und muss daf&#252;r das Mindesttalent f&#252;r den 
+            Schiffstyp haben und eine Person pro Schiff. Das Gesamttalent der 
+            Matrosen muss ebenfalls ein Vielfaches entsprechend der Anzahl 
+            Schiffe sein. Die Reichweite entspricht der des Schiffstyps, 
+            maximaler Schaden und Traglast vergr&#246;&#223;ern sich entsprechend der 
+            Anzahl Schiffe.
+          </p>
+          <p>
+            Beispiel: Ein Konvoi aus 3 Karavellen ben&#246;tigt einen Kapit&#228;n mit 
+            mindestens 3 Personen mit Segeln T3, und Matrosen mit 90 Stufen 
+            Gesamttalent. Sie haben wie zuvor eine Reichweite von 5 Feldern, 
+            aber eine Kapazit&#228;t von 9000 GE. Es ist also z.B. folgende 
+            Konstellation erlaubt und seet&#252;chtig:
+          </p>
+          <pre> Karavelle (2seh), 3 Karavellen, (9000/9000).
+   * Kapit&#228;n (k29), 3 Menschen, Talente: Segeln 3.
+   * Segler (2ztf), 9 Menschen, Talente: Segeln 9.
+   * Horde (770L), 888 Menschen.</pre>
+          <p>
+            Wie man sieht, kann man also in einem Konvoi gro&#223;e Einheiten 
+            bewegen, ohne sie auf einzelne Schiffe zu verteilen. Konvois 
+            verhalten sich ansonsten wie ein normales Schiff. Der ganze Konvoi 
+            treibt beispielsweise gemeinsam ab, nimmt als Ganzes Schaden und 
+            das Kommando kann &#252;bergeben werden.
+          </p>
+          <p>
+            Boote sind von dieser Regel ausgeschlossen und die Schiffe eines 
+            Konvois m&#252;ssen vom gleichen Typ sein, es sind also beispielsweise 
+            keine Mischungen aus Triremen und Karavellen erlaubt.
+          </p>
+          <p>
+            Besch&#228;digte oder unvollst&#228;ndige Schiffe k&#246;nnen ebenfalls &#252;bergeben 
+            werden, der Zustand wirkt sich dann anteilig auf den Konvoi aus. 
+            Wird ein Schiff mit 8% Schaden an einen Konvoi aus 3 Schiffen 
+            &#252;bergeben, besteht der Konvoi danach aus 4 Schiffen mit 2% 
+            Schaden. Wird auch nur ein im Bau befindliches Schiff &#252;bergeben, 
+            befindet sich der ganze Konvoi danach im Bau und kann erst nach 
+            Fertigstellung segeln. Ein 50% fertiges Schiff (im Bau) und ein 
+            fertiges gibt zwei 75% fertige Schiffe (im Bau).
+          </p>
+          <p>
+            Mit dem selben Befehl kann man auch Schiffe aus einem Konvoi 
+            wieder heraus l&#246;sen. Die Schiffe oder Konvois der Geber- und 
+            Empf&#228;ngereinheit m&#252;ssen an der gleichen K&#252;ste liegen oder sich auf 
+            dem Ozean befinden. Die empfangende Einheit muss entweder Kapit&#228;n 
+            eines Schiffes sein &#8212; dann wird das Schiff zu deren Konvoi 
+            hinzugef&#252;gt &#8212; oder auf dem gleichen Schiff wie die gebende Einheit 
+            sein oder nicht in einem Schiff oder in einem Geb&#228;ude sein.
+          </p>
+          <p>
+            Man kann auch Schiffe an die Bauern &#252;bergeben: GIB 0 2 SCHIFF 
+            erzeugt einen neuen Konvoi mit 2 Schiffen, auf dem keine Personen 
+            sind. Ein Konvoikommandant kann an Land auch nicht alle seine 
+            Schiffe an die Bauern &#252;bergeben, er muss immer mindestens eines 
+            behalten.
+          </p>
+          <p>
+            Wenn nach der &#220;bergabe die &#252;bergebende Einheit selber keine 
+            Schiffe mehr hat, steigen automatisch alle Einheiten, die vorher 
+            mit ihr gefahren sind, auf die Schiffe der Zieleinheit um.
+          </p>
+          <p>
+            Konvois k&#246;nnen nicht verzaubert werden, verzauberte Schiffe k&#246;nnen 
+            nicht &#252;bergeben werden und an Besitzer bezauberter Schiffe k&#246;nnen 
+            keine weiteren Schiffe &#252;bergeben werden.
+          </p>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: Solthar</small> 
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Eine leere Einheit kann nichts &#252;bergeben. Deshalb bei 
+                folgenden Befehlen die Reihenfolge wichtig:
+
+                <pre>  GIB 123 1 SCHIFF
+  GIB 123 ALLES PERSONEN</pre>
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <h2>
+            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+          </h2>
+          <ul>
+            <li>
+              <a href="Schiffsreise.html" title="Schiffsreise">Schiffsreise</a>
+            </li>
+            <li>
+              <a href="GIB.html" title="GIB">GIB</a>
+            </li>
+          </ul>
+          <p>
+            <br>
+            
+          </p>
+          <table>
+            <tr>
+              <td align="left" style="background-color: #ffffaa">
+                Weiterlesen:
+              </td>
+              <td style="background-color: #ffffcc">
+                <a href="Geb_ude.html" title="Gebäude">Geb&#228;ude</a>
+              </td>
+            </tr>
+          </table>
+          <!-- 
+NewPP limit report
+Cached time: 20220210170445
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.020 seconds
+Real time usage: 0.020 seconds
+Preprocessor visited node count: 56/1000000
+Preprocessor generated node count: 221/1000000
+Post?expand include size: 834/2097152 bytes
+Template argument size: 286/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 3/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    2.860      1 -total
+ 32.79%    0.938      1 Vorlage:E3A
+ 31.89%    0.912      1 Vorlage:Weiter
+ 29.16%    0.834      1 Vorlage:Geruecht
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1607-0!canonical and timestamp 20220210170444 and revision id 7239
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

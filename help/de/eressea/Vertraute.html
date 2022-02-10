@@ -1,0 +1,3434 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Vertraute</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Vertraute
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <span style="background-color: yellow; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null"><b>(Achtung, 
+            diese Seite befindet sich im Aufbau! Hier sollen die Infos aus dem 
+            Code &amp; Discord zusammengetragen werden, damit sie f&#252;r alle Spieler 
+            zug&#228;nglich sind)</b></span>
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <div class="toc" id="toc">
+            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+            
+
+            <div class="toctitle" dir="ltr" lang="de">
+              <h2>
+                Inhaltsverzeichnis
+              </h2>
+              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+              </span>
+            </div>
+            <ul>
+              <li class="toclevel-1 tocsection-1">
+                <a href="#Vertrautenrassen"><span class="tocnumber">1</span> <span class="toctext">Vertrautenrassen</span></a>
+
+                <ul>
+                  <li class="toclevel-2 tocsection-2">
+                    <a href="#Adler"><span class="tocnumber">1.1</span> <span class="toctext">Adler</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-3">
+                    <a href="#D.C3.A4mon"><span class="tocnumber">1.2</span> <span class="toctext">D&#228;mon</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-4">
+                    <a href="#Delphin"><span class="tocnumber">1.3</span> <span class="toctext">Delphin</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-5">
+                    <a href="#Einhorn"><span class="tocnumber">1.4</span> <span class="toctext">Einhorn</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-6">
+                    <a href="#Eule"><span class="tocnumber">1.5</span> <span class="toctext">Eule</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-7">
+                    <a href="#Fee"><span class="tocnumber">1.6</span> <span class="toctext">Fee</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-8">
+                    <a href="#Geist"><span class="tocnumber">1.7</span> <span class="toctext">Geist</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-9">
+                    <a href="#Goblin"><span class="tocnumber">1.8</span> <span class="toctext">Goblin</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-10">
+                    <a href="#H.C3.B6llenkatze"><span class="tocnumber">1.9</span> 
+                    <span class="toctext">H&#246;llenkatze</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-11">
+                    <a href="#Krake"><span class="tocnumber">1.10</span> <span class="toctext">Krake</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-12">
+                    <a href="#Luchs"><span class="tocnumber">1.11</span> <span class="toctext">Luchs</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-13">
+                    <a href="#Nymphe"><span class="tocnumber">1.12</span> <span class="toctext">Nymphe</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-14">
+                    <a href="#Ratte"><span class="tocnumber">1.13</span> <span class="toctext">Ratte</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-15">
+                    <a href="#Riesenschildkr.C3.B6te"><span class="tocnumber">1.14</span> 
+                    <span class="toctext">Riesenschildkr&#246;te</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-16">
+                    <a href="#Singdrache"><span class="tocnumber">1.15</span> <span class="toctext">Singdrache</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-17">
+                    <a href="#Teufelchen"><span class="tocnumber">1.16</span> <span class="toctext">Teufelchen</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-18">
+                    <a href="#Tiger"><span class="tocnumber">1.17</span> <span class="toctext">Tiger</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-19">
+                    <a href="#Traumkatze"><span class="tocnumber">1.18</span> <span class="toctext">Traumkatze</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-20">
+                    <a href="#Tunnelwurm"><span class="tocnumber">1.19</span> <span class="toctext">Tunnelwurm</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-21">
+                    <a href="#Wolf"><span class="tocnumber">1.20</span> <span class="toctext">Wolf</span></a>
+                  </li>
+                </ul>
+              </li>
+              <li class="toclevel-1 tocsection-22">
+                <a href="#Talentmodifikation"><span class="tocnumber">2</span> <span class="toctext">Talentmodifikation</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-23">
+                <a href="#Zuteilung_von_Vertrauten"><span class="tocnumber">3</span> 
+                <span class="toctext">Zuteilung von Vertrauten</span></a>
+              </li>
+            </ul>
+          </div>
+          <h1>
+            <span class="mw-headline" id="Vertrautenrassen">Vertrautenrassen</span>
+          </h1>
+          <p>
+            Die Welt und die Magie Eresseas kennt verschiedene Rassen, die 
+            sich einem Magier als Vertraute anschlie&#223;en k&#246;nnen
+          </p>
+          <h2>
+            <span class="mw-headline" id="Adler">Adler</span>
+          </h2>
+          <p>
+            Der Adler ist ein ausgezeichneter Sp&#228;her, fliegend &#252;berquert er 
+            sogar kurze Meerengen, doch ist er hoch oben am Himmel auch sehr 
+            exponiert, was ihn beim Rasten zu einem leichten Ziel macht.
+          </p>
+          <p>
+            15 Trefferpunkte, Magieresistenz 0, Angriff: 6, Verteidigung: 2. 2 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (2d3). 
+            Magie +0, Spionage +0, Wahrnehmung +2, Ausdauer +0 und Waffenloser 
+            Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="D.C3.A4mon">D&#228;mon</span>
+          </h2>
+          <p>
+            <a href="Rassen.html#D.C3.A4monen" title="Rassen">D&#228;monen</a> 
+            sind grausam und unberechenbar. Sie fressen die Bauern der 
+            Umgebung und &#252;berraschen immer wieder mit neuen F&#228;higkeiten oder 
+            deren Verlust.
+          </p>
+          <p>
+            50 Trefferpunkte, Magieresistenz 15, Angriff: -2, Verteidigung: 
+            -2, R&#252;stung: 2. Kann Waffen benutzen. 3 Angriffe: ein magischer 
+            Angriff, ein Angriff mit der Waffe oder unbewaffnet (1d5), ein 
+            magischer Angriff. Alchemie +2, Armbrustschie&#223;en +0, Bergbau +0, 
+            Bogenschie&#223;en +0, Burgenbau +0, Handeln -3, Holzf&#228;llen +1, 
+            Katapultbedienung +0, Kr&#228;uterkunde -3, Magie +1, Pferdedressur -3, 
+            Reiten -1, R&#252;stungsbau +0, Schiffbau -1, Hiebwaffen +1, Segeln -1, 
+            Stangenwaffen +1, Spionage +0, Steinbau +0, Stra&#223;enbau +0, Taktik 
+            -1, Tarnung +1, Unterhaltung -3, Waffenbau +1, Wagenbau -2, 
+            Wahrnehmung +1, Steuereintreiben +1 und Ausdauer +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Delphin">Delphin</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            24 Trefferpunkte, Magieresistenz 0, Angriff: 5, Verteidigung: 5. 2 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (1d6). 
+            Magie +0, Spionage +0, Taktik +0, Tarnung +0, Wahrnehmung +1, 
+            Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Einhorn">Einhorn</span>
+          </h2>
+          <p>
+            Dieses mystische Wesen lebt bevorzugt in den tiefsten W&#228;ldern und 
+            vermag sich hervorragend vor den Augen anderer zu verbergen. Nur 
+            selten schlie&#223;t sich ein Einhorn einem Magier an, jedoch wenn das 
+            geschieht ist es ein m&#228;chtiger Verb&#252;ndeter, der auch &#252;ber eigene 
+            Magie verf&#252;gt.
+          </p>
+          <p>
+            40 Trefferpunkte, Magieresistenz 90, Angriff: 6, Verteidigung: 4. 
+            3 Angriffe: ein magischer Angriff, ein unbewaffneter Angriff 
+            (3d12), ein unbewaffneter Angriff (2d4). Magie +2, Spionage +0, 
+            Taktik +0, Tarnung +4, Wahrnehmung +5, Ausdauer +0 und Waffenloser 
+            Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Eule">Eule</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            9 Trefferpunkte, Magieresistenz 0, Angriff: 2, Verteidigung: 4. 2 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (1d4). 
+            Magie +0, Spionage +1, Tarnung +1, Wahrnehmung +5, Ausdauer +0 und 
+            Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Fee">Fee</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            6 Trefferpunkte, Magieresistenz 80, Angriff: 6, Verteidigung: 14. 
+            Kann Waffen benutzen. 5 Angriffe: ein magischer Angriff, ein 
+            unbewaffneter Angriff (1d3), ein unbewaffneter Angriff (1d3), ein 
+            unbewaffneter Angriff (1d3), ein unbewaffneter Angriff (1d3). 
+            Magie +1, Reiten -1, Hiebwaffen -1, Stangenwaffen -1, Spionage +2, 
+            Tarnung +5, Wahrnehmung +2, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Geist">Geist</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            30 Trefferpunkte, Magieresistenz 100, Angriff: 5, Verteidigung: 8, 
+            R&#252;stung: 5. Kann Waffen benutzen. 6 Angriffe: ein magischer 
+            Angriff, ein unbewaffneter Angriff (1d5), ein unbewaffneter 
+            Angriff (1d5), ein Angriff mit der Waffe oder unbewaffnet (2d6), 
+            ein magischer Angriff, ein magischer Angriff. Magie +1, Reiten -2, 
+            Hiebwaffen +0, Stangenwaffen +0, Spionage +0, Tarnung +0, 
+            Wahrnehmung +0, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Goblin">Goblin</span>
+          </h2>
+          <p>
+            <a href="Rassen.html#Goblins" title="Rassen">Goblins</a> sind 
+            feige und hinterh&#228;ltig, lieber verstecken sie sich, als dass sie 
+            zur Tat schreiten.
+          </p>
+          <p>
+            16 Trefferpunkte, Magieresistenz -5, Angriff: -2, Verteidigung: 0. 
+            Kann Waffen benutzen. 2 Angriffe: ein magischer Angriff, ein 
+            Angriff mit der Waffe oder unbewaffnet (1d5). Alchemie +1, 
+            Armbrustschie&#223;en +0, Bergbau +1, Bogenschie&#223;en +0, Burgenbau +1, 
+            Handeln -1, Holzf&#228;llen +0, Katapultbedienung +1, Kr&#228;uterkunde +0, 
+            Magie -1, Pferdedressur +0, Reiten +0, R&#252;stungsbau +0, Schiffbau 
+            -2, Hiebwaffen +0, Segeln -2, Stangenwaffen +0, Spionage +0, 
+            Steinbau +0, Stra&#223;enbau -2, Taktik -2, Tarnung +1, Unterhaltung 
+            -1, Waffenbau +0, Wagenbau -1, Wahrnehmung +0, Steuereintreiben +0 
+            und Ausdauer +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="H.C3.B6llenkatze">H&#246;llenkatze</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            40 Trefferpunkte, Magieresistenz 50, Angriff: 6, Verteidigung: 4. 
+            Ist durch Stichwaffen, B&#246;gen und Armbr&#252;ste schwer zu verwunden. 4 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (2d6), 
+            ein unbewaffneter Angriff (1d6), ein unbewaffneter Angriff (1d6). 
+            Magie +0, Spionage +0, Taktik +0, Tarnung +0, Wahrnehmung +1, 
+            Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Krake">Krake</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            300 Trefferpunkte, Magieresistenz 0, Angriff: 7, Verteidigung: 7. 
+            7 Angriffe: ein magischer Angriff, ein unbewaffneter Angriff 
+            (2d10), ein unbewaffneter Angriff (1d10), ein unbewaffneter 
+            Angriff (1d10), ein unbewaffneter Angriff (1d10), ein 
+            unbewaffneter Angriff (1d10), ein unbewaffneter Angriff (1d10). 
+            Magie +0, Spionage +0, Taktik +0, Wahrnehmung +1, Ausdauer +0 und 
+            Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Luchs">Luchs</span>
+          </h2>
+          <p>
+            Der Luchs ist bekannt f&#252;r seine Geschicklichkeit im Verbergen und 
+            Beobachten. Mit ein wenig Geduld kann er zu einem hervorragenden 
+            Sp&#228;her ausgebildet werden. Im Kampf verteidigt er sich mit seinen 
+            scharfen Krallen und wei&#223; seine Gewandheit zu nutzen.
+          </p>
+          <p>
+            20 Trefferpunkte, Magieresistenz 0, Angriff: 4, Verteidigung: 5. 2 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (2d3). 
+            Kr&#228;uterkunde +1, Magie +0, Pferdedressur +1, Spionage +3, Tarnung 
+            +3, Wahrnehmung +4, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Nymphe">Nymphe</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            15 Trefferpunkte, Magieresistenz 90, Angriff: 3, Verteidigung: 1. 
+            Kann Waffen benutzen. 3 Angriffe: ein magischer Angriff, ein 
+            Angriff mit der Waffe oder unbewaffnet (1d4), ein magischer 
+            Angriff. Alchemie +0, Armbrustschie&#223;en +0, Bogenschie&#223;en +2, 
+            Handeln -2, Kr&#228;uterkunde +4, Magie +1, Pferdedressur +5, Reiten 
+            +5, R&#252;stungsbau -2, Hiebwaffen +0, Segeln -2, Stangenwaffen +0, 
+            Spionage +2, Taktik -2, Tarnung +3, Unterhaltung +10, Waffenbau 
+            -2, Wagenbau -2, Wahrnehmung +2, Steuereintreiben -2, Ausdauer -1 
+            und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Ratte">Ratte</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            10 Trefferpunkte, Magieresistenz 0, Angriff: 1, Verteidigung: 1. 3 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (1d4), 
+            ein unbewaffneter Angriff (1d4). Magie +0, Spionage +5, Tarnung 
+            +4, Wahrnehmung +2, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Riesenschildkr.C3.B6te">Riesenschildkr&#246;te</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            900 Trefferpunkte, Magieresistenz 0, Angriff: 10, Verteidigung: 5, 
+            R&#252;stung: 7. 2 Angriffe: ein magischer Angriff, ein unbewaffneter 
+            Angriff (2d50). Magie +0, Spionage +0, Taktik +0, Wahrnehmung +1, 
+            Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Singdrache">Singdrache</span>
+          </h2>
+          <p>
+            Singdrachen sind von der Gr&#246;&#223;e eines ausgewachsenden Tigers. Ihre 
+            F&#228;rbung reicht von schillerndem Rot, &#252;ber dunkles Gr&#252;n bis hin zu 
+            tiefem Schwarz. Alle bekannten Drachen dieser Art weisen eine hohe 
+            Intelligenz und ein hohes Ma&#223; an magischen F&#228;higkeiten auf. Wie 
+            Ihre gro&#223;en Verwandten verf&#252;gen sie &#252;ber einen Feuerodem. Sie 
+            lieben den Gesang und das &#252;ppige Mahl. Von Zeit zu Zeit gehen sie 
+            eine engen magisches Bund zu einem Magier ein. Wenn dies 
+            geschieht, so steht dem Magier ein &#228;u&#223;erst loyaler und lohnender 
+            Vertrauter zur Seite.
+          </p>
+          <p>
+            40 Trefferpunkte, Magieresistenz 99, Angriff: 3, Verteidigung: 1, 
+            R&#252;stung: 1. 5 Angriffe: ein magischer Angriff, ein unbewaffneter 
+            Angriff (2d4), ein unbewaffneter Angriff (2d4), ein unbewaffneter 
+            Angriff (2d4), ein magischer Angriff. Magie +1, Spionage +0, 
+            Tarnung +0, Wahrnehmung +0, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Teufelchen">Teufelchen</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            10 Trefferpunkte, Magieresistenz 50, Angriff: 5, Verteidigung: 4, 
+            R&#252;stung: 1. Kann Waffen benutzen. 5 Angriffe: ein magischer 
+            Angriff, ein unbewaffneter Angriff (1d4), ein unbewaffneter 
+            Angriff (1d4), ein Angriff mit der Waffe oder unbewaffnet (1d4), 
+            ein magischer Angriff. Magie +1, Reiten -1, Hiebwaffen +0, 
+            Stangenwaffen +0, Spionage +1, Tarnung +1, Wahrnehmung +1, 
+            Steuereintreiben +1, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Tiger">Tiger</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            30 Trefferpunkte, Magieresistenz 0, Angriff: 6, Verteidigung: 3. 4 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (2d6), 
+            ein unbewaffneter Angriff (1d6), ein unbewaffneter Angriff (1d6). 
+            Magie +0, Spionage +0, Taktik +0, Tarnung +0, Wahrnehmung +1, 
+            Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Traumkatze">Traumkatze</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            10 Trefferpunkte, Magieresistenz 50, Angriff: 5, Verteidigung: 6. 
+            3 Angriffe: ein magischer Angriff, ein unbewaffneter Angriff 
+            (1d5), ein unbewaffneter Angriff (1d5). Magie +1, Hiebwaffen +0, 
+            Stangenwaffen +0, Spionage +1, Tarnung +1, Wahrnehmung +1, 
+            Steuereintreiben +1, Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Tunnelwurm">Tunnelwurm</span>
+          </h2>
+          <p>
+            Diese aus den Tiefen Eresseas stammende gigantische Gesch&#246;pf ist 
+            dem Leben im Untergrund hervorragend angepasst. Blind, taub und 
+            nicht besonders intelligent, aber mit seinen gewaltigen Kr&#228;ften 
+            kann es ganze Berge versetzen oder W&#228;lder roden.
+          </p>
+          <p>
+            300 Trefferpunkte, Magieresistenz 80, Angriff: 6, Verteidigung: 1, 
+            R&#252;stung: 6. 3 Angriffe: ein magischer Angriff, ein unbewaffneter 
+            Angriff (3d20), ein Angriff, der Geb&#228;udeschaden verursacht (1d10). 
+            Bergbau +10, Holzf&#228;llen +10, Magie +0, Steinbau +10, Ausdauer +2 
+            und Waffenloser Kampf +0
+          </p>
+          <h2>
+            <span class="mw-headline" id="Wolf">Wolf</span>
+          </h2>
+          <p>
+            Keine Informationen &#252;ber diese Rasse verf&#252;gbar.
+          </p>
+          <p>
+            25 Trefferpunkte, Magieresistenz 0, Angriff: 6, Verteidigung: 3. 4 
+            Angriffe: ein magischer Angriff, ein unbewaffneter Angriff (2d6), 
+            ein unbewaffneter Angriff (1d4), ein unbewaffneter Angriff (1d4). 
+            Magie +0, Spionage +0, Taktik +0, Tarnung +0, Wahrnehmung +2, 
+            Ausdauer +0 und Waffenloser Kampf +0
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <h1>
+            <span class="mw-headline" id="Talentmodifikation">Talentmodifikation</span>
+          </h1>
+          <p>
+            Vertraute sind sehr verschieden. Nicht alle Vertraute k&#246;nnen alle 
+            Talente lernen und jede Rasse zeichnet sich durch spezielle 
+            Eigenschaften aus. Einige sind selbst magiebegabt und verf&#252;gen 
+            &#252;ber eigene Aura. Andere sind Meereswesen und gute Schwimmer, 
+            wieder andere k&#246;nnen fliegen und so ebenfalls Ozeane &#252;berqueren. 
+            Die folgende Tabelle soll eine bessere &#220;bersicht &#252;ber die 
+            einzelnen Vertrautenrassen geben. Wenn ein Feld leer ist, dann 
+            kann die Rasse dieses Talent nicht lernen, bzw. hat diese 
+            F&#228;higkeit nicht.
+          </p>
+          <p>
+            <span style="background-color: yellow; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null"><b>Achtung 
+            die Tabelle ist im Aufbau! Ein &quot;?&quot; bedeutet die Information fehlt 
+            noch im Wiki.</b> </span>
+          </p>
+          <table align="center" border="0" cellspacing="1">
+            <tr style="background-color: #aaaaaa">
+              <th width="10%">
+                Eigenschaft
+              </th>
+              <th>
+                Adler
+              </th>
+              <th>
+                D&#228;mon
+              </th>
+              <th>
+                Delphin
+              </th>
+              <th>
+                Einhorn
+              </th>
+              <th>
+                Eule
+              </th>
+              <th>
+                Fee
+              </th>
+              <th>
+                Geist
+              </th>
+              <th>
+                Goblin
+              </th>
+              <th>
+                H&#246;llenkatze
+              </th>
+              <th>
+                Krake
+              </th>
+              <th>
+                Luchs
+              </th>
+              <th>
+                Nymphe
+              </th>
+              <th>
+                Ratte
+              </th>
+              <th>
+                Riesenschildkr&#246;te
+              </th>
+              <th>
+                Singdrache
+              </th>
+              <th>
+                Teufelchen
+              </th>
+              <th>
+                Tiger
+              </th>
+              <th>
+                Traumkatze
+              </th>
+              <th>
+                Tunnelwurm
+              </th>
+              <th>
+                Wolf
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Trefferpunkte
+              </th>
+              <td align="center">
+                15
+              </td>
+              <td align="center">
+                50
+              </td>
+              <td align="center">
+                24
+              </td>
+              <td align="center">
+                40
+              </td>
+              <td align="center">
+                9
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="center">
+                30
+              </td>
+              <td align="center">
+                16
+              </td>
+              <td align="center">
+                40
+              </td>
+              <td align="center">
+                300
+              </td>
+              <td align="center">
+                20
+              </td>
+              <td align="center">
+                15
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                900
+              </td>
+              <td align="center">
+                40
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                30
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                300
+              </td>
+              <td align="center">
+                25
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Gewicht [GE]
+              </th>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                1
+              </td>
+              <td align="center">
+                16
+              </td>
+              <td align="center">
+                10
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                300
+              </td>
+              <td align="center">
+                5
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Kapazit&#228;t [GE]
+              </th>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                20
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                4,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                5,4
+              </td>
+              <td align="center">
+                100
+              </td>
+              <td align="center">
+                5,4
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                nat. R&#252;stung
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                7
+              </td>
+              <td align="center">
+                1
+              </td>
+              <td align="center">
+                1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Magieresistenz
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                15
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                90
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                80
+              </td>
+              <td align="center">
+                100
+              </td>
+              <td align="center">
+                -5
+              </td>
+              <td align="center">
+                50
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                90
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                99
+              </td>
+              <td align="center">
+                50
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                50
+              </td>
+              <td align="center">
+                80
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                eigene Zauber
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                kann sich &#252;ber Land bewegen
+              </th>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ?
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                kann Ozeanfelder betreten
+              </th>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                ja
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                -
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #aaaaaa">
+              <th width="10%">
+                Talent
+              </th>
+              <th>
+                Adler
+              </th>
+              <th>
+                D&#228;mon
+              </th>
+              <th>
+                Delphin
+              </th>
+              <th>
+                Einhorn
+              </th>
+              <th>
+                Eule
+              </th>
+              <th>
+                Fee
+              </th>
+              <th>
+                Geist
+              </th>
+              <th>
+                Goblin
+              </th>
+              <th>
+                H&#246;llenkatze
+              </th>
+              <th>
+                Krake
+              </th>
+              <th>
+                Luchs
+              </th>
+              <th>
+                Nymphe
+              </th>
+              <th>
+                Ratte
+              </th>
+              <th>
+                Riesenschildkr&#246;te
+              </th>
+              <th>
+                Singdrache
+              </th>
+              <th>
+                Teufelchen
+              </th>
+              <th>
+                Tiger
+              </th>
+              <th>
+                Traumkatze
+              </th>
+              <th>
+                Tunnelwurm
+              </th>
+              <th>
+                Wolf
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Alchemie
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Armbrustschie&#223;en
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Ausdauer
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Bergbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +10
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Bogenschie&#223;en
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Burgenbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Handeln
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -3
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Hiebwaffen
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Holzf&#228;llen
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +10
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Katapultbedienung
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Kr&#228;uterkunde
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -3
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +4
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Magie
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Pferdedressur
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -3
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Reiten
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                R&#252;stungsbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Schiffbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Segeln
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Spionage
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Stangenwaffen
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Steinbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +10
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Steuereintreiben
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Stra&#223;enbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Taktik
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Tarnung
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +4
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +3
+              </td>
+              <td align="center">
+                +3
+              </td>
+              <td align="center">
+                +4
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Unterhaltung
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -3
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +10
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Waffenbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Waffenloser Kampf
+              </th>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                -
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                -
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <th align="right" bgcolor="#aaaaaa">
+                Wagenbau
+              </th>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                -2
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <th align="right" bgcolor="#999999">
+                Wahrnehmung
+              </th>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                +5
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +4
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                +2
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                0
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                +1
+              </td>
+              <td align="center">
+                
+              </td>
+              <td align="center">
+                +2
+              </td>
+            </tr>
+          </table>
+          <h1>
+            <span class="mw-headline" id="Zuteilung_von_Vertrauten">Zuteilung 
+            von Vertrauten</span>
+          </h1>
+          <p>
+            Vertraute unterschiedlicher Rassen k&#246;nnen sich dem einem Magier 
+            willk&#252;rlich anschlie&#223;en - allerdings nicht v&#246;llig zuf&#228;llig. Die 
+            Auswahl wird von seinem Magiegebiet seine Rasse und seiner 
+            Magiestufe bestimmt.
+          </p>
+          <p>
+            In der folgenden Tabelle findet sich in der ersten Spalte die 
+            Rasse des Magiers, der einen Vertrauten versucht an sich zu 
+            binden. In der zweiten Spalte findet sich die 
+            Standard-Vertrautenrasse (Prim&#228;rvertrauter), die sich dieser 
+            Magierrasse anschlie&#223;t. In den f&#252;nf darauffolgenden Spalten, 
+            stehen die Rassen, die sich dem Magier bevorzugt anschlie&#223;en, wenn 
+            er in dem jeweiligen Magiegebiet bewandert ist. Mit 50%-100% (je 
+            nach Stufe) wird die Rasse des Magiegebiets gew&#228;hlt, mit ungef&#228;hr 
+            Stufe% eine beliebige, sonst die Prim&#228;rrasse.
+          </p>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: </small>
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Die Angaben zu den Prozentzahlen sind mit Vorsicht zu genie&#223;en 
+                und sollten im Code nochmal gegengecheckt werden!
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <p>
+            Ein Elfenmagier mit Tybied hat also die gr&#246;&#223;ten Chancen auf eine 
+            Eule (Magiegebiet) oder einen Luchs (Prim&#228;rvertrauter), aber eben 
+            auch eine geringere Chance eine zuf&#228;llige Rasse aus der Tabelle zu 
+            bekommen.
+          </p>
+          <table align="center" border="0" cellspacing="1">
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Rasse
+              </th>
+              <th>
+                Prim&#228;rvertrauter
+              </th>
+              <th>
+                Illaun
+              </th>
+              <th>
+                Tybied
+              </th>
+              <th>
+                Cerddor
+              </th>
+              <th>
+                Gwyrrd
+              </th>
+              <th>
+                Draig
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Mensch
+              </td>
+              <td>
+                Wolf
+              </td>
+              <td>
+                Traumkatze
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Adler
+              </td>
+              <td>
+                Teufelchen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Meermensch
+              </td>
+              <td>
+                Riesenschildkr&#246;te
+              </td>
+              <td>
+                Delphin
+              </td>
+              <td>
+                Riesenschildkr&#246;te
+              </td>
+              <td>
+                Delphin
+              </td>
+              <td>
+                Delphin
+              </td>
+              <td>
+                Krake
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Katze
+              </td>
+              <td>
+                Luchs
+              </td>
+              <td>
+                Traumkatze
+              </td>
+              <td>
+                Luchs
+              </td>
+              <td>
+                Singdrache
+              </td>
+              <td>
+                Tiger
+              </td>
+              <td>
+                H&#246;llenkatze
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Halbling
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Adler
+              </td>
+              <td>
+                Singdrache
+              </td>
+              <td>
+                Adler
+              </td>
+              <td>
+                Ratte
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Insekt
+              </td>
+              <td>
+                Geist
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Tunnelwurm
+              </td>
+              <td>
+                Teufelchen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                D&#228;mon
+              </td>
+              <td>
+                Teufelchen
+              </td>
+              <td>
+                Teufelchen
+              </td>
+              <td>
+                Geist
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Wolf
+              </td>
+              <td>
+                Teufelchen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Troll
+              </td>
+              <td>
+                Tunnelwurm
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Adler
+              </td>
+              <td>
+                Tunnelwurm
+              </td>
+              <td>
+                Wolf
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Goblin
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Singdrache
+              </td>
+              <td>
+                Teufelchen
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Teufelchen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Elf
+              </td>
+              <td>
+                Luchs
+              </td>
+              <td>
+                Fee
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Nymphe
+              </td>
+              <td>
+                Einhorn
+              </td>
+              <td>
+                Teufelchen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Zwerg
+              </td>
+              <td>
+                Tunnelwurm
+              </td>
+              <td>
+                Adler
+              </td>
+              <td>
+                Eule
+              </td>
+              <td>
+                Luchs
+              </td>
+              <td>
+                Wolf
+              </td>
+              <td>
+                Ratte
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Ork
+              </td>
+              <td>
+                Goblin
+              </td>
+              <td>
+                Geist
+              </td>
+              <td>
+                Teufelchen
+              </td>
+              <td>
+                Ratte
+              </td>
+              <td>
+                Wolf
+              </td>
+              <td>
+                D&#228;mon
+              </td>
+            </tr>
+          </table>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: </small>
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Das Terrain in dem der Vertraute gerufen wird scheint keinen 
+                Einfluss auf die Vertrautenrasse zu haben.
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: </small>
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Ein Meermensch sollte sich nicht unbedingt neben einen 
+                Binnensee stellen, da der sehr wahrscheinlich schwimmende 
+                Vertraute sonst eventuell in dem kleinen See gefangen sein 
+                k&#246;nnte, ohne jegliche Chance in den Ozean zu reisen. 
+                Allerdings ist bisher auch nicht gut verstanden, inwieweit man 
+                in einer Region ohne Zugang zu einem Ozeanfeld (See oder Meer) 
+                einen schwimmenden Vertrauten rufen kann, oder wie das die 
+                Chancen ver&#228;ndert eine andere Vertrautenrasse zu bekommen.
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <!-- 
+NewPP limit report
+Cached time: 20220210183707
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.089 seconds
+Real time usage: 0.089 seconds
+Preprocessor visited node count: 117/1000000
+Preprocessor generated node count: 210/1000000
+Post?expand include size: 1091/2097152 bytes
+Template argument size: 686/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    1.320      1 -total
+ 89.62%    1.183      3 Vorlage:Geruecht
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:2071-0!canonical and timestamp 20220210183707 and revision id 7083
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

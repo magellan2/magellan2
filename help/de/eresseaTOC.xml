@@ -4,33 +4,178 @@
          "http://java.sun.com/products/javahelp/toc_1_0.dtd">
  
 <toc version="1.0">
-<tocitem text="Eressea Kurzreferenz" image="openbook" target="eressea_intro">
-	<tocitem text="Befehle" image="chapter" target="orders">
-		<tocitem text="Befehlsreihenfolge" image="topic" target="orders_order"/>
-		<tocitem text="Befehlsbeschreibungen" image="topic" target="orders_desc"/>
-		<tocitem text="Liste der Befehle" image="topic" target="orders_list"/>
-	</tocitem>
 
-	<tocitem text="Produktion" image="chapter" target="production">
-		<tocitem text="Alchemie" image="topic" target="production_alchemy"/>
-		<tocitem text="Gebäude" image="topic" target="production_buildings"/>
-		<tocitem text="Gegenstände" image="topic" target="production_items"/>
-		<tocitem text="Regionen" image="topic" target="production_regions"/>
-		<tocitem text="Schiffe" image="topic" target="production_ships"/>
-	</tocitem>
+  <tocitem text="Die Eressea-Regeln" image="openbook" target="Die_Eressea-Regeln">
+    <tocitem text="Regeln" image="topic" target="Regeln"/>
+    <tocitem text="Einleitung" image="topic" target="Einleitung"/>
+    <tocitem text="Die Welt" image="topic" target="Welt"/>
+    <tocitem text="Parteien" image="topic" target="Parteien"/>
+    <tocitem text="Einheiten" image="topic" target="Einheiten"/>
+    <tocitem text="Rassen" image="chapter" target="Rassen">
+      <tocitem text="Talentmodifikatoren" image="topic" target="Talentmodifikatoren"/>
+    </tocitem>
+    <tocitem text="Talente" image="topic" target="Talente"/>
+    <tocitem text="Reisen" image="chapter" target="Reisen">
+      <tocitem text="Pferd und Wagen" image="topic" target="Pferd_und_Wagen"/>
+      <tocitem text="Schiffsreise" image="topic" target="Schiffsreise"/>
+    </tocitem>
+    <tocitem text="Produktion" image="chapter" target="Produktion">
+      <tocitem text="Rohstoffe" image="topic" target="Rohstoffe"/>
+      <tocitem text="Waren" image="topic" target="Waren"/>
+      <tocitem text="Straße" image="topic" target="Stra_e"/>
+      <tocitem text="Schiff" image="topic" target="Schiff"/>
+      <tocitem text="Gebäude" image="chapter" target="Geb_ude">
+        <tocitem text="Burg" image="topic" target="Burg"/>
+        <tocitem text="Andere Gebäude" image="topic" target="Andere_Geb_ude"/>
+      </tocitem>
+    </tocitem>
+    <tocitem text="Geld" image="topic" target="Geld"/>
+    <tocitem text="Der Silber- und Materialpool" image="topic" target="Materialpool"/>
+    <tocitem text="Krieg" image="chapter" target="Krieg">
+      <tocitem text="Kriegstabellen" image="topic" target="Kriegstabellen"/>
+    </tocitem>
+    <tocitem text="Allianz" image="topic" target="Allianz"/>
+    <tocitem text="Magie" image="chapter" target="Magie">
+      <tocitem text="Magiegebiete" image="topic" target="Magiegebiete"/>
+      <tocitem text="Vertraute" image="topic" target="Vertraute"/>
+      <tocitem text="Tränke" image="topic" target="Tr_nke"/>
+      <tocitem text="Kräuter" image="topic" target="Kr_uter"/>
+    </tocitem>
+    <tocitem text="Befehle" image="chapter" target="Befehl">
+      <tocitem text="Befehlsreihenfolge" image="topic" target="Befehlsreihenfolge"/>
+      <tocitem text="Befehlsreihenfolge (E3)" image="topic" target="Befehlsreihenfolge__E3_"/>
+      <tocitem text="Kurzbeschreibung" image="chapter" target="Kurzbeschreibung">
+        <tocitem text=";" image="topic" target="_"/>
+        <tocitem text="KOMMENTAR" image="topic" target="KOMMENTAR"/>
+        <tocitem text="ARBEITE" image="topic" target="ARBEITE"/>
+        <tocitem text="ATTACKIERE" image="topic" target="ATTACKIERE"/>
+        <tocitem text="BANNER" image="topic" target="BANNER"/>
+        <tocitem text="BEANSPRUCHE" image="topic" target="BEANSPRUCHE"/>
+        <tocitem text="BEFÖRDERE" image="topic" target="BEF_RDERE"/>
+        <tocitem text="BEKLAUE" image="topic" target="BEKLAUE"/>
+        <tocitem text="BENENNE" image="topic" target="BENENNE"/>
+        <tocitem text="BENUTZE" image="topic" target="BENUTZE"/>
+        <tocitem text="BESCHREIBE" image="topic" target="BESCHREIBE"/>
+        <tocitem text="BETRETE" image="topic" target="BETRETE"/>
+        <tocitem text="BEWACHE" image="topic" target="BEWACHE"/>
+        <tocitem text="BEZAHLE" image="topic" target="BEZAHLE"/>
+        <tocitem text="BOTSCHAFT" image="topic" target="BOTSCHAFT"/>
+        <tocitem text="DEFAULT" image="topic" target="DEFAULT"/>
+        <tocitem text="EINHEIT" image="topic" target="EINHEIT"/>
+        <tocitem text="EMAIL" image="topic" target="EMAIL"/>
+        <tocitem text="ENDE" image="topic" target="ENDE"/>
+        <tocitem text="ERESSEA" image="topic" target="ERESSEA"/>
+        <tocitem text="FAHRE" image="topic" target="FAHRE"/>
+        <tocitem text="FOLGE" image="topic" target="FOLGE"/>
+        <tocitem text="FORSCHE" image="topic" target="FORSCHE"/>
+        <tocitem text="GIB" image="topic" target="GIB"/>
+        <tocitem text="GRUPPE" image="topic" target="GRUPPE"/>
+        <tocitem text="HELFE" image="topic" target="HELFE"/>
+        <tocitem text="KAMPFZAUBER" image="topic" target="KAMPFZAUBER"/>
+        <tocitem text="KAUFE" image="topic" target="KAUFE"/>
+        <tocitem text="KONTAKTIERE" image="topic" target="KONTAKTIERE"/>
+        <tocitem text="KÄMPFE" image="topic" target="K_MPFE"/>
+        <tocitem text="LEHRE" image="topic" target="LEHRE"/>
+        <tocitem text="LERNE" image="topic" target="LERNE"/>
+        <tocitem text="LERNE AUTO" image="topic" target="LERNE_AUTO"/>
+        <tocitem text="LOCALE" image="topic" target="LOCALE"/>
+        <tocitem text="MACHE" image="topic" target="MACHE"/>
+        <tocitem text="NACH" image="topic" target="NACH"/>
+        <tocitem text="NUMMER" image="topic" target="NUMMER"/>
+        <tocitem text="NÄCHSTER" image="topic" target="N_CHSTER"/>
+        <tocitem text="OPTION" image="topic" target="OPTION"/>
+        <tocitem text="PASSWORT" image="topic" target="PASSWORT"/>
+        <tocitem text="PFLANZE" image="topic" target="PFLANZE"/>
+        <tocitem text="PIRATERIE" image="topic" target="PIRATERIE"/>
+        <tocitem text="PRÄFIX" image="topic" target="PR_FIX"/>
+        <tocitem text="REGION" image="topic" target="REGION"/>
+        <tocitem text="REKRUTIERE" image="topic" target="REKRUTIERE"/>
+        <tocitem text="RESERVIERE" image="topic" target="RESERVIERE"/>
+        <tocitem text="ROUTE" image="topic" target="ROUTE"/>
+        <tocitem text="SABOTIERE" image="topic" target="SABOTIERE"/>
+        <tocitem text="SORTIERE" image="topic" target="SORTIERE"/>
+        <tocitem text="SPIONIERE" image="topic" target="SPIONIERE"/>
+        <tocitem text="SPRACHE" image="topic" target="SPRACHE"/>
+        <tocitem text="STIRB" image="topic" target="STIRB"/>
+        <tocitem text="TARNE" image="topic" target="TARNE"/>
+        <tocitem text="TREIBE" image="topic" target="TREIBE"/>
+        <tocitem text="UNTERHALTE" image="topic" target="UNTERHALTE"/>
+        <tocitem text="URSPRUNG" image="topic" target="URSPRUNG"/>
+        <tocitem text="VERGISS" image="topic" target="VERGISS"/>
+        <tocitem text="VERKAUFE" image="topic" target="VERKAUFE"/>
+        <tocitem text="VERLASSE" image="topic" target="VERLASSE"/>
+        <tocitem text="ZAUBERE" image="topic" target="ZAUBERE"/>
+        <tocitem text="ZEIGE" image="topic" target="ZEIGE"/>
+        <tocitem text="ZERSTÖRE" image="topic" target="ZERST_RE"/>
+        <tocitem text="ZÜCHTE" image="topic" target="Z_CHTE"/>
+      </tocitem>
+    </tocitem>
+    <tocitem text="Der erste Zug" image="chapter" target="Der_erste_Zug">
+      <tocitem text="Welpenschutz" image="topic" target="Welpenschutz"/>
+    </tocitem>
+    <tocitem text="Befehle einschicken" image="chapter" target="Befehle_einschicken">
+      <tocitem text="CSMap" image="topic" target="CSMap"/>
+      <tocitem text="ECheck" image="topic" target="ECheck"/>
+      <tocitem text="EHMV" image="topic" target="EHMV"/>
+      <tocitem text="Magellan" image="chapter" target="Magellan">
+        <tocitem text="Befehle von Magellan verschicken" image="topic" target="Befehle_von_Magellan_verschicken"/>
+        <tocitem text="ExtendedCommands" image="topic" target="ExtendedCommands"/>
+        <tocitem text="FFTools2" image="topic" target="FFTools2"/>
+      </tocitem>
+      <tocitem text="Vorlage" image="topic" target="Vorlage"/>
+    </tocitem>
+    <tocitem text="Hinweise" image="topic" target="Hinweise"/>
+    <tocitem text="Xontormia Express" image="topic" target="Xontormia_Express"/>
+    <tocitem text="Danksagung" image="topic" target="Danksagung"/>
+    <tocitem text="FAQ" image="topic" target="FAQ"/>
+    <tocitem text="Das dritte Zeitalter" image="topic" target="Das_dritte_Zeitalter"/>
+    <tocitem text="Anhang" image="chapter" target="Anhang">
+      <tocitem text="Liste der Talente" image="topic" target="Liste_der_Talente"/>
+      <tocitem text="Tabellen: Tränke und Kräuter" image="topic" target="Tabellen__Tr_nke_und_Kr_uter"/>
+      <tocitem text="Zauberliste" image="topic" target="Zauberliste_E2"/>
+      <tocitem text="Zauberbeschreibungen" image="chapter" target="Zauberbeschreibungen_E2">
+        <tocitem text="Cerddorzauber" image="topic" target="Cerddorzauber"/>
+        <tocitem text="Draigzauber" image="topic" target="Draigzauber"/>
+        <tocitem text="Gwyrrdzauber" image="topic" target="Gwyrrdzauber"/>
+        <tocitem text="Illaunzauber" image="topic" target="Illaunzauber"/>
+        <tocitem text="Tybiedzauber" image="topic" target="Tybiedzauber"/>
+      </tocitem>
+      <tocitem text="Zauberliste E3" image="topic" target="Zauberliste_E3"/>
+      <tocitem text="Zauberbeschreibungen E3" image="chapter" target="Zauberbeschreibungen_E3">
+        <tocitem text="Geländearten" image="topic" target="Gel_ndearten"/>
+        <tocitem text="Kampfmodifikatoren" image="topic" target="Kampfmodifikatoren"/>
+      </tocitem>
+      <tocitem text="CR-Format" image="topic" target="CR_Format"/>
+      <tocitem text="Atlantis" image="topic" target="Atlantis"/>
+      <tocitem text="Atlantis-Regeln" image="topic" target="Atlantis-Regeln"/>
+    </tocitem>
+    <tocitem text="Apokryphen" image="chapter" target="Apokryphen">
+      <tocitem text="Anfängertipps" image="topic" target="Anf_ngertipps"/>
+      <tocitem text="Tipps und Tricks" image="topic" target="Tipps_und_Tricks"/>
+      <tocitem text="Tarnung" image="topic" target="Tarnung"/>
+      <tocitem text="Wahrnehmung" image="topic" target="Wahrnehmung"/>
+      <tocitem text="Taktik" image="topic" target="Taktik"/>
+      <tocitem text="Weihnachten" image="chapter" target="Weihnachten">
+        <tocitem text="Adamantium" image="topic" target="Adamantium"/>
+        <tocitem text="Mistelzweig" image="topic" target="Mistelzweig"/>
+        <tocitem text="Sonnensegel" image="topic" target="Sonnensegel"/>
+        <tocitem text="Schneemann" image="topic" target="Schneemann"/>
+        <tocitem text="Sternenstaub" image="topic" target="Sternenstaub"/>
+        <tocitem text="Weihnachtsbaum" image="topic" target="Weihnachtsbaum"/>
+      </tocitem>
+      <tocitem text="Monster" image="chapter" target="Monster">
+        <tocitem text="Drachen" image="topic" target="Drachen"/>
+        <tocitem text="Untote" image="topic" target="Untote"/>
+      </tocitem>
+      <tocitem text="Bauernvermehrung" image="topic" target="Bauernvermehrung"/>
+      <tocitem text="Bauernwanderung" image="topic" target="Bauernwanderung"/>
+      <tocitem text="Bewaffnet" image="topic" target="Bewaffnet"/>
+    </tocitem>
+    <tocitem text="Geschichte von Eressea" image="chapter" target="Geschichte_von_Eressea">
+      <tocitem text="Ankündigungen" image="topic" target="Ank_ndigungen"/>
+      <tocitem text="Ankündigungen E3" image="topic" target="Ank_ndigungen__E3_"/>
+      <tocitem text="Ankündigungen E2" image="topic" target="Ank_ndigungen__E2_"/>
+    </tocitem>
+  </tocitem>
 
-	<tocitem text="Talente" image="chapter" target="skill">
-		<tocitem text="Talentliste" image="topic" target="skill_list"/>
-		<tocitem text="Lerntage" image="topic" target="skill_days"/>
-		<tocitem text="Boni und Mali" image="topic" target="skill_races"/>
-	</tocitem>
-
-	<tocitem text="Kampf" image="chapter" target="battle">
-		<tocitem text="Waffen" image="topic" target="battle_weapons"/>
-		<tocitem text="Rüstungen" image="topic" target="battle_armors"/>
-		<tocitem text="Trefferpunkte/Magieresistenz" image="topic" target="battle_hitpoints"/>
-	</tocitem>
-</tocitem>
 </toc>
-
-<!-- $Id: eresseaTOC.xml 8 2003-10-12 21:05:43Z eressea $ -->

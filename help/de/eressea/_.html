@@ -1,0 +1,110 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>;</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      ;
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            Das Semikolon &quot;;&quot; dient in Eressea-Befehlen der Markierung 
+            (tempor&#228;rer) Kommentare. Einige dieser Kommentare werden 
+            &quot;automatisch&quot; eingef&#252;gt. Die Standard-Zugvorlage enth&#228;lt zum 
+            Beispiel immer die Namen von Regionen und Einheiten, die Anzahl 
+            der Personen und deren Silbervorrat als Kommentar. Au&#223;erden werden 
+            Kommentare auch genutzt, um dem Programm <a class="new" href="/index.php?title=ECHECK&action=edit&redlink=1" title="ECHECK (Seite nicht vorhanden)">ECHECK</a> 
+            bestimmte Informationen mitzuteilen, wie etwa den Lohn in einer 
+            Region.
+          </p>
+          <pre>   ERESSEA abcd &quot;hier_passwort_eintragen&quot;
+   
+   ; ECHECK -l -w4 -r90 -v4.01
+   
+   REGION 85,-48&#160;; Dunkelland
+   ; ECheck Lohn 15
+   
+   EINHEIT ub2;    Handwerker [3,30$]
+     LERNEN Holzf&#228;llen
+     // LERNEN Schiffbau AUF T2 oder 3</pre>
+          <p>
+            Verwendet man das Programm <tt><a href="Vorlage.html" title="Vorlage">Vorlage</a></tt> 
+            zur Erzeugung einer Zugvorlage, so werden &#252;ber diese Kommentare 
+            vielf&#228;ltige Informationen an den Spieler &#252;bermittelt:
+          </p>
+          <pre>    REGION 85,-48&#160;; Dunkelland (Ebene, 290 Personen, 4270$ Silber) 
+    ; ECheck Lohn 15
+    ;  . .  |Bauern:       8534 +9|Silber: 47588297 +48400|Unterhalt: 2379414 +2420|
+    ; . E w |Rekruten:      213 +0|Pferde:     2532     -8|Gewinn:      51204   +54|
+    ;  . .  |Pl. frei:     1466 -9|                       |                        |
+    ;       |Gew&#252;rz:        125 +0|Juwel:       175     +0|Myrrhe:        125    +0|
+    ;       |&#214;l:             75 +0|Seide:       150     +0|Weihrauch:     100    +0|
+    ; Prod.: Balsam:     -4   +0    max. handelbar: 85
+    ; Stra&#223;e (100%) in Osten
+    ; Regionseinnahmen:  2660 Silber
+    ; Nahrungskosten:    2900 Silber
+    ; Materialpool: 4270 Silber, 1 Speer
+   
+    ; -   -   -   -   -   -   -   -   -   -   -   -
+    ; Auf freiem Feld:
+   
+     EINHEIT ub2;  Handwerker [3,0$] flieht
+     ; Gew: 60.00GE  Gehen: 32.40GE/32.40GE
+     ; Holzf&#228;llen 2
+       LERNEN Holzf&#228;llen
+       // LERNEN Holzf&#228;llen AUF T3</pre>
+          <p>
+            Auch der Spieler selbst kann hinter einem Semikolon Kommentare 
+            einf&#252;gen. Da diese Kommentare aber nicht in die Vorlage der 
+            n&#228;chsten Woche &#252;bernommen werden, sind dauerhafte Kommentare nach <a href="KOMMENTAR.html" title="KOMMENTAR">//</a> 
+            in der Regel sinnvoller.
+          </p>
+          <p>
+            Um &#220;bertragungskapazit&#228;t zu sparen, k&#246;nnen tempor&#228;re Kommentare 
+            vor dem Versenden der Befehle entfernt werden. Dies erledigt z.B. <a class="new" href="/index.php?title=VPP&action=edit&redlink=1" title="VPP (Seite nicht vorhanden)">VPP</a>.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Externe_Links">Externe Links</span>
+          </h2>
+          <ul>
+            <li>
+              <a class="external text" href="http://www.gulrak.de/eressea/tools.html" rel="nofollow">Vorlage 
+              und VPP auf Gulrak.de</a>
+            </li>
+          </ul>
+          <!-- 
+NewPP limit report
+Cached time: 20220210201635
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.005 seconds
+Real time usage: 0.006 seconds
+Preprocessor visited node count: 3/1000000
+Preprocessor generated node count: 8/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1673-0!canonical and timestamp 20220210201635 and revision id 5875
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

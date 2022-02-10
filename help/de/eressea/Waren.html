@@ -1,0 +1,946 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Waren</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Waren
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <h2>
+            <span class="mw-headline" id="Produktion_von_Waren">Produktion von 
+            Waren</span>
+          </h2>
+          <p>
+            Die Endprodukte k&#246;nnen in beliebiger Menge hergestellt werden. 
+            Beschr&#228;nkung sind hier lediglich zum einen nat&#252;rlich das 
+            vorhandene Rohmaterial und zum anderen Anzahl und Talentwert der 
+            herstellenden Personen.
+          </p>
+          <p>
+            Die folgende Tabelle zeigt die Gegenst&#228;nde, die es auf Eressea 
+            gibt. Sie k&#246;nnen nur gemacht werden, wenn die betreffende Einheit 
+            auch das entsprechende Talent hoch genug hat. Die 
+            Gesamt-Talentstufen werden bei der Produktion von Gegenst&#228;nden 
+            immer durch das Mindesttalent geteilt (siehe <a href="Produktion.html" title="Produktion">diese 
+            Beispiele</a>). Dies gilt auch f&#252;r Rohstoffe! Ein Bergbauer mit 
+            Bergbau 4 in einer Region mit '20 Eisen/4' kann 4 Eisen pro Runde 
+            abbauen (und nicht nur 1 Eisen).
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <table align="center" border="0" cellspacing="0">
+            <caption>
+              Gewicht, Talente und Materialbedarf<br>*) Laen und Adamantium 
+              ben&#246;tigt ein Bergwerk zum Abbau.<br>**) Elfenb&#246;gen k&#246;nnen 
+              nur von Elfen hergestellt werden. 
+            </caption>
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Gegenstand
+              </th>
+              <th>
+                Gewicht
+              </th>
+              <th>
+                Talent
+              </th>
+              <th>
+                mind.
+              </th>
+              <th>
+                Rohstoffe
+              </th>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Silber
+              </td>
+              <td>
+                0,01
+              </td>
+              <td>
+                -/-
+              </td>
+              <td>
+                -/-
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Juwelen
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Weihrauch
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Balsam
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Gew&#252;rz
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Myrrhe
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                &#214;l
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Seide
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                Handeln
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Kr&#228;uter
+              </td>
+              <td>
+                0
+              </td>
+              <td>
+                Kr&#228;uterkunde
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Tr&#228;nke
+              </td>
+              <td>
+                0
+              </td>
+              <td>
+                Alchemie
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Kr&#228;uter
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Samen
+              </td>
+              <td>
+                0,1
+              </td>
+              <td>
+                Kr&#228;uterkunde
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Mallornsamen
+              </td>
+              <td>
+                0,1
+              </td>
+              <td>
+                Kr&#228;uterkunde
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Eisen
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                Bergbau
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Laen*
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Bergbau
+              </td>
+              <td>
+                7
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Adamantium*
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Bergbau
+              </td>
+              <td>
+                8
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Holz
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                Holzf&#228;llen
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Mallorn
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                Holzf&#228;llen
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Stein
+              </td>
+              <td>
+                60
+              </td>
+              <td>
+                Steinbau
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Pferd
+              </td>
+              <td>
+                50
+              </td>
+              <td>
+                Pferdedressur
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                -/-
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Wagen
+              </td>
+              <td>
+                40
+              </td>
+              <td>
+                Wagenbau
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                5 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Katapult
+              </td>
+              <td>
+                100
+              </td>
+              <td>
+                Wagenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                10 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Katapultmunition
+              </td>
+              <td>
+                10
+              </td>
+              <td>
+                Steinbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                1 Stein
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Schwert
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                1 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Laenschwert
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                8
+              </td>
+              <td>
+                1 Laen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Bih&#228;nder
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                2 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Speer
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Mallornspeer
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                1 Mallorn
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Lanze
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                2 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Mallornlanze
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                2 Mallorn
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Hellebarde
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                1 Eisen, 2 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Kriegsaxt
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                1 Eisen, 1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Adamantiumaxt
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                8
+              </td>
+              <td>
+                1 Adamantium, 1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Armbrust
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Mallornarmbrust
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                1 Mallorn
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Bogen
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Mallornbogen
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                1 Mallorn
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Elfenbogen**
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                2 Mallorn
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Kettenhemd
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                3 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Laenkettenhemd
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                9
+              </td>
+              <td>
+                3 Laen
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Plattenpanzer
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                5 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Adamantiumr&#252;stung
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                10
+              </td>
+              <td>
+                3 Adamantium
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Schild
+              </td>
+              <td>
+                1
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                1 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Laenschild
+              </td>
+              <td>
+                0
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                7
+              </td>
+              <td>
+                1 Laen
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <table style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px">
+                  <tr>
+                    <td>
+                      <small><b>E3A</b></small>
+                    </td>
+                    <td>
+                      Weitere Waren nur E3
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Streitross
+              </td>
+              <td>
+                50
+              </td>
+              <td>
+                Pferdedressur
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                1 Eisen, 1 Pferd, 200 Silber
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Repetierarmbrust
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                Waffenbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                1 Eisen, 1 Holz
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                Schuppenpanzer
+              </td>
+              <td>
+                3
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                5
+              </td>
+              <td>
+                2 Eisen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                Turmschild
+              </td>
+              <td>
+                2
+              </td>
+              <td>
+                R&#252;stungsbau
+              </td>
+              <td>
+                4
+              </td>
+              <td>
+                1 Eisen
+              </td>
+            </tr>
+          </table>
+          <h2>
+            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+          </h2>
+          <ul>
+            <li>
+              <a href="Produktion.html" title="Produktion">Produktion</a>
+            </li>
+            <li>
+              <a href="Rohstoffe.html" title="Rohstoffe">Rohstoffe</a>
+            </li>
+            <li>
+              <a class="mw-redirect" href="Stra_e.html" title="Straßen">Stra&#223;en</a>
+            </li>
+            <li>
+              <a href="Geb_ude.html" title="Gebäude">Geb&#228;ude</a>
+            </li>
+            <li>
+              <a href="Kriegstabellen.html" title="Kriegstabellen">Kriegstabellen</a>
+            </li>
+          </ul>
+          <p>
+            <br>
+            
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <table>
+            <tr>
+              <td align="left" style="background-color: #ffffaa">
+                Weiterlesen:
+              </td>
+              <td style="background-color: #ffffcc">
+                <a href="Stra_e.html" title="Straße">Stra&#223;e</a>
+              </td>
+            </tr>
+          </table>
+          <!-- 
+NewPP limit report
+Cached time: 20220209221821
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.022 seconds
+Real time usage: 0.023 seconds
+Preprocessor visited node count: 25/1000000
+Preprocessor generated node count: 135/1000000
+Post?expand include size: 297/2097152 bytes
+Template argument size: 34/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    2.001      1 -total
+ 48.18%    0.964      1 Vorlage:Weiter
+ 47.77%    0.956      1 Vorlage:E3Akurz
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1565-0!canonical and timestamp 20220209221821 and revision id 7027
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

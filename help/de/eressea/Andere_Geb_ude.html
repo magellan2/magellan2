@@ -1,0 +1,1808 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Andere Gebäude</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Andere Geb&#228;ude
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            Geb&#228;ude werden mit dem Befehl <a href="MACHE.html" title="MACHE">MACHE 
+            geb&#228;udetyp</a> gebaut und mit <a href="MACHE.html" title="MACHE">MACHE 
+            geb&#228;udetyp geb&#228;ude-nr</a> wird an einem Geb&#228;ude 
+            weitergebaut. Beispiele: MACHE <a href="#Leuchtturm">LEUCHTTURM</a> 
+            oder MACHE <a href="#Hafen">HAFEN</a> xyz. F&#252;r diese Geb&#228;ude ist 
+            ein Mindesttalentwert in Burgenbau erforderlich, der in der 
+            Tabelle angegeben ist. Au&#223;erdem k&#246;nnen einige Geb&#228;ude nur bis zu 
+            einer bestimmten Gr&#246;&#223;e ausgebaut werden.
+          </p>
+          <p>
+            Hier zun&#228;chst eine zusammenfassende Tabelle, n&#228;here Erkl&#228;rungen 
+            folgen darunter.
+          </p>
+          <table align="center" border="0" cellspacing="0">
+            <tr style="background-color: #aaaaaa">
+              <th>
+                Geb&#228;ude
+              </th>
+              <th colspan="4">
+                Baukosten
+              </th>
+              <th>
+                Talent
+              </th>
+              <th colspan="2">
+                Unterhalt
+              </th>
+              <th>
+                Max.
+              </th>
+              <th>
+                Kapazit&#228;t
+              </th>
+            </tr>
+            <tr style="background-color: #aaaaaa">
+              <th>
+                
+              </th>
+              <th>
+                Stein
+              </th>
+              <th>
+                Holz
+              </th>
+              <th>
+                Eisen
+              </th>
+              <th>
+                Silber
+              </th>
+              <th>
+                
+              </th>
+              <th>
+                Silber
+              </th>
+              <th>
+                Ressourcen
+              </th>
+              <th>
+                
+              </th>
+              <th>
+                
+              </th>
+            </tr>
+            <caption>
+              Geb&#228;ude; siehe auch Tabelle <a class="mw-redirect" href="Burg.html" title="Burgen">Burgenbau</a><br>Die 
+              Kapazit&#228;t bezieht sich nur auf die Personen, die von dem Geb&#228;ude 
+              profitieren k&#246;nnen.<br>*) au&#223;erdem 2 Mallorn und 2 Laen pro 
+              Gr&#246;&#223;enpunkt 
+            </caption>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Leuchtturm">Leuchtturm</a>
+              </td>
+              <td align="right">
+                2
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                4 Einheiten
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Bergwerk">Bergwerk</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                10
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                4
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Steinbruch">Steinbruch</a>
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#S.C3.A4gewerk">S&#228;gewerk</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                200
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Schmiede">Schmiede</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                2
+              </td>
+              <td align="right">
+                200
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                300
+              </td>
+              <td align="center">
+                1 Holz
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Pferdezucht">Pferdezucht</a>
+              </td>
+              <td align="right">
+                2
+              </td>
+              <td align="right">
+                4
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="right">
+                150
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Hafen">Hafen</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                -/-
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                250
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                25
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Karawanserei">Karawanserei</a>
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="right">
+                3000
+              </td>
+              <td align="center">
+                2 Pferde
+              </td>
+              <td align="right">
+                10
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Akademie">Akademie</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                1000
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                25
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Magierturm">Magierturm</a>*
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="center">
+                5
+              </td>
+              <td align="right">
+                1000
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                50
+              </td>
+              <td align="right">
+                2 Personen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Damm">Damm</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                10
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                500
+              </td>
+              <td align="center">
+                4
+              </td>
+              <td align="right">
+                1000
+              </td>
+              <td align="center">
+                3 Holz
+              </td>
+              <td align="right">
+                50
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Tunnel">Tunnel</a>
+              </td>
+              <td align="right">
+                10
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                300
+              </td>
+              <td align="center">
+                6
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="center">
+                2 Stein
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <a href="#Taverne">Taverne</a>
+              </td>
+              <td align="right">
+                4
+              </td>
+              <td align="right">
+                3
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                200
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="right">
+                5*Gr&#246;&#223;e
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Monument">Monument</a>
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                400
+              </td>
+              <td align="center">
+                4
+              </td>
+              <td align="right">
+                -/-
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                keins
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+            <tr style="background-color: #cccccc">
+              <td>
+                <a href="#Steinkreis">Steinkreis</a>
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                5
+              </td>
+              <td align="right">
+                
+              </td>
+              <td align="right">
+                
+              </td>
+              <td align="center">
+                2
+              </td>
+              <td align="right">
+                -/-
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                100
+              </td>
+              <td align="right">
+                3 Personen
+              </td>
+            </tr>
+            <tr style="background-color: #eeeeee">
+              <td>
+                <table style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px">
+                  <tr>
+                    <td>
+                      <small><b>E3A</b></small>
+                    </td>
+                    <td>
+                      <a href="Das_dritte_Zeitalter.html#Wirtschaft_und_Moral" title="Das dritte Zeitalter">Markt</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                1
+              </td>
+              <td align="right">
+                
+              </td>
+              <td align="right">
+                
+              </td>
+              <td align="center">
+                3
+              </td>
+              <td align="right">
+                200
+              </td>
+              <td align="center">
+                -/-
+              </td>
+              <td align="right">
+                10
+              </td>
+              <td align="right">
+                Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <h2>
+            <span class="mw-headline" id="Leuchtturm">Leuchtturm</span>
+          </h2>
+          <table width="100%">
+            <tr>
+              <td valign="top" width="50%">
+                <table class="wikitable">
+                  <tr>
+                    <td>
+                      Baukosten pro Gr&#246;&#223;enpunkt:
+                    </td>
+                    <td>
+                      2 Steine, 1 Holz, 1 Eisen, 100 Silber
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Mindestbautalent:
+                    </td>
+                    <td>
+                      3
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Unterhalt pro Runde:
+                    </td>
+                    <td>
+                      100 Silber
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Gr&#246;&#223;enbegrenzung:
+                    </td>
+                    <td>
+                      Keine
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Kapazit&#228;t:
+                    </td>
+                    <td>
+                      4 Einheiten
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              <td align="right" valign="top" width="50%">
+                <table class="wikitable">
+                  <tr>
+                    <td>
+                      Gr&#246;&#223;e
+                    </td>
+                    <td>
+                      Sichtweite
+                    </td>
+                    <td>
+                      Wahrnehmung
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      10
+                    </td>
+                    <td>
+                      1
+                    </td>
+                    <td>
+                      3
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      10
+                    </td>
+                    <td>
+                      2
+                    </td>
+                    <td>
+                      6
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      100
+                    </td>
+                    <td>
+                      3
+                    </td>
+                    <td>
+                      9
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      1000
+                    </td>
+                    <td>
+                      4
+                    </td>
+                    <td>
+                      12
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="3">
+                      etc
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Ab einer Gr&#246;&#223;e von 10 verhindert ein Leuchtturm im Umkreis von 
+              log10(Leuchtturmgr&#246;&#223;e)+1 Feldern das Abtreiben von Schiffen 
+              durch St&#252;rme.
+            </li>
+            <li>
+              Ab einer Gr&#246;&#223;e von 10 gibt ein Leuchtturm den Insassen (nur bis 
+              zu 4 Einheiten) Infos &#252;ber Schiffsichtungen in allen 
+              Ozeanfeldern im Umkreis von log10(Leuchtturmgr&#246;&#223;e)+1 Feldern. 
+              Die Einheit mu&#223; daf&#252;r mindestens eine Wahrnehmung von 
+              Entfernung&#215;3 haben. Einen Report einer drei Felder entfernten 
+              Ozeanregion bekommt man also nur, wenn der Leuchtturm mindestens 
+              Gr&#246;&#223;e 100 und die Einheit mindestens Wahrnehmung 9 hat.
+            </li>
+          </ul>
+          <table style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px">
+            <tr>
+              <td>
+                <small><b>E3A</b></small>
+              </td>
+              <td>
+                Es wird kein Wahrnehmungstalent ben&#246;tigt, damit der Leuchtturm 
+                funktioniert.
+              </td>
+            </tr>
+          </table>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: Bruck</small> 
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Schiffe mit Leuchturmschutz k&#246;nnen durch St&#252;rme immer noch 
+                aufgehalten werden. Sie treiben dann aber nicht in eine 
+                Nachbarregion.
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <h2>
+            <span class="mw-headline" id="Bergwerk">Bergwerk</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 10 Holz, 1 Eisen, 250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Von Einheiten innerhalb des Bergwerks abgebautes Eisen wird nur 
+              zur H&#228;lfte vom Regionsvorrat abgezogen. Dieser Effekt wirkt 
+              kumulativ zusammen mit eventuell vorhandenen entsprechenden 
+              Rassenvorteilen.
+            </li>
+            <li>
+              Die F&#246;rdermenge von Erzen erh&#246;ht sich, als h&#228;tten die Insassen 
+              einen Bergbaubonus von +1. Dies gilt jedoch nicht f&#252;r die 
+              Abbautiefe der Erz-Schicht.
+            </li>
+            <li>
+              Nur mit einem Bergwerk ist der Laen-Abbau m&#246;glich.
+            </li>
+          </ul>
+          <p>
+            <br>
+            
+          </p>
+          <pre> 10 Zwerge bauen in einer Region 60 Eisen ab. Es werden durch den Zwergenbonus
+ nur 36 Eisen vom Regionsvorrat abgezogen. Befinden sich diese Zwerge auch noch
+ in einem Bergwerk, so werden nur 18 Eisen abgezogen.
+ Sind nur noch 9 Eisen &#252;berhaupt in der Region vorhanden, k&#246;nnen die Zwerge
+ nat&#252;rlich nur 15 bzw. 30 Eisen abbauen.</pre>
+          <h2>
+            <span class="mw-headline" id="Steinbruch">Steinbruch</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                1 Stein, 5 Holz, 1 Eisen, 250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Von Einheiten innerhalb des Steinbruchs abgebaute Steine werden 
+              nur zur H&#228;lfte vom Regionslimit abgezogen. Dieser Effekt wirkt 
+              kumulativ zusammen mit eventuell vorhandenen entsprechenden 
+              Rassenvorteilen.
+            </li>
+            <li>
+              Die F&#246;rdermenge von Steinen erh&#246;ht sich, als h&#228;tten die Insassen 
+              einen Steinbaubonus von +1. Dies gilt jedoch nicht f&#252;r die 
+              Abbautiefe.
+            </li>
+          </ul>
+          <pre> 10 Trolle bauen in einer Region 40 Steine ab. Es werden durch den Trollbonus
+ nur 30 Steine vom Regionsvorrat abgezogen.
+ Befinden sich diese Trolle auch noch in einem Steinbruch, so werden nur 15
+ Steine abgezogen.
+ Sind nur noch 7 Steine &#252;berhaupt in der Region vorhanden, k&#246;nnen die Trolle
+ nat&#252;rlich nur 9 bzw. 18 Steine abbauen.</pre>
+          <h2>
+            <span class="mw-headline" id="S.C3.A4gewerk">S&#228;gewerk</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 5 Holz, 3 Eisen, 200 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Von Einheiten innerhalb des S&#228;gewerks abgeholzte B&#228;ume und 
+              Mallornb&#228;ume und Sch&#246;sslinge werden nur zur H&#228;lfte vom 
+              Regionsvorrat abgezogen.
+            </li>
+            <li>
+              Einheiten innerhalb eines S&#228;gewerks f&#228;llen mit einem Talentbonus 
+              von +1.
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Schmiede">Schmiede</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 5 Holz, 2 Eisen, 200 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                300 Silber, 1 Holz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Bei Eisenwaffen und -r&#252;stungen wird nur halb so viel Eisen 
+              ben&#246;tigt. Laen wird in einer Schmiede nicht eingespart.
+            </li>
+            <li>
+              In Schmieden produzierende Einheiten haben einen Bonus von +1 
+              auf Waffenbau und R&#252;stungsbau.
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Pferdezucht">Pferdezucht</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                2 Steine, 4 Holz, 1 Eisen, 100 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                150 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              In einer Pferdezucht k&#246;nnen mit dem Befehl <a href="Z_CHTE.html" title="ZÜCHTE">Z&#220;CHTE</a> 
+              Pferde gez&#252;chtet werden. Hierzu braucht der Pferdez&#252;chter das 
+              Talent Pferdezucht und mindestens zwei Pferde.
+            </li>
+            <li>
+              Die Chance ein Pferd zu z&#252;chten entspricht dem Talent des 
+              Pferdez&#252;chters. Zus&#228;tzlich hat er entsprechend seinem Talent 
+              mehrere Versuche. Hat ein Pferdez&#252;chter T5, so hat er 5 Versuche 
+              zu je 5% ein Pferd zu z&#252;chten.
+            </li>
+            <li>
+              F&#252;r jeden Zuchtversuch ben&#246;tigt der Z&#252;chter ein Pferd. Sind 
+              nicht genug Pferde vorhanden, verfallen die Versuche.
+            </li>
+          </ul>
+          <table style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px">
+            <tr>
+              <td>
+                <small><b>E3A</b></small>
+              </td>
+              <td>
+                In einer Pferdezucht k&#246;nnen mit Pferdedressur 4, 1 Eisen, 200 
+                Silber und einem Pferd Streitr&#246;sser gez&#252;chtet werden.
+              </td>
+            </tr>
+          </table>
+          <h2>
+            <span class="mw-headline" id="Hafen">Hafen</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 5 Holz, 250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                125 Steine, 125 Holz, 6250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                250 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                25
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                Personen entsprechend Gr&#246;&#223;e, Schiffe egal
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Schiffe gr&#246;&#223;er als ein Boot k&#246;nnen auch in Nichtebenen anlegen, 
+              wenn ein Hafen vorhanden ist.
+            </li>
+            <li>
+              Eine Region mit Hafen kann als &quot;Kanalregion&quot; genutzt werden, 
+              d.h. ein Schiff in dem Hafen kann in jede beliebige andere 
+              Richtung mit Ozean davon segeln.
+            </li>
+            <li>
+              Voraussetzung ist in beiden F&#228;llen, dass der Hafeneigner dem 
+              Kapit&#228;n <a href="HELFE.html" title="HELFE">HELFE BEWACHE</a> 
+              gesetzt hat oder der selben Partei angeh&#246;rt.
+            </li>
+            <li>
+              Der Eigent&#252;mer erh&#228;lt 10% aller Handelseinnahmen, zus&#228;tzlich zu 
+              eventuellen Einnahmen durch Burgen.
+            </li>
+            <li>
+              Der Eigent&#252;mer erh&#228;lt (2&#215;Handeln)% aller Luxusg&#252;ter, die sich 
+              auf einlaufenden Schiffen befinden, es sei denn, die die 
+              Gegenst&#228;nde tragende Einheit ist besser getarnt als die 
+              Wahrnehmung des Hafenmeisters (Schmuggel) oder der 
+              Schiffskapit&#228;n ist mit dem Hafenmeister alliiert.
+            </li>
+            <li>
+              In Regionen mit Hafen steigen die Preise f&#252;r Luxusg&#252;ter mit 
+              einer Wahrscheinlichkeit von 20% (normalerweise 10%).
+            </li>
+            <li>
+              Ein Hafen funktioniert nur, wenn er voll ausgebaut ist. Es kann 
+              nur einen Hafen pro Region geben. Wer zuerst fertig ist, hat 
+              gewonnen ... Der halbfertige Hafen kann mit dem Befehl <a href="ZERST_RE.html" title="ZERSTÖRE">ZERST&#214;RE</a> 
+              zerst&#246;rt werden.
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Akademie">Akademie</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 5 Holz, 1 Eisen, 500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                125 Steine, 125 Holz, 25 Eisen, 12500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                1000 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                25
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Einheiten, die in einer Akademie lernen, k&#246;nnen mit einer Chance 
+              von 1/3 in dieser Woche einmal zus&#228;tzlich lernen, wenn sie einen 
+              Lehrer haben sogar mit einer Chance von 2/3.
+            </li>
+            <li>
+              Lernen in einer Akademie kostet bei nicht kostenpflichtigen 
+              Talenten 50 Silber pro Person, bei kostenpflichtigen Talenten 
+              das Doppelte der normalen Lernkosten.
+            </li>
+            <li>
+              Eine Akademie funktioniert nur, wenn sie voll ausgebaut ist!
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Magierturm">Magierturm</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 3 Holz, 2 Mallorn, 3 Eisen, 2 Laen, 500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                250 Steine, 150 Holz, 100 Mallorn, 150 Eisen, 100 Laen, 25000 
+                Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                5
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                1000 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                50
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                2 Personen
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              In einem Magierturm regeneriert ein Magier 75% mehr Aura.
+            </li>
+            <li>
+              Die St&#228;rke jedes Zaubers, der von einem Magierturm aus 
+              gesprochen wird, erh&#246;ht sich, als w&#228;re der Zauber mit einer 
+              Stufe mehr gezaubert worden.
+            </li>
+            <li>
+              Patzer passieren deutlich seltener.
+            </li>
+            <li>
+              Magische Orte, wie ein Magierturm, erh&#246;hen oft den Schutz gegen 
+              fremde Magie.
+            </li>
+            <li>
+              Ein Magierturm funktioniert nur, wenn er voll ausgebaut ist
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Karawanserei">Karawanserei</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                1 Stein, 5 Holz, 1 Eisen, 500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                10 Steine, 50 Holz, 10 Eisen, 5000 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                3000 Silber, 2 Pferde
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                10
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Erm&#246;glicht Stra&#223;enbau in W&#252;sten. Wird die Karawanserei 
+              besch&#228;digt oder zerst&#246;rt, wird die H&#228;lfte der Stra&#223;e vernichtet. 
+              Eine fertige Stra&#223;e bleibt bestehen, wenn der Geb&#228;udeunterhalt 
+              nicht bezahlt wird.
+            </li>
+            <li>
+              Verdoppelt in W&#252;sten das dort m&#246;gliche Handelsvolumen. Der 
+              Besitzer erh&#228;lt einen Erl&#246;santeil vom Handel entsprechend den 
+              Burgen (siehe <a class="mw-redirect" href="Burg.html" title="Burgen">diese</a> 
+              Tabelle).
+            </li>
+            <li>
+              Die Karawanserei funktioniert nur, wenn sie voll ausgebaut ist!
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Damm">Damm</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Steine, 10 Holz, 1 Eisen, 500 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                250 Steine, 500 Holz, 50 Eisen, 25000 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                1000 Silber, 3 Holz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                50
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Ein Damm erm&#246;glicht den Stra&#223;enbau in S&#252;mpfen. Wird der Damm 
+              besch&#228;digt oder zerst&#246;rt, so wird die H&#228;lfte der Stra&#223;e 
+              vernichtet. Eine fertige Stra&#223;e bleibt bestehen, wenn der 
+              Geb&#228;udeunterhalt nicht bezahlt wird.
+            </li>
+            <li>
+              Der Damm funktioniert nur, wenn er voll ausgebaut ist!
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Tunnel">Tunnel</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                10 Steine, 5 Holz, 1 Eisen, 300 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                1000 Steine, 500 Holz, 100 Eisen, 30000 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                6
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                100 Silber, 2 Steine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                100
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Ein Tunnel erm&#246;glicht den Stra&#223;enbau in Gletschern. Wird der 
+              Tunnel besch&#228;digt oder zerst&#246;rt, so wird die H&#228;lfte der Stra&#223;e 
+              vernichtet. Eine fertige Stra&#223;e bleibt bestehen, wenn der 
+              Geb&#228;udeunterhalt nicht bezahlt wird.
+            </li>
+            <li>
+              Der Tunnel funktioniert nur, wenn er voll ausgebaut ist!
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Taverne">Taverne</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                4 Stein, 3 Holz, 1 Eisen, 200 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                5 Silber pro Gr&#246;&#223;enpunkt
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Einheiten in einer Taverne regenerieren 50% schneller.
+            </li>
+            <li>
+              Einheiten in einer Taverne verbrauchen 14 Silber als Unterhalt!
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Monument">Monument</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                1 Stein, 1 Holz, 1 Eisen, 400 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                4
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                Kein Unterhalt
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                keine
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <ul>
+            <li>
+              Sind Name und Beschreibung eines Monumentes gesetzt, k&#246;nnen sie 
+              nicht mehr ge&#228;ndert werden, auch vom Eigent&#252;mer nicht.
+            </li>
+            <li>
+              Das Monument hat keine Funktion.
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Steinkreis">Steinkreis</span>
+          </h2>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                5 Stein, 5 Holz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                2
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                Kein Unterhalt
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                100
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            Ein Steinkreis kann durch einen <a href="Zauberbeschreibungen_E2.html#Segne_Steinkreis" title="Zauberbeschreibungen E2">m&#228;chtigen 
+            Zauber</a> gesegnet werden. Dieser entfaltet dann einige 
+            sonderbare Wirkungen. Unter anderem scheint er die &#252;beraus 
+            seltenen Elfenpferde anzulocken. Au&#223;erdem k&#246;nnen Magier in dem 
+            Geb&#228;ude die Verbindung zwischen Astralraum und Realwelt 
+            unterbrechen.
+          </p>
+          <h2>
+            
+          </h2>
+          <table style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px">
+            <tr>
+              <td>
+                <small><b>E3A</b></small>
+              </td>
+              <td>
+                Markt
+              </td>
+            </tr>
+          </table>
+          <table class="wikitable">
+            <tr>
+              <td>
+                Baukosten pro Gr&#246;&#223;enpunkt:
+              </td>
+              <td>
+                1 Steine, 1 Holz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Baukosten gesamt:
+              </td>
+              <td>
+                10 Steine, 10 Holz
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Mindestbautalent:
+              </td>
+              <td>
+                3
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Unterhalt pro Runde:
+              </td>
+              <td>
+                200 Silber
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Gr&#246;&#223;enbegrenzung:
+              </td>
+              <td>
+                10
+              </td>
+            </tr>
+            <tr>
+              <td>
+                Kapazit&#228;t:
+              </td>
+              <td>
+                Personen entsprechend Gr&#246;&#223;e
+              </td>
+            </tr>
+          </table>
+          <p>
+            Der Marktplatz sammelt Kr&#228;uter und Handelsg&#252;ter aus den 
+            angrenzenden Regionen. Der Marktbesitzer bekommt diese 
+            automatisch, wenn der Unterhalt bezahlt wird. Es ist kein Talent 
+            zum Betreiben des Marktplatzes erforderlich. Dieses Geb&#228;ude gibt 
+            es nur in E3 und E4.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+          </h2>
+          <ul>
+            <li>
+              <a href="Geb_ude.html" title="Gebäude">Geb&#228;ude</a>
+            </li>
+            <li>
+              <a class="mw-redirect" href="Burg.html" title="Burgen">Burgen</a>
+            </li>
+            <li>
+              <a href="Produktion.html" title="Produktion">Produktion</a>
+            </li>
+          </ul>
+          <p>
+            <br>
+            
+          </p>
+          <table>
+            <tr>
+              <td align="left" style="background-color: #ffffaa">
+                Weiterlesen:
+              </td>
+              <td style="background-color: #ffffcc">
+                <a href="Geld.html" title="Geld">Geld</a>
+              </td>
+            </tr>
+          </table>
+          <!-- 
+NewPP limit report
+Cached time: 20220210145528
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.048 seconds
+Real time usage: 0.050 seconds
+Preprocessor visited node count: 121/1000000
+Preprocessor generated node count: 299/1000000
+Post?expand include size: 1242/2097152 bytes
+Template argument size: 397/2097152 bytes
+Highest expansion depth: 3/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    4.939      1 -total
+ 40.70%    2.010      4 Vorlage:E3Akurz
+ 25.90%    1.279      1 Vorlage:Geruecht
+ 22.03%    1.088      1 Vorlage:Weiter
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1568-0!canonical and timestamp 20220210145528 and revision id 7242
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

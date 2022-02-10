@@ -1,0 +1,496 @@
+###
+### prefix explanatory comments with ###
+### unused page with #
+###
+### Redirects:
+R	//
+R	ARBEITEN
+R	Adamantiumrüstung
+R	Akademie
+R	Alchemie
+R	Anleitung (PDF)
+R	Anmelden wie?
+R	Ausgaben
+R	BEFÖRDERUNG
+R	BEKLAUEN
+R	BENENNEN
+R	BENUTZEN
+R	BESCHREIBEN
+R	BETRETEN
+R	BEWACHEN
+R	Befehle
+R	Bergwerk
+R	Boni und Mali
+R	Bugreport
+R	Burgen
+R	CSMapFX
+R	Damm
+R	Die Eressea-Gemeinde
+R	Die Flucht
+R	Dämon
+R	Dämonen
+R	E2K9
+R	E3
+R	E3A
+R	Eingabe
+R	Einnahmen
+R	Elf
+R	Elfen
+R	Fehler im Spiel
+R	Fragen
+R	FLOTTE
+R	Gegenstand
+R	Gegenstände
+R	Goblin
+R	Goblins
+R	Hafen
+R	Halbling
+R	Halblinge
+R	Handel
+R	Helden
+R	Hilfsmittel
+R	Hunger
+R	Insekt
+R	Insekten
+R	KONTAKTIEREN
+R	Kampf
+R	Kampf auf Schiffen
+R	Kampfattacken
+R	Kampfende
+R	Kampfseite
+R	Kampftabellen
+R	Karawanserei
+R	Katze
+R	Katzen
+R	Kräuterkunde
+R	Kurze Befehle
+R	KÄMPFE AGGRESSIV
+R	KÄMPFE DEFENSIV
+R	KÄMPFE FLIEHE
+R	KÄMPFE HELFE
+R	KÄMPFE HINTEN
+R	KÄMPFE NICHT
+R	Lange Befehle
+R	Leuchtturm
+R	Magellan und E2K9
+R	Magierturm
+R	Mailinglisten
+R	Meermensch
+R	Meermenschen
+R	Mensch
+R	Menschen
+R	Modifikatoren im Kampf
+R	Monument
+R	Musterung
+R	Nachfordern
+R	Ork
+R	Orks
+R	Partei
+R	Parteipool
+R	Pferdedressur
+R	Pferdezucht
+R	Piraterie
+R	SPIONIEREN
+R	Schiffe
+R	Schiffsreisen
+R	Schlacht
+R	Schmiede
+R	Schummeln
+R	Silberpool
+R	Spionage
+R	Steinbruch
+R	Straßen
+R	Straßenbau
+R	Sägewerk
+R	TREIBEN
+R	Taverne
+R	Trank
+R	TRANSPORTIERE
+R	Troll
+R	Trolle
+R	Tunnel
+R	UNTERHALTEN
+R	VERGESSE
+R	VERGESSEN
+R	VERKAUFEN
+R	VERLASSEN
+R	Wagen
+R	Zauberbeschreibungen
+R	Zwerg
+R	Zwerge
+R	Xontormia-Express
+R	Xontormia Express 945
+R	Xontormia Express 946
+R	Xontormia Express 947
+R	Xontormia Express 949
+R	Xontormia Express 950
+R	Xontormia Express 951
+R	Xontormia Express 955
+R	Xontormia Express 957
+R	Xontormia Express 961
+R	Xontormia Express 968
+R	Xontormia Express 969
+R	Xontormia Express 975
+R	Xontormia Express 981
+R	Xontormia Express 982
+R	Xontormia Express 983
+R	Xontormia Express 986
+R	Xontormia Express 987
+R	Xontormia Express 988
+R	Xontormia Express 990
+
+### TODO Hauptseite
+0	__gh_empty__	Die Eressea-Regeln
+1	Regeln
+1	Einleitung
+1	Welt	Die Welt
+1	Parteien
+1	Einheiten
+### eigtl. Kategorie:Rassen
+1	Rassen
+2	Talentmodifikatoren
+
+1	Talente
+
+1	Reisen
+2	Pferd und Wagen
+2	Schiffsreise
+1	Produktion
+2	Rohstoffe
+2	Waren
+2	Straße
+2	Schiff
+2	Gebäude
+3	Burg
+3	Andere Gebäude
+1	Geld
+1	Materialpool	Der Silber- und Materialpool
+1	Krieg
+2	Kriegstabellen
+1	Allianz
+1	Magie
+2	Magiegebiete
+2	Vertraute
+2	Tränke
+2	Kräuter
+
+1	Befehl	Befehle
+2	Befehlsreihenfolge
+2	Befehlsreihenfolge (E3)
+2	Kurzbeschreibung
+3	;
+3	KOMMENTAR
+3	ARBEITE
+3	ATTACKIERE
+3	BANNER
+3	BEANSPRUCHE
+3	BEFÖRDERE
+3	BEKLAUE
+3	BENENNE
+3	BENUTZE
+3	BESCHREIBE
+3	BETRETE
+3	BEWACHE
+3	BEZAHLE
+3	BOTSCHAFT
+3	DEFAULT
+3	EINHEIT
+3	EMAIL
+3	ENDE
+3	ERESSEA
+3	FAHRE
+3	FOLGE
+3	FORSCHE
+3	GIB
+3	GRUPPE
+3	HELFE
+3	KAMPFZAUBER
+3	KAUFE
+3	KONTAKTIERE
+3	KÄMPFE
+3	LEHRE
+3	LERNE
+3	LERNE AUTO
+3	LOCALE
+3	MACHE
+3	NACH
+3	NUMMER
+3	NÄCHSTER
+3	OPTION
+3	PASSWORT
+3	PFLANZE
+3	PIRATERIE
+3	PRÄFIX
+3	REGION
+3	REKRUTIERE
+3	RESERVIERE
+3	ROUTE
+3	SABOTIERE
+3	SORTIERE
+3	SPIONIERE
+3	SPRACHE
+3	STIRB
+3	TARNE
+3	TREIBE
+3	UNTERHALTE
+3	URSPRUNG
+3	VERGISS
+3	VERKAUFE
+3	VERLASSE
+3	ZAUBERE
+3	ZEIGE
+3	ZERSTÖRE
+3	ZÜCHTE
+
+1	Der erste Zug
+2	Welpenschutz
+1	Befehle einschicken
+2	CSMap
+2	ECheck
+2	EHMV
+2	Magellan
+3	Befehle von Magellan verschicken
+3	ExtendedCommands
+3	FFTools2
+2	Vorlage
+1	Hinweise
+
+1	Xontormia Express
+1	Danksagung
+1	FAQ
+
+1	Das dritte Zeitalter
+
+1	__gh_empty__	Anhang
+#2	Kurzbeschreibung
+2	Liste der Talente
+2	Tabellen: Tränke und Kräuter
+2	Zauberliste E2	Zauberliste
+2	Zauberbeschreibungen E2	Zauberbeschreibungen
+3	Cerddorzauber
+3	Draigzauber
+3	Gwyrrdzauber
+3	Illaunzauber
+3	Tybiedzauber
+2	Zauberliste E3
+2	Zauberbeschreibungen E3
+3	Geländearten
+#3	Gebäude	TODO Gebäudetabelle
+#3	Schiff	TODO Schiffstabelle
+#3	Waren	TODO Warentabelle
+3	Kampfmodifikatoren
+2	CR Format	CR-Format
+2	Atlantis
+2	Atlantis-Regeln
+
+1	__gh_empty__	Apokryphen
+2	Anfängertipps
+2	Tipps und Tricks
+2	Tarnung
+2	Wahrnehmung
+2	Taktik
+2	Weihnachten
+3	Adamantium
+#3	Adamantiumrüstung
+3	Mistelzweig
+3	Sonnensegel
+3	Schneemann
+3	Sternenstaub
+3	Weihnachtsbaum
+2	Monster
+3	Drachen
+3	Untote
+2	Bauernvermehrung
+2	Bauernwanderung
+2	Bewaffnet
+
+1	Geschichte von Eressea
+2	Ankündigungen
+2	Ankündigungen (E3)	Ankündigungen E3
+2	Ankündigungen (E2)	Ankündigungen E2
+
+
+
+### ungenutzt:
+#2	Belagerung
+#3	BELAGERE
+
+### keine Regelseiten
+#0	4. Welt
+#0	Automatisierung Ereignissreaktion
+#0	Automatisierung Handel
+#0	Automatisierung Lernketten
+#0	Automatisierung Transport
+#0	BELAGERE
+#0	Belagerung
+#0	ChatLog Sophie
+#0	Du spielst zuviel Eressea, wenn...
+#0	E2K9FAQ
+#0	E3CommandParser
+#0	Ennos Vorlageskript
+#0	Entwicklung
+#0	Eressea
+###0	ExtendedCommands
+#0	File:Example.jpg
+#0	File:Example-white-bg.jpg
+#0	File:M-en-interwiki lang.png
+#0	File:M-en-pagetabs.png
+#0	File:M-en-recentchanges.png
+#0	File:M-en-sidebar.png
+#0	File:M-en-userlinks.png
+#0	File:PD-Help icon.png
+#0	Geschichte von Eressea
+#0	Hauptseite
+#0	Jutta's Vorlage Tutorial für Anfänger
+#0	Kampfregeln
+#0	Lebkuchenherz mit der Aufschrift 'Erz und Stein, das ist fein'
+#0	Magellan und E3A
+#0	Meropis
+#0	Neue Forstordnung
+#0	Optimierung Lernketten
+#0	Optimierung Produktion
+#0	Optimierung Transport
+#0	Optimierung Wegfindung
+#0	Pentagramm und Tirawon
+#0	Rassen im dritten Zeitalter
+#0	Regeln (komplett)
+#0	Spiel 2007
+#0	Spielerseiten
+#0	Testseite
+#0	Treffen Berlin Mai 2008
+#0	Umstellung auf Unicode
+#0	Wunschkonzert
+#0	XML Format
+#0	XML Format/Menouthisbeispiel
+#0	Xontormia Express 0185
+#0	Xontormia Express 0186
+#0	Xontormia Express 0187
+#0	Xontormia Express 0188
+#0	Xontormia Express 0189
+#0	Xontormia Express 0190
+#0	Xontormia Express 0191
+#0	Xontormia Express 0192
+#0	Xontormia Express 0280
+#0	Xontormia Express 0422
+#0	Xontormia Express 0423
+#0	Xontormia Express 0424
+#0	Xontormia Express 0425
+#0	Xontormia Express 0426
+#0	Xontormia Express 0427
+#0	Xontormia Express 0428
+#0	Xontormia Express 0429
+#0	Xontormia Express 0430
+#0	Xontormia Express 0431
+#0	Xontormia Express 0432
+#0	Xontormia Express 0433
+#0	Xontormia Express 0434
+#0	Xontormia Express 0435
+#0	Xontormia Express 0436
+#0	Xontormia Express 0437
+#0	Xontormia Express 0438
+#0	Xontormia Express 0439
+#0	Xontormia Express 0440
+#0	Xontormia Express 0441
+#0	Xontormia Express 0442
+#0	Xontormia Express 0443
+#0	Xontormia Express 0445
+#0	Xontormia Express 0446
+#0	Xontormia Express 0447
+#0	Xontormia Express 0450
+#0	Xontormia Express 0451
+#0	Xontormia Express 0453
+#0	Xontormia Express 0461
+#0	Xontormia Express 0462
+#0	Xontormia Express 0463
+#0	Xontormia Express 0464
+#0	Xontormia Express 0465
+#0	Xontormia Express 0466
+#0	Xontormia Express 0467
+#0	Xontormia Express 0468
+#0	Xontormia Express 0469
+#0	Xontormia Express 0471
+#0	Xontormia Express 0472
+#0	Xontormia Express 0473
+#0	Xontormia Express 0474
+#0	Xontormia Express 0475
+#0	Xontormia Express 0476
+#0	Xontormia Express 0477
+#0	Xontormia Express 0478
+#0	Xontormia Express 0480
+#0	Xontormia Express 0482
+#0	Xontormia Express 0483
+#0	Xontormia Express 0484
+#0	Xontormia Express 0486
+#0	Xontormia Express 0487
+#0	Xontormia Express 0490
+#0	Xontormia Express 0491
+#0	Xontormia Express 0493
+#0	Xontormia Express 0495
+#0	Xontormia Express 0496
+#0	Xontormia Express 0497
+#0	Xontormia Express 0498
+#0	Xontormia Express 0499
+#0	Xontormia Express 0506
+#0	Xontormia Express 0512
+#0	Xontormia Express 0513
+#0	Xontormia Express 0514
+#0	Xontormia Express 0518
+#0	Xontormia Express 0520
+#0	Xontormia Express 0529
+#0	Xontormia Express 0556
+#0	Xontormia Express 0561
+#0	Xontormia Express 0945
+#0	Xontormia Express 0946
+#0	Xontormia Express 0947
+#0	Xontormia Express 0949
+#0	Xontormia Express 0950
+#0	Xontormia Express 0951
+#0	Xontormia Express 0955
+#0	Xontormia Express 0957
+#0	Xontormia Express 0961
+#0	Xontormia Express 0968
+#0	Xontormia Express 0969
+#0	Xontormia Express 0975
+#0	Xontormia Express 0981
+#0	Xontormia Express 0982
+#0	Xontormia Express 0983
+#0	Xontormia Express 0986
+#0	Xontormia Express 0987
+#0	Xontormia Express 0988
+#0	Xontormia Express 0990
+#0	Xontormia Express 1021
+#0	Xontormia Express 1034
+#0	Xontormia Express 1062
+#0	Xontormia Express 1122
+#0	Xontormia Express 1127
+#0	Xontormia Express 1131
+#0	Xontormia Express 1133
+#0	Xontormia Express 1135
+#0	Xontormia Express 1175
+#0	Xontormia Express 1185
+#0	Xontormia Express 1194
+#0	Xontormia Express 1198
+#0	Xontormia Express 1201
+#0	Xontormia Express 1207
+#0	Xontormia Express 1209
+#0	Xontormia Express 1211
+#0	Xontormia Express 1216
+#0	Xontormia Express 1225
+#0	Xontormia Express 1231
+#0	Xontormia Express 1235
+#0	Xontormia Express 1240
+#0	Xontormia Express 1243
+#0	Xontormia Express 1246
+#0	Xontormia Express 1247
+#0	Xontormia Express 1248
+#0	Xontormia Express 1250
+#0	Xontormia Express 1251
+
+### gelöschte Seiten
+###0	Bekannte Fehler
+###0	Enno
+###0	NEUSTART
+###0	Aktuelle Ereignisse
+###2	Allgemeine Tabellen
+###0	Ponnuki
+#2	Technische Daten

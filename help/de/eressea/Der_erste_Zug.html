@@ -1,0 +1,305 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Der erste Zug</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Der erste Zug
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <h2>
+            <span class="mw-headline" id="Der_erste_Report">Der erste Report</span>
+          </h2>
+          <p>
+            Hier ist ein Beispiel, wie der erste Report (1-37wj.nr) aussehen 
+            kann, den du nach der Anmeldung vom Server bekommst:
+          </p>
+          <pre>                Report f&#252;r E3, Wednesday, 01. July 2009, 19:56
+   Wir schreiben die erste Woche des Monats Feldsegen im Jahre 1 des dritten
+                          Zeitalters. Es ist Sommer.
+
+        Partei 37wj (37wj), Goblins/Kein Magiegebiet (drac@example.de)
+
+                          Dein Passwort lautet pwpw42.
+
+        Bitte denke daran, deine Befehle mit dem Betreff ERESSEA 3 BEFEHLE an
+                     eressea-server@eressea.kn-bremen.de zu senden.
+
+   Die ersten beiden Z&#252;ge mu&#223;t du abgeben, sonst wird deine Partei sofort
+               wieder gel&#246;scht, um Karteileichen zu vermeiden.
+
+                  Deine Partei hat 1 Personen in 1 Einheiten.
+
+      Optionen: AUSWERTUNG COMPUTER ZUGVORLAGE STATISTIK ZIPPED ADRESSEN
+                             TALENTVERSCHIEBUNGEN
+
+                                  Ereignisse
+
+Das Passwort f&#252;r diese Partei lautet pwpw42.
+
+                               Aktueller Status
+
+------------------------------------------------------------------------------
+
+Cabyn (0,0), Ebene, 24/6 B&#228;ume, 2308 zufriedene Bauern, 50000 Silber, 52
+Pferde. Die Region ist im Besitz von Partei 37wj (37wj). Im Nordwesten der
+Region liegt Ozean (-1,1), im Nordosten Ozean (0,1), im Osten die W&#252;ste von
+Budesodid (1,0), im S&#252;dosten der Sumpf von Bigecod (1,-1), im S&#252;dwesten das
+Hochland von Tavesrucal (0,-1) und im Westen Ozean (-1,0)
+
+Auf dem Markt werden Juwelen und Flachwurz feilgeboten.
+
+Statistik f&#252;r Cabyn (0,0):
+
+  Bauerneinnahmen: 11 Silber
+  Rekruten: max. 57 Bauern
+  Personen: 1
+  Holz: 10
+  Silber: 5000
+  Steine: 10
+
+  Heimat (wvg3), Gr&#246;&#223;e 10, Befestigung.
+
+    * Entdecker (vdko), 1 Goblin, aggressiv, hat: 10 Holz, 5000 Silber, 10
+      Steine, &quot;ARBEITEN&quot;.
+
+------------------------------------------------------------------------------
+                             Liste aller Adressen
+
+  * Partei 37wj (37wj): drac@example.de; (null)
+
+------------------------------------------------------------------------------</pre>
+          <p>
+            <br>
+            
+          </p>
+          <h2>
+            <span class="mw-headline" id="Beispiel_f.C3.BCr_eine_Befehlsdatei">Beispiel 
+            f&#252;r eine Befehlsdatei</span>
+          </h2>
+          <p>
+            Diese Befehlsdatei wurde in einer leicht ver&#228;nderten Version 
+            tats&#228;chlich als erster Zug in einem Spiel (f&#252;r E3!) verwendet. Ob 
+            es ein besonders schlauer Anfang war, wei&#223; ich selber auch nicht. 
+            Man beachte, dass Befehle &#252;ber mehr als eine Zeile (hier die 
+            BESCHREIBE-Befehle mit einem \ (Backslash) &quot;verl&#228;ngert&quot; wurden. 
+            Falls du <a href="Magellan.html" title="Magellan">Magellan</a> f&#252;r 
+            deine Befehle benutzt, musst du dir dar&#252;ber allerdings keine 
+            Gedanken machen.
+          </p>
+          <p>
+            <br>
+            
+          </p>
+          <pre> <a href="ERESSEA.html" title="ERESSEA">ERESSEA</a> 37wj &quot;pwpw42&quot;
+ ; du muss nat&#252;rlich oben dein eigenes Passwort einsetzen
+ <a href="REGION.html" title="REGION">REGION</a> 0,0&#160;; Cabyn
+ <a href="EINHEIT.html" title="EINHEIT">EINHEIT</a> vdko;		Entdecker [1,5000$]
+   <a href="BENENNE.html" title="BENENNE">BENENNE</a> EINHEIT &quot;Dracheneinreiter&quot;
+   ;
+   ; Das ist im Moment unsere erste und einzige Einheit,
+   ; erstmal ein paar grunds&#228;tzliche Einstellungen
+   BENENNE PARTEI &quot;Der Drachenclan&quot;
+   <a href="NUMMER.html" title="NUMMER">NUMMER</a> PARTEI drac&#160;; hoffentlich noch frei
+   <a href="OPTION.html" title="OPTION">OPTION</a> PUNKTE&#160;; Wird erst ab Runde 13 angezeigt
+   OPTION TALENTVERSCHIEBUNG
+   <a href="PR_FIX.html" title="PRÄFIX">PR&#196;FIX</a> Nebel
+   <a href="BANNER.html" title="BANNER">BANNER</a> &quot;Immer sch&#246;n eines zu haben&quot;
+   <a href="PASSWORT.html" title="PASSWORT">PASSWORT</a> &quot;Setze das Passwort nie in &#246;ffentliche Dokumente&quot;
+   ; wir haben schon eine Burg!
+   BENENNE BURG &quot;Drachenhort&quot;
+   <a href="BESCHREIBE.html" title="BESCHREIBE">BESCHREIBE</a> BURG &quot;Am Fu&#223;e eines Kliffs, das auf das Meer hinausblickt, ist \
+   eine H&#246;hle in den Fels gehauen. Eine kleine Mauer mit einem niedrigen Wacht\
+   urm sch&#252;tzt das Innere. Der schmale Eingang ist von zwei aufgespie&#223;ten Sch&#228;\
+   deln flankiert. Sie sagen: Hier haust der Drachenclan!&quot;
+   BENENNE REGION &quot;Drachental&quot;
+   ;
+   ; das kann nicht schaden...
+   <a href="LERNE.html" title="LERNE">LERNE</a> Pferdedressur
+   ; Burgenbesitzer setze ich gerne auf K&#196;MPFE NICHT, damit sie die Burg nicht 
+   ; aus Versehen bei der Flucht verlassen ...
+   <a href="K_MPFE.html" title="KÄMPFE">K&#196;MPFE</a> NICHT
+   ;
+   ; Zeit f&#252;r die erste neue Einheit
+   ; Rekrutierungssilber sollte besser &#252;bergeben werden
+   ; Lernkosten und Einheitenunterhalt holt sie sich notfalls aus dem Pool
+   <a href="GIB.html" title="GIB">GIB</a> TEMP dr01 460 Silber
+   <a href="MACHE.html" title="MACHE">MACHE</a> TEMP dr01
+     BENENNE EINHEIT &quot;prismatischer Drache&quot;
+     <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a> 1 D&#228;mon
+     LERNE Magie &quot;Illaun&quot;
+     K&#196;MPFE FLIEHE
+     // Bei Gelegenheit K&#196;MPFE HINTEN
+   ENDE
+   ;
+   ; Man muss sich genau &#252;berlegen, ob man im ersten Zug schon genug Geld f&#252;r
+   ; drei Magier hat. Eigentlich lohnen sich Magier aber immer, besonders
+   ;  D&#228;monen. Zur Not haben sie einen Zauber, mit dem sie Geld verdienen k&#246;nnen
+   ; -- und dabei lernen sie sogar noch was dazu!
+   <a href="GIB.html" title="GIB">GIB</a> TEMP dr02 460 Silber
+   GIB TEMP dr03 460 Silber
+   MACHE TEMP dr02
+     BENENNE EINHEIT &quot;prismatischer Drache&quot;
+     REKRUTIERE 1 D&#228;mon
+     LERNE Magie &quot;Illaun&quot;
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   MACHE TEMP dr03
+     BENENNE EINHEIT &quot;prismatischer Drache&quot;
+     REKRUTIERE 1 D&#228;mon
+     LERNE Magie &quot;Illaun&quot;
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; wird es sich lohnen, sich so fr&#252;h schon Elitek&#228;mpfer (Helden!) zu leisten?
+   GIB TEMP dr05 720 Silber
+   MACHE TEMP dr05
+     BENENNE EINHEIT &quot;Schattendrache&quot;
+     REKRUTIERE 2 D&#228;mon
+     LERNE Stangenwaffen
+     // Held?
+     ; wir sind zwar noch unbewaffnet, aber bevor wir es sp&#228;ter vergessen
+     K&#196;MPFE AGGRESSIV
+   ENDE
+   ;
+   ; wenn er das Mindesttalent erreicht hat, produzieren wir hoffentlich schon
+   ; Holz oder Eisen
+   GIB TEMP dr06 66 Silber
+   MACHE TEMP dr06
+     BENENNE EINHEIT &quot;grauer Drache&quot;
+     REKRUTIERE 1
+     LERNE Waffenbau
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; Burgen kontrollieren in E3 Regionen, deshalb sind sie schon fr&#252;h wichtig!
+   GIB TEMP dr07 66 Silber
+   MACHE TEMP dr07
+     BENENNE EINHEIT &quot;grauer Drache&quot;
+     REKRUTIERE 1
+     LERNE Burgenbau
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; evtl. wollen wir hier noch mehr Burgenbauer...
+   ;
+   ; Holz ist am Anfang super wichtig f&#252;r Waffen und Wachposten,
+   ; sp&#228;ter f&#252;r Geb&#228;ude, Schiffe
+   GIB TEMP dr08 180 Silber
+   MACHE TEMP dr08
+     BENENNE EINHEIT &quot;gr&#252;ner Drache&quot;
+     REKRUTIERE 3
+     LERNE Holzf&#228;llen
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; Wollen wir uns auf Nahkampf oder Fernkampf, B&#246;gen oder Armbr&#252;ste
+   ; spezialisieren? Evtl. ist es gef&#228;hrlich, das zu fr&#252;h zu tun.
+   GIB TEMP dr10 660 Silber
+   MACHE TEMP dr10
+     BENENNE EINHEIT &quot;Drachenfl&#252;gel&quot;
+     REKRUTIERE 10
+     LERNE Armbrustschie&#223;en
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; Eisen zu finden ist auch wichtig
+   GIB TEMP dr11 180 Silber
+   MACHE TEMP dr11
+     BENENNE EINHEIT &quot;H&#246;hlendrache&quot;
+     REKRUTIERE 3
+     LERNE Bergbau
+     // als Sp&#228;her in Nachbarregionen
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; ...ebenso wie Steine f&#252;r Burgen
+   GIB TEMP dr12 180 Silber
+   MACHE TEMP dr12
+     BENENNE EINHEIT &quot;H&#246;hlendrache&quot;
+     REKRUTIERE 3
+     LERNE Steinbau
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ; Wir brauchen Sp&#228;her, vermutlich mindestens einen f&#252;r jede Himmelsrichtung
+   ; Wichtig: Unterhaltssilber nicht vergessen!
+   GIB TEMP drr1 260 Silber
+   MACHE TEMP drr1
+     BENENNE EINHEIT &quot;kleiner Drachenreiter&quot;
+     REKRUTIERE 1
+     <a href="NACH.html" title="NACH">NACH</a> sw
+     // Stein- und Bergbauer machen
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   GIB TEMP drr2 260 Silber
+   MACHE TEMP drr2
+     BENENNE EINHEIT &quot;kleiner Drachenreiter&quot;
+     REKRUTIERE 1
+     NACH so
+     // Stein- und Bergbauer machen
+     K&#196;MPFE FLIEHE
+   ENDE
+   ;
+   ;
+   ; in E2 m&#252;ssten wir jetzt noch unbedingt Unterhalter rekrutieren!
+   ; ...
+   ; Vielleicht sollten wir auch noch Reiter (Steintransport!), Wagenbauer,
+   ; R&#252;stungsbauer oder noch mehr Soldaten ausbilden? Andererseits sollte man 
+   ; sich am Anfang nicht &#252;bernehmen und sehr genau aufpassen, dass man nicht
+   ; pl&#246;tzlich pleite ist!
+ <a href="N_CHSTER.html" title="NÄCHSTER">N&#196;CHSTER</a>
+</pre>
+          <p>
+            <br>
+            
+          </p>
+          <table>
+            <tr>
+              <td align="left" style="background-color: #ffffaa">
+                Weiterlesen:
+              </td>
+              <td style="background-color: #ffffcc">
+                <a href="Welpenschutz.html" title="Welpenschutz">Welpenschutz</a>
+              </td>
+            </tr>
+          </table>
+          <!-- 
+NewPP limit report
+Cached time: 20220210200624
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.011 seconds
+Real time usage: 0.011 seconds
+Preprocessor visited node count: 23/1000000
+Preprocessor generated node count: 99/1000000
+Post?expand include size: 138/2097152 bytes
+Template argument size: 24/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 1994/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    1.076      1 Vorlage:Weiter
+100.00%    1.076      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1966-0!canonical and timestamp 20220210200624 and revision id 7254
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

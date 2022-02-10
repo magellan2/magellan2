@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>STIRB</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      STIRB
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <tt><b>STIRB</b> &quot;Passwort&quot;</tt><br><tt><b>STIRB</b> 
+            &quot;Passwort&quot; PARTEI <i>Partei-nr</i></tt>
+          </p>
+          <p>
+            Dies bewirkt, dass die Partei sich aufl&#246;st und nicht mehr 
+            mitspielt. Zur Sicherheit muss das Passwort der Partei angeben 
+            werden. Auch dieser Befehl muss einer Einheit gegeben werden.
+          </p>
+          <p>
+            Alle Gegenst&#228;nde inklusive Silber der sterbenden Partei werden an 
+            befreundete Einheiten &#252;bergeben, die in derselben Region stehen 
+            wie Einheiten der sterbenden Partei. Sind mehrere in der Region, 
+            wird nach der Anzahl Personen in der Region aufgeteilt. Als 
+            befreundet gilt hier nur, wem ein <a href="HELFE.html" title="HELFE">HELFE 
+            SILBER</a> gesetzt wurde, wo also seitens der ausscheidenden 
+            Partei bereits Vertrauen herrschte. Die Empf&#228;ngerpartei muss HELFE 
+            GIB auf die sterbende Partei gesetzt haben. Die Gegenst&#228;nde gehen 
+            an die jeweils erste Einheit der Partei in der Region. Sollte sich 
+            keine befreundete Einheit in einer Region befinden, gehen alle 
+            Gegenst&#228;nde an die Bauern. Die Personen der Partei werden immer an 
+            die Bauern &#252;bergeben.
+          </p>
+          <p>
+            <br>
+            Es besteht auch die M&#246;glichkeit mit dem STIRB Befehl zwei Parteien 
+            der gleichen Rasse zu fusionieren.
+          </p>
+          <p>
+            Voraussetzungen f&#252;r die Fusion sind:
+          </p>
+          <ol>
+            <li>
+              Aufl&#246;sende Partei und Zielpartei m&#252;ssen derselben Rasse 
+              angeh&#246;ren.
+            </li>
+            <li>
+              Die Empf&#228;ngerpartei muss die Einheit, welche den STIRB-Befehl 
+              gibt, kontaktieren.
+            </li>
+            <li>
+              Die Empf&#228;ngerpartei muss daf&#252;r nat&#252;rlich in derselben Region 
+              sein wie die Einheit, welche den STIRB-Befehl gibt.
+            </li>
+            <li>
+              Beide Parteien m&#252;ssen mindestens 50 Runden alt sein.
+            </li>
+          </ol>
+          <p>
+            Durch die Fusion werden s&#228;mtliche Einheiten, welche die Rasse der 
+            Partei haben, an die angegebene Partei &#252;bergeben und die Partei 
+            anschlie&#223;end gel&#246;scht. Einheiten, welche nicht der Parteirasse 
+            angeh&#246;ren, wie beispielsweise Migranten, magische Kreaturen oder 
+            Vertraute, werden gel&#246;scht.
+          </p>
+          <p>
+            Hat die Zielpartei weniger als die maximal zul&#228;ssige Anzahl an 
+            Einheiten mit mengenbegrenzten Talenten, so werden diese zuf&#228;llig 
+            &#252;bergeben. Einheiten mit mengenbegrenzten Talenten, die nicht mehr 
+            &#252;bergeben werden k&#246;nnen, werden gel&#246;scht. Wer dies genau steuern 
+            will, sollte die nicht erw&#252;nschten Einheiten sp&#228;testens in der 
+            STIRB-Woche das entsprechende Talent vergessen lassen.
+          </p>
+          <p>
+            Magier werden nur dann &#252;bergeben, wenn beide Parteien das gleiche 
+            Magiegebiet haben. Vertraute werden gel&#246;scht, da sie nicht der 
+            Parteirasse angeh&#246;ren. Helden werden durch die &#220;bergabe degradiert.
+          </p>
+          <p>
+            Das Einheitenlimit kann durch die Parteifusion &#252;berschritten 
+            werden. Dann kann die Zielpartei aber keine neuen Einheiten 
+            erzeugen, bis sie wieder unter dem Limit liegt. Es k&#246;nnen auch 
+            dann keine neuen Temp-Einheiten erzeugt werden, wenn am Ende der 
+            Runde das Einheitenlimit unter der Grenze liegen w&#252;rde! Es ist 
+            also besser, im Vorfeld daf&#252;r Sorge zu tragen, dass die 
+            fusionierte Partei den aktuellen Grenzwert einh&#228;lt.
+          </p>
+          <p>
+            Ist eine der Voraussetzungen nicht erf&#252;llt, wird der STIRB-Befehl 
+            nicht ausgef&#252;hrt und es erscheint eine Fehlermeldung.
+          </p>
+          <p>
+            <b>ACHTUNG</b> Wird der Befehl falsch gegeben, kann es zu einem 
+            Stirb ohne &#220;bergabe kommen. Wenn dein Passwort <i>geheim</i> 
+            lautet und du mit der Partei (ii) fusionieren m&#246;chtest, lautet der 
+            Befehl dazu:
+          </p>
+          <pre> STIRB &quot;geheim&quot; PARTEI ii</pre>
+          <p>
+            (Nein, es ist nicht wirklich m&#246;glich, mit der Monsterpartei ii zu 
+            fusionieren.)
+          </p>
+          <!-- 
+NewPP limit report
+Cached time: 20220209225321
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.005 seconds
+Real time usage: 0.006 seconds
+Preprocessor visited node count: 2/1000000
+Preprocessor generated node count: 6/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1524-0!canonical and timestamp 20220209225321 and revision id 7201
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,171 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Einheiten</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Einheiten
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            Das Spiel beginnt man mit einer <b>Einheit</b>, bestehend aus 
+            einer Person mit 2500 Silber, 10 Holz, 4 Steinen und einem 
+            rassenspezifischen Startgeschenk. Was das genau ist, wird hier 
+            nicht verraten. Ein Tip: wer nicht wei&#223;, was er da hat, probiere 
+            mal <a href="ZEIGE.html" title="ZEIGE">ZEIGE &quot;gegenstand&quot;</a>. 
+            Diese erste Person ist in keiner Weise speziell; es ist einfach 
+            die erste Person, die zur neuen Partei geh&#246;rt. Man kann nun 
+            weitere Personen rekrutieren, sp&#228;ter dann Gegenst&#228;nde produzieren, <a href="Geb_ude.html" title="Gebäude">Geb&#228;ude</a> 
+            und <a class="mw-redirect" href="Schiff.html" title="Schiffe">Schiffe</a> 
+            bauen, <a href="Pferd_und_Wagen.html" title="Pferd und Wagen">Pferde</a> 
+            z&#228;hmen, <a href="Kriegstabellen.html" title="Kriegstabellen">Waffen</a> 
+            schmieden und so weiter.
+          </p>
+          <p>
+            Achtung: diese erste Einheit ist &quot;anonym&quot;, d.h. ihre 
+            Parteizugeh&#246;rigkeit (sprich der Name und die Nummer der Partei) 
+            ist f&#252;r andere Spieler nicht sichtbar. N&#228;heres dazu siehe bei dem 
+            Befehl <a href="TARNE.html" title="TARNE">TARNE</a>. Die Einheit 
+            einer D&#228;monen-Partei (zu den Parteirassen siehe <a href="Rassen.html" title="Rassen">hier</a>) 
+            bekommt au&#223;erdem automatisch einen zuf&#228;lligen Tarntypus zugewiesen.
+          </p>
+          <p>
+            Neue Einheiten werden gemacht, indem man mit einer bestehenden 
+            Einheit eine neue generiert <a href="MACHE.html" title="MACHE">MACHE 
+            TEMP</a>. Eine neue Einheit enth&#228;lt noch keine Leute; diese m&#252;ssen 
+            entweder von einer bestehenden in die neue Einheit <a href="GIB.html" title="GIB">transferiert</a> 
+            oder frisch rekrutiert werden (siehe <a class="mw-redirect" href="Geld.html#Ausgaben" title="Ausgaben">Ausgaben</a>), 
+            wozu die Einheit dann das notwendige Geld bekommen muss. 
+            Einheiten, die von Einheiten auf Schiffen oder in Geb&#228;uden gemacht 
+            werden, starten dort, also auf dem Schiff bzw. in dem Geb&#228;ude.
+          </p>
+          <p>
+            Eine Partei kann nicht mehr als eine bestimmte Zahl von Einheiten, 
+            bekannt als das <b>Einheitenlimit</b>, haben. Das liegt derzeit 
+            bei 2500 Einheiten und wird auch im Report angezeigt. Das 
+            Einheitenmlimit verhindert, dass neue Einheiten erzeugt werden. Es 
+            ist daf&#252;r unerheblich, ob vielleicht sp&#228;ter im Zug Einheiten 
+            aufgel&#246;st werden. Unter gewissen Umst&#228;nden ist es m&#246;glich, dass 
+            eine Partei mehr Einheiten hat als das Einheitenlimit. Die 
+            &#252;berz&#228;hligen Einheiten werden nicht gel&#246;scht; es k&#246;nnen dann nur 
+            so lange keine neuen Einheiten mehr erzeugt werden, bis die 
+            Einheitenzahl wieder unter das Limit sinkt.
+          </p>
+          <p>
+            Hier ein Beispiel f&#252;r Einheiten:
+          </p>
+          <pre>  * Konrad Rabenhelm (tb2), 1 Mensch, vorne, bewacht die Region, Talente:
+    Hiebwaffen 1, Steuereintreiben 2, hat: Schwert, 20 Silber, &quot;TREIBEN&quot;;
+    Konrad Rabenhelm ist ein typischer Ritter seines Ordens. Der Orden der
+    Gerechtigkeit ist bekannt f&#252;r seine d&#252;steren und zur&#252;ckhaltenden 
+    Mitglieder. Sie scheinen alle an einem finsteren Erlebnis zu nagen.
+  &#160;
+  - Botschafter des Clans (2ow), anonym, 1 Zwerg, hat: Pferd,
+    Silberbeutel; Der Botschafter ist auf der Suche nach befreundeten V&#246;lkern
+    und solchen, die es werden wollen.
+  &#160;
+  + Kieselnasen (kies), Gesteinsfreunde (135), 4 Trolle, hat: 1 Wagen, 30
+    Juwelen.</pre>
+          <p>
+            Eigene Einheiten sind mit einem '*' markiert, Einheiten anderer 
+            Parteien mit einem '-' oder einem '+', wenn man der Partei <a href="Allianz.html" title="Allianz">hilft</a>. 
+            &#220;ber Einheiten anderer Parteien stehen viel weniger Informationen 
+            zur Verf&#252;gung.
+          </p>
+          <p>
+            Jede Einheit besitzt eine eindeutige Nummer, die vom Computer 
+            vergeben wird und die bei allen Befehlen verwendet wird, im ersten 
+            Fall hier die Nummer tb2. Der Begriff &quot;Nummer&quot; mutet hier seltsam 
+            an, denn in Eressea werden die Einheiten mit &quot;base36&quot;-Zahlen 
+            versehen; neben den Ziffern 0-9 sind also die Buchstaben a-z als 
+            &quot;Ziffern&quot; g&#252;ltig. Jede Einheit hat zudem einen Namen (&quot;Konrad 
+            Rabenhelm&quot;) und vielleicht eine Beschreibung (nach dem Semikolon). 
+            Zudem werden Besitz und, falls die Information verf&#252;gbar ist, 
+            Talente angezeigt.
+          </p>
+          <p>
+            Diese erste Einheit des Beispiels ist die Einheit des Spielers, 
+            der diesen Report bekam. Sie besteht aus einem Menschen der 
+            eigenen Partei (wird nicht angezeigt), hat 20 Silber, und kann mit 
+            Hiebwaffen k&#228;mpfen: in diesem Talent hat die Einheit die Stufe 1. 
+            Das Talent <a href="TREIBE.html" title="TREIBE">Steuereintreiben</a> 
+            beherrscht sie auf Stufe 2 (n&#228;heres zu den Talenten siehe <a href="Talente.html" title="Talente">hier</a>). 
+            Wie man sieht, hat Konrad Rabenhelm ein Schwert. Bekommt diese 
+            Einheit keine neuen Befehle f&#252;r die n&#228;chste Runde, so wird sie 
+            weiterhin Steuern eintreiben.
+          </p>
+          <p>
+            Die n&#228;chste Einheit hat die Nummer 2ow, besteht aus einem <a class="mw-redirect" href="Rassen.html#Zwerge" title="Zwerg">Zwergen</a> 
+            und hat ein Pferd und einen Silberbeutel. Das hei&#223;t, da&#223; er mehr 
+            als 500 Silber bei sich hat. H&#228;tte er gar mehr als 5000 Silber bei 
+            sich, s&#228;he man eine Silberkassette. Welcher Partei die fremde 
+            Einheit angeh&#246;rt, kann man nicht sehen, denn sie hat sich 
+            parteigetarnt, verbirgt also ihre Parteizugeh&#246;rigkeit (s.a. Befehl <a href="TARNE.html" title="TARNE">TARNE</a>). 
+            Dies ist bei Botschaftern nat&#252;rlich keine besonders kluge Wahl, da 
+            die anderen Spieler so auch nicht an die eMail-Adresse des 
+            Spielers kommen. Man kann einer solchen Einheit eine <a href="BOTSCHAFT.html" title="BOTSCHAFT">BOTSCHAFT</a> 
+            zukommen lassen.
+          </p>
+          <p>
+            Und schlie&#223;lich ein paar befreundete <a class="mw-redirect" href="Rassen.html#Trolle" title="Trolle">Trolle</a>, 
+            die Juwelen geladen haben.
+          </p>
+          <p>
+            Neben <a class="mw-redirect" href="Rassen.html#Menschen" title="Mensch">Menschen</a>, 
+            <a class="mw-redirect" href="Rassen.html#Zwerge" title="Zwerg">Zwergen</a> 
+            und <a class="mw-redirect" href="Rassen.html#Trolle" title="Troll">Trollen</a> 
+            gibt es noch viele andere Rassen in Eressea. Sie werden <a href="Rassen.html" title="Rassen">hier</a> 
+            n&#228;her behandelt.
+          </p>
+          <p>
+            Einheiten k&#246;nnen den Status &quot;flieht&quot;, &quot;k&#228;mpft nicht&quot;, &quot;defensiv&quot;, 
+            &quot;hinten&quot;, &quot;vorne&quot; oder &quot;aggressiv&quot; haben (zu den Einzelheiten 
+            siehe im Kapital <a href="Krieg.html" title="Krieg">Krieg</a> den 
+            Abschnitt <a class="mw-redirect" href="Krieg.html#Die_Schlacht" title="Schlacht">Kampfreihen</a> 
+            sowie die Erkl&#228;rung zum Befehl <a href="K_MPFE.html" title="KÄMPFE">K&#196;MPFE</a>).
+          </p>
+          <p>
+            Eine Einheit kann eine Region bewachen (zu den Auswirkungen siehe <a href="BEWACHE.html" title="BEWACHE">BEWACHE</a>). 
+            In diesem Fall steht bei ihr zus&#228;tzlich &quot;bewacht die Region&quot;.
+          </p>
+          <p>
+            Schlussendlich kann eine Einheit durch einen <a href="Krieg.html" title="Krieg">Kampf</a> 
+            oder durch Hunger verwundet sein. In diesem Fall steht bei der 
+            Einheit noch &quot;ersch&#246;pft&quot;, &quot;verwundet&quot; oder gar &quot;schwer verwundet&quot;.
+          </p>
+          <!-- 
+NewPP limit report
+Cached time: 20220210125138
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.008 seconds
+Real time usage: 0.009 seconds
+Preprocessor visited node count: 1/1000000
+Preprocessor generated node count: 4/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1556-0!canonical and timestamp 20220210125138 and revision id 6292
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

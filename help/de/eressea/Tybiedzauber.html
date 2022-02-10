@@ -1,0 +1,787 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>Tybiedzauber</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      Tybiedzauber
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <div style="clear: right; margin-bottom: 0; float: right; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null">
+            <div class="toc" id="toc">
+              <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+              
+
+              <div class="toctitle" dir="ltr" lang="de">
+                <h2>
+                  Inhaltsverzeichnis
+                </h2>
+                <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+                </span>
+              </div>
+              <ul>
+                <li class="toclevel-1 tocsection-1">
+                  <a href="#Stufe_1"><span class="tocnumber">1</span> <span class="toctext">Stufe 
+                  1</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-2">
+                      <a href="#Magie_analysieren"><span class="tocnumber">1.1</span> 
+                      <span class="toctext">Magie analysieren</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-3">
+                      <a href="#Schleieraura"><span class="tocnumber">1.2</span> 
+                      <span class="toctext">Schleieraura</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-4">
+                      <a href="#Wunderdoktor"><span class="tocnumber">1.3</span> 
+                      <span class="toctext">Wunderdoktor</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-5">
+                  <a href="#Stufe_2"><span class="tocnumber">2</span> <span class="toctext">Stufe 
+                  2</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-6">
+                      <a href="#Schutz_vor_Magie"><span class="tocnumber">2.1</span> 
+                      <span class="toctext">Schutz vor Magie</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-7">
+                  <a href="#Stufe_3"><span class="tocnumber">3</span> <span class="toctext">Stufe 
+                  3</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-8">
+                      <a href="#Beute_Bewahren"><span class="tocnumber">3.1</span> 
+                      <span class="toctext">Beute Bewahren</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-9">
+                      <a href="#Schutzzauber"><span class="tocnumber">3.2</span> 
+                      <span class="toctext">Schutzzauber</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-10">
+                  <a href="#Stufe_4"><span class="tocnumber">4</span> <span class="toctext">Stufe 
+                  4</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-11">
+                      <a href="#Astraler_Ausgang"><span class="tocnumber">4.1</span> 
+                      <span class="toctext">Astraler Ausgang</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-12">
+                      <a href="#Astraler_Weg"><span class="tocnumber">4.2</span> 
+                      <span class="toctext">Astraler Weg</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-13">
+                  <a href="#Stufe_5"><span class="tocnumber">5</span> <span class="toctext">Stufe 
+                  5</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-14">
+                      <a href="#Astrale_Schw.C3.A4chezone"><span class="tocnumber">5.1</span> 
+                      <span class="toctext">Astrale Schw&#228;chezone</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-15">
+                      <a href="#Auratransfer"><span class="tocnumber">5.2</span> 
+                      <span class="toctext">Auratransfer</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-16">
+                      <a href="#Magiefresser"><span class="tocnumber">5.3</span> 
+                      <span class="toctext">Magiefresser</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-17">
+                      <a href="#Schockwelle"><span class="tocnumber">5.4</span> 
+                      <span class="toctext">Schockwelle</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-18">
+                  <a href="#Stufe_6"><span class="tocnumber">6</span> <span class="toctext">Stufe 
+                  6</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-19">
+                      <a href="#Astraler_Ruf"><span class="tocnumber">6.1</span> 
+                      <span class="toctext">Astraler Ruf</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-20">
+                      <a href="#Erschaffe_ein_Amulett_des_wahren_Sehens"><span class="tocnumber">6.2</span> 
+                      <span class="toctext">Erschaffe ein Amulett des wahren 
+                      Sehens</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-21">
+                      <a href="#Erschaffe_einen_Ring_der_Unsichtbarkeit"><span class="tocnumber">6.3</span> 
+                      <span class="toctext">Erschaffe einen Ring der 
+                      Unsichtbarkeit</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-22">
+                      <a href="#Luftschiff"><span class="tocnumber">6.4</span> <span class="toctext">Luftschiff</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-23">
+                      <a href="#Ruf_der_Realit.C3.A4t"><span class="tocnumber">6.5</span> 
+                      <span class="toctext">Ruf der Realit&#228;t</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-24">
+                      <a href="#Stehle_Aura"><span class="tocnumber">6.6</span> 
+                      <span class="toctext">Stehle Aura</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-25">
+                  <a href="#Stufe_7"><span class="tocnumber">7</span> <span class="toctext">Stufe 
+                  7</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-26">
+                      <a href="#Erschaffe_Antimagiekristall"><span class="tocnumber">7.1</span> 
+                      <span class="toctext">Erschaffe Antimagiekristall</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-27">
+                      <a href="#Fluch_brechen"><span class="tocnumber">7.2</span> 
+                      <span class="toctext">Fluch brechen</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-28">
+                      <a href="#Mauern_der_Ewigkeit"><span class="tocnumber">7.3</span> 
+                      <span class="toctext">Mauern der Ewigkeit</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-29">
+                  <a href="#Stufe_8"><span class="tocnumber">8</span> <span class="toctext">Stufe 
+                  8</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-30">
+                      <a href="#Runen_des_Schutzes"><span class="tocnumber">8.1</span> 
+                      <span class="toctext">Runen des Schutzes</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-31">
+                      <a href="#Schild_des_Fisches"><span class="tocnumber">8.2</span> 
+                      <span class="toctext">Schild des Fisches</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-32">
+                  <a href="#Stufe_9"><span class="tocnumber">9</span> <span class="toctext">Stufe 
+                  9</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-33">
+                      <a href="#Beschleunigung"><span class="tocnumber">9.1</span> 
+                      <span class="toctext">Beschleunigung</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-34">
+                      <a href="#Erschaffe_einen_Ring_der_Macht"><span class="tocnumber">9.2</span> 
+                      <span class="toctext">Erschaffe einen Ring der Macht</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-35">
+                      <a href="#Vertrauten_rufen"><span class="tocnumber">9.3</span> 
+                      <span class="toctext">Vertrauten rufen</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-36">
+                  <a href="#Stufe_10"><span class="tocnumber">10</span> <span class="toctext">Stufe 
+                  10</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-37">
+                      <a href="#Blick_in_die_Realit.C3.A4t"><span class="tocnumber">10.1</span> 
+                      <span class="toctext">Blick in die Realit&#228;t</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-38">
+                      <a href="#Erschaffe_einen_Beutel_des_Negativen_Gewichts"><span class="tocnumber">10.2</span> 
+                      <span class="toctext">Erschaffe einen Beutel des 
+                      Negativen Gewichts</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-39">
+                  <a href="#Stufe_11"><span class="tocnumber">11</span> <span class="toctext">Stufe 
+                  11</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-40">
+                      <a href="#Zeitdehnung"><span class="tocnumber">11.1</span> 
+                      <span class="toctext">Zeitdehnung</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-41">
+                  <a href="#Stufe_12"><span class="tocnumber">12</span> <span class="toctext">Stufe 
+                  12</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-42">
+                      <a href="#R.C3.BCstschild"><span class="tocnumber">12.1</span> 
+                      <span class="toctext">R&#252;stschild</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-43">
+                  <a href="#Stufe_13"><span class="tocnumber">13</span> <span class="toctext">Stufe 
+                  13</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-44">
+                      <a href="#Belebtes_Gestein"><span class="tocnumber">13.1</span> 
+                      <span class="toctext">Belebtes Gestein</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-45">
+                  <a href="#Stufe_14"><span class="tocnumber">14</span> <span class="toctext">Stufe 
+                  14</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-46">
+                      <a href="#St.C3.B6re_Astrale_Integrit.C3.A4t"><span class="tocnumber">14.1</span> 
+                      <span class="toctext">St&#246;re Astrale Integrit&#228;t</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-47">
+                  <a href="#Stufe_15"><span class="tocnumber">15</span> <span class="toctext">Stufe 
+                  15</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-48">
+                      <a href="#Opfere_Kraft"><span class="tocnumber">15.1</span> 
+                      <span class="toctext">Opfere Kraft</span></a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <h2>
+            <span class="mw-headline" id="Stufe_1">Stufe 1</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Magie_analysieren">Magie analysieren</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit diesem Spruch kann der Magier 
+            versuchen, die Verzauberungen eines einzelnen angegebenen Objekts 
+            zu erkennen. Von allen Spr&#252;chen, die seine eigenen F&#228;higkeiten 
+            nicht &#252;berschreiten, wird er einen Eindruck ihres Wirkens erhalten 
+            k&#246;nnen. Bei st&#228;rkeren Spr&#252;chen ben&#246;tigt er ein wenig Gl&#252;ck f&#252;r 
+            eine gelungene Analyse.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            1<br><b>Rang</b>: 5<br><b>Komponenten</b>: 1 Aura * Stufe<br><b>Modifikationen</b>: 
+            Schiffszauber<br><b>Syntax</b>: ZAUBERE [STUFE n] &quot;Magie 
+            analysieren&quot; ( REGION | EINHEIT &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; ...] | 
+            SCHIFF &lt;Schiff-Nr&gt; | BURG &lt;Geb&#228;ude-Nr&gt; )<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Schleieraura">Schleieraura</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber wird die gesamte Ausr&#252;stung 
+            der Zieleinheit f&#252;r einige Zeit vor den Blicken anderer 
+            verschleiern. Der Zauber sch&#252;tzt nicht vor Dieben und Spionen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 1<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            1 Aura * Stufe<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Schleieraura&quot; &lt;Einheit-Nr&gt;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Wunderdoktor">Wunderdoktor</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Wenn einem der Alchemist nicht 
+            weiterhelfen kann, geht man zu dem gelehrten Tybiedmagier. Seine 
+            Tr&#228;nke und Tinkturen helfen gegen alles, was man sonst nicht 
+            bekommen kann. Ob nun die kryptische Formel unter dem Holzschuh 
+            des untreuen Ehemannes wirklich geholfen hat - nun, der des Lesens 
+            nicht m&#228;chtige Bauer wird es nie wissen. Dem Magier hilft es auf 
+            jeden Fall... beim F&#252;llen seines Geldbeutels. 50 Silber pro Stufe 
+            lassen sich so in einer Woche verdienen.<br><b>Art</b>: Normaler 
+            Zauber<br><b>Stufe</b>: 1<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            1 Aura * Stufe<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Wunderdoktor&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_2">Stufe 2</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Schutz_vor_Magie">Schutz vor Magie</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber legt ein antimagisches Feld 
+            um die Magier der Feinde und behindert ihre Zauber erheblich. Nur 
+            wenige werden die Kraft besitzen, das Feld zu durchdringen und 
+            ihren Truppen in der Schlacht zu helfen.<br><b>Art</b>: 
+            Pr&#228;kampfzauber<br><b>Stufe</b>: 2<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            3 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;Schutz vor Magie&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_3">Stufe 3</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Beute_Bewahren">Beute Bewahren</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber verhindert, dass ein Teil 
+            der sonst im Kampf zerst&#246;rten Gegenst&#228;nde besch&#228;digt wird. Die 
+            Verluste reduzieren sich um 5% pro Stufe des Zaubers bis zu einem 
+            Minimum von 25%.<br><b>Art</b>: Postkampfzauber<br><b>Stufe</b>: 3<br><b>Rang</b>: 
+            5<br><b>Komponenten</b>: 1 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;Beute Bewahren&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Schutzzauber">Schutzzauber</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber verst&#228;rkt die nat&#252;rliche 
+            Widerstandskraft gegen Magie. Eine so gesch&#252;tzte Einheit ist auch 
+            gegen Kampfmagie weniger empfindlich. Pro Stufe reicht die Kraft 
+            des Magiers aus, um 5 Personen zu sch&#252;tzen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 3<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            5 Aura * Stufe<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Schutzzauber&quot; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; ...]<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_4">Stufe 4</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Astraler_Ausgang">Astraler Ausgang</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Der Magier konzentriert sich auf die 
+            Struktur der Realit&#228;t und kann so die astrale Ebene verlassen. Er 
+            kann insgesamt (Stufe-3)*15 GE durch das kurzzeitig entstehende 
+            Tor schicken. Ist der Magier erfahren genug, den Zauber auf Stufen 
+            von 11 oder mehr zu zaubern, kann er andere Einheiten auch gegen 
+            ihren Willen auf die andere Ebene zwingen.<br><b>Art</b>: Normaler 
+            Zauber<br><b>Stufe</b>: 4<br><b>Rang</b>: 7<br><b>Komponenten</b>: 
+            2 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: ZAUBERE 
+            [STUFE n] &quot;Astraler Ausgang&quot; &lt;x&gt; &lt;y&gt; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; 
+            ...]<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Astraler_Weg">Astraler Weg</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Alte arkane Formeln erm&#246;glichen es dem 
+            Magier, sich und andere in die astrale Ebene zu schicken. Der 
+            Magier kann (Stufe-3)*15 GE durch das kurzzeitig entstehende Tor 
+            schicken. Ist der Magier erfahren genug, den Zauber auf Stufen von 
+            11 oder mehr zu zaubern, kann er andere Einheiten auch gegen ihren 
+            Willen auf die andere Ebene zwingen.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            4<br><b>Rang</b>: 7<br><b>Komponenten</b>: 2 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Astraler Weg&quot; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; ...]<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_5">Stufe 5</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Astrale_Schw.C3.A4chezone">Astrale 
+            Schw&#228;chezone</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit diesem Zauber kann der Magier eine 
+            Zone der astralen Schw&#228;chung erzeugen, ein lokales Ungleichgewicht 
+            im Astralen Feld. Dieses Zone wird bestrebt sein, wieder in den 
+            Gleichgewichtszustand zu gelangen. Dazu wird sie jedem in dieser 
+            Region gesprochenen Zauber einen Teil seiner St&#228;rke entziehen, die 
+            schw&#228;cheren gar ganz absorbieren.<br><b>Art</b>: Normaler 
+            Zauber<br><b>Stufe</b>: 5<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            3 Aura * Stufe<br><b>Modifikationen</b>: Fernzauber<br><b>Syntax</b>: 
+            ZAUBERE [REGION x y] [STUFE n] &quot;Astrale Schw&#228;chezone&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Auratransfer">Auratransfer</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit Hilfe dieses Zauber kann der Magier 
+            eigene Aura im Verh&#228;ltnis 2:1 auf einen anderen Magier des 
+            gleichen Magiegebietes oder im Verh&#228;ltnis 3:1 auf einen Magier 
+            eines anderen Magiegebietes &#252;bertragen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 5<br><b>Rang</b>: 1<br><b>Komponenten</b>: 
+            1 Aura<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE &quot;Auratransfer&quot; &lt;Einheit-Nr&gt; &lt;Aura&gt;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Magiefresser">Magiefresser</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber erm&#246;glicht dem Magier, 
+            Verzauberungen einer Einheit, eines Schiffes, Geb&#228;udes oder auch 
+            der Region aufzul&#246;sen.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            5<br><b>Rang</b>: 2<br><b>Komponenten</b>: 4 Aura * Stufe<br><b>Modifikationen</b>: 
+            Fernzauber, Schiffszauber<br><b>Syntax</b>: ZAUBERE [REGION x y] 
+            [STUFE n] &quot;Magiefresser&quot; ( REGION | EINHEIT &lt;Einheit-Nr&gt; 
+            [&lt;Einheit-Nr&gt; ...] | SCHIFF &lt;Schiff-Nr&gt; | BURG &lt;Geb&#228;ude-Nr&gt; )<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Schockwelle">Schockwelle</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber l&#228;&#223;t eine Welle aus purer 
+            Kraft &#252;ber die gegnerischen Reihen hinwegfegen. Viele K&#228;mpfer wird 
+            der Schock so benommen machen, da&#223; sie f&#252;r einen kurzen Moment 
+            nicht angreifen k&#246;nnen.<br><b>Art</b>: Kampfzauber<br><b>Stufe</b>: 
+            5<br><b>Rang</b>: 5<br><b>Komponenten</b>: 1 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;Schockwelle&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_6">Stufe 6</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Astraler_Ruf">Astraler Ruf</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Ein Magier, der sich in der astralen Ebene 
+            befindet, kann mit Hilfe dieses Zaubers andere Einheiten zu sich 
+            holen. Der Magier kann (Stufe-3)*15 GE durch das kurzzeitig 
+            entstehende Tor schicken. Ist der Magier erfahren genug, den 
+            Zauber auf Stufen von 13 oder mehr zu zaubern, kann er andere 
+            Einheiten auch gegen ihren Willen auf die andere Ebene zwingen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 6<br><b>Rang</b>: 7<br><b>Komponenten</b>: 
+            2 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: ZAUBERE 
+            [STUFE n] &quot;Astraler Ruf&quot; &lt;x&gt; &lt;y&gt; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; ...]<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Erschaffe_ein_Amulett_des_wahren_Sehens">Erschaffe 
+            ein Amulett des wahren Sehens</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Der Spruch erm&#246;glicht es einem Magier, ein 
+            Amulett des Wahren Sehens zu erschaffen. Das Amulett erlaubt es 
+            dem Tr&#228;ger, alle Einheiten, die durch einen Ring der 
+            Unsichtbarkeit gesch&#252;tzt sind, zu sehen. Einheiten allerdings, die 
+            sich mit ihrem Tarnungs-Talent verstecken, bleiben weiterhin 
+            unentdeckt.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 6<br><b>Rang</b>: 
+            5<br><b>Komponenten</b>: 50 Aura, 3000 Silber, 1 permanente Aura<br><b>Modifikationen</b>: 
+            Schiffszauber<br><b>Syntax</b>: ZAUBERE &quot;Erschaffe ein Amulett des 
+            wahren Sehens&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Erschaffe_einen_Ring_der_Unsichtbarkeit">Erschaffe 
+            einen Ring der Unsichtbarkeit</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit diesem Spruch kann der Zauberer einen 
+            Ring der Unsichtbarkeit erschaffen. Der Tr&#228;ger des Ringes wird f&#252;r 
+            alle Einheiten anderer Parteien unsichtbar, egal wie gut ihre 
+            Wahrnehmung auch sein mag. In einer unsichtbaren Einheit muss jede 
+            Person einen Ring tragen.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            6<br><b>Rang</b>: 5<br><b>Komponenten</b>: 50 Aura, 3000 Silber, 1 
+            permanente Aura<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE &quot;Erschaffe einen Ring der Unsichtbarkeit&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Luftschiff">Luftschiff</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Diese magischen Runen bringen ein Boot 
+            oder Langboot f&#252;r eine Woche zum fliegen. Damit kann dann auch 
+            Land &#252;berquert werden. Die Zuladung von Langbooten ist unter der 
+            Einwirkung dieses Zaubers auf 100 Gewichtseinheiten begrenzt. F&#252;r 
+            die Farbe der Runen muss eine spezielle Tinte aus einem Windbeutel 
+            und einem Schneekristall anger&#252;hrt werden.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 6<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            10 Aura, 1 Windbeutel, 1 Schneekristall<br><b>Modifikationen</b>: 
+            Schiffszauber<br><b>Syntax</b>: ZAUBERE &quot;Luftschiff&quot; &lt;Schiff-Nr&gt;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Ruf_der_Realit.C3.A4t">Ruf der 
+            Realit&#228;t</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Ein Magier, welcher sich in der 
+            materiellen Welt befindet, kann er mit Hilfe dieses Zaubers 
+            Einheiten aus der angrenzenden Astralwelt herbeiholen. Ist der 
+            Magier erfahren genug, den Zauber auf Stufen von 13 oder mehr zu 
+            zaubern, kann er andere Einheiten auch gegen ihren Willen in die 
+            materielle Welt zwingen.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            6<br><b>Rang</b>: 7<br><b>Komponenten</b>: 2 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Ruf der Realit&#228;t&quot; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; 
+            ...]<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Stehle_Aura">Stehle Aura</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit Hilfe dieses Zaubers kann der Magier 
+            einem anderen Magier seine Aura gegen dessen Willen entziehen und 
+            sich selber zuf&#252;hren.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            6<br><b>Rang</b>: 3<br><b>Komponenten</b>: 2 Aura * Stufe<br><b>Modifikationen</b>: 
+            Fernzauber<br><b>Syntax</b>: ZAUBERE [REGION x y] [STUFE n] 
+            &quot;Stehle Aura&quot; &lt;Einheit-Nr&gt;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_7">Stufe 7</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Erschaffe_Antimagiekristall">Erschaffe 
+            Antimagiekristall</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit Hilfe dieses Zauber entzieht der 
+            Magier einem Quarzkristall all seine magischen Energien. Der 
+            Kristall wird dann, wenn er zu feinem Staub zermahlen und verteilt 
+            wird, die beim Zaubern freigesetzten magischen Energien aufsaugen 
+            und die Kraft aller Zauber reduzieren, welche in der betreffenden 
+            Woche in der Region gezaubert werden.<br><b>Art</b>: Normaler 
+            Zauber<br><b>Stufe</b>: 7<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            50 Aura, 3000 Silber<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE &quot;Erschaffe Antimagiekristall&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Fluch_brechen">Fluch brechen</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber erm&#246;glicht dem Magier, 
+            gezielt eine bestimmte Verzauberung einer Einheit, eines Schiffes, 
+            Geb&#228;udes oder auch der Region aufzul&#246;sen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 7<br><b>Rang</b>: 3<br><b>Komponenten</b>: 
+            3 Aura * Stufe<br><b>Modifikationen</b>: Fernzauber, Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [REGION x y] [STUFE n] &quot;Fluch brechen&quot; ( REGION | EINHEIT 
+            &lt;Einheit-Nr&gt; | SCHIFF &lt;Schiff-Nr&gt; | BURG &lt;Geb&#228;ude-Nr&gt; ) &lt;Zauber-ID&gt;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Mauern_der_Ewigkeit">Mauern der 
+            Ewigkeit</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit dieser Formel bindet der Magier auf 
+            ewig die Kr&#228;fte der Erde in die Mauern des Geb&#228;udes. Ein 
+            solcherma&#223;en verzaubertes Geb&#228;ude ist gegen den Zahn der Zeit 
+            gesch&#252;tzt und ben&#246;tigt keinen Unterhalt mehr.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 7<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            50 Aura, 1 permanente Aura<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Mauern der Ewigkeit&quot; &lt;Geb&#228;ude-Nr&gt;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_8">Stufe 8</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Runen_des_Schutzes">Runen des 
+            Schutzes</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Zeichnet man diese Runen auf die W&#228;nde 
+            eines Geb&#228;udes oder auf die Planken eines Schiffes, so wird es 
+            schwerer durch Zauber zu beeinflussen sein. Jedes Ritual erh&#246;ht 
+            die Widerstandskraft des Geb&#228;udes oder Schiffes gegen Verzauberung 
+            um 20%. Werden mehrere Schutzzauber &#252;bereinander gelegt, so 
+            addiert sich ihre Wirkung, doch ein hundertprozentiger Schutz l&#228;&#223;t 
+            sich so nicht erreichen. Der Zauber h&#228;lt mindestens drei Wochen 
+            an, je nach Talent des Magiers aber auch viel l&#228;nger.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 8<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            20 Aura<br><b>Modifikationen</b>:<br><b>Syntax</b>: ZAUBERE &quot;Runen 
+            des Schutzes&quot; ( SCHIFF &lt;Schiff-Nr&gt; | BURG &lt;Geb&#228;ude-Nr&gt; )<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Schild_des_Fisches">Schild des 
+            Fisches</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber vermag dem Gegner ein 
+            geringf&#252;gig versetztes Bild der eigenen Truppen vorzuspiegeln, so 
+            wie der Fisch im Wasser auch nicht dort ist wo er zu sein scheint. 
+            Von jedem Treffer kann so die H&#228;lfte des Schadens unsch&#228;dlich 
+            abgeleitet werden. Doch h&#228;lt der Schild nur einige Hundert 
+            Schwerthiebe aus, danach wird er sich aufl&#246;sen. Je st&#228;rker der 
+            Magier, desto mehr Schaden h&#228;lt der Schild aus.<br><b>Art</b>: 
+            Pr&#228;kampfzauber<br><b>Stufe</b>: 8<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            4 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;Schild des Fisches&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_9">Stufe 9</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Beschleunigung">Beschleunigung</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber beschleunigt einige K&#228;mpfer 
+            auf der eigenen Seite so, dass sie w&#228;hrend des gesamten Kampfes in 
+            einer Kampfrunde zweimal angreifen k&#246;nnen.<br><b>Art</b>: 
+            Pr&#228;kampfzauber<br><b>Stufe</b>: 9<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            5 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;Beschleunigung&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Erschaffe_einen_Ring_der_Macht">Erschaffe 
+            einen Ring der Macht</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieses m&#228;chtige Ritual erschafft einen 
+            Ring der Macht. Ein Ring der Macht erh&#246;ht die St&#228;rke jedes 
+            Zaubers, den sein Tr&#228;ger zaubert, als w&#228;re der Magier eine Stufe 
+            besser.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 9<br><b>Rang</b>: 
+            5<br><b>Komponenten</b>: 100 Aura, 1 permanente Aura, 4000 Silber<br><b>Modifikationen</b>: 
+            Schiffszauber<br><b>Syntax</b>: ZAUBERE &quot;Erschaffe einen Ring der 
+            Macht&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Vertrauten_rufen">Vertrauten rufen</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Einem erfahrenen Magier wird irgendwann 
+            auf seinen Wanderungen ein ungew&#246;hnliches Exemplar einer Gattung 
+            begegnen, welches sich dem Magier anschlie&#223;en wird.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 9<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            100 Aura, 5 permanente Aura<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE &quot;Vertrauten rufen&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_10">Stufe 10</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Blick_in_die_Realit.C3.A4t">Blick in 
+            die Realit&#228;t</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Der Magier kann mit Hilfe dieses Zaubers 
+            aus der Astral- in die materielle Ebene blicken und die Regionen 
+            und Einheiten genau erkennen.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            10<br><b>Rang</b>: 5<br><b>Komponenten</b>: 40 Aura<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE &quot;Blick in die Realit&#228;t&quot;<br>
+          </p>
+          <h3>
+            <span class="mw-headline" id="Erschaffe_einen_Beutel_des_Negativen_Gewichts">Erschaffe 
+            einen Beutel des Negativen Gewichts</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Beutel umschlie&#223;t eine kleine 
+            Dimensionsfalte, in der bis zu 200 Gewichtseinheiten transportiert 
+            werden k&#246;nnen, ohne dass sie auf das Traggewicht angerechnet 
+            werden. Pferde und andere Lebewesen sowie besonders sperrige Dinge 
+            (Wagen und Katapulte) k&#246;nnen nicht in dem Beutel transportiert 
+            werden. Auch ist es nicht m&#246;glich, einen Zauberbeutel in einem 
+            anderen zu transportieren. Der Beutel selber wiegt 1 GE.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 10<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            30 Aura, 1 permanente Aura, 5000 Silber<br><b>Modifikationen</b>: 
+            Schiffszauber<br><b>Syntax</b>: ZAUBERE &quot;Erschaffe einen Beutel 
+            des Negativen Gewichts&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_11">Stufe 11</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Zeitdehnung">Zeitdehnung</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Diese praktische Anwendung des 
+            theoretischen Wissens um Raum und Zeit erm&#246;glicht es, den Zeitflu&#223; 
+            f&#252;r einige Personen zu ver&#228;ndern. Auf diese Weise ver&#228;nderte 
+            Personen bekommen f&#252;r einige Wochen doppelt soviele 
+            Bewegungspunkte und doppelt soviele Angriffe pro Runde.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 11<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            5 Aura * Stufe<br><b>Modifikationen</b>: Schiffszauber<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Zeitdehnung&quot; &lt;Einheit-Nr&gt; [&lt;Einheit-Nr&gt; ...]<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_12">Stufe 12</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="R.C3.BCstschild">R&#252;stschild</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Diese vor dem Kampf zu zaubernde Ritual 
+            gibt den eigenen Truppen einen zus&#228;tzlichen Bonus auf ihre 
+            R&#252;stung. Jeder Treffer reduziert die Kraft des Zaubers, so dass 
+            der Schild sich irgendwann im Kampf aufl&#246;sen wird.<br><b>Art</b>: 
+            Pr&#228;kampfzauber<br><b>Stufe</b>: 12<br><b>Rang</b>: 2<br><b>Komponenten</b>: 
+            4 Aura * Stufe<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            KAMPFZAUBER [STUFE n] &quot;R&#252;stschild&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_13">Stufe 13</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Belebtes_Gestein">Belebtes Gestein</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieses kr&#228;ftezehrende Ritual beschw&#246;rt mit 
+            Hilfe einer Kugel aus konzentriertem Laen einen gewaltigen 
+            Erdelementar und bannt ihn in ein Geb&#228;ude. Dem Elementar kann dann 
+            befohlen werden, das Geb&#228;ude mitsamt aller Bewohner in eine 
+            Nachbarregion zu tragen. Die St&#228;rke des beschworenen Elementars 
+            h&#228;ngt vom Talent des Magiers ab: Der Elementar kann maximal 
+            [Stufe-12]*250 Gr&#246;&#223;eneinheiten gro&#223;e Geb&#228;ude versetzen. Das 
+            Geb&#228;ude wird diese Prozedur nicht unbesch&#228;digt &#252;berstehen.<br><b>Art</b>: 
+            Normaler Zauber<br><b>Stufe</b>: 13<br><b>Rang</b>: 5<br><b>Komponenten</b>: 
+            10 Aura * Stufe, 1 permanente Aura, 5 Laen<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;Belebtes Gestein&quot; &lt;Geb&#228;ude-Nr&gt; &lt;Richtung&gt;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_14">Stufe 14</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="St.C3.B6re_Astrale_Integrit.C3.A4t">St&#246;re 
+            Astrale Integrit&#228;t</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Dieser Zauber bewirkt eine schwere St&#246;rung 
+            des Astralraums. Innerhalb eines astralen Radius von Stufe/5 
+            Regionen werden alle Astralwesen, die dem Zauber nicht 
+            wiederstehen k&#246;nnen, aus der astralen Ebene geschleudert. Der 
+            astrale Kontakt mit allen betroffenen Regionen ist f&#252;r Stufe/3 
+            Wochen gest&#246;rt.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            14<br><b>Rang</b>: 4<br><b>Komponenten</b>: 140 Aura<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE [STUFE n] &quot;St&#246;re Astrale Integrit&#228;t&quot;<br>
+          </p>
+          <h2>
+            <span class="mw-headline" id="Stufe_15">Stufe 15</span>
+          </h2>
+          <h3>
+            <span class="mw-headline" id="Opfere_Kraft">Opfere Kraft</span>
+          </h3>
+          <p>
+            <b>Beschreibung</b>:<br>Mit Hilfe dieses Zaubers kann der Magier 
+            einen Teil seiner magischen Kraft permanent auf einen anderen 
+            Magier &#252;bertragen. Auf einen Tybied-Magier kann er die H&#228;lfte der 
+            eingesetzten Kraft &#252;bertragen, auf einen Magier eines anderen 
+            Gebietes ein Drittel.<br><b>Art</b>: Normaler Zauber<br><b>Stufe</b>: 
+            15<br><b>Rang</b>: 1<br><b>Komponenten</b>: 100 Aura<br><b>Modifikationen</b>:<br><b>Syntax</b>: 
+            ZAUBERE &quot;Opfere Kraft&quot; &lt;Einheit-Nr&gt; &lt;Aura&gt;<br>
+          </p>
+          <!-- 
+NewPP limit report
+Cached time: 20220210171126
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.054 seconds
+Real time usage: 0.055 seconds
+Preprocessor visited node count: 468/1000000
+Preprocessor generated node count: 814/1000000
+Post?expand include size: 172/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 3/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    3.824      1 Vorlage:TOC_right
+100.00%    3.824      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:2000-0!canonical and timestamp 20220210171126 and revision id 6206
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

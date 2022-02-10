@@ -1,0 +1,464 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>ExtendedCommands</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      ExtendedCommands
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            ExtendedCommands sind ein Plugin f&#252;r <a class="external text" href="http://magellan-client.sf.net" rel="nofollow">Magellan</a>, 
+            das im Standardlieferumfang enthalten ist und mit dem man Befehle 
+            automatisieren kann.
+          </p>
+          <p>
+            Auf der <a class="external text" href="http://magellan.narabi.de/plugins_extcmds_en.php" rel="nofollow">offiziellen 
+            Seite</a> gibt es eine Einf&#252;hrung und ein paar Beispielscripte.
+          </p>
+          <p>
+            Die Script-Bibliothek versteckt sich im Magellan Men&#252;: Plugins -&gt; 
+            Erweiterte Befehle -&gt; Bibliothek Bearbeiten... Es geht seitlich 
+            ein neuer View auf, mit einer grossen Textarea zum Code eingeben, 
+            sowie Buttons zum Ausf&#252;hren und Speichern.
+          </p>
+          <p>
+            Was folgt sind Metas Beispielskripte. Einen anderen Ansatz 
+            verfolgen der <a href="/index.php/E3CommandParser" title="E3CommandParser">E3CommandParser</a> 
+            von Solthar.
+          </p>
+          <div class="toc" id="toc">
+            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+            
+
+            <div class="toctitle" dir="ltr" lang="de">
+              <h2>
+                Inhaltsverzeichnis
+              </h2>
+              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+              </span>
+            </div>
+            <ul>
+              <li class="toclevel-1 tocsection-1">
+                <a href="#Metas_Skripte"><span class="tocnumber">1</span> <span class="toctext">Metas 
+                Skripte</span></a>
+
+                <ul>
+                  <li class="toclevel-2 tocsection-2">
+                    <a href="#Meta.27s_BurgenbauSchilder"><span class="tocnumber">1.1</span> 
+                    <span class="toctext">Meta's BurgenbauSchilder</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-3">
+                    <a href="#Meta.27s_FreundFeindSchilder"><span class="tocnumber">1.2</span> 
+                    <span class="toctext">Meta's FreundFeindSchilder</span></a>
+                  </li>
+                  <li class="toclevel-2 tocsection-4">
+                    <a href="#Meta.27s_BefehlsChecker"><span class="tocnumber">1.3</span> 
+                    <span class="toctext">Meta's BefehlsChecker</span></a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <h2>
+            <span class="mw-headline" id="Metas_Skripte">Metas Skripte</span>
+          </h2>
+          <p>
+            Generell kann man die Scripte einem nach dem anderen reinkopieren, 
+            aber ich hab es bei mir in 4 Teile aufgeteilt:
+          </p>
+          <ol>
+            <li>
+              Imports: Nur 2 Zeilen reinkopieren.
+            </li>
+            <li>
+              Funktionenbibliothek: Einfach reinkopieren
+            </li>
+            <li>
+              Konfiguration: Hier muss man etwas Hand anlegen
+            </li>
+            <li>
+              Aufrufe: Da kann man halt jeweils einstellen was man tun will.
+            </li>
+          </ol>
+          <p>
+            Wenn man selber was schreiben will findet man unter 
+            Desktop-&gt;Erweiterte Befehle Hilfe alles was man braucht. Mittels 
+            Button &quot;Browser&quot; kann man sich die Seite auch im Browser anzeigen 
+            lassen.
+          </p>
+          <p>
+            Achja, hier sind die 2 Zeilen f&#252;r den Import:
+          </p>
+          <pre>import magellan.library.*;
+import magellan.library.rules.*;</pre>
+          <p>
+            Hier sind meine vorgefertigten Scripts:
+          </p>
+          <h3>
+            <span class="mw-headline" id="Meta.27s_BurgenbauSchilder">Meta's 
+            BurgenbauSchilder</span>
+          </h3>
+          <p>
+            Ein Aufruf von <code>metaBurgenbauSchilder()</code> bekommt man in 
+            allen Regionen ein Schild mit folgenden Infos: Burggr&#246;sse M Moral 
+            Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten Burgupgrade 
+            Steineffizienz (=Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten 
+            Burgupgrade)
+          </p>
+          <pre>/*********************************************
+*        Meta's BurgenbauSchilder            *
+* Version 0.5                                *
+*********************************************/
+metaBurgenbauSchilder() {
+  int moral;
+  int burggroesse;
+  int silberpool;
+  int bauern;
+  int nextBurgUpgrade;
+  int stein2Upgrade;
+  int steinEffizienz;
+  String signtext;
+  for (Region region&#160;: world.regions().values()) {
+    bauern = region.getPeasants();
+    region.clearSigns();
+    if (bauern &gt; 0){
+      moral = region.getMorale();
+      burggroesse = 0;
+      for (Building building&#160;: region.buildings()){
+        if (building.getSize()&gt;burggroesse){// TODO check ob Geb&#228;ude = Burg
+          burggroesse = building.getSize();
+        }
+      }
+      silberpool = region.getSilver();
+      if (burggroesse&lt;10) nextBurgUpgrade = 10;
+      else if (burggroesse&lt;50) nextBurgUpgrade = 50;
+      else if (burggroesse&lt;250) nextBurgUpgrade = 250;
+      else if (burggroesse&lt;1250) nextBurgUpgrade = 1250;
+      else if (burggroesse&lt;6250) nextBurgUpgrade = 6250;
+      else nextBurgUpgrade = 0;//wird noch dauern bis ich es brauche
+      stein2Upgrade = nextBurgUpgrade - burggroesse;
+      steinEffizienz = silberpool/stein2Upgrade;
+      signtext = &quot;&quot;+burggroesse+&quot; M&quot;+moral;
+      region.addSign(new Sign( signtext ));
+      signtext = &quot;&quot;+silberpool/100+&quot;$/&quot;+stein2Upgrade+&quot;S&quot;;
+      region.addSign(new Sign( signtext ));
+      signtext = &quot;&quot;+steinEffizienz/100+&quot;,&quot;+steinEffizienz%100;//+&quot;=&quot;+steinEffizienz;
+      if (steinEffizienz&gt;10000) signtext = &quot;**&quot; + signtext + &quot;**&quot;;
+      else if (steinEffizienz&gt;1000) signtext = &quot;*&quot; + signtext + &quot;*&quot;;
+      region.addSign(new Sign( signtext ));
+    }
+  }
+}</pre>
+          <h3>
+            <span class="mw-headline" id="Meta.27s_FreundFeindSchilder">Meta's 
+            FreundFeindSchilder</span>
+          </h3>
+          <p>
+            Das ist etwas komplizierter, da es etwas an Konfiguration 
+            erfordert. Genauere Doku wird noch nachgeliefert:
+          </p>
+          <pre>/*********************************************
+*        Meta's FreundFeindSchilder          *
+* Version 0.6                                *
+*********************************************/
+metaFreundFeindSchilder(String type) {
+  if (type.equals(&quot;people&quot;)){//einfach nur Leute z&#228;hlen
+    HashMap people;
+    String allianceName;
+    for (Region region&#160;: world.regions().values()) {
+      people = new HashMap();
+      for (Unit unit&#160;: region.units()) {
+        allianceName = metaGetFriendFoeInfo(unit.getFaction());
+        if (people.containsKey(allianceName)) { 
+	people.put(allianceName, 
+		people.get(allianceName)
+		+unit.getPersons());
+        } else {
+          people.put(allianceName, unit.getPersons());
+        }
+      }
+      region.clearSigns();
+      Iterator iterator = people.keySet().iterator();
+      String signtext = &quot;&quot;;
+      while (iterator.hasNext()) {
+        String allianceStr = iterator.next();
+        int amount = people.get(allianceStr);
+        signtext = allianceStr + &quot;:&quot; + amount;
+        Sign sign = new Sign( signtext );
+        region.addSign(sign);
+      } 
+    }
+  }
+  else if (type.equals(&quot;soldier&quot;)){
+    HashMap people;
+    HashMap soldiers;
+    HashMap heros;
+    String friendFoeInfo;
+    for (Region region&#160;: world.regions().values()) {//alle Regionen
+      people = new HashMap();
+      soldiers = new HashMap();
+      heros = new HashMap();
+      for (Unit unit&#160;: region.units()) {//zusammenzaehlen
+        friendFoeInfo = metaGetFriendFoeInfo(unit.getFaction());
+        if (!(people.containsKey(friendFoeInfo))) {//wenn leer init
+          people.put(friendFoeInfo,0);
+        }
+        if (!(soldiers.containsKey(friendFoeInfo))) {//wenn leer init
+          soldiers.put(friendFoeInfo,0);
+        }
+        if (!(heros.containsKey(friendFoeInfo))) {//wenn leer init
+          heros.put(friendFoeInfo,0);
+        }
+        if (!metaUnitIsSoldier(unit)){//keine Soldaten
+          people.put(friendFoeInfo,people.get(friendFoeInfo)+unit.getPersons());
+        } else if (unit.isHero()){//helden
+          heros.put(friendFoeInfo,heros.get(friendFoeInfo)+unit.getPersons());
+        } else {//soldaten
+          soldiers.put(friendFoeInfo,soldiers.get(friendFoeInfo)+unit.getPersons());
+        }
+      }
+      region.clearSigns();
+      Iterator iterator = people.keySet().iterator();
+      String signtext = &quot;&quot;;
+      while (iterator.hasNext()) {
+        String ffi = iterator.next();//friendFoeInfo
+        int p = people.get(ffi);
+        int s = soldiers.get(ffi);
+        int h = heros.get(ffi);
+        signtext = ffi + &quot;:&quot;+ p;
+        if (s&gt;0) signtext = signtext+&quot;+&quot;+s; 
+        if (h&gt;0) signtext = signtext+&quot;+&quot;+h+&quot;H&quot;; 
+        Sign sign = new Sign( signtext );
+        region.addSign(sign);
+      } 
+    }
+  }
+}
+
+
+boolean metaUnitIsSoldier(unit) {//etwas gek&#252;rzt aus dem Helper
+  Collection items = unit.getItems();
+  ItemCategory weapons = world.rules.getItemCategory(StringID.create(&quot;weapons&quot;), false);
+  for (Item item&#160;: items) {
+    ItemCategory itemCategory = item.getItemType().getCategory();
+    if (itemCategory == null) {continue;}
+    if (itemCategory.equals(weapons)) {
+      Skill useSkill = item.getItemType().getUseSkill();
+      if (useSkill&#160;!= null) {
+        for (Skill skill&#160;: unit.getSkills()) {
+          if (useSkill.getSkillType().equals(skill.getSkillType())) {
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+} 
+
+String metaGetFriendFoeInfo(Faction faction){
+  String factionId = faction.getID().toString();
+  HashMap tmpCallback = new HashMap();
+  tmpCallback = metaFriendFoeCallback(tmpCallback);
+  if (tmpCallback.containsKey(factionId)){
+    return tmpCallback.get(factionId).toString();
+  } else {
+    return factionId;
+  }
+}
+
+metaDiplomatieListe(String chefdiplomat,String outputType){
+  Unit unit = world.getUnit(UnitID.createUnitID(chefdiplomat,36));
+  String factionString;
+  String allianceId;
+  List mitInfoListe = new ArrayList();
+  List ohneInfoListe = new ArrayList();
+
+  //magellan.library.utils.OrderedHashtable col = world.factions();
+  for (Faction faction&#160;: world.factions().values()){
+    AllianceGroup alliance = faction.getAlliance();
+    if (alliance==null) allianceId = &quot;?&quot;;
+    else allianceId = alliance.getID().toString();
+    if (outputType.equals(&quot;code&quot;)){
+      factionString = &quot;tmpCallback.put(\&quot;&quot;+faction.getID().toString()+&quot;\&quot;,\&quot;&quot;+metaGetFriendFoeInfo(faction)+&quot;\&quot;);/&quot;+&quot;/&quot;+faction.getName();
+    } else {
+      factionString = &quot;&quot;+faction.getName()+&quot;,&quot;+faction.getID().toString();
+      factionString = factionString + &quot;,&quot;+allianceId+&quot;,&quot;+faction.getRace();
+      factionString = factionString + &quot;,&quot;+faction.getPersons()+&quot;,&quot;+faction.getRace();
+      factionString = factionString + &quot;,&quot;+faction.getSpellSchool()+&quot;,&quot;+faction.getScore();
+    }
+    unit.addOrderAt(0,factionString);
+  }
+  unit.addOrderAt(0,&quot;/&quot;+&quot;/ TODO Factionliste rauskopieren&quot;);
+}</pre>
+          <p>
+            Zur Konfiguration braucht man noch eine weitere Funktion, in der 
+            jede Parteinummer die einem speziellen Allianz zugeteilt werden 
+            soll, eine Zuordnung:
+          </p>
+          <pre>metaFriendFoeCallback(HashMap tmpCallback){
+tmpCallback.put(&quot;ii&quot;,&quot;MOB&quot;);//Monster
+return tmpCallback;
+}</pre>
+          <p>
+            <br>
+            
+          </p>
+          <h3>
+            <span class="mw-headline" id="Meta.27s_BefehlsChecker">Meta's 
+            BefehlsChecker</span>
+          </h3>
+          <p>
+            Auch das ist etwas komplizierter. Wird mittels 
+            metaBefehlChecker(&quot;partei#&quot;); aufgerufen. Dadurch bekommen 
+            Einheiten die die Zeilen <code>// m/abbauen/stein</code> bzw. auch 
+            f&#252;r eisen oder holz gesetzt haben, die entsprechenden Befehle.
+          </p>
+          <pre>/*********************************************
+*        Meta's BefehlsChecker               *
+* Version 0.6                                *
+*********************************************/
+
+metaBefehlChecker(String factionId){
+  String metaPrefix = &quot;/&quot; + &quot;/ m/&quot;; //gibt sonst probleme mit Kommentarzeichen
+  List metaBefehlsListe;// Befehle mit &quot;// m/&quot;
+  List genBefehlsListe;// Befehle mit &quot; ;m&quot;
+  List tmpBefehlsListe;//sonstige Befehle
+  for (Region region&#160;: world.regions().values()) { //alle Regionen
+    for (Unit unit&#160;: region.units()) { //alle Einheiten
+      if (unit.getFaction().getID().toString().equals(factionId)) { //eigene Einheiten
+        metaBefehlsListe = new ArrayList();//init fuer neue Einheit
+        genBefehlsListe = new ArrayList();//init fuer neue Einheit
+        tmpBefehlsListe = new ArrayList();//init fuer neue Einheit
+        for (String befehl&#160;: unit.getOrders()){
+          if (befehl.startsWith(metaPrefix)){//metaBefehle suchen
+            metaBefehlsListe.add(befehl);
+          } else if (!(befehl.endsWith(&quot; ;m&quot;))){//nichtgenerierte Befehle aufheben
+            tmpBefehlsListe.add(befehl);
+          } //generierte Befehle kommen weg - sollen neu generiert werden!
+        }
+        if (metaBefehlsListe.size()&gt;0){ //einheit mit metaBefehlen
+          for (String befehl&#160;: metaBefehlsListe) {//metaBefehle abarbeiten
+            if (befehl.startsWith(&quot;abbauen&quot;,5)){
+              if (befehl.startsWith(&quot;eisen&quot;,13)) metaAbbauenSub (unit,befehl,genBefehlsListe,&quot;Eisen&quot;,&quot;Bergbau&quot;,500);
+              if (befehl.startsWith(&quot;stein&quot;,13)) metaAbbauenSub (unit,befehl,genBefehlsListe,&quot;Steine&quot;,&quot;Steinbau&quot;,250);
+              if (befehl.startsWith(&quot;holz&quot;,13)) metaAbbauenSub (unit,befehl,genBefehlsListe,&quot;Holz&quot;,&quot;Holzf&#228;llen&quot;,250);
+            }
+          }
+          unit.clearOrders();
+          unit.addOrders(metaBefehlsListe);
+          unit.addOrders(genBefehlsListe);
+          unit.addOrders(tmpBefehlsListe);
+          unit.setOrdersChanged(true); //scheint aber nicht zu funktionieren ;o(
+          //unit.setOrdersConfirmed(true); //das kommt, sobald das Script aus der Beta ist.
+        }
+      }
+    }
+  }
+}
+
+metaAbbauenSub (Unit unit, String befehl, List genBefehlsListe, String itemName,String skillName,int unterhaltSilber){
+  boolean istAbbauMoeglich=true;
+  int unitLevel = metaGetUnitSkillLevel(unit,skillName);
+  int abbauMenge = (unit.getPersons() * (unitLevel + 1));
+  if (itemName.equals(&quot;Holz&quot;)){//genug Baum+Sch&#246;ssling?
+    int baum = metaGetRegionRessourceAmount(unit.getRegion(),&quot;B&#228;ume&quot;);
+    int schoessling = metaGetRegionRessourceAmount(unit.getRegion(),&quot;Sch&#246;&#223;linge&quot;);
+    if (baum+schoessling == 0) istAbbauMoeglich = false;
+  } else {//Tiefencheck
+    int ressLevel = metaGetRegionRessourceLevel(unit.getRegion(),itemName);
+    int ressAmount = metaGetRegionRessourceAmount(unit.getRegion(),itemName);
+    if (ressLevel &gt; unitLevel) istAbbauMoeglich =false;//zu tief
+    if (ressLevel == unitLevel) {//genug in Ebene noch da?
+      if (ressAmount &lt; (abbauMenge/2)) {// halbe wegen Geb&#228;ude
+        istAbbauMoeglich = false;//per default wird mal nicht abgebaut
+        genBefehlsListe.add(&quot;/&quot; + &quot;/ TODO abbauen/&quot;+itemName+&quot;/menge ;m&quot;);//noch was da, aber nicht genug f&#252;r maxauslastung
+      }
+    }
+  }
+  if (metaGetUnitItem(unit,&quot;Silber&quot;)&lt;unterhaltSilber) {
+    if (istAbbauMoeglich==true){//wenn abbau eh nicht m&#246;glich, dann auch kein Silbercheck
+      genBefehlsListe.add(&quot;/&quot; + &quot;/ TODO abbauen/&quot;+itemName+&quot;/silber ;m&quot;);//nicht genug Silber f&#252;r Geb&#228;udeunterhalt
+    }
+    istAbbauMoeglich = false;
+  }    
+  if (istAbbauMoeglich==true) {
+    if (abbauMenge&#160;% 2 == 1) abbauMenge--;//gerade wegen Geb&#228;udeeinsparung
+    genBefehlsListe.add(&quot;MACHEN &quot;+abbauMenge+&quot; &quot;+itemName+&quot; ;m&quot;);
+  } else {
+    genBefehlsListe.add(&quot;LERNEN &quot;+skillName+&quot; ;m&quot;);
+    genBefehlsListe.add(&quot;BEZAHLEN NICHT ;m&quot;);
+  }
+  if (itemName.equals(&quot;Eisen&quot;)){//wenn Laen abbaubar dann Todo
+    int laenLevel = metaGetRegionRessourceLevel(unit.getRegion(),&quot;Laen&quot;);
+    if (laenLevel &lt;= unitLevel){
+        genBefehlsListe.add(&quot;/&quot; + &quot;/ TODO abbauenTODO abbauen/&quot;+itemName+&quot;/laen ;m&quot;);
+    }
+  }
+}
+
+int metaGetUnitItem(Unit unit,String itemName){
+  Item items = unit.getModifiedItem(new ItemType(StringID.create(&quot;Silber&quot;)));
+  if (items==null) return 0;//garnix da!
+  else return items.getAmount();
+}
+
+int metaGetRegionRessourceLevel(Region region,String itemName){
+  RegionResource regRess = region.getResource(new ItemType(StringID.create(itemName)));
+  if (regRess==null) return 999;//garnix da!
+  else return regRess.getSkillLevel();
+}
+
+int metaGetRegionRessourceAmount(Region region,String itemName){
+  RegionResource regRess = region.getResource(new ItemType(StringID.create(itemName)));
+  if (regRess==null) return 0;//garnix da!
+  else return regRess.getAmount();
+}
+
+int metaGetUnitSkillLevel(Unit unit, String skillName) {//eigentlich aus Helper kopiert
+  Collection skills = unit.getSkills();
+  if (skills&#160;!= null) {
+    for (Skill skill&#160;: skills) {
+      if (skill.getSkillType().getName().equalsIgnoreCase(skillName))
+        return skill.getLevel();
+      }
+    }
+  return 0;
+} </pre>
+          <!-- 
+NewPP limit report
+Cached time: 20220210181059
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.010 seconds
+Real time usage: 0.010 seconds
+Preprocessor visited node count: 54/1000000
+Preprocessor generated node count: 120/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 11982/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1887-0!canonical and timestamp 20220210181059 and revision id 5882
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

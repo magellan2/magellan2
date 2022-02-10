@@ -1,0 +1,139 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>FOLGE</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      FOLGE
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <tt><b>FOLGE</b> EINHEIT <i>einheit-nr</i><br><b>FOLGE</b> SCHIFF <i>schiff-nr</i> 
+            [<i>Geschwindigkeit</i>]</tt>
+          </p>
+          <p>
+            Hiermit kann man Einheiten bzw. Schiffen folgen.
+          </p>
+          <p>
+            Mit <tt>FOLGE EINHEIT <i>einheit-nr</i></tt> wird die eigene 
+            Einheit die angegebene Einheit &quot;beobachten&quot; und dieser folgen, 
+            wenn sie sich bewegt. Wenn die verfolgte Einheit allerdings 
+            schneller als die folgende Einheit ist, entkommt sie der 
+            Verfolgung. Die Verfolger folgen der verfolgten Einheit so weit 
+            wie m&#246;glich. Einheiten auf einem Schiff k&#246;nnen nicht mit <tt>FOLGE 
+            EINHEIT</tt> verfolgt werden. Hat die verfolgte Einheit keinen 
+            Bewegungsbefehl gesetzt (<tt>NACH, ROUTE, FAHRE, FOLGE oder 
+            PIRATERIE</tt>), kann die eigene Einheit ihren langen Befehl 
+            ausf&#252;hren.
+          </p>
+          <p>
+            Mit <tt>FOLGE SCHIFF <i>schiff-nr</i></tt> k&#246;nnen Schiffe verfolgt 
+            werden, welche in der aktuellen oder der vorigen Runde die Region 
+            durchquert haben. Hat der Kapit&#228;n den Befehl <tt>FOLGE SCHIFF <i>schiffnummer</i></tt> 
+            gegeben, wird das Schiff dann dem Kurs des angegebenen Schiffes 
+            folgen, bis es - wenn das eigene Schiff schnell genug ist - 
+            eingeholt wurde. Ist der optionale Parameter <i>Geschwindigkeit</i> 
+            angegeben, wird das verfolgende Schiff maximal so viele Regionen 
+            weit segeln.
+          </p>
+          <p>
+            Achtung, nicht gefolgt werden kann Schiffen, die selber <tt>FOLGE 
+            SCHIFF</tt> oder <tt>PIRATERIE</tt> als Befehl haben.
+          </p>
+          <p>
+            <tt>FOLGE SCHIFF</tt> ist genau wie <tt>FOLGE EINHEIT</tt> nur 
+            dann ein langer Befehl, wenn das Ziel einen Bewegungsbefehl hat 
+            und ersetzt dann allen anderen langen Befehlen.
+          </p>
+          <p>
+            <tt>FOLGE</tt> h&#228;lt nur in der Runde an, in welcher der Befehle 
+            gegeben wird. Soll der Befehl l&#228;nger andauern, muss ihm ein <tt>@</tt> 
+            vorgestellt werden.
+          </p>
+          <pre>EINHEIT 87b6
+  @FOLGE EINHEIT hz7
+  UNTERHALTE</pre>
+          <p>
+            Einheit 87b6 wird nun Einheit hz7 beobachten und ihr folgen, wenn 
+            sie sich bewegt. Ansonsten wird sie mit Unterhaltung Geld 
+            verdienen. Durch das <tt>@</tt> bleiben beide Befehle erhalten.
+          </p>
+          <table border="1" cellspacing="0">
+            <caption align="left">
+              <small>Spielererfahrung: Solthar</small> 
+            </caption>
+            <tr>
+              <td style="background-color: #ffffcc">
+                Es ist m&#246;glich, mit einer Einheit A einer Einheit B zu folgen, 
+                die ihrerseits einer dritten Einheit C folgt. Das hat jedoch 
+                zur Folge, dass A keinen langen Befehl mehr ausf&#252;hrt, denn der 
+                Server nimmt zu diesem Zeitpunkt an, dass Einheit B sich 
+                ebenfalls bewegt, unabh&#228;ngig davon, ob Einheit C sich 
+                ebenfalls bewegt.
+              </td>
+            </tr>
+          </table>
+          <p>
+            <br>
+            
+          </p>
+          <h2>
+            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+          </h2>
+          <ul>
+            <li>
+              <a href="Reisen.html" title="Reisen">Reisen</a>
+            </li>
+            <li>
+              <a href="NACH.html" title="NACH">NACH</a>
+            </li>
+            <li>
+              <a href="ROUTE.html" title="ROUTE">ROUTE</a>
+            </li>
+            <li>
+              <a href="FAHRE.html" title="FAHRE">FAHRE</a>
+            </li>
+            <li>
+              <a class="mw-redirect" href="FAHRE.html" title="TRANSPORTIERE">TRANSPORTIERE</a>
+            </li>
+            <li>
+              <a href="PIRATERIE.html" title="PIRATERIE">PIRATERIE</a>
+            </li>
+          </ul>
+          <!-- 
+NewPP limit report
+Cached time: 20220210201640
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.009 seconds
+Real time usage: 0.009 seconds
+Preprocessor visited node count: 14/1000000
+Preprocessor generated node count: 56/1000000
+Post?expand include size: 460/2097152 bytes
+Template argument size: 325/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    1.011      1 Vorlage:Geruecht
+100.00%    1.011      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1489-0!canonical and timestamp 20220210201640 and revision id 6680
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

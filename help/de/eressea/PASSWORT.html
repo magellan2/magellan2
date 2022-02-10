@@ -1,0 +1,98 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>PASSWORT</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      PASSWORT
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <tt><b>PASSWORT</b> [&quot;neues-passwort&quot;]</tt>
+          </p>
+          <p>
+            Dies setzt das Passwort neu. Man mu&#223; es von der n&#228;chsten 
+            Befehlsdatei an immer mit dem Befehl <tt><a href="ERESSEA.html" title="ERESSEA">ERESSEA</a></tt> 
+            zusammen verwenden. Erlaubt sind im Passwort nur Buchstaben und 
+            Ziffern. Enth&#228;lt es unzul&#228;ssige Zeichen, so werden diese durch 
+            zuf&#228;llige erlaubte zeichen ersetzt. <tt>PASSWORT</tt> ohne 
+            Parameter setzt ein zuf&#228;llig erzeugtes Passwort.
+          </p>
+          <p>
+            Am Anfang wird jeder Partei ein zuf&#228;lliges Passwort zugeordnet.
+          </p>
+          <p>
+            Beispiel:
+          </p>
+          <pre>; in der zweiten Woche des Monats Herdfeuer
+ERESSEA 11 &quot;AltesPasswort&quot;
+  PASSWORT &quot;Falsch&quot;&#160;; kein Effekt
+   EINHEIT 75
+     PASSWORT &quot;MoftZga&quot;&#160;; das gilt ab n&#228;chster Runde!
+     [...]
+   &#160;
+   &#160;
+; in der letzten Woche des Monats Herdfeuer
+ERESSEA 11 &quot;MoftZga&quot;
+  [...]</pre>
+          <p>
+            Vorsicht:
+          </p>
+          <ul>
+            <li>
+              Das Passwort ist die einzige Stelle in der Befehlsdatei, bei der 
+              Gro&#223;- und Kleinschreibung ber&#252;cksichtigt wird.
+            </li>
+            <li>
+              Das Passwort muss von einer Einheit gesetzt werden.
+            </li>
+            <li>
+              F&#252;r die jeweilige Befehlsdatei gilt immer das Passwort, welches 
+              auch im letzten Zug galt, oder dasjenige, welches im letzten Zug 
+              neu gesetzt wurde. Das Passwort vom letzten Zug gilt auch dann 
+              noch, wenn f&#252;r den jetzigen Zug mehrere Befehlsdateien 
+              eingeschickt wurden, in denen unterschiedliche Passw&#246;rter 
+              gesetzt wurden.
+            </li>
+            <li>
+              Das Passwort wurde nur dann erfolgreich neu gesetzt, wenn auch 
+              die entsprechende Meldung in der Auswertung stand: <tt>Das 
+              Passwort wurde auf &quot;blabla&quot; ge&#228;ndert</tt>.
+            </li>
+          </ul>
+          <!-- 
+NewPP limit report
+Cached time: 20220210201645
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.004 seconds
+Real time usage: 0.005 seconds
+Preprocessor visited node count: 1/1000000
+Preprocessor generated node count: 4/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1506-0!canonical and timestamp 20220210201645 and revision id 6276
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

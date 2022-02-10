@@ -9,4 +9,5 @@ encoding//etc/mapedit_resources.properties=ISO-8859-1
 encoding//etc/mapedit_resources_de.properties=ISO-8859-1
 encoding//etc/resources.properties=ISO-8859-1
 encoding//etc/resources_de.properties=ISO-8859-1
+encoding//help/de/pagelist.txt=UTF-8
 encoding/<project>=ISO-8859-1

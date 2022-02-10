@@ -1,0 +1,140 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>BEWACHE</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      BEWACHE
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <tt><b>BEWACHE</b> [NICHT]</tt>
+          </p>
+          <p>
+            Einheiten k&#246;nnen ihre Region bewachen. Dazu muss die Einheit mit 
+            mindestens einer <a href="Kriegstabellen.html#Waffeneigenschaften" title="Kriegstabellen">Waffe</a> 
+            <a href="Bewaffnet.html" title="Bewaffnet">bewaffnet</a> sein und 
+            das passende Waffentalent haben. Ozeanregionen k&#246;nnen nicht 
+            bewacht werden.
+          </p>
+          <p>
+            Wenn eine Partei eine Region bewacht, gelten f&#252;r Einheiten, die 
+            mit ihr nicht <a href="Allianz.html" title="Allianz">alliiert</a> 
+            sind (<a href="HELFE.html" title="HELFE">HELFE BEWACHE</a>), 
+            folgende Einschr&#228;nkungen:
+          </p>
+          <ul>
+            <li>
+              Sie k&#246;nnen in dieser Region keine Steuern mehr eintreiben, 
+              Rohstoffe abbauen oder Bauern rekrutieren.
+            </li>
+            <li>
+              Sie werden auf der Durchreise mit einer gewissen 
+              Wahrscheinlichkeit gestoppt.
+            </li>
+            <li>
+              Befinden sie sich auf einem Schiff, so k&#246;nnen sie nicht <a href="ARBEITE.html" title="ARBEITE">ARBEITEN</a>, 
+              <a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTEN</a>, <a href="Geld.html#Handel" title="Geld">HANDELN</a>, 
+              <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIEREN</a> 
+              oder sofort &#252;ber Land weiterziehen. Um die Aktionen in der 
+              Folgewoche ausf&#252;hren zu k&#246;nnen, m&#252;ssen sie das Schiff erst <a href="VERLASSE.html" title="VERLASSE">VERLASSEN</a> 
+              haben.
+            </li>
+          </ul>
+          <p>
+            Wenn die Einheit nicht gesehen wird, beispielsweise weil sie ein 
+            h&#246;heres Tarnungstalent hat als das beste Wahrnehmungstalent der 
+            bewachenden Partei in der Region ist, so gelten die ersten beiden 
+            Beschr&#228;nkungen nicht.
+          </p>
+          <p>
+            Geben mehrere Parteien gleichzeitig oder nacheinander den 
+            BEWACHE-Befehl, so bewachen sie alle die Region. Nur f&#252;r Parteien, 
+            die mit <i>allen</i> bewachenden Parteien alliiert sind, gelten 
+            dann die obigen Einschr&#228;nkungen nicht.
+          </p>
+          <p>
+            Parteien, die mit <i>mindestens einer</i> bewachenden Partei 
+            alliiert sind, k&#246;nnen trotz K&#228;mpfen noch lange Befehle (evtl. mit 
+            den obigen Ausnahmen) ausf&#252;hren (siehe <a class="mw-redirect" href="Krieg.html#Das_Ende" title="Kampfende">Kampfende</a>).
+          </p>
+          <p>
+            In der Runde, in der der <tt>BEWACHE</tt>-Befehl gegeben wurde, 
+            gelten all diese Beschr&#228;nkungen allerdings noch nicht, denn die 
+            bewachende Einheit muss erst einmal herausfinden, wo fremde 
+            Einheiten &#252;berall Silber eintreiben k&#246;nnten etc. Die bewachende 
+            Einheit wird sofort f&#252;r alle anderen Einheiten in der Region 
+            sichtbar, egal wie hoch ihr Tarnungstalent ist.
+          </p>
+          <p>
+            Mit <tt>BEWACHE NICHT</tt> wird der Bewachungsstatus einer Einheit 
+            aufgel&#246;st. Das passiert au&#223;erdem, wenn sich die Einheit 
+            fortbewegt. Einheiten mit dem Kampfstatus <a href="K_MPFE.html" title="KÄMPFE">K&#196;MPFE 
+            FLIEHE</a> k&#246;nnen nicht bewachen und Einheiten, aus denen im Kampf 
+            alle &#252;berlebenden Person flieht, beenden ebenfalls das Bewachen.
+          </p>
+          <p>
+            Geben mehrere Parteien gleichzeitig oder nacheinander den <tt>BEWACHE</tt>-Befehl, 
+            so bewachen sie alle die Region. Nur Parteien, die mit allen 
+            bewachenden Parteien alliiert sind, k&#246;nnen dann noch Steuern 
+            eintreiben, rekrutieren oder Rohstoffe abbauen.
+          </p>
+          <p>
+            Wenn eine Einheit durch eine Region reist, die von mindestens 
+            einer nicht verb&#252;ndeten Partei bewacht wird, h&#228;ngt die Chance, 
+            dass sie aufgehalten wird von mehreren Faktoren ab: Sie wird 
+            vergr&#246;&#223;ert durch die Anzahl der feindlichen Bewacher, den 
+            Regionstyp (es wird schwerer in S&#252;mpfen, Gletschern, Bergen und 
+            Vulkanen), das Wahrnehmungstalent der feindlichen Bewacher, 
+            Amulette des Wahren Sehens, sowie die Gr&#246;&#223;e der Burg des 
+            Regionsbesitzers, falls dieser nicht verb&#252;ndet ist. Sie wird 
+            verringert durch die Anzahl der verb&#252;ndeten Bewacher und das 
+            Tarnungstalent der Einheit, sowie Ringe der Unsichtbarkeit.
+          </p>
+          <p>
+            Hinweis: <a href="Monster.html" title="Monster">Monster</a> 
+            Einheiten der Partei (ii) gelten durch ihre Klauen, Z&#228;hne, Krallen 
+            und sonstige Extremit&#228;ten prinzipiell als bewaffnet, auch wenn sie 
+            keine sichtbare Waffe tragen. Dies gilt auch f&#252;r von Spielern 
+            magisch beschworene Monster.
+          </p>
+          <p>
+            In den ersten Wochen kann deine Partei <a href="Welpenschutz.html" title="Welpenschutz">noch 
+            nicht bewachen</a>.
+          </p>
+          <!-- 
+NewPP limit report
+Cached time: 20220209224010
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.006 seconds
+Real time usage: 0.007 seconds
+Preprocessor visited node count: 1/1000000
+Preprocessor generated node count: 4/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 1/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1482-0!canonical and timestamp 20220209224010 and revision id 7064
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

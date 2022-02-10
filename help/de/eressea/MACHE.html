@@ -1,0 +1,250 @@
+<html>
+  <head>
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <title>MACHE</title>
+    <meta http-equiv="Content-Language" content="de">
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+    <meta name="description" content="Magellan-Dokumentation">
+    <link rel="stylesheet" href="./default.css" type="text/css">
+    
+  </head>
+  <body>
+    <h1>
+      MACHE
+    </h1>
+    <div id="gh-content">
+      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+        <div class="mw-parser-output">
+          <p>
+            <tt><b>MACHE TEMP</b> <i>unit-alias-nr</i> [&quot;<i>name</i>&quot;]<br><b>MACHE</b> 
+            [<i>stufen</i>] <i>geb&#228;udetyp</i> [<i>geb&#228;ude-nr</i>]<br><b>MACHE</b> 
+            [<i>stufen</i>] <i>schiffstyp</i><br><b>MACHE</b> [<i>stufen</i>] 
+            SCHIFF [<i>schiff-nr</i>]<br><b>MACHE</b> [<i>stufen</i>] STRASSE <i>richtung</i><br><b>MACHE</b> 
+            [<i>anzahl</i>] KR&#196;UTER<br><b>MACHE</b> [<i>anzahl</i>] <i>gegenstand</i></tt>
+          </p>
+          <p>
+            Der Befehl <tt>MACHE</tt> ist der allgemeine Produktionsbefehl. 
+            Mehr dazu auch im Kapitel <a href="Produktion.html" title="Produktion">Produktion</a>.
+          </p>
+          <div class="toc" id="toc">
+            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+            
+
+            <div class="toctitle" dir="ltr" lang="de">
+              <h2>
+                Inhaltsverzeichnis
+              </h2>
+              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+              </span>
+            </div>
+            <ul>
+              <li class="toclevel-1 tocsection-1">
+                <a href="#Gegenst.C3.A4nde"><span class="tocnumber">1</span> <span class="toctext">Gegenst&#228;nde</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-2">
+                <a href="#Kr.C3.A4uter"><span class="tocnumber">2</span> <span class="toctext">Kr&#228;uter</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-3">
+                <a href="#Einheiten"><span class="tocnumber">3</span> <span class="toctext">Einheiten</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-4">
+                <a href="#Geb.C3.A4ude"><span class="tocnumber">4</span> <span class="toctext">Geb&#228;ude</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-5">
+                <a href="#Schiffe"><span class="tocnumber">5</span> <span class="toctext">Schiffe</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-6">
+                <a href="#Stra.C3.9Fen"><span class="tocnumber">6</span> <span class="toctext">Stra&#223;en</span></a>
+              </li>
+              <li class="toclevel-1 tocsection-7">
+                <a href="#Siehe_auch"><span class="tocnumber">7</span> <span class="toctext">Siehe 
+                auch</span></a>
+              </li>
+            </ul>
+          </div>
+          <h2>
+            <span class="mw-headline" id="Gegenst.C3.A4nde">Gegenst&#228;nde</span>
+          </h2>
+          <p>
+            <a href="Waren.html" title="Waren">Gegenst&#228;nde</a> werden mit <tt>MACHE 
+            [<i>anzahl</i>] <i>gegenstand</i> </tt>hergestellt. Je nach 
+            Gegenstand wird ein bestimmtes Talent und vielleicht auch noch 
+            bestimmte Rohstoffe ben&#246;tigt. Ohne Angabe von anzahl wird die 
+            Einheit so viele Gegenst&#228;nde produzieren, wie Personen, Talent und 
+            evtl. Rohstoffe es ihr erm&#246;glichen.
+          </p>
+          <p>
+            Das Herstellen eines Trankes ist sehr aufwendig und kann nur von 
+            besonders talentierten Alchemisten durchgef&#252;hrt werden. Details 
+            dazu findet man im <a href="Liste_der_Talente.html" title="Liste der Talente">Alchemie</a>-Kapitel.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Kr.C3.A4uter">Kr&#228;uter</span>
+          </h2>
+          <p>
+            Kr&#228;uter werden mit dem Befehl <tt>MACHE KR&#196;UTER</tt> von 
+            Einheiten mit dem Talent <a class="mw-redirect" href="Liste_der_Talente.html" title="Kräuterkunde">Kr&#228;uterkunde</a> 
+            gemacht. Je nach Talentwert findet man mehr oder weniger Kr&#228;uter 
+            der Region, in der man sich befindet, wobei jede Region nur ein 
+            Kraut hat. Kr&#228;uter wachsen &#228;hnlich wie B&#228;ume nach; wenn man nicht 
+            aufpasst, kann man durchaus alle Kr&#228;uter einer Region pfl&#252;cken und 
+            muss dann mittels <tt><a href="Z_CHTE.html" title="ZÜCHTE">Z&#220;CHTE</a> 
+            KR&#196;UTER</tt> zuerst wieder welche anpflanzen.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Einheiten">Einheiten</span>
+          </h2>
+          <p>
+            Wenn man neue Einheiten erschafft (<tt>MACHE TEMP</tt>), gibt man 
+            der Einheit eine Alias-Nummer, denn man wei&#223; ja zu diesem 
+            Zeitpunkt noch nicht, welche Nummer die Einheit schlussendlich 
+            noch bekommen wird. F&#252;r alle anderen Befehle kann man nun diesen 
+            Alias verwenden (mit dem Wort TEMP davor). Die neue Einheit muss 
+            allerdings noch Mitglieder bekommen, sonst wird sie 
+            stillschweigend am Ende der Runde wieder gel&#246;scht!
+          </p>
+          <p>
+            Die Alias-Nummer wird als Nummer der Einheit benutzt, wenn diese 
+            noch nicht belegt ist. Ebenso kann man schon hier einen Namen der 
+            Einheit angeben. So lassen sich die Befehle
+          </p>
+          <pre> MACHE TEMP 1
+    BENENNE EINHEIT &quot;Clowns&quot;
+    NUMMER EINHEIT lach</pre>
+          <p>
+            verk&#252;rzen auf
+          </p>
+          <pre> MACHE TEMP lach &quot;Clowns&quot;</pre>
+          <p>
+            Pro Partei sind maximal 2500 Einheiten erlaubt. Hat die Partei 
+            2500 oder mehr Einheiten, so k&#246;nnen mit <tt>MACHE TEMP</tt> 
+            keine neuen Einheiten geschaffen werden, es m&#252;ssen erst andere 
+            Einheiten z.B. durch Zusammenfassen gel&#246;scht werden. Da das 
+            Aufl&#246;sen leerer Einheiten in der Befehlsreihenfolge weit hinten 
+            kommt, k&#246;nnen neue TEMP-Einheiten erst in der folgenden Woche 
+            geschaffen werden.
+          </p>
+          <p>
+            Nach diesem Befehl werden die Befehle f&#252;r die neue Einheit 
+            angegeben, bis man das Wort ENDE eingibt. Andere Parteien k&#246;nnen 
+            tempor&#228;re Einheiten dann ansprechen, wenn sie nicht selber eine 
+            TEMP-Einheit mit der selben Nummer haben. Mit ein wenig Absprache 
+            k&#246;nnen also auch TEMP-Einheiten fremder Parteien angesprochen 
+            werden.
+          </p>
+          <p>
+            Wenn die neue Einheit Mitglieder neu rekrutieren soll, muss sie 
+            auch genug Geld daf&#252;r erhalten. Erh&#228;lt sie das nicht, wird die 
+            Einheit niemanden rekrutieren k&#246;nnen und am Ende der Woche 
+            stillschweigend entfernt werden. Bekommt die Einheit Geld, 
+            rekrutiert aber keine Mitglieder, l&#246;st sie sich ebenfalls auf und 
+            das Geld f&#228;llt den Bauern zu.
+          </p>
+          <pre> EINHEIT 17;       K&#228;mpfer [15,700$]
+ MACHE TEMP 1
+    BENENNE EINHEIT &quot;Drachenreiter&quot;
+    LERNE Hiebwaffen
+ ENDE
+ GIB TEMP 1 5 PERSONEN
+ &#160;
+ GIB TEMP 2 100 Silber
+ MACHE TEMP 2
+    REKRUTIERE 1
+    BENENNE EINHEIT &quot;Sp&#228;her&quot;
+    DEFAULT &quot;LERNE Wahrnehmung&quot;
+    NACH Westen
+ ENDE</pre>
+          <h2>
+            <span class="mw-headline" id="Geb.C3.A4ude">Geb&#228;ude</span>
+          </h2>
+          <p>
+            Um ein neues Geb&#228;ude zu errichten, verwendet man <i>MACHE</i> 
+            [<i>stufen</i>] <i>Geb&#228;udetyp</i> (siehe <a href="Geb_ude.html" title="Gebäude">Geb&#228;ude</a>). 
+            Will man an einem Geb&#228;ude weiterbauen, so lautet der Befehl daf&#252;r <i>MACHE</i> 
+            [<i>stufen</i>] <i>Geb&#228;udetyp</i> <i>geb&#228;ude-nr</i>. Der <i>Geb&#228;udetyp</i> 
+            kann beim Weiterbauen auch durch BURG ersetzt werden, auch wenn es 
+            sich um ein anderes Geb&#228;ude handelt. Burgen und viele andere 
+            Geb&#228;ude k&#246;nnen beliebig ausgebaut werden. Um Burgen zu bauen, muss 
+            man das Talent Burgenbau und Steine haben, andere Geb&#228;ude 
+            erfordern i.d.R. weiterhin Holz, Eisen und Silber in verschiedenen 
+            Mengen.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Schiffe">Schiffe</span>
+          </h2>
+          <p>
+            Mit <tt>MACHE <i>schifftyp</i></tt> beginnt man, ein neues <a class="mw-redirect" href="Schiff.html" title="Schiffe">Schiff</a> 
+            zu bauen. Schiffe k&#246;nnen nicht wie Burgen erweitert werden, 
+            sondern man muss bei Baubeginn den Typ festlegen. Mit <tt>MACHE [<i>stufe</i>] 
+            SCHIFF <i>schiff-nr</i></tt> kann daran weiterbauen. An Schiffen 
+            kann nur bis zu der am Anfang angegebenen Gr&#246;&#223;e weiter gebaut 
+            werden. Um Schiffe zu bauen, muss man das Talent Schiffbau und 
+            Holz haben.
+          </p>
+          <p>
+            Sowohl bei Geb&#228;uden als auch bei Schiffen kann man mit stufen 
+            angeben, wieviele Stufen man das Geb&#228;ude bzw. Schiff 
+            bauen/erweitern will.
+          </p>
+          <ul>
+            <li>
+              erste Woche: <tt>MACHE LANGBOOT</tt><br>Ein neues Schiff wird 
+              gebaut und bekommt vom Computer die Nummer 76.
+            </li>
+            <li>
+              zweite Woche: <tt>MACHE SCHIFF 76</tt><br>An Schiff Nr. 76 wird 
+              nun weiter gebaut.
+            </li>
+          </ul>
+          <h2>
+            <span class="mw-headline" id="Stra.C3.9Fen">Stra&#223;en</span>
+          </h2>
+          <p>
+            Will man in einer Region das Durchreisen durch Stra&#223;en und Br&#252;cken 
+            erleichtern, verwendet man <tt>MACHE STRASSE <i>richtung</i></tt>. 
+            Um <a class="mw-redirect" href="Stra_e.html" title="Straßen">Stra&#223;en</a> 
+            zu bauen, braucht man das Talent <a class="mw-redirect" href="Liste_der_Talente.html" title="Straßenbau">Stra&#223;enbau</a> 
+            und <a href="Waren.html" title="Waren">Steine</a>. In Gletschern 
+            ben&#246;tigt man dazu vorher einen <a href="Andere_Geb_ude.html#Tunnel" title="Andere Gebäude">Tunnel</a>, 
+            in W&#252;sten eine <a href="Andere_Geb_ude.html#Karawanserei" title="Andere Gebäude">Karawanserei</a> 
+            und in S&#252;mpfen einen <a href="Andere_Geb_ude.html#Damm" title="Andere Gebäude">Damm</a>.
+          </p>
+          <h2>
+            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+          </h2>
+          <ul>
+            <li>
+              <a href="Produktion.html" title="Produktion">Produktion</a>
+            </li>
+            <li>
+              <a class="mw-redirect" href="Tr_nke.html" title="Alchemie">Alchemie</a>
+            </li>
+          </ul>
+          <!-- 
+NewPP limit report
+Cached time: 20220210201643
+Cache expiry: 86400
+Dynamic content: false
+CPU time usage: 0.014 seconds
+Real time usage: 0.014 seconds
+Preprocessor visited node count: 35/1000000
+Preprocessor generated node count: 48/1000000
+Post?expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/40
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post?expand size: 0/5000000 bytes
+-->
+          <!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1517-0!canonical and timestamp 20220210201643 and revision id 7148
+ -->
+          </div>
+      </div>
+    </div>
+  </body>
+</html>

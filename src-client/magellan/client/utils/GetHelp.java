@@ -351,7 +351,7 @@ public class GetHelp extends JPanel {
   private static final String RAW_ACTION = "&redirect=no&action=raw";
   private static final String HTML_ACTION = "&redirect=no";
   private static final String HTML_ENCODING = "iso-8859-1";
-  private static final String HTML_LANGUAGE = "de_DE";
+  private static final String HTML_LANGUAGE = "de";
 
   private static final String RULES_HTML_HEADER = "  <head>\n" +
       "    <meta name=\"generator\" content=\"" + GetHelp.class.getCanonicalName() + "\" />\n" +

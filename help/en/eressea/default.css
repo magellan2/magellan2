@@ -8,7 +8,7 @@ p, blockquote, li, input, td, th, select {
   font-size: 100%;
 }
 
-p, h2, h3, h4 {
+p, h1, h2, h3, h4 {
   font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;
 }
 
@@ -99,25 +99,32 @@ a {
   color: #C00;
 }
 
-h2 {
+h1 {
   border: 0px;
   font-weight: normal;
-  font-size: 1.8em;
-  font-size: 180%;
+  font-size: 1.6em;
+  font-size: 160%;
 }
 
-h3 {
+h2 {
   border: 0px;
   font-weight: normal;
   font-size: 1.4em;
   font-size: 140%;
 }
 
-h4 {
+h3 {
   border: 0px;
   font-weight: normal;
   font-size: 1.2em;
   font-size: 120%;
+}
+
+h4 {
+  border: 0px;
+  font-weight: normal;
+  font-size: 1.1em;
+  font-size: 110%;
 }
 
 p.caps {

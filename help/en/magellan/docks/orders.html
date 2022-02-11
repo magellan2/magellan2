@@ -14,85 +14,82 @@
 
 <body>
   <a name="top"></a>
+  <div id='content'>
+    <!-- Inhalt -->
 
-  <!-- Inhalt -->
+    <h1>Orders</h1>
 
-  <h1>Orders</h1>
+    <p>This window is used to give units new orders.</p>
+    <p align="center">
+      <img src="../images/windows_orders.gif" alt="" border="0">
+    </p>
 
-  <p>This window is used to give units new orders.</p>
-  <p align="center">
-    <img src="../images/windows_orders.gif" alt="" border="0">
-  </p>
+    <p>
+      If a unit is selected, this unit's orders are shown here and can be
+      edited. Magellan only shows orders for units that belong to a faction
+      that has a password set. Therefore, if no orders are shown, you should
+      enter a password for your faction under <a
+        href="../menus/extras/factionstatistics.html">Faction statistics</a>.
+    </p>
 
-  <p>
-    If a unit is selected, this unit's orders are shown here and can be edited.
-    Magellan only shows orders for units that belong to a faction that has a
-    password set. Therefore, if no orders are shown, you should enter a
-    password for your faction under <a
-      href="../menus/extras/factionstatistics.html">Faction statistics</a>.
-  </p>
+    <p>
+      Order-editing is supported by a handy order-completion, which can be
+      adjusted to your <a href="../menus/extras/options_detail.html">preference</a>.
+      To enter an order you only need to type its first letter. Using the
+      cursor keys or CTRL-up / CTRL-down you can select the desired order from
+      the displayed list of suggestions and enter it with the TAB-key. You can
+      configure the order-completion under <a
+        href="../menus/extras/options_detail.html">Extras/Options/Details</a>.
+    </p>
 
-  <p>
-    Order-editing is supported by a handy order-completion, which can be
-    adjusted to your <a href="../menus/extras/options_detail.html">preference</a>.
-    To enter an order you only need to type its first letter. Using the cursor
-    keys or CTRL-up / CTRL-down you can select the desired order from the
-    displayed list of suggestions and enter it with the TAB-key. You can
-    configure the order-completion under <a
-      href="../menus/extras/options_detail.html">Extras/Options/Details</a>.
-  </p>
+    <p>
+      With <b><i>Orders confirmed</i></b> you can confirm the orders of the
+      active unit. The unit will then no longer be shown bold in the region
+      window. Through this functions you can mark the units that you have
+      already edited.
+    </p>
 
-  <p>
-    With <b><i>Orders confirmed</i></b> you can confirm the orders of the
-    active unit. The unit will then no longer be shown bold in the region
-    window. Through this functions you can mark the units that you have already
-    edited.
-  </p>
+    <h2>TEMP-units</h2>
 
-  <br>
-  <h2>TEMP-units</h2>
+    <p>Magellan offers an easy way to work with TEMP-units. These are shown
+      as regular units under the units that created them. Transactions of men
+      and items, as well as skills and weights are shown in the details window,
+      the same as for normal units. The necessary orders to create a TEMP-unit
+      (MAKE TEMP [...] END) are created by Magellan when the orders are
+      exported. Within Magellan TEMP-units are treated the same as any other
+      unit.</p>
 
-  <p>Magellan offers an easy way to work with TEMP-units. These are shown
-    as regular units under the units that created them. Transactions of men and
-    items, as well as skills and weights are shown in the details window, the
-    same as for normal units. The necessary orders to create a TEMP-unit (MAKE
-    TEMP [...] END) are created by Magellan when the orders are exported.
-    Within Magellan TEMP-units are treated the same as any other unit.</p>
+    <h3>Creating TEMP-units</h3>
 
-  <br>
-  <h3>Creating TEMP-units</h3>
+    <p>
+      <img src="../images/windows_orders_button_maketemp.gif" alt="" border="0">
+    </p>
+    <p>With a click on this button you can create a TEMP-unit. In the
+      resulting dialog you can enter the unit's name and TEMP-ID. The
+      corresponding orders are created automatically.</p>
 
-  <p>
-    <img src="../images/windows_orders_button_maketemp.gif" alt="" border="0">
-  </p>
-  <p>With a click on this button you can create a TEMP-unit. In the
-    resulting dialog you can enter the unit's name and TEMP-ID. The
-    corresponding orders are created automatically.</p>
+    <p>
+      <img src="../images/windows_orders_maketemp.gif" alt="" border="0">
+    </p>
 
-  <p>
-    <img src="../images/windows_orders_maketemp.gif" alt="" border="0">
-  </p>
+    <p>
+      Clicking on <i>More...</i> results in the following dialog:
+    </p>
+    <p>
+      <img src="../images/windows_orders_maketempmore.gif" alt="" border="0">
+    </p>
+    <p>Here you can enter the number of men to be recruited, an order and
+      the unit's description.</p>
 
-  <p>
-    Clicking on <br>
-    <i>More...</i> results in the following dialog:
-  </p>
-  <p>
-    <img src="../images/windows_orders_maketempmore.gif" alt="" border="0">
-  </p>
-  <p>Here you can enter the number of men to be recruited, an order and the
-    unit's description.</p>
+    <h3>Deleting TEMP-units</h3>
 
-  <br>
-  <h3>Deleting TEMP-units</h3>
-
-  <p>
-    <img src="../images/windows_orders_button_deltemp.gif" alt="" border="0">
-  </p>
-  <p>By clicking this button you can delete the current TEMP-unit.</p>
+    <p>
+      <img src="../images/windows_orders_button_deltemp.gif" alt="" border="0">
+    </p>
+    <p>By clicking this button you can delete the current TEMP-unit.</p>
 
 
-  <!-- Inhalt - Ende -->
-
+    <!-- Inhalt - Ende -->
+  </div>
 </body>
 </html>

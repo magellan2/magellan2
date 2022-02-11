@@ -13,73 +13,88 @@
 </head>
 <body>
   <a id="top" name="top"></a>
-  <!-- Inhalt -->
+  <div id='content'>
+    <!-- Inhalt -->
 
-  <h1>Regionsanzeige</h1>
-  <p>In diesem Dialog kann man die Optionen der Regionsanzeige einstellen:
-  </p>
-  <p style="text-align: center">
-    <img src="../../images/menu_extras_options_region.gif"
-      alt="Optionen - Regionsanzeige" border="0" />
-  </p>
-  <ul>
-    <li><b>Regionssortierung</b><br /> Hier kann man die Anzeige der
-      Regionsnamen nach Koordinaten oder nach Inselzugehörigkeit einstellen.
-      Wird zusätzlich die Option <i>Inseln anzeigen</i> aktiviert, wird den
-      Regionen noch ein "Ordnungsknoten" für die Insel vorangestellt, der auf-
-      und zugeklappt werden kann.
-      <p>Magellan kann die Regionen eines Reports in Inseln einteilen und
-        sie in der Regionübersicht nach Insel geordnet darstellen. Prinzipiell
-        sind auch weitere Einsatzmöglichkeiten für Inseln denkbar.</p>
-      <p>
-        Mit dem Menüpunkt '<a href="menu_map_island.html">Inseln erfassen</a>'
-        im Menü 'Extras' wird die Zuordnung von Inseln zu Regionen vorgenommen.
-        Dies ist Voraussetzung, um die Regionen nach Inseln sortieren zu
-        können.
-      </p> Um die Regionsübersicht nach Inseln sortieren zu lassen, sind in diesem
-      Dialog folgende Einstellungen zu machen:
-      <ol>
-        <li><i>Regionen sortieren</i> aktiviert</li>
-        <li><i>Nach Insel</i> ausgewählt</li>
-        <li><i>Inseln anzeigen</i> legt fest, ob die Inseln auch
-          tatsächlich in der Übersichtsanzeige dargestellt werden. Nur wenn
-          diese Option aktiviert ist, kann man die Inselnamen und
-          -beschreibungen ändern.</li>
-      </ol></li>
-    <li><b>Baum-Expansion</b><br /> Mittels dieser Optionen lässt sich
-      bestimmen, ob und wie weit der Regionsbaum aufklappt, wenn eine Region
-      auf der Karte aktiviert wird. Die Optionen der rechten Spalte
-      beeinflussen dabei das Öffnungsverhalten und die der linken Spalte das
-      Schließverhalten vorher aufgeklappter Regionsinformationen.</li>
-    <li><b>Einheitensortierung</b><br /> Die Ausgabe der Einheiten kann
-      hier nach Reportreihenfolge (Reihenfolge der Einheiten im CR), Talentname
-      oder Einheitenname sortiert werden. Bei der Sortierung nach Talenten hat
-      man noch weitere Einstellmöglichkeiten. Voreingestellt ist die Sortierung
-      nach dem besten Talent, d.h. eine Einheit mit Hiebwaffen T6 und Taktik T3
-      wird also bei den anderen Hiebwafflern einsortiert, und Reihenfolge nach
-      dem Alphabet, d.h. die Holzfäller folgen auf die Hiebwaffler.
-      <p>
-        Will man diese Reihenfolge ändern, so kann man im Unterpunkt
-        Talentreihenfolge die Sortierreihenfolge der Talente angeben und so
-        z.B. alle Kampf- oder Produktionstalente in Blöcken anzeigen lassen.
-        Auch ist es möglich mit der Aktivierung des Punktes <i>Nach
-          höchsten Talent in der Talentreihenfolge</i>, die Einsortierung von
-        Einheiten mit mehreren Talenten zu beeinflussen. Hat man den Punkt
-        aktiviert und gleichzeitig Taktik in der Talentliste vor Hiebwaffen
-        stehen, so würde die Einheit mit Hiebwaffen T6 und Taktik T3 bei Taktik
-        einsortiert werden.
-      </p>
-      <p style="text-align: center">
-        <img src="../../images/menu_extras_options_region_skills.gif"
-          alt="Optionen - Regionsanzeige - Talentreihenfolge" border="0" />
-      </p>
-      <p>
-        Die Änderung der Talentreihenfolge erfolgt durch Auswahl des
-        entsprechenden Talentes mit der Maus anschließendes Verschieben durch
-        die Schaltflächen <i>Höher</i> bzw. <i>Tiefer</i>.
-      </p></li>
-  </ul>
-  <!-- Inhalt - Ende -->
+    <h1>Regionsübersicht</h1>
+    <p>
+      In diesem Dialog kann man die Optionen der&nbsp;<a
+        href="../../docks/regions.html">Regionsübersicht</a> einstellen:
+    </p>
+    <p style="text-align: center">
+      <img src="../../images/menu_extras_options_region.gif"
+        alt="Optionen - Regionsanzeige" border="0" />
+    </p>
+    <ul>
+      <li><b>Regionssortierung</b><br /> Hier kann man die Anzeige der
+        Regionsnamen nach Koordinaten oder nach Inselzugehörigkeit einstellen.
+        Wird zusätzlich die Option <i>Inseln anzeigen</i> aktiviert, wird den
+        Regionen noch ein "Ordnungsknoten" für die Insel vorangestellt, der
+        auf- und zugeklappt werden kann.
+        <p>Magellan kann die Regionen eines Reports in Inseln einteilen und
+          sie in der Regionübersicht nach Insel geordnet darstellen.
+          Prinzipiell sind auch weitere Einsatzmöglichkeiten für Inseln
+          denkbar.</p>
+        <p>
+          Mit dem Menüpunkt '<a href="menu_map_island.html">Inseln erfassen</a>'
+          im Menü 'Extras' wird die Zuordnung von Inseln zu Regionen
+          vorgenommen. Dies ist Voraussetzung, um die Regionen nach Inseln
+          sortieren zu können.
+        </p> Um die Regionsübersicht nach Inseln sortieren zu lassen, sind in
+        diesem Dialog folgende Einstellungen zu machen:
+        <ol>
+          <li><i>Regionen sortieren</i> aktiviert</li>
+          <li><i>Nach Insel</i> ausgewählt</li>
+          <li><i>Inseln anzeigen</i> legt fest, ob die Inseln auch
+            tatsächlich in der Übersichtsanzeige dargestellt werden. Nur wenn
+            diese Option aktiviert ist, kann man die Inselnamen und
+            -beschreibungen ändern.</li>
+        </ol></li>
+      <li><b>Hierarchische Baumstruktur</b><br /> Hier kann eingestellt
+        werden, welche Gliederungsebenen es in der Regionsübersicht gibt.
+        Voreinstellung sind Partei und Gruppe. Um weitere Ebenen hinzuzufügen,
+        muss man sie in der linken Auswahlbox auswählen und per Pfeil nach
+        rechts übernehmen. Um Ebenen zu entfernen muss man sie rechts auswählen
+        und per Pfeil nach links löschen. Zusätzlich kann man über die "Höher"-
+        und "Tiefer"-Knöpfe die Reihenfolge in der Hierarchie verändern.</li>
+      <li><b>Einheitensortierung</b><br /> Die Ausgabe der Einheiten kann
+        hier nach Reportreihenfolge (Reihenfolge der Einheiten im CR),
+        Talentname oder Einheitenname sortiert werden. Bei der Sortierung nach
+        Talenten hat man noch weitere Einstellmöglichkeiten. Voreingestellt ist
+        die Sortierung nach dem besten Talent, d.h. eine Einheit mit Hiebwaffen
+        T6 und Taktik T3 wird also bei den anderen Hiebwafflern einsortiert,
+        und Reihenfolge nach dem Alphabet, d.h. die Holzfäller folgen auf die
+        Hiebwaffler.
+        <p>
+          Will man diese Reihenfolge ändern, so kann man im Unterpunkt
+          Talentreihenfolge die Sortierreihenfolge der Talente angeben und so
+          z.B. alle Kampf- oder Produktionstalente in Blöcken anzeigen lassen.
+          Auch ist es möglich mit der Aktivierung des Punktes <i>Nach
+            höchsten Talent in der Talentreihenfolge</i>, die Einsortierung von
+          Einheiten mit mehreren Talenten zu beeinflussen. Hat man den Punkt
+          aktiviert und gleichzeitig Taktik in der Talentliste vor Hiebwaffen
+          stehen, so würde die Einheit mit Hiebwaffen T6 und Taktik T3 bei
+          Taktik einsortiert werden.
+        </p></li>
+      <li><b>Baum-Expansion</b><br /> Mittels dieser Optionen lässt sich
+        bestimmen, ob und wie weit der Regionsbaum aufklappt, wenn eine Region
+        auf der&nbsp;<a href="../../docks/map.html">Karte</a> aktiviert wird.
+        Die Optionen der rechten Spalte beeinflussen dabei das
+        Öffnungsverhalten und die der linken Spalte das Schließverhalten vorher
+        aufgeklappter Regionsinformationen.</li>
+    </ul>
+    <h2>Talentreihenfolge</h2>
+    <div style="text-align: center;">
+      <img src="../../images/menu_extras_options_region_skills.gif"
+        alt="Optionen - Regionsanzeige - Talentreihenfolge" border="0" />
+    </div>
+    <p>
+      Die Änderung der Talentreihenfolge erfolgt durch Auswahl des
+      entsprechenden Talentes mit der Maus anschließendes Verschieben durch die
+      Schaltflächen <i>Höher</i> bzw. <i>Tiefer</i>.
+    </p>
+    <!-- Inhalt - Ende -->
+  </div>
 </body>
 </html>
 

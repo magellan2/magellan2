@@ -1,153 +1,102 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      Magellan Dokumentation
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<head>
+<title>Magellan Dokumentation</title>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
 
-    <link rel="stylesheet" href="../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Arbeiten mit Computerreporten
-    </h1>
-    <p>
-      Um mit Magellan seine Züge machen zu können, muss man die Auswertung als
-      Computerreport (CR) beziehen. Hierzu muss man in seinem ersten Zug
-      unbedingt einer Einheit den Befehl "Option Computer" geben. Man bekommt
-      zwar mit der ersten Auswertung auch einen CR zugeschickt, doch muss diese
-      Option trotzdem gesetzt werden, um weiterhin einen zu beziehen. Möglich
-      ist dies unter <a
-      href="../menus/extras/factionstatistics.html#eresseaoptions">Extras -&gt;
-      Eressea Optionen...</a>.
-    </p>
-    <p>
-      Bekommt man die Auswertung auch als CR gesandt, so sollte man <a
-      href="../faq.html#Kommandozeilenstart">Magellan starten</a> und per <a
-      href="../menus/file/open.html">Datei -&gt; Öffnen...</a> den CR laden.
-      Als nächstes muss man unter in der <a
-      href="../menus/extras/factionstatistics.html">Parteistatistik</a> seine
-      Partei auswählen und mittels der Schaltfläche <b><i>Password
-      setzen</i></b> Magellan sein Passwort mitteilen, da es erst mit gesetztem
-      Passwort möglich ist, seine Befehle zu schreiben.
-    </p>
-    <p>
-      Bekommt man seine erste Auswertung, so befindet sich das Passwort in der
-      Datei mit der Endung .nr. Dort sollte es irgendwo in den ersten Zeilen
-      stehen.
-    </p>
-    <h2>
-      Benutzen eines Zug-CRs
-    </h2>
-    <p>
-      Um alle Funktionen von Magellan nutzen zu können, ist es sinnvoll, immer
-      mit dem "gleichen" CR zu arbeiten und den neuen CR hinzuzuladen. Man
-      beginnt damit sinnvollerweise, indem man seinen ersten CR unter einem
-      anderen Namen speichert, z.B. zug.cr. Erhält man nun eine neue
-      Auswertung, so lädt man den alten zug.cr und fügt den neuen Report per <a
-      href="../menus/file/add.html">Datei -&gt; Hinzufügen...</a> hinzu.
-    </p>
-    <p>
-      Zu den Funktionen, die so erst möglich sind, gehören:
-    </p>
-    <ul>
-      <li>
-        Veränderungsanzeigen zur Vorwoche
-      </li>
-      <li>
-        Regionsinformationen zur Zeit des letzten Besuchs einer Region, von der
-        man mit der aktuellen Auswertung keine Informationen bekommen hat. Dazu
-        gehören:
-      </li>
-      <li style="list-style: none">
+<link rel="stylesheet" href="../../default.css" type="text/css" />
+</head>
+<body>
+    <a id="top" name="top"></a>
+    <div id='content'>
+        <!-- Inhalt -->
+
+        <h1>Arbeiten mit Computerreporten</h1>
+        <p>
+            Um mit Magellan seine Züge machen zu können, muss man die Auswertung als Computerreport
+            (CR) beziehen. Hierzu muss man in seinem ersten Zug unbedingt einer Einheit den Befehl
+            "Option Computer" geben. Man bekommt zwar mit der ersten Auswertung auch einen CR
+            zugeschickt, doch muss diese Option trotzdem gesetzt werden, um weiterhin einen zu
+            beziehen. Möglich ist dies unter <a
+                href="../menus/extras/factionstatistics.html#eresseaoptions">Extras -&gt;
+                Eressea Optionen...</a>.
+        </p>
+        <p>
+            Bekommt man die Auswertung auch als CR gesandt, so sollte man <a
+                href="../faq.html#Kommandozeilenstart">Magellan starten</a> und per <a
+                href="../menus/file/open.html">Datei -&gt; Öffnen...</a> den CR laden. Die Frage, ob
+            man das Passwort für die Partei übernehmen will, sollte man bejahen. Im Nachhinein kann
+            man in der <a href="../menus/extras/factionstatistics.html">Parteistatistik</a> seine
+            Partei auswählen und mittels der Schaltfläche <b><i>Password und andere
+                    Eigenschaften</i></b> Magellan sein Passwort mitteilen, da es erst mit gesetztem
+            Passwort möglich ist, seine Befehle zu schreiben.
+        </p>
+        <p>Bekommt man seine erste Auswertung, so befindet sich das Passwort in der Datei mit
+            der Endung .nr. Dort sollte es irgendwo in den ersten Zeilen stehen.</p>
+        <h2>Benutzen eines Zug-CRs</h2>
+        <p>
+            Um alle Funktionen von Magellan nutzen zu können, ist es sinnvoll, immer mit dem
+            "gleichen" CR zu arbeiten und den neuen CR hinzuzuladen. Man beginnt damit
+            sinnvollerweise, indem man seinen ersten CR unter einem anderen Namen speichert, z.B.
+            zug.cr. Erhält man nun eine neue Auswertung, so lädt man den alten zug.cr und fügt den
+            neuen Report per <a href="../menus/file/add.html">Datei -&gt; Hinzufügen...</a> hinzu.
+        </p>
+        <p>Zu den Funktionen, die so erst möglich sind, gehören:</p>
         <ul>
-          <li>
-            Straßen
-          </li>
-          <li>
-            Gebäude
-          </li>
-          <li>
-            Bauern
-          </li>
-          <li>
-            Silber
-          </li>
-          <li>
-            Resourcen
-          </li>
+            <li>Veränderungsanzeigen zur Vorwoche</li>
+            <li>Regionsinformationen zur Zeit des letzten Besuchs einer Region, von der man mit
+                der aktuellen Auswertung keine Informationen bekommen hat. Dazu gehören:</li>
+            <li style="list-style: none">
+                <ul>
+                    <li>Straßen</li>
+                    <li>Gebäude</li>
+                    <li>Bauern</li>
+                    <li>Silber</li>
+                    <li>Resourcen</li>
+                </ul>
+            </li>
         </ul>
-      </li>
-    </ul>
-    <p>
-      Zu den Informationen, die dadurch erhalten bleiben und somit nicht neu
-      eingegeben werden müsssen (so das überhaupt möglich ist), gehören:
-    </p>
-    <ul>
-      <li>
-        zugewiesene Inselnamen
-      </li>
-      <li>
-        selbsterstellte Regionskommentare
-      </li>
-      <li>
-        Informationen über wachsende Kräuter
-      </li>
-      <li>
-        Informationen über Trankrezepte
-      </li>
-      <li>
-        Informationen über Zaubersprüche
-      </li>
-    </ul>
-    <h2>
-      Austausch von CRs
-    </h2>
-    <p>
-      Beim Austausch von CRs mit anderen Spielern sollte man sich zuerst
-      Gedanken machen, was man überhaupt tauschen will. So sollte man beim
-      Tauschen von Kartenmaterial es tunlichst vermeiden, seine Einheiten und
-      Gebäude im CR zu lassen, schließlich muss man ja nicht gleich seine
-      Stärken und Schwächen offen legen. Magellan bietet hierzu unter dem
-      Menüpunkt <a href="../menus/file/crexport.html">Datei -&gt; CR
-      exportieren...</a> mehrere Optionen an, was in einem CR gespeichert
-      werden soll.
-    </p>
-    <p>
-      Will man fremde Reporte (Karten o.a.) dem eigenen hinzufügen, so versucht
-      Magellan automatisch, die beste Übereinstimmung zu erkennen, falls das
-      Koordinatensysteme der Reporte nicht übereinstimmen. Falls dies
-      allerdings wider Erwarten zu einem unkorrekten Ergebnis führen sollte, so
-      muss man den hinzuzufügenden Report normal laden und dann selbst den <a
-      href="../menus/map/origin.html">Urprung anpassen</a>, den Report
-      speichern und ihn dann zum Hauptreport hinzufügen.
-    </p>
-    <h2>
-      Arbeiten mit mehreren CRs der gleichen Runde
-    </h2>
-    <p>
-      Arbeitet man mit mehreren Reporten aus der gleichen Runde (z.B. Reporte
-      von Verbündeten), empfiehlt es sich, immer seinen eigenen Report zuerst
-      zu laden und diesem die fremden Reporte hinzuzufügen. Dadurch ist
-      sichergestellt, dass das Koordinatensystem des eigenen Reports
-      beibehalten wird.
-    </p>
-    <p>
-      Beim schrittweisen Hinzufügen von Verbündetenreporten kann es passieren,
-      dass z.B. Veränderungsinformationen nicht erfasst werden. Um das zu
-      vermeiden, kann man zunächst alle Verbündetenreporte zu einem einzigen
-      Report zusammenfügen und dann diesen Bündnisreport dem eigenen
-      hinzufügen.
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+        <p>Zu den Informationen, die dadurch erhalten bleiben und somit nicht neu eingegeben
+            werden müssen (so das überhaupt möglich ist), gehören:</p>
+        <ul>
+            <li>zugewiesene Inselnamen</li>
+            <li>selbsterstellte Regionskommentare</li>
+            <li>Informationen über wachsende Kräuter</li>
+            <li>Informationen über Trankrezepte</li>
+            <li>Informationen über Zaubersprüche</li>
+        </ul>
+        <h2>Austausch von CRs</h2>
+        <p>
+            Beim Austausch von CRs mit anderen Spielern sollte man sich zuerst Gedanken machen, was
+            man überhaupt tauschen will. So sollte man beim Tauschen von Kartenmaterial es tunlichst
+            vermeiden, seine Einheiten und Gebäude im CR zu lassen, schließlich muss man ja nicht
+            gleich seine Stärken und Schwächen offen legen. Magellan bietet hierzu unter dem
+            Menüpunkt <a href="../menus/file/crexport.html">Datei -&gt; CR exportieren...</a>
+            mehrere Optionen an, was in einem CR gespeichert werden soll.
+        </p>
+        <p>
+            Will man fremde Reporte (Karten o.a.) dem eigenen hinzufügen, so versucht Magellan
+            automatisch, die beste Übereinstimmung zu erkennen, falls das Koordinatensysteme der
+            Reporte nicht übereinstimmen. Falls dies allerdings wider Erwarten zu einem unkorrekten
+            Ergebnis führen sollte, so muss man den hinzuzufügenden Report normal laden und dann
+            selbst den <a href="../menus/map/origin.html">Ursprung anpassen</a>, den Report
+            speichern und ihn dann zum Hauptreport hinzufügen.
+        </p>
+        <h2>Arbeiten mit mehreren CRs der gleichen Runde</h2>
+        <p>Arbeitet man mit mehreren Reporten aus der gleichen Runde (z.B. Reporte von
+            Verbündeten), empfiehlt es sich, immer seinen eigenen Report zuerst zu laden und diesem
+            die fremden Reporte hinzuzufügen. Dadurch ist sichergestellt, dass das Koordinatensystem
+            des eigenen Reports beibehalten wird.</p>
+        <p>Beim schrittweisen Hinzufügen von Verbündetenreporten kann es passieren, dass z.B.
+            Veränderungsinformationen nicht erfasst werden. Um das zu vermeiden, kann man zunächst
+            alle Verbündetenreporte zu einem einzigen Report zusammenfügen und dann diesen
+            Bündnisreport dem eigenen hinzufügen.</p>
+        <!-- Inhalt - Ende -->
+    </div>
+</body>
 </html>
 

@@ -14,7 +14,7 @@
 package magellan.library;
 
 /**
- * A class encapsulating a hot spot, which represents a region of interest on the map.
+ * A class encapsulating a hot spot, now called bookmark, which represents a region of interest on the map.
  */
 public interface HotSpot extends Named {
   /**

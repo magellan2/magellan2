@@ -353,18 +353,19 @@ public class GetHelp extends JPanel {
   private static final String HTML_ENCODING = "iso-8859-1";
   private static final String HTML_LANGUAGE = "de";
 
-  private static final String RULES_HTML_HEADER = "  <head>\n" +
-      "    <meta name=\"generator\" content=\"" + GetHelp.class.getCanonicalName() + "\" />\n" +
-      "    <title>\n" +
-      "      %s\n" +
-      "    </title>\n" +
-      "    <meta http-equiv=\"Content-Language\" content=\"%s\" />\n" +
-      "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=%s\" />\n" +
-      "    <meta name=\"keywords\"\n" +
-      "    content=\"Magellan, Dokumentation, Eressea, PbeM, JavaClient\" />\n" +
-      "    <meta name=\"description\" content=\"Magellan-Dokumentation\" />\n" +
-      "\n" +
-      "    <link rel=\"stylesheet\" href=\"./default.css\" type=\"text/css\" />\n";
+  private static final String RULES_HTML_HEADER =
+      "<!DOCTYPE html>\n" +
+          "<html lang=\"%s\">\n" +
+          "<head>\n" +
+          "<meta charset=\"%s\" />\n" +
+          "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n" +
+          "<meta name=\"keywords\" content=\"Magellan, Dokumentation, Eressea, PbeM, JavaClient\" />\n" +
+          "<meta name=\"description\" content=\"Magellan Dokumentation\" />\n" +
+          "\n" +
+          "<title>%s</title>\n" +
+          "\n" +
+          "<link rel=\"stylesheet\" href=\"./default.css\" type=\"text/css\" />\n" +
+          "</head>\n";
   private JList<Page> pageList;
   private JEditorPane pageArea;
   private DefaultListModel<Page> pageModel;
@@ -551,8 +552,9 @@ public class GetHelp extends JPanel {
       HTMLEditorKit kit = new HTMLEditorKit();
       HTMLDocument doc = (HTMLDocument) kit.createDefaultDocument();
       doc.setInnerHTML(doc.getDefaultRootElement(),
-          String.format(RULES_HTML_HEADER, page.getName(), HTML_LANGUAGE, HTML_ENCODING) +
-              "<body><h1>" + page.getName() + "</h1>\n<div id='gh-content'></div>\n</body>\n");
+          String.format(RULES_HTML_HEADER, HTML_LANGUAGE, HTML_ENCODING, page.getName()) +
+              "<body><div id='content'><h1>" + page.getName()
+              + "</h1>\n<div id='gh-content'></div>\n</div>\n</body>\n");
       doc.setInnerHTML(doc.getElement("gh-content"), strWriter.toString());
       page.setDocument(doc);
     } catch (ParserConfigurationException e) {

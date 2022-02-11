@@ -21,7 +21,7 @@ import magellan.library.HotSpot;
 import magellan.library.IntegerID;
 
 /**
- * A class encapsulating a hot spot, which represents a region of interest on the map.
+ * A class encapsulating a hot spot (now calld bookmark), which represents a region of interest on the map.
  */
 public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
   private CoordinateID center = null;

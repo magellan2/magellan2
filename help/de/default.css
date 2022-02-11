@@ -5,6 +5,13 @@ body {
   font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;
 }
 
+#content {
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 18px;
+  text-align: left;
+}
+
 p, blockquote, li, input, td, th, select {
   font-size: 1.01em;
   font-size: 100%;
@@ -19,10 +26,6 @@ p, h1, h2, h3, h4 {
 }
 
 p, blockquote, li, h1, h2, h3, h4 {
-  padding-left: 10px;
-  padding-right: 10px;
-  line-height: 18px;
-  text-align: left;
 }
 
 blockquote {

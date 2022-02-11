@@ -1,29 +1,78 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<title>Magellan Dokumentation</title>
-<meta http-equiv="Content-Language" content="de-DE" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="iso-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords"
   content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
 <meta name="description" content="Magellan Dokumentation" />
+<meta name="author" content="Magellan Development Team">
 
-<link rel="stylesheet" href="../../default.css" type="text/css" />
+<title>Offene Probleme</title>
+<link rel=stylesheet href="../../default.css" type="text/css">
 </head>
 <body>
-  <a id="top" name="top"></a>
-  <!-- Inhalt -->
+  <a id="top"></a>
+  <div id='content'>
+    <!-- Inhalt -->
 
-  <h1>Offene Probleme</h1>
-  <p style="text-align: center">
-    <img src="../images/windows_problems.gif" alt="" border="0" />
-  </p>
-  <p>In dieser Liste werden alle von Magellan erkannten Probleme angezeigt.
-    Diese Liste sollte man als Ausgangspunkt für noch ausstehene Aufgaben
-    verwenden. Allerdings kann Magellan nicht alle Probleme finden und
-    anzeigen.</p>
-  <!-- Inhalt - Ende -->
+    <h1>Offene Probleme</h1>
+    <p style="text-align: center">
+      <img src="../images/windows_problems.gif" alt="" border="0" />
+    </p>
+    <p>In dieser Liste werden alle von Magellan erkannten Probleme
+      angezeigt. Diese Liste sollte man als Ausgangspunkt für noch ausstehende
+      Aufgaben verwenden. Allerdings kann Magellan nicht alle Probleme finden
+      und anzeigen. Dennoch erübrigt sich hierdurch inzwischen die Benutzung
+      von ECheck.</p>
+    <p>Durch Klick auf die Spaltenüberschriften kann man die Probleme
+      sortieren. Klickt man erst auf eine Spalte und drückt dann STRG und
+      klickt auf eine weitere Spalte, kann man nach mehreren Spalten sortieren.</p>
+    <p>Am unteren Rand kann man die angezeigten Probleme konfigurieren:</p>
+    <ul>
+      <li><b>S</b> Nur Probleme aus Regionen, die in der Karte ausgewählt
+        sind. Sind keine Regionen ausgewählt, hat dies keine Funktion.</li>
+      <li><b>R</b> Nur Probleme der aktuellen Region.</li>
+      <li><b>G</b> Zusätzlich werden globale Probleme angezeigt, also
+        solche, die keiner Region zuzuordnen sind.</li>
+      <li><b>Aktualisieren</b> Manchmal kommt es vor, dass die Berechnung
+        der Probleme nicht vollständig ist. Mit dieser Schaltfläche kann man
+        die Berechnung neu starten.</li>
+    </ul>
+    <p>Durch einen Doppelklick auf eine Zeile springt man zur Einheit oder
+      Region (falls möglich).</p>
+    <p>Man kann die Problem außerdem über das Kontextmenü (Rechtsklick)
+      steuern.</p>
+    <ul>
+      <li><b>Kompletten Text anzeigen</b> (auch durch STRG + Doppelklick
+        auf die Zeile): Hierdurch wird der Problemtext angezeigt, der in der
+        Tabelle nicht immer als Ganzes sichtbar ist.</li>
+      <li><b>Objekt auswählen</b> Entspricht dem Doppelklick</li>
+      <li><b>Aktualisieren</b> Entspricht der gleichnamigen Schaltfläche</li>
+      <li><b>Problem unterdrücken</b> Hierdurch wird das konkrete Problem
+        für den Report ausgeblendet. Der Befehl fügt meist einen Kommentar zur
+        betroffenen Einheit hinzu.</li>
+      <li><b>Alle Probleme wieder anzeigen</b> Hierdurch werden alle
+        unterdrückten Probleme wieder angezeigt und die entsprechenden
+        Befehlskommentare entfernt.</li>
+      <li><b>Problemtyp dauerhaft ignorieren</b> Hierdurch werden alle
+        Probleme eines bestimmten Typs auch für zukünftig geladene Reporte
+        unterdrückt. Dadurch kann man die Anzeige auf wichtige Probleme
+        beschränken. Beispielsweise könnte man die Warnung vor leeren Gebäuden
+        abschalten.</li>
+    </ul>
+    <p>Grundsätzlich gibt es zwei Arten von Problemen:</p>
+    <ul>
+      <li>Reportmeldungen, also zum Beispiel Meldungen über nicht
+        bezahlten Gebäudeunterhalt</li>
+      <li>Von Magellan erzeugte Meldungen, also zum Beispiel nicht
+        erkannte Befehle oder Warnung vor fehlendem Unterhaltsilber</li>
+    </ul>
+    <p>Unterdrückte Problemtypen kann man im Optionsdialog in der Rubrik
+      "Offene Probleme" einsehen. Hier kann man auch unterdrückte Problemtypen
+      wieder aktivieren.</p>
+    <!-- Inhalt - Ende -->
+  </div>
 </body>
 </html>
 

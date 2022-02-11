@@ -1,34 +1,79 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
-
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<title>Window: Open Tasks</title>
-<meta http-equiv="Content-Language" content="en">
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta charset="iso-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Language" content="de" />
 <meta name="keywords"
-  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-<meta name="description" content="Magellan Dokumentation">
-<meta name="AUTHOR" content="Magellan Development Team">
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
+<meta name="author" content="Magellan Development Team">
+
+<title>Window: Open Tasks</title>
 <link rel=stylesheet href="../../default.css" type="text/css">
 </head>
-
 <body>
-  <a name="top"></a>
+  <a id="top"></a>
+  <div id='content'>
+    <!-- Inhalt -->
 
-  <!-- Inhalt -->
+    <h1>Open Tasks</h1>
 
-  <h1>Open Tasks</h1>
+    <p align="center">
+      <img src="../images/windows_problems.gif" alt="" border=0>
+    </p>
 
-  <p align="center">
-    <img src="../images/windows_problems.gif" alt="" border=0>
-  </p>
+    <p>In this list Magellan shows all problems it has recognized. This
+      list can be used as a starting point for orders still to be edited.
+      Please note that Magellan is not able to find and report all problems
+      that may occur. Nevertheless, this is a powerful tool that makes other
+      tools like ECheck redundant.</p>
+    <p>You can sort the problems by clicking on column headings. If you
+      press control and then click on a different heading, you can sort by
+      multiple columns.</p>
+    <p>There are further option for configuring shown problems at the
+      bottom:
+    <ul>
+      <li><b>S</b> Show only problems from regions that are marked in the
+        map. If there are no marked regions, this has no effect.</li>
+      <li><b>R</b> Show only problems of the currently active region.</li>
+      <li><b>G</b> Additionaly show global problems, which do not belong
+        to a particular region.</li>
+      <li><b>Refresh</b> It can occasionally happen that problems are not
+        calculated completely. You can re-start the calculation with this
+        button.</li>
+    </ul>
+    </p>
+    <p>By double-clicking a line you can jump to the affected unit or
+      region if applicable.</p>
+    <p>You can configure the problems further with the context menu (right
+      click on a line):</p>
 
-  <p>In this list Magellan shows all problems it has recognized. This list
-    can be used as a starting point for orders still to be edited. Please note
-    that Magellan is not able to find and report all problems that may occur.</p>
-
-
-  <!-- Inhalt - Ende -->
-
+    <ul>
+      <li><b>Show full text</b> (also by pressing CTRL and double clicking
+        on a line): Shows the full text, which may not always fit into the
+        table column.</li>
+      <li><b>Select object</b> Same as double click</li>
+      <li><b>Refresh</b> Same as the button</li>
+      <li><b>Suppress problem</b> This will hide this concrete problem for
+        the report. This usually adds a special comment to the affected unit.</li>
+      <li><b>Show hidden problems</b> Shows all hidden problems again and
+        removes the added comments</li>
+      <li><b>Permanently ignore similar problems</b> This suppresses all
+        problems of a certain type also in future reports. This enables you to
+        hide certain problems and concentrate on the important ones. For
+        example, you may hide all warnings of empty buildings.</li>
+    </ul>
+    <p>There are two major types of problems:</p>
+    <ul>
+      <li>Report messages, for example messages about buildings that have
+        not been paid</li>
+      <li>Messages created by Magellan, for example warnings of missing
+        maintenance silver</li>
+    </ul>
+    <p>You can view suppressed problem types in the option section for the
+      Open Problems. You can also re-enable suppressed problem types there.</p>
+    <!-- Inhalt - Ende -->
+  </div>
 </body>
 </html>

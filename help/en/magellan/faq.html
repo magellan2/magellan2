@@ -1,20 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>FAQ</title>
-<meta http-equiv="Content-Language" content="en" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="iso-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords"
   content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
 <meta name="description" content="Magellan Dokumentation" />
+<meta name="author" content="Magellan Development Team">
 
-<link rel="stylesheet" href="../default.css" type="text/css" />
+<title>FAQ</title>
+<link rel=stylesheet href="../../default.css" type="text/css">
 </head>
 <body>
-  <a name="top"></a>
-  <div id='content'>
-    <!-- Inhalt -->
+  <div id='mh-content'>
+    <a id="top"></a>
 
     <h1>FAQ</h1>
 
@@ -66,7 +65,7 @@
           Tooltips!</a></li>
     </ol>
 
-    <a name="Java" id="Java"></a>
+    <a id="Java"></a>
 
     <p>&nbsp;</p>
 
@@ -86,7 +85,7 @@
         Java SE</a>.
     </p>
 
-    <a name="Installer" id="Installer"></a>
+    <a id="Installer"></a>
 
     <p>&nbsp;</p>
 
@@ -106,7 +105,7 @@
       start magellan the next time.
     </p>
 
-    <a name="Dateiname" id="Dateiname"></a>
+    <a id="Dateiname"></a>
 
     <p>&nbsp;</p>
 
@@ -122,7 +121,7 @@
       Magellan should start when the JAR-file is double-clicked.
     </p>
 
-    <a name="Verknuepfung" id="Verknuepfung"></a>
+    <a id="Verknuepfung"></a>
 
     <p>&nbsp;</p>
 
@@ -147,13 +146,13 @@
 
       <li>In the window on the right, doubleclick on '(Default)'</li>
 
-      <li>Type <tt>jarfile</tt> and click OK
+      <li>Type <kbd>jarfile</kbd> and click OK
       </li>
 
       <li>Close the regedit program - done.</li>
     </ol>
 
-    <a name="keinStart" id="keinStart"></a>
+    <a id="keinStart"></a>
 
     <p>&nbsp;</p>
 
@@ -164,11 +163,11 @@
 
     <p>
       <b>A:</b> A possible cause for this is that the file
-      <tt>magellan-client.jar</tt>
+      <kbd>magellan-client.jar</kbd>
       is in a folder with a name that has spaces in it. This isn't a problem
       that is caused by an error in Magellan, but by an inconvenience in the
       default link between
-      <tt>.jar</tt>
+      <kbd>.jar</kbd>
       -files with java.
     </p>
 
@@ -186,30 +185,31 @@
       <li>Open the subentries 'shell', 'open' and finally 'command'</li>
 
       <li>In the window on the right, doubleclick '(Default)', and
-        something like <tt>(path to Java)\javaw.exe -jar %1</tt> should appear.
+        something like <kbd>(path to Java)\javaw.exe -jar %1</kbd> should
+        appear.
       </li>
 
-      <li>Replace <tt>%1</tt> with <tt>"%1"</tt></li>
+      <li>Replace <kbd>%1</kbd> with <kbd>"%1"</kbd></li>
 
       <li>Close the regedit program - done.</li>
     </ol>
 
     <p>
       Background: If Magellan is in
-      <tt>C:\My Documents\magellan-client.jar</tt>
+      <kbd>C:\My Documents\magellan-client.jar</kbd>
       , then the regedit entry would try to initiate java to call
-      <tt>(Path to Java)\javaw.exe -jar C:\My
-        Documents\magellan-client.jar</tt>
+      <kbd>(Path to Java)\javaw.exe -jar C:\My
+        Documents\magellan-client.jar</kbd>
       , which means that java would try to run the file
-      <tt>C:\My</tt>
+      <kbd>C:\My</kbd>
       with parameters
-      <tt>Documents\magellan-client.jar</tt>
+      <kbd>Documents\magellan-client.jar</kbd>
       , which doesn't quite work out right. With the quotes this looks like
       this:
-      <tt>(Path to java)\javaw.exe -jar "C:\My
-        Documents\magellan-client.jar"</tt>
+      <kbd>(Path to java)\javaw.exe -jar "C:\My
+        Documents\magellan-client.jar"</kbd>
       , and here the actual
-      <tt>magellan-client.jar</tt>
+      <kbd>magellan-client.jar</kbd>
       file is started.
     </p>
 
@@ -219,7 +219,7 @@
     </p>
 
     to be able to read possible error messages. <br /> <br /> <a
-      name="CRVerknuepfung" id="CRVerknuepfung"></a>
+      id="CRVerknuepfung"></a>
 
     <p>&nbsp;</p>
 
@@ -241,13 +241,13 @@
 
       <li>In the "Edit filetype" window click the "New" button</li>
 
-      <li>In the "Action" field, enter <tt>Magellan</tt></li>
+      <li>In the "Action" field, enter <kbd>Magellan</kbd></li>
 
-      <li>In the "Program for this action" field enter <tt>"(Path to
-          java)\javaw.exe" -jar "(Path to magellan)\magellan-client.jar" "%1"</tt>.
-        javaw.exe and magellan-client.jar have to be entered with the complete
-        path (e.g. "c:\games\eressea\magellan-client.jar"). If the path
-        contains spaces, the surrounding quotes are mandatory.
+      <li>In the "Program for this action" field enter <kbd>"(Path
+          to java)\javaw.exe" -jar "(Path to magellan)\magellan-client.jar"
+          "%1"</kbd>. javaw.exe and magellan-client.jar have to be entered with the
+        complete path (e.g. "c:\games\eressea\magellan-client.jar"). If the
+        path contains spaces, the surrounding quotes are mandatory.
       </li>
 
       <li>Click "OK"</li>
@@ -261,7 +261,7 @@
       <li>Done :-)</li>
     </ol>
 
-    <a name="Kommandozeilenstart" id="Kommandozeilenstart"></a>
+    <a id="Kommandozeilenstart"></a>
 
     <p>&nbsp;</p>
 
@@ -277,13 +277,13 @@
     <p>
       To do this you first start the command prompt (in Windows ME under Start
       menu open 'Run', type
-      <tt>command</tt>
+      <kbd>command</kbd>
       and click OK, under Windows 2000/XP the command is
-      <tt>cmd</tt>
+      <kbd>cmd</kbd>
       ). Then enter the following command:
-      <tt>javaw -jar "(Path to Magellan)\magellan-client.jar"</tt>
+      <kbd>javaw -jar "(Path to Magellan)\magellan-client.jar"</kbd>
       , so e.g.
-      <tt>javaw -jar "C:\My Documents\magellan-client.jar"</tt>
+      <kbd>javaw -jar "C:\My Documents\magellan-client.jar"</kbd>
       .
     </p>
 
@@ -292,7 +292,7 @@
         href="reference/commandline.html">Reference</a>.
     </p>
 
-    <a name="MacMagellan" id="MacMagellan"></a>
+    <a id="MacMagellan"></a>
 
     <p>&nbsp;</p>
 
@@ -306,7 +306,7 @@
       console the same as under Windows at the <a href="#4">command prompt</a>.
     </p>
 
-    <a name="Resourcenpfade" id="Resourcenpfade"></a>
+    <a id="Resourcenpfade"></a>
 
     <p>&nbsp;</p>
 
@@ -319,7 +319,7 @@
         href="reference/ressources.html">their own site</a>.
     </p>
 
-    <a name="Speichermangel" id="Speichermangel"></a>
+    <a id="Speichermangel"></a>
 
     <p>&nbsp;</p>
 
@@ -340,22 +340,22 @@
       Under Windows:<br /> Create an icon for Magellan on your desktop,
       right-click on it and go to "Properties". Under "Target" enter the
       following (the path should of course match your particular setup):<br />
-      <tt>C:\Program Files\Java\jre6\bin\javaw.exe -Xms128M -Xmx512M -jar
-        "c:\Program Files\Eressea\Magellan\magellan-client.jar"</tt>
+      <kbd>C:\Program Files\Java\jre6\bin\javaw.exe -Xms128M -Xmx512M
+        -jar "c:\Program Files\Eressea\Magellan\magellan-client.jar"</kbd>
       or simply<br />
-      <tt>javaw -Xms128M -Xmx512M -jar "c:\Program
-        Files\Eressea\Magellan\magellan-client.jar"</tt>
+      <kbd>javaw -Xms128M -Xmx512M -jar "c:\Program
+        Files\Eressea\Magellan\magellan-client.jar"</kbd>
     </p>
 
     <p>
       Under Linux simply type (in the shell, in the magellan directory):<br />
-      <tt>java -Xms128M -Xmx512M -jar magellan-client.jar</tt>
+      <kbd>java -Xms128M -Xmx512M -jar magellan-client.jar</kbd>
     </p>
 
     <p>This tells the Java-VM to allocate a minimum of 128MB and a maximum
       of 512MB. You can change these values according to your own setup.</p>
 
-    <a name="base36nummern" id="base36nummern"></a>
+    <a id="base36nummern"></a>
 
     <p>&nbsp;</p>
 
@@ -366,7 +366,7 @@
 
     <p>
       <b>A:</b>Most like the
-      <tt>36;Basis</tt>
+      <kbd>36;Basis</kbd>
       tag is missing in the CR. This basic tag defines the number base that
       Magellan uses. For Eressea-CRs this usually is 36, other PBeMs using
       older CR-versions (e.g. Verdanon) use decimal (base 10) and don't know
@@ -374,7 +374,7 @@
       another number base in the CR.
     </p>
 
-    <a name="VorlageBefehlsbestaetigung" id="VorlageBefehlsbestaetigung"></a>
+    <a id="VorlageBefehlsbestaetigung"></a>
 
     <p>&nbsp;</p>
 
@@ -385,10 +385,10 @@
 
     <p>
       <b>A:</b> With
-      <tt>// #tag EINHEIT ejcOrdersConfirmed 1</tt>
+      <kbd>// #tag EINHEIT ejcOrdersConfirmed 1</kbd>
     </p>
 
-    <a name="ARR" id="ARR"></a>
+    <a id="ARR"></a>
 
     <p>&nbsp;</p>
 

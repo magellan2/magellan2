@@ -100,7 +100,7 @@ import magellan.library.utils.logging.Logger;
  * <li>create the new magellan.jhm file by running</li>
  * <code>xmllint -xinclude --format magellan.template.jhm > magellan.jhm</code> in help/de
  * - create the new JavaHelp search index by running
- * <code>java --class-path ../lib/javahelp-2.0.05.jar com.sun.java.help.search.Indexer de/&lowast;/&lowast;html</code>
+ * <kbd>java --class-path ../lib/javahelp-2.0.05.jar com.sun.java.help.search.Indexer de/&lowast;/&lowast;html</kbd>
  * in the directory help
  *
  * @author stm
@@ -553,7 +553,7 @@ public class GetHelp extends JPanel {
       HTMLDocument doc = (HTMLDocument) kit.createDefaultDocument();
       doc.setInnerHTML(doc.getDefaultRootElement(),
           String.format(RULES_HTML_HEADER, HTML_LANGUAGE, HTML_ENCODING, page.getName()) +
-              "<body><div id='content'><h1>" + page.getName()
+              "<body><div id='mh-content'><h1>" + page.getName()
               + "</h1>\n<div id='gh-content'></div>\n</div>\n</body>\n");
       doc.setInnerHTML(doc.getElement("gh-content"), strWriter.toString());
       page.setDocument(doc);

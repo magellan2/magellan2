@@ -5,7 +5,7 @@ body {
   font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;
 }
 
-#content {
+#mh-content {
   padding-left: 10px;
   padding-right: 10px;
   line-height: 18px;
@@ -34,7 +34,6 @@ blockquote {
 }
 
 #right p, #left p {
-  line-height: 15px;
   font-size: 1.01em;
   font-size: 100%;
   margin: 0;

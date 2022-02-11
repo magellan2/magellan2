@@ -1,20 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Kommandozeilen-Parameter</title>
-<meta http-equiv="Content-Language" content="en" />
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta charset="iso-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="keywords"
   content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
 <meta name="description" content="Magellan Dokumentation" />
+<meta name="author" content="Magellan Development Team">
 
-<link rel="stylesheet" href="../../default.css" type="text/css" />
+<title>Kommandozeilen-Parameter</title>
+<link rel=stylesheet href="../../default.css" type="text/css">
 </head>
 <body>
-  <a id="top" name="top"></a>
-  <div id='content'>
-    <!-- Inhalt -->
+  <div id='mh-content'>
+    <a id="top"></a>
 
     <h1>Kommandozeilen-Parameter</h1>
     <p>
@@ -23,27 +22,28 @@
       Parameter:
     </p>
     <ul>
-      <li><tt>-d &lt;Verzeichnis&gt;</tt>: Gibt das Verzeichnis an, in dem
-        Magellan nach seinen Ressourcen sucht, also Bildern, Übersetzungen etc.</li>
-      <li><tt>-s &lt;Verzeichnis&gt;</tt>: Gibt das Verzeichnis an, in dem
-        Magellan nach seinen Einstellungen sucht (profiles.ini). In dessen
+      <li><kbd>-d &lt;Verzeichnis&gt;</kbd>: Gibt das Verzeichnis an, in
+        dem Magellan nach seinen Ressourcen sucht, also Bildern, Übersetzungen
+        etc.</li>
+      <li><kbd>-s &lt;Verzeichnis&gt;</kbd>: Gibt das Verzeichnis an, in
+        dem Magellan nach seinen Einstellungen sucht (profiles.ini). In dessen
         Unterverzeichnisse sind die <em>Profile</em> mit den
         Konfigurationsdateien (magellan.ini, magellan_desktop.ini) und der
         Datei errors.txt mit den Fehlermeldungen.</li>
-      <li><tt>-p &lt;Profil&gt;</tt>: Startet Magellan mit einem
+      <li><kbd>-p &lt;Profil&gt;</kbd>: Startet Magellan mit einem
         bestimmten Profil, das in den Profileinstellungen definiert wurde.</li>
-      <li><tt>-pm</tt>: Zeigt den Profilmanager beim Start.</li>
-      <li><tt>-log &lt;X&gt;</tt>: Setzt die Detailstufe des Logs.
+      <li><kbd>-pm</kbd>: Zeigt den Profilmanager beim Start.</li>
+      <li><kbd>-log &lt;X&gt;</kbd>: Setzt die Detailstufe des Logs.
         Mögliche Werte für X sind: O - aus, E - nur Fehler, W - auch Warnungen,
         I - auch Infomeldungen.</li>
-      <li><tt>--help</tt>: Zeigt nur die Magellan-Hilfe an.</li>
-      <li><tt>&lt;CR-Datei&gt;</tt>: Der angegebene CR wird direkt nach
+      <li><kbd>--help</kbd>: Zeigt nur die Magellan-Hilfe an.</li>
+      <li><kbd>&lt;CR-Datei&gt;</kbd>: Der angegebene CR wird direkt nach
         dem Start geladen.</li>
     </ul>
     <p>
       Der gesamte Aufruf von Magellan sieht folgendermaßen aus:
-      <tt>java -jar magellan.jar [-d Verzeichnis] [-s Profile] [-pm] [-log
-        [O|E|W|I]] [--help] [CR-Datei]</tt>
+      <kbd>java -jar magellan.jar [-d Verzeichnis] [-s Profile] [-pm]
+        [-log [O|E|W|I]] [--help] [CR-Datei]</kbd>
     </p>
     <!-- Inhalt - Ende -->
   </div>

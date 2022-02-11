@@ -1,38 +1,39 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>KONTAKTIERE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>KONTAKTIERE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      KONTAKTIERE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>KONTAKTIERE</b> EINHEIT <i>einheit-nr</i><br><b>KONTAKTIERE</b> 
-            PARTEI <i>partei-nr</i><br><b>KONTAKTIERE</b> <i>einheit-nr</i><br></tt>
-          </p>
-          <p>
-            Man darf Einheiten fremder Parteien normalerweise nichts geben, 
-            ohne dass man mit dieser Partei alliiert ist. Um dies im 
-            begrenzten Ma&#223;e doch zu erlauben, verwendet man den <tt>KONTAKTIERE</tt> 
-            Befehl. In dieser Runde - und nur in dieser Runde - verh&#228;lt man 
-            sich der genannten Einheit gegen&#252;ber, als wenn man mit ihr 
-            alliiert w&#228;re (s.a. unter <a href="HELFE.html" title="HELFE">HELFE</a>, 
-            d.h. man nimmt Gegenst&#228;nde, Silber und Personen von ihr an. Auch 
-            das Betreten von Burgen und Schiffen, das Rekrutieren von Personen 
-            und der Abbau von Ressourcen ist nicht-alliierten Parteien auf 
-            diesem Wege m&#246;glich.
-          </p>
-          <pre>      PARTEI 125 &quot;FooBar&quot;
+    <div id="mh-content">
+      <h1>
+        KONTAKTIERE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>KONTAKTIERE</b> EINHEIT <i>einheit-nr</i><br><b>KONTAKTIERE</b> 
+              PARTEI <i>partei-nr</i><br><b>KONTAKTIERE</b> <i>einheit-nr</i><br></tt>
+            </p>
+            <p>
+              Man darf Einheiten fremder Parteien normalerweise nichts geben, 
+              ohne dass man mit dieser Partei alliiert ist. Um dies im 
+              begrenzten Ma&#223;e doch zu erlauben, verwendet man den <tt>KONTAKTIERE</tt> 
+              Befehl. In dieser Runde - und nur in dieser Runde - verh&#228;lt man 
+              sich der genannten Einheit gegen&#252;ber, als wenn man mit ihr 
+              alliiert w&#228;re (s.a. unter <a href="HELFE.html" title="HELFE">HELFE</a>, 
+              d.h. man nimmt Gegenst&#228;nde, Silber und Personen von ihr an. Auch 
+              das Betreten von Burgen und Schiffen, das Rekrutieren von 
+              Personen und der Abbau von Ressourcen ist nicht-alliierten 
+              Parteien auf diesem Wege m&#246;glich.
+            </p>
+            <pre>      PARTEI 125 &quot;FooBar&quot;
          EINHEIT 311
             GIB 456 1000 Silber&#160;; Tribut!
          [...]
@@ -40,28 +41,29 @@
       PARTEI 300 &quot;BarFoo&quot;
          EINHEIT 456
             KONTAKTIERE EINHEIT 311&#160;; erlaube Zahlung.</pre>
-          <p>
-            <tt>KONTAKTIERE EINHEIT</tt> erlaubt dies einer einzigen Einheit, 
-            KONTAKTIERE PARTEI hingegen allen Einheiten der betreffenden 
-            Partei in einer Region. Der Befehl <tt>KONTAKTIERE einheit-nr</tt> 
-            ist aus historischen Gr&#252;nden erlaubt, sollte aber durch <tt>KONTAKTIERE 
-            EINHEIT einheit-nr</tt> ersetzt werden.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Unterschiede_zu_HELFE">Unterschiede 
-            zu HELFE</span>
-          </h2>
-          <p>
-            KONTAKTIERE macht gr&#246;&#223;tenteils dasselbe wie <a href="HELFE.html" title="HELFE">HELFE 
-            GIB + HELFE BEWACHE</a>, ist aber nicht 100%ig dasselbe. 
-            KONTAKTIERE ist f&#252;r manche Dinge erforderlich, die HELFE GIB oder 
-            HELFE BEWACHE nicht abdeckt, wie zum Beispiel <a href="GIB.html" title="GIB">GIB 
-            PERSONEN</a> und manche Zauber. KONTAKTIERE schlie&#223;t andererseits 
-            HELFE SILBER, HELFE K&#196;MPFE und HELFE PARTEITARNUNG nicht ein. 
-            Au&#223;erdem gilt KONTAKTIERE nur f&#252;r die aktuelle Runde, w&#228;hrend 
-            HELFE dauerhaft ist.
-          </p>
-          <!-- 
+            <p>
+              <tt>KONTAKTIERE EINHEIT</tt> erlaubt dies einer einzigen 
+              Einheit, KONTAKTIERE PARTEI hingegen allen Einheiten der 
+              betreffenden Partei in einer Region. Der Befehl <tt>KONTAKTIERE 
+              einheit-nr</tt> ist aus historischen Gr&#252;nden erlaubt, sollte 
+              aber durch <tt>KONTAKTIERE EINHEIT einheit-nr</tt> ersetzt 
+              werden.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Unterschiede_zu_HELFE">Unterschiede 
+              zu HELFE</span>
+            </h2>
+            <p>
+              KONTAKTIERE macht gr&#246;&#223;tenteils dasselbe wie <a href="HELFE.html" title="HELFE">HELFE 
+              GIB + HELFE BEWACHE</a>, ist aber nicht 100%ig dasselbe. 
+              KONTAKTIERE ist f&#252;r manche Dinge erforderlich, die HELFE GIB 
+              oder HELFE BEWACHE nicht abdeckt, wie zum Beispiel <a href="GIB.html" title="GIB">GIB 
+              PERSONEN</a> und manche Zauber. KONTAKTIERE schlie&#223;t 
+              andererseits HELFE SILBER, HELFE K&#196;MPFE und HELFE PARTEITARNUNG 
+              nicht ein. Au&#223;erdem gilt KONTAKTIERE nur f&#252;r die aktuelle Runde, 
+              w&#228;hrend HELFE dauerhaft ist.
+            </p>
+            <!-- 
 NewPP limit report
 Cached time: 20220210201642
 Cache expiry: 86400
@@ -77,13 +79,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 218/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1520-0!canonical and timestamp 20220210201642 and revision id 6686
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1520-0!canonical and timestamp 20220210201642 and revision id 6686
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

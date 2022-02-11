@@ -1,251 +1,255 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>Befehle</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>Befehle</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      Befehle
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <div class="toc" id="toc">
-            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
-            
+    <div id="mh-content">
+      <h1>
+        Befehle
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <div class="toc" id="toc">
+              <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+              
 
-            <div class="toctitle" dir="ltr" lang="de">
-              <h2>
-                Inhaltsverzeichnis
-              </h2>
-              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
-              </span>
+              <div class="toctitle" dir="ltr" lang="de">
+                <h2>
+                  Inhaltsverzeichnis
+                </h2>
+                <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+                </span>
+              </div>
+              <ul>
+                <li class="toclevel-1 tocsection-1">
+                  <a href="#Konventionen"><span class="tocnumber">1</span> <span class="toctext">Konventionen</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-2">
+                  <a href="#Kurze_und_Lange_Befehle"><span class="tocnumber">2</span> 
+                  <span class="toctext">Kurze und Lange Befehle</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-3">
+                  <a href="#Kurze_Befehle_dauerhaft_ausf.C3.BChren"><span class="tocnumber">3</span> 
+                  <span class="toctext">Kurze Befehle dauerhaft ausf&#252;hren</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-4">
+                  <a href="#Fehler_unterdr.C3.BCcken"><span class="tocnumber">4</span> 
+                  <span class="toctext">Fehler unterdr&#252;cken</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-5">
+                  <a href="#Die_Befehlsvorlage"><span class="tocnumber">5</span> 
+                  <span class="toctext">Die Befehlsvorlage</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-6">
+                  <a href="#Siehe_auch"><span class="tocnumber">6</span> <span class="toctext">Siehe 
+                  auch</span></a>
+                </li>
+              </ul>
             </div>
+            <h2>
+              <span class="mw-headline" id="Konventionen">Konventionen</span>
+            </h2>
+            <p>
+              In diesen Regeln gelten die folgenden Konventionen:
+            </p>
+            <pre> GIB einheit-nr [anzahl|ALLES] [gegenstand]</pre>
             <ul>
-              <li class="toclevel-1 tocsection-1">
-                <a href="#Konventionen"><span class="tocnumber">1</span> <span class="toctext">Konventionen</span></a>
+              <li>
+                Schl&#252;sselw&#246;rter wie GIB, MACHE, NICHT sind in Gro&#223;buchstaben 
+                gesetzt. Das ist nicht Pflicht, wir empfehlen es aber.
               </li>
-              <li class="toclevel-1 tocsection-2">
-                <a href="#Kurze_und_Lange_Befehle"><span class="tocnumber">2</span> 
-                <span class="toctext">Kurze und Lange Befehle</span></a>
+              <li>
+                Platzhalter sind in Kleinbuchstaben. Sie sollen nicht w&#246;rtlich 
+                &#252;bernommen werden, sondern m&#252;ssen durch konkrete Werte ersetzt 
+                werden, also zum Beispiel einheit-nr durch die Nummer der 
+                gew&#252;nschten Einheit. Manchmal schreiben wir dies auch als 
+                &lt;einheit-nr&gt;, in diesem Fall sind die &lt;- und &gt;-Symbole <i>nicht</i> 
+                zu &#252;bernehmen.
               </li>
-              <li class="toclevel-1 tocsection-3">
-                <a href="#Kurze_Befehle_dauerhaft_ausf.C3.BChren"><span class="tocnumber">3</span> 
-                <span class="toctext">Kurze Befehle dauerhaft ausf&#252;hren</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-4">
-                <a href="#Fehler_unterdr.C3.BCcken"><span class="tocnumber">4</span> 
-                <span class="toctext">Fehler unterdr&#252;cken</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-5">
-                <a href="#Die_Befehlsvorlage"><span class="tocnumber">5</span> <span class="toctext">Die 
-                Befehlsvorlage</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-6">
-                <a href="#Siehe_auch"><span class="tocnumber">6</span> <span class="toctext">Siehe 
-                auch</span></a>
+              <li>
+                Worte in []-Klammern sind optional. Sie k&#246;nnen also 
+                weggelassen werden, &#228;ndern dadurch aber die Bedeutung des 
+                Befehls. Alternativen sind dabei durch | getrennt. Obiges 
+                Beispiel l&#228;sst also <tt>GIB 123 ALLES</tt> oder auch <tt>GIB 
+                abc 4 Schwert</tt> zu.
               </li>
             </ul>
-          </div>
-          <h2>
-            <span class="mw-headline" id="Konventionen">Konventionen</span>
-          </h2>
-          <p>
-            In diesen Regeln gelten die folgenden Konventionen:
-          </p>
-          <pre> GIB einheit-nr [anzahl|ALLES] [gegenstand]</pre>
-          <ul>
-            <li>
-              Schl&#252;sselw&#246;rter wie GIB, MACHE, NICHT sind in Gro&#223;buchstaben 
-              gesetzt. Das ist nicht Pflicht, wir empfehlen es aber.
-            </li>
-            <li>
-              Platzhalter sind in Kleinbuchstaben. Sie sollen nicht w&#246;rtlich 
-              &#252;bernommen werden, sondern m&#252;ssen durch konkrete Werte ersetzt 
-              werden, also zum Beispiel einheit-nr durch die Nummer der 
-              gew&#252;nschten Einheit. Manchmal schreiben wir dies auch als 
-              &lt;einheit-nr&gt;, in diesem Fall sind die &lt;- und &gt;-Symbole <i>nicht</i> 
-              zu &#252;bernehmen.
-            </li>
-            <li>
-              Worte in []-Klammern sind optional. Sie k&#246;nnen also weggelassen 
-              werden, &#228;ndern dadurch aber die Bedeutung des Befehls. 
-              Alternativen sind dabei durch | getrennt. Obiges Beispiel l&#228;sst 
-              also <tt>GIB 123 ALLES</tt> oder auch <tt>GIB abc 4 Schwert</tt> 
-              zu.
-            </li>
-          </ul>
-          <p>
-            Bis auf das Passwort und die Parteinummer sind dem Server Gro&#223;- 
-            und Kleinschreibung egal. <tt>lerNE armBRUSTschiessen</tt> ist 
-            v&#246;llig legal (wird aber nicht empfohlen, da es f&#252;r Menschen schwer 
-            lesbar ist).
-          </p>
-          <p>
-            Texte, die Leerzeichen enthalten, m&#252;ssen in Anf&#252;hrungszeichen (&quot;) 
-            eingeschlossen werden oder die Leerzeichen durch ~ (Tilde) 
-            ersetzt. Ferner d&#252;rfen Umlaute durch die entsprechende 
-            Umschreibung (&#196;=AE usw.) ersetzt werden:
-          </p>
-          <pre>   BENENNE Schiff &quot;Gro&#223;er Blauer Vogel&quot;
+            <p>
+              Bis auf das Passwort und die Parteinummer sind dem Server Gro&#223;- 
+              und Kleinschreibung egal. <tt>lerNE armBRUSTschiessen</tt> ist 
+              v&#246;llig legal (wird aber nicht empfohlen, da es f&#252;r Menschen 
+              schwer lesbar ist).
+            </p>
+            <p>
+              Texte, die Leerzeichen enthalten, m&#252;ssen in Anf&#252;hrungszeichen 
+              (&quot;) eingeschlossen werden oder die Leerzeichen durch ~ (Tilde) 
+              ersetzt. Ferner d&#252;rfen Umlaute durch die entsprechende 
+              Umschreibung (&#196;=AE usw.) ersetzt werden:
+            </p>
+            <pre>   BENENNE Schiff &quot;Gro&#223;er Blauer Vogel&quot;
    GIB einh 5 W&#252;rziger~Wagemut
    KAEMPFE HINTEN</pre>
-          <h2>
-            <span class="mw-headline" id="Kurze_und_Lange_Befehle">Kurze und 
-            Lange Befehle</span>
-          </h2>
-          <p>
-            Es gibt in Eressea kurze und lange <b>Befehle</b>. Die langen 
-            Befehle sind:
-          </p>
-          <p>
-            <a href="ARBEITE.html" title="ARBEITE">ARBEITE</a>, <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a>, 
-            <a href="BEKLAUE.html" title="BEKLAUE">BEKLAUE</a>, <a href="FAHRE.html" title="FAHRE">FAHRE</a>, 
-            <a href="FOLGE.html" title="FOLGE">FOLGE</a>, <a href="FORSCHE.html" title="FORSCHE">FORSCHE</a>, 
-            <a href="KAUFE.html" title="KAUFE">KAUFE</a>, <a href="LEHRE.html" title="LEHRE">LEHRE</a>, 
-            <a href="LERNE.html" title="LERNE">LERNE</a>, <a href="MACHE.html" title="MACHE">MACHE</a> 
-            (Ausnahme: MACHE TEMP), <a href="NACH.html" title="NACH">NACH</a>, <a href="PFLANZE.html" title="PFLANZE">PFLANZE</a>, 
-            <a href="PIRATERIE.html" title="PIRATERIE">PIRATERIE</a>, <a href="ROUTE.html" title="ROUTE">ROUTE</a>, 
-            <a href="SABOTIERE.html" title="SABOTIERE">SABOTIERE SCHIFF</a>, <a href="SPIONIERE.html" title="SPIONIERE">SPIONIERE</a>, 
-            <a href="TREIBE.html" title="TREIBE">TREIBE</a>, <a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTE</a>, 
-            <a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a>, <a href="ZAUBERE.html" title="ZAUBERE">ZAUBERE</a>, 
-            <a href="ZERST_RE.html" title="ZERSTÖRE">ZERST&#214;RE</a>, <a href="Z_CHTE.html" title="ZÜCHTE">Z&#220;CHTE</a>.
-          </p>
-          <p>
-            Alle anderen Befehle sind kurze Befehle (<a href="Kurzbeschreibung.html" title="Kurzbeschreibung">Kurzbeschreibung</a> 
-            aller Befehle). Man kann beliebig viele kurze Befehle pro Einheit 
-            eingeben. Eine Einheit kann in der Regel nur einen langen Befehl 
-            haben. Es gibt ein paar Ausnahmen, die so genannten pseudolangen 
-            Befehle (<tt>ATTACKIERE, FOLGE, KAUFE, VERKAUFE, ZAUBERE</tt>), 
-            von denen unter Umst&#228;nden mehrere gegeben werden k&#246;nnen.
-          </p>
-          <p>
-            Wird einer Einheit ein langer Befehl gegeben, wird sie diesen als 
-            Default-Befehl &#252;bernehmen und damit den vorherigen Default-Befehl 
-            ersetzen. Der Default-Befehl steht in der Befehlsvorlage immer als 
-            Vorschlag f&#252;r einen langen Befehl. Man braucht also einem 
-            Pferdedresseur nur einmal den Befehl MACHE pferd zu geben und 
-            dieser Befehl erscheint solange in der Befehlsvorlage, bis sie 
-            einen anderen langen Befehl erh&#228;lt (z.B. LERNE Pferdedressur).
-          </p>
-          <p>
-            Sinnvollerweise werden nicht alle langen Befehle als 
-            Default-Befehle &#252;bernommen. Das betrifft z.B. NACH, ATTACKIERE und 
-            ZAUBERE.
-          </p>
-          <p>
-            Eine Einheit, die einer Runde arbeitete, in der kommenden Runde 
-            nach Norden zog und dann keinen Befehl mehr bekam, wird sich in 
-            der darauf folgenden Runde niederlassen und wieder arbeiten (es 
-            sei denn nat&#252;rlich, sie erh&#228;lt in dieser Runde einen anderen 
-            langen Befehl).
-          </p>
-          <p>
-            Bitte beachte, dass pro Einheit nur ein Befehl pro Einheit im 
-            normalen Report (NR) angezeigt wird. Die restlichen 
-            Default-Befehle werden in der Befehlsvorlage und im Computerreport 
-            angezeigt.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Kurze_Befehle_dauerhaft_ausf.C3.BChren">Kurze 
-            Befehle dauerhaft ausf&#252;hren</span>
-          </h2>
-          <p>
-            Manchmal ist es sinnvoll, dass ein kurzer Befehl jede Runde 
-            ausgef&#252;hrt wird, so z.B. GIB, weil die Bergarbeiter das abgebaute 
-            Eisen st&#228;ndig an die Schmiede liefern sollen.
-          </p>
-          <p>
-            Hierzu kann man vor jeden kurzen Befehl ein @ (At-Zeichen, 
-            Klammeraffe) setzen. Solche Befehle werden einfach in die 
-            Befehlsvorlage der kommenden Runde kopiert und - so man sie nicht 
-            wieder l&#246;scht - wieder ausgef&#252;hrt.
-          </p>
-          <p>
-            <b>Ein Beispiel</b>:
-          </p>
-          <pre> EINHEIT berg;         Bergarbeiter [5,400$,U500]
+            <h2>
+              <span class="mw-headline" id="Kurze_und_Lange_Befehle">Kurze und 
+              Lange Befehle</span>
+            </h2>
+            <p>
+              Es gibt in Eressea kurze und lange <b>Befehle</b>. Die langen 
+              Befehle sind:
+            </p>
+            <p>
+              <a href="ARBEITE.html" title="ARBEITE">ARBEITE</a>, <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a>, 
+              <a href="BEKLAUE.html" title="BEKLAUE">BEKLAUE</a>, <a href="FAHRE.html" title="FAHRE">FAHRE</a>, 
+              <a href="FOLGE.html" title="FOLGE">FOLGE</a>, <a href="FORSCHE.html" title="FORSCHE">FORSCHE</a>, 
+              <a href="KAUFE.html" title="KAUFE">KAUFE</a>, <a href="LEHRE.html" title="LEHRE">LEHRE</a>, 
+              <a href="LERNE.html" title="LERNE">LERNE</a>, <a href="MACHE.html" title="MACHE">MACHE</a> 
+              (Ausnahme: MACHE TEMP), <a href="NACH.html" title="NACH">NACH</a>, 
+              <a href="PFLANZE.html" title="PFLANZE">PFLANZE</a>, <a href="PIRATERIE.html" title="PIRATERIE">PIRATERIE</a>, 
+              <a href="ROUTE.html" title="ROUTE">ROUTE</a>, <a href="SABOTIERE.html" title="SABOTIERE">SABOTIERE 
+              SCHIFF</a>, <a href="SPIONIERE.html" title="SPIONIERE">SPIONIERE</a>, 
+              <a href="TREIBE.html" title="TREIBE">TREIBE</a>, <a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTE</a>, 
+              <a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a>, <a href="ZAUBERE.html" title="ZAUBERE">ZAUBERE</a>, 
+              <a href="ZERST_RE.html" title="ZERSTÖRE">ZERST&#214;RE</a>, <a href="Z_CHTE.html" title="ZÜCHTE">Z&#220;CHTE</a>.
+            </p>
+            <p>
+              Alle anderen Befehle sind kurze Befehle (<a href="Kurzbeschreibung.html" title="Kurzbeschreibung">Kurzbeschreibung</a> 
+              aller Befehle). Man kann beliebig viele kurze Befehle pro 
+              Einheit eingeben. Eine Einheit kann in der Regel nur einen 
+              langen Befehl haben. Es gibt ein paar Ausnahmen, die so 
+              genannten pseudolangen Befehle (<tt>ATTACKIERE, FOLGE, KAUFE, 
+              VERKAUFE, ZAUBERE</tt>), von denen unter Umst&#228;nden mehrere 
+              gegeben werden k&#246;nnen.
+            </p>
+            <p>
+              Wird einer Einheit ein langer Befehl gegeben, wird sie diesen 
+              als Default-Befehl &#252;bernehmen und damit den vorherigen 
+              Default-Befehl ersetzen. Der Default-Befehl steht in der 
+              Befehlsvorlage immer als Vorschlag f&#252;r einen langen Befehl. Man 
+              braucht also einem Pferdedresseur nur einmal den Befehl MACHE 
+              pferd zu geben und dieser Befehl erscheint solange in der 
+              Befehlsvorlage, bis sie einen anderen langen Befehl erh&#228;lt (z.B. 
+              LERNE Pferdedressur).
+            </p>
+            <p>
+              Sinnvollerweise werden nicht alle langen Befehle als 
+              Default-Befehle &#252;bernommen. Das betrifft z.B. NACH, ATTACKIERE 
+              und ZAUBERE.
+            </p>
+            <p>
+              Eine Einheit, die einer Runde arbeitete, in der kommenden Runde 
+              nach Norden zog und dann keinen Befehl mehr bekam, wird sich in 
+              der darauf folgenden Runde niederlassen und wieder arbeiten (es 
+              sei denn nat&#252;rlich, sie erh&#228;lt in dieser Runde einen anderen 
+              langen Befehl).
+            </p>
+            <p>
+              Bitte beachte, dass pro Einheit nur ein Befehl pro Einheit im 
+              normalen Report (NR) angezeigt wird. Die restlichen 
+              Default-Befehle werden in der Befehlsvorlage und im 
+              Computerreport angezeigt.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Kurze_Befehle_dauerhaft_ausf.C3.BChren">Kurze 
+              Befehle dauerhaft ausf&#252;hren</span>
+            </h2>
+            <p>
+              Manchmal ist es sinnvoll, dass ein kurzer Befehl jede Runde 
+              ausgef&#252;hrt wird, so z.B. GIB, weil die Bergarbeiter das 
+              abgebaute Eisen st&#228;ndig an die Schmiede liefern sollen.
+            </p>
+            <p>
+              Hierzu kann man vor jeden kurzen Befehl ein @ (At-Zeichen, 
+              Klammeraffe) setzen. Solche Befehle werden einfach in die 
+              Befehlsvorlage der kommenden Runde kopiert und - so man sie 
+              nicht wieder l&#246;scht - wieder ausgef&#252;hrt.
+            </p>
+            <p>
+              <b>Ein Beispiel</b>:
+            </p>
+            <pre> EINHEIT berg;         Bergarbeiter [5,400$,U500]
    MACHE Eisen
    @GIB schm ALLES Eisen;   immer an die Schmiede liefern
  EINHEIT schm;         Schmiede [3,1343$,U250]
    MACHE Schwerter</pre>
-          <h2>
-            <span class="mw-headline" id="Fehler_unterdr.C3.BCcken">Fehler 
-            unterdr&#252;cken</span>
-          </h2>
-          <p>
-            Es kann vorkommen, dass man Fehler bei der Ausf&#252;hrung eines 
-            Befehls bewusst in Kauf nimmt. Durch Voranstellen eines 
-            Ausrufezeichens (!) kann man die Servermeldungen, die diesen 
-            Befehl betreffen, unterdr&#252;cken.
-          </p>
-          <p>
-            <b>Ein Beispiel</b>:
-          </p>
-          <pre> EINHEIT berg;         Bergarbeiter
+            <h2>
+              <span class="mw-headline" id="Fehler_unterdr.C3.BCcken">Fehler 
+              unterdr&#252;cken</span>
+            </h2>
+            <p>
+              Es kann vorkommen, dass man Fehler bei der Ausf&#252;hrung eines 
+              Befehls bewusst in Kauf nimmt. Durch Voranstellen eines 
+              Ausrufezeichens (!) kann man die Servermeldungen, die diesen 
+              Befehl betreffen, unterdr&#252;cken.
+            </p>
+            <p>
+              <b>Ein Beispiel</b>:
+            </p>
+            <pre> EINHEIT berg;         Bergarbeiter
    MACHE Eisen
    !@GIB tran ALLES Eisen;   Der Transporter ist nicht immer da; wir wollen dar&#252;ber keine Fehlermeldung
  EINHEIT tran;         Transporter
    ROUTE w PAUSE o PAUSE&#160;;   Wir pendeln zwischen zwei Regionen
    !@GIB schm ALLES Eisen;   Im Westen &#252;bergeben wir das Eisen an die Schmiede</pre>
-          <p>
-            Das birgt nat&#252;rlich das Risiko, dass man Fehler &#252;bersieht, mit 
-            denen man nicht gerechnet hat.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Die_Befehlsvorlage">Die 
-            Befehlsvorlage</span>
-          </h2>
-          <p>
-            Am einfachsten ist es, wenn man die Befehlsvorlage verwendet, die 
-            am Ende der Auswertung steht. Dort sind alle Einheiten aufgef&#252;hrt, 
-            so dass man niemanden vergisst. Viele Befehle lassen sich 
-            abk&#252;rzen, wobei man es nicht &#252;bertreiben sollte, da dies 
-            fehlertr&#228;chtig ist: VER passt auf VERGISS, VERKAUFE und VERLASSE 
-            und wird darum als Fehler angemerkt; hier sollte man also 
-            mindestens vier Buchstaben verwenden. Au&#223;erdem sind allzu 
-            kryptische Verk&#252;rzungen nicht sonderlich leserlich, wenn man 
-            sp&#228;ter seine Z&#252;ge durchsieht... Am sichersten ist es immer noch, 
-            wenn man seine Befehle nicht abk&#252;rzt, zumal es Befehle und Talente 
-            geben kann, die absichtlich nicht in der Anleitung stehen aber 
-            &#228;hnlich anfangen wie bekannte Befehle und Talente.
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="Befehlsreihenfolge.html" title="Befehlsreihenfolge">Befehlsreihenfolge</a>
-            </li>
-            <li>
-              <a href="Kurzbeschreibung.html" title="Kurzbeschreibung">Kurzbeschreibung</a>
-            </li>
-          </ul>
-          <p>
-            <br>
-            
-          </p>
-          <table>
-            <tr>
-              <td align="left" style="background-color: #ffffaa">
-                Weiterlesen:
-              </td>
-              <td style="background-color: #ffffcc">
+            <p>
+              Das birgt nat&#252;rlich das Risiko, dass man Fehler &#252;bersieht, mit 
+              denen man nicht gerechnet hat.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Die_Befehlsvorlage">Die 
+              Befehlsvorlage</span>
+            </h2>
+            <p>
+              Am einfachsten ist es, wenn man die Befehlsvorlage verwendet, 
+              die am Ende der Auswertung steht. Dort sind alle Einheiten 
+              aufgef&#252;hrt, so dass man niemanden vergisst. Viele Befehle lassen 
+              sich abk&#252;rzen, wobei man es nicht &#252;bertreiben sollte, da dies 
+              fehlertr&#228;chtig ist: VER passt auf VERGISS, VERKAUFE und VERLASSE 
+              und wird darum als Fehler angemerkt; hier sollte man also 
+              mindestens vier Buchstaben verwenden. Au&#223;erdem sind allzu 
+              kryptische Verk&#252;rzungen nicht sonderlich leserlich, wenn man 
+              sp&#228;ter seine Z&#252;ge durchsieht... Am sichersten ist es immer noch, 
+              wenn man seine Befehle nicht abk&#252;rzt, zumal es Befehle und 
+              Talente geben kann, die absichtlich nicht in der Anleitung 
+              stehen aber &#228;hnlich anfangen wie bekannte Befehle und Talente.
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
                 <a href="Befehlsreihenfolge.html" title="Befehlsreihenfolge">Befehlsreihenfolge</a>
-              </td>
-            </tr>
-          </table>
-          <!-- 
+              </li>
+              <li>
+                <a href="Kurzbeschreibung.html" title="Kurzbeschreibung">Kurzbeschreibung</a>
+              </li>
+            </ul>
+            <p>
+              <br>
+              
+            </p>
+            <table>
+              <tr>
+                <td align="left" style="background-color: #ffffaa">
+                  Weiterlesen:
+                </td>
+                <td style="background-color: #ffffcc">
+                  <a href="Befehlsreihenfolge.html" title="Befehlsreihenfolge">Befehlsreihenfolge</a>
+                </td>
+              </tr>
+            </table>
+            <!-- 
 NewPP limit report
 Cached time: 20220210235343
 Cache expiry: 86400
@@ -261,14 +265,15 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    1.014      1 Vorlage:Weiter
 100.00%    1.014      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1418-0!canonical and timestamp 20220210235343 and revision id 7062
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1418-0!canonical and timestamp 20220210235343 and revision id 7062
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

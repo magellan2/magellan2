@@ -1,284 +1,289 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>CR-Format</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>CR-Format</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      CR-Format
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            Der CR besteht aus Blocks, Attributen und Listeneintr&#228;ge. Ein 
-            Block entspricht meist einem Objekt, ein Attribut einer Variablen 
-            des Objektes. Bl&#246;cke k&#246;nnen Unterbl&#246;cke haben.
-          </p>
-          <div class="toc" id="toc">
-            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
-            
+    <div id="mh-content">
+      <h1>
+        CR-Format
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              Der CR besteht aus Blocks, Attributen und Listeneintr&#228;ge. Ein 
+              Block entspricht meist einem Objekt, ein Attribut einer 
+              Variablen des Objektes. Bl&#246;cke k&#246;nnen Unterbl&#246;cke haben.
+            </p>
+            <div class="toc" id="toc">
+              <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+              
 
-            <div class="toctitle" dir="ltr" lang="de">
-              <h2>
-                Inhaltsverzeichnis
-              </h2>
-              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
-              </span>
+              <div class="toctitle" dir="ltr" lang="de">
+                <h2>
+                  Inhaltsverzeichnis
+                </h2>
+                <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+                </span>
+              </div>
+              <ul>
+                <li class="toclevel-1 tocsection-1">
+                  <a href="#Blocks"><span class="tocnumber">1</span> <span class="toctext">Blocks</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-2">
+                  <a href="#Attribute"><span class="tocnumber">2</span> <span class="toctext">Attribute</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-3">
+                  <a href="#Listeneintr.C3.A4ge"><span class="tocnumber">3</span> 
+                  <span class="toctext">Listeneintr&#228;ge</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-4">
+                  <a href="#Tips_f.C3.BCr_Implementierer"><span class="tocnumber">4</span> 
+                  <span class="toctext">Tips f&#252;r Implementierer</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-5">
+                      <a href="#Bl.C3.B6cke"><span class="tocnumber">4.1</span> 
+                      <span class="toctext">Bl&#246;cke</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-6">
+                      <a href="#Integer-Attribute"><span class="tocnumber">4.2</span> 
+                      <span class="toctext">Integer-Attribute</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-7">
+                      <a href="#Listeneintr.C3.A4ge_2"><span class="tocnumber">4.3</span> 
+                      <span class="toctext">Listeneintr&#228;ge</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-8">
+                      <a href="#Stringattribute"><span class="tocnumber">4.4</span> 
+                      <span class="toctext">Stringattribute</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-9">
+                      <a href="#Fallstricke"><span class="tocnumber">4.5</span> 
+                      <span class="toctext">Fallstricke</span></a>
+                    </li>
+                  </ul>
+                </li>
+                <li class="toclevel-1 tocsection-10">
+                  <a href="#Reservierte_Blocks_und_Tags"><span class="tocnumber">5</span> 
+                  <span class="toctext">Reservierte Blocks und Tags</span></a>
+                </li>
+                <li class="toclevel-1 tocsection-11">
+                  <a href="#Siehe_auch"><span class="tocnumber">6</span> <span class="toctext">Siehe 
+                  auch</span></a>
+                </li>
+              </ul>
             </div>
-            <ul>
-              <li class="toclevel-1 tocsection-1">
-                <a href="#Blocks"><span class="tocnumber">1</span> <span class="toctext">Blocks</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-2">
-                <a href="#Attribute"><span class="tocnumber">2</span> <span class="toctext">Attribute</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-3">
-                <a href="#Listeneintr.C3.A4ge"><span class="tocnumber">3</span> 
-                <span class="toctext">Listeneintr&#228;ge</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-4">
-                <a href="#Tips_f.C3.BCr_Implementierer"><span class="tocnumber">4</span> 
-                <span class="toctext">Tips f&#252;r Implementierer</span></a>
-
-                <ul>
-                  <li class="toclevel-2 tocsection-5">
-                    <a href="#Bl.C3.B6cke"><span class="tocnumber">4.1</span> <span class="toctext">Bl&#246;cke</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-6">
-                    <a href="#Integer-Attribute"><span class="tocnumber">4.2</span> 
-                    <span class="toctext">Integer-Attribute</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-7">
-                    <a href="#Listeneintr.C3.A4ge_2"><span class="tocnumber">4.3</span> 
-                    <span class="toctext">Listeneintr&#228;ge</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-8">
-                    <a href="#Stringattribute"><span class="tocnumber">4.4</span> 
-                    <span class="toctext">Stringattribute</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-9">
-                    <a href="#Fallstricke"><span class="tocnumber">4.5</span> <span class="toctext">Fallstricke</span></a>
-                  </li>
-                </ul>
-              </li>
-              <li class="toclevel-1 tocsection-10">
-                <a href="#Reservierte_Blocks_und_Tags"><span class="tocnumber">5</span> 
-                <span class="toctext">Reservierte Blocks und Tags</span></a>
-              </li>
-              <li class="toclevel-1 tocsection-11">
-                <a href="#Siehe_auch"><span class="tocnumber">6</span> <span class="toctext">Siehe 
-                auch</span></a>
-              </li>
-            </ul>
-          </div>
-          <h2>
-            <span class="mw-headline" id="Blocks">Blocks</span>
-          </h2>
-          <p>
-            Namen und Anzahl der Blocks sind nicht vordefiniert. Je nach Spiel 
-            und Version k&#246;nnen unterschiedliche Blocks in einer Datei 
-            enthalten sein. Es ist durchaus legitim, eine Teilmenge der Blocks 
-            zu erzeugen, etwa um aus einem vollst&#228;ndigen Report 'nur' eine 
-            Karte zu machen.
-          </p>
-          <p>
-            Blocks werden durch ein einzelnes, nur aus den Buchstaben A-Z 
-            bestehendes, gro&#223; geschriebenes Wort bezeichnet. Blocks k&#246;nnen 
-            eine Kennzeichnung haben, die aus einem oder mehreren 
-            vorzeichenbehafteten 32-bit integern besteht. Die ids sind 
-            eindeutig, jede darf in einem CR also pro Block nur einmal 
-            erscheinen. Auf die id kann ein mit ';' abgetrennter Kommentar 
-            folgen, dies sollte jedoch vermieden werden.
-          </p>
-          <p>
-            Blocks ohne id sind immer Subblocks des letzten vorangegangenen 
-            Blocks mit id. Ein Block dieses Typs darf mehrfach vorkommen, 
-            jedoch nur einmal pro &#252;bergeordentem Block (Sie sind sozusagen 
-            eindeutig in Bezug auf die id des Oberblocks).
-          </p>
-          <p>
-            Beispiele:
-          </p>
-          <pre>VERSION 16
+            <h2>
+              <span class="mw-headline" id="Blocks">Blocks</span>
+            </h2>
+            <p>
+              Namen und Anzahl der Blocks sind nicht vordefiniert. Je nach 
+              Spiel und Version k&#246;nnen unterschiedliche Blocks in einer Datei 
+              enthalten sein. Es ist durchaus legitim, eine Teilmenge der 
+              Blocks zu erzeugen, etwa um aus einem vollst&#228;ndigen Report 'nur' 
+              eine Karte zu machen.
+            </p>
+            <p>
+              Blocks werden durch ein einzelnes, nur aus den Buchstaben A-Z 
+              bestehendes, gro&#223; geschriebenes Wort bezeichnet. Blocks k&#246;nnen 
+              eine Kennzeichnung haben, die aus einem oder mehreren 
+              vorzeichenbehafteten 32-bit integern besteht. Die ids sind 
+              eindeutig, jede darf in einem CR also pro Block nur einmal 
+              erscheinen. Auf die id kann ein mit ';' abgetrennter Kommentar 
+              folgen, dies sollte jedoch vermieden werden.
+            </p>
+            <p>
+              Blocks ohne id sind immer Subblocks des letzten vorangegangenen 
+              Blocks mit id. Ein Block dieses Typs darf mehrfach vorkommen, 
+              jedoch nur einmal pro &#252;bergeordentem Block (Sie sind sozusagen 
+              eindeutig in Bezug auf die id des Oberblocks).
+            </p>
+            <p>
+              Beispiele:
+            </p>
+            <pre>VERSION 16
 REGION -3 -7
 REGIONSBOTSCHAFTEN</pre>
-          <h2>
-            <span class="mw-headline" id="Attribute">Attribute</span>
-          </h2>
-          <p>
-            Namen und Anzahl der Attribute sind nicht vordefiniert. Ein 
-            Attribut besteht aus zwei Teilen: Wert und Tag. Das Tag sollte aus 
-            Buchstaben und Zahlen bestehen, aber keine Leerzeichen enthalten. 
-            Der Wert ist entweder eine Liste von ein oder mehr integern, oder 
-            ein in Anf&#252;hrungszeichen geschriebener String. Wert und Tag sind 
-            voneinander durch ein Semikolon getrennt.
-          </p>
-          <p>
-            Seit Version 35 gilt: Innerhalb eines Blocks darf ein Attribut nur 
-            einmal vorkommen. In CR-Versionen vor 35 gab es einige Blocks, die 
-            diese Regel mi&#223;achteten, beispielsweise den Block ADRESSEN.
-          </p>
-          <p>
-            Beispiele:
-          </p>
-          <pre>0 0;Bergbau
+            <h2>
+              <span class="mw-headline" id="Attribute">Attribute</span>
+            </h2>
+            <p>
+              Namen und Anzahl der Attribute sind nicht vordefiniert. Ein 
+              Attribut besteht aus zwei Teilen: Wert und Tag. Das Tag sollte 
+              aus Buchstaben und Zahlen bestehen, aber keine Leerzeichen 
+              enthalten. Der Wert ist entweder eine Liste von ein oder mehr 
+              integern, oder ein in Anf&#252;hrungszeichen geschriebener String. 
+              Wert und Tag sind voneinander durch ein Semikolon getrennt.
+            </p>
+            <p>
+              Seit Version 35 gilt: Innerhalb eines Blocks darf ein Attribut 
+              nur einmal vorkommen. In CR-Versionen vor 35 gab es einige 
+              Blocks, die diese Regel mi&#223;achteten, beispielsweise den Block 
+              ADRESSEN.
+            </p>
+            <p>
+              Beispiele:
+            </p>
+            <pre>0 0;Bergbau
 &quot;Xandaryl&quot;;Insel
 172;Runde</pre>
-          <h2>
-            <span class="mw-headline" id="Listeneintr.C3.A4ge">Listeneintr&#228;ge</span>
-          </h2>
-          <p>
-            Attribute ohne Tag sind gesondert zu behandeln. Dabei handelt es 
-            sich um Eintr&#228;ge in einer Listen von Befehlen, Botschaften, etc. 
-            Sie sind vom Aufbau her &#228;quivalent zu den String-Attributen, haben 
-            jedoch kein Semikolon oder Tag am Ende der Zeile.
-          </p>
-          <p>
-            Beispiel:
-          </p>
-          <pre>&quot;MACHE Haus&quot;
+            <h2>
+              <span class="mw-headline" id="Listeneintr.C3.A4ge">Listeneintr&#228;ge</span>
+            </h2>
+            <p>
+              Attribute ohne Tag sind gesondert zu behandeln. Dabei handelt es 
+              sich um Eintr&#228;ge in einer Listen von Befehlen, Botschaften, etc. 
+              Sie sind vom Aufbau her &#228;quivalent zu den String-Attributen, 
+              haben jedoch kein Semikolon oder Tag am Ende der Zeile.
+            </p>
+            <p>
+              Beispiel:
+            </p>
+            <pre>&quot;MACHE Haus&quot;
 &quot;Thorin; ein Recke&quot;
 &quot;Thorin (thor) konnte kein Silber verdienen&quot;</pre>
-          <h2>
-            <span class="mw-headline" id="Tips_f.C3.BCr_Implementierer">Tips 
-            f&#252;r Implementierer</span>
-          </h2>
-          <p>
-            Am besten parst man den CR Zeilenweise. Nach dem Einlesen einer 
-            Zeile schaut man zuerst, ob es sich um einen Block handelt: Bl&#246;cke 
-            beginnen als einzige mit einem Buchstaben. Ist es keiner, sondern 
-            beginnt mit einem '-' oder einer Zahl, so ist es ein 
-            Integer-Attribut, beginnt es mit einem '&quot;', ist es ein String oder 
-            Listeneintrag.
-          </p>
-          <h3>
-            <span class="mw-headline" id="Bl.C3.B6cke">Bl&#246;cke</span>
-          </h3>
-          <p>
-            Bl&#246;cke parst man, indem man den Namen des Blocks liest (bis zum 
-            ersten Leerzeichen), und anschlie&#223;end die durch Leerzeichen 
-            getrennten ids. Auf eventuelle Kommentare (bei Eressea-CRs vor 
-            Version 36) achten!
-          </p>
-          <h3>
-            <span class="mw-headline" id="Integer-Attribute">Integer-Attribute</span>
-          </h3>
-          <p>
-            Die Zahl identifizieren, indem man bis zum ';' liest. Danach den 
-            Namen des Tags lesen, bis zum Ende der Zeile. Zu beachten ist, das 
-            m&#246;glicherweise noch Leerzeichen am Ende der Zeile oder um das ';' 
-            herum stehen k&#246;nnten.
-          </p>
-          <h3>
-            <span class="mw-headline" id="Listeneintr.C3.A4ge_2">Listeneintr&#228;ge</span>
-          </h3>
-          <p>
-            Bis zum n&#228;chsten '&quot;' lesen. Aufpassen, es k&#246;nnen durchaus 
-            Semikolons im String enthalten sein. Folgt auf das '&quot;' kein 
-            Semikolon mehr, handelt es sich um ein Listenelement, ansonsten um 
-            ein String-Attribut.
-          </p>
-          <h3>
-            <span class="mw-headline" id="Stringattribute">Stringattribute</span>
-          </h3>
-          <p>
-            Der String ist bereits gelesen also das ';' &#252;berspringen, und den 
-            Namen des Tags finden. Wieder aufpassen auf Leerzeichen um das 
-            Semikolon oder am Ende der Zeile.
-          </p>
-          <h3>
-            <span class="mw-headline" id="Fallstricke">Fallstricke</span>
-          </h3>
-          <ul>
-            <li>
-              Ein Integer-attribut kann, wie z.B. bei den Skills, aus mehreren 
-              Zahlen bestehen. Die Anzahl integer ist bei Attributen gleichen 
-              Namens nicht unbedingt gleich, und sie ist eventuell nicht immer 
-              2 (momentan schon, aber das sei f&#252;r zuk&#252;nftige Erweiterungen 
-              offengehalten).
-            </li>
-            <li>
-              Leerzeilen: Eigentlich sollten im CR keine Leerzeilen sein. Ein 
-              guter Parser sollte aber damit zurecht kommen.
-            </li>
-            <li>
-              Ung&#252;ltige Zeilen: Oft werden CRs verst&#252;mmelt, weil ein Mailtool 
-              oder Editor die Zeilen umgebrochen hat. In diesem Fall sollte 
-              auf jeden Fall eine Warnung ausgegeben werden, und das Attribut 
-              ignoriert werden.
-            </li>
-            <li>
-              CR/LF: Mac, Unix und Windows speichern das Zeilenende jeweils 
-              unterschiedlich ab. Der Parser sollte alle Formate erkennen 
-              k&#246;nnen.
-            </li>
-            <li>
-              Gro&#223;/Klein Schreibung: Die Schreibweise der Tags sollte 
-              eindeutig sein, also nicht gemischt werden, und nicht 
-              umgewandelt. Ein guter Parser erkennt trotzdem zwei Tags als 
-              gleich, wenn sie sich in der Gro&#223;/Kleinschreibung unterscheiden.
-            </li>
-            <li>
-              Umlaute: Sowohl Strings als auch Tags k&#246;nnen Umlaute enthalten. 
-              Ein guter Parser erkennt die g&#228;ngige Umschreibung deutscher 
-              Umlaute, und setzt z.B. B&#228;ume = Baeume, W&#252;ste=Wueste.
-            </li>
-            <li>
-              Dateiende: Es kann vorkommen, das hinter der letzten Zeile des 
-              CR kein Zeilenumbruch ist.
-            </li>
-          </ul>
-          <h2>
-            <span class="mw-headline" id="Reservierte_Blocks_und_Tags">Reservierte 
-            Blocks und Tags</span>
-          </h2>
-          <ul>
-            <li>
-              VERSION ist der Block, der die Datei beschreibt. Es ist der 
-              erste Block im CR. Ein guter Parser sollte mehrere 
-              VERSIONs-Bl&#246;cke in seiner Eingabe verarbeiten, und diesen Fall 
-              so behandeln, als sei ein zweiter Report eingelesen worden 
-              (Beispiel: cat 1.cr 2.cr 3.cr | parser).
-            </li>
-            <li>
-              Runde ist ein Tag, in dem das Alter des Blocks enthalten ist. 
-              Blocks innerhalb eines CR k&#246;nnen unterschiedlich datiert sein, 
-              wenn z.B. ein Report aus Informationen mehrere Runden 
-              zusammengestellt wurde. Das Runde-Attribut sollte das Datum der 
-              aktuellsten Informationen &#252;ber den Block angeben. Es wird auf 
-              Unterbl&#246;cke vererbt, falls also diese Bl&#246;cke neueren oder 
-              &#228;lteren Stand repr&#228;sentieren, sollten sie ein eigenes 
-              Runde-Attribut bekommen. CRs ohne Rundeninformation sind am 
-              besten zu behandeln, als seine sie aus Runde 0.
-            </li>
-            <li>
-              Konfiguration ist ein Tag im Versionsblock. Es kann verwendet 
-              werden, um den Inhalt des CRs zu beschreiben, z.b. mit dem Namen 
-              des Tools, das ihn erzeugt hat, oder einer Beschreibung. 
-              Beispielsweise &quot;mercator-karte&quot;, &quot;EMap-export&quot;. Der Wert 
-              &quot;Standard&quot; ist reserviert f&#252;r den Eressea-Server.
-            </li>
-          </ul>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="/index.php/XML_Format" title="XML Format">XML Format</a>
-            </li>
-            <li>
-              <a class="external text" href="http://dose.0wnz.at/thewhitewolf/cr-format" rel="nofollow">CR-Format 
-              Details</a> gesammelt und aufbereitet von tww
-            </li>
-          </ul>
-          <!-- 
+            <h2>
+              <span class="mw-headline" id="Tips_f.C3.BCr_Implementierer">Tips 
+              f&#252;r Implementierer</span>
+            </h2>
+            <p>
+              Am besten parst man den CR Zeilenweise. Nach dem Einlesen einer 
+              Zeile schaut man zuerst, ob es sich um einen Block handelt: 
+              Bl&#246;cke beginnen als einzige mit einem Buchstaben. Ist es keiner, 
+              sondern beginnt mit einem '-' oder einer Zahl, so ist es ein 
+              Integer-Attribut, beginnt es mit einem '&quot;', ist es ein String 
+              oder Listeneintrag.
+            </p>
+            <h3>
+              <span class="mw-headline" id="Bl.C3.B6cke">Bl&#246;cke</span>
+            </h3>
+            <p>
+              Bl&#246;cke parst man, indem man den Namen des Blocks liest (bis zum 
+              ersten Leerzeichen), und anschlie&#223;end die durch Leerzeichen 
+              getrennten ids. Auf eventuelle Kommentare (bei Eressea-CRs vor 
+              Version 36) achten!
+            </p>
+            <h3>
+              <span class="mw-headline" id="Integer-Attribute">Integer-Attribute</span>
+            </h3>
+            <p>
+              Die Zahl identifizieren, indem man bis zum ';' liest. Danach den 
+              Namen des Tags lesen, bis zum Ende der Zeile. Zu beachten ist, 
+              das m&#246;glicherweise noch Leerzeichen am Ende der Zeile oder um 
+              das ';' herum stehen k&#246;nnten.
+            </p>
+            <h3>
+              <span class="mw-headline" id="Listeneintr.C3.A4ge_2">Listeneintr&#228;ge</span>
+            </h3>
+            <p>
+              Bis zum n&#228;chsten '&quot;' lesen. Aufpassen, es k&#246;nnen durchaus 
+              Semikolons im String enthalten sein. Folgt auf das '&quot;' kein 
+              Semikolon mehr, handelt es sich um ein Listenelement, ansonsten 
+              um ein String-Attribut.
+            </p>
+            <h3>
+              <span class="mw-headline" id="Stringattribute">Stringattribute</span>
+            </h3>
+            <p>
+              Der String ist bereits gelesen also das ';' &#252;berspringen, und 
+              den Namen des Tags finden. Wieder aufpassen auf Leerzeichen um 
+              das Semikolon oder am Ende der Zeile.
+            </p>
+            <h3>
+              <span class="mw-headline" id="Fallstricke">Fallstricke</span>
+            </h3>
+            <ul>
+              <li>
+                Ein Integer-attribut kann, wie z.B. bei den Skills, aus 
+                mehreren Zahlen bestehen. Die Anzahl integer ist bei 
+                Attributen gleichen Namens nicht unbedingt gleich, und sie ist 
+                eventuell nicht immer 2 (momentan schon, aber das sei f&#252;r 
+                zuk&#252;nftige Erweiterungen offengehalten).
+              </li>
+              <li>
+                Leerzeilen: Eigentlich sollten im CR keine Leerzeilen sein. 
+                Ein guter Parser sollte aber damit zurecht kommen.
+              </li>
+              <li>
+                Ung&#252;ltige Zeilen: Oft werden CRs verst&#252;mmelt, weil ein 
+                Mailtool oder Editor die Zeilen umgebrochen hat. In diesem 
+                Fall sollte auf jeden Fall eine Warnung ausgegeben werden, und 
+                das Attribut ignoriert werden.
+              </li>
+              <li>
+                CR/LF: Mac, Unix und Windows speichern das Zeilenende jeweils 
+                unterschiedlich ab. Der Parser sollte alle Formate erkennen 
+                k&#246;nnen.
+              </li>
+              <li>
+                Gro&#223;/Klein Schreibung: Die Schreibweise der Tags sollte 
+                eindeutig sein, also nicht gemischt werden, und nicht 
+                umgewandelt. Ein guter Parser erkennt trotzdem zwei Tags als 
+                gleich, wenn sie sich in der Gro&#223;/Kleinschreibung 
+                unterscheiden.
+              </li>
+              <li>
+                Umlaute: Sowohl Strings als auch Tags k&#246;nnen Umlaute 
+                enthalten. Ein guter Parser erkennt die g&#228;ngige Umschreibung 
+                deutscher Umlaute, und setzt z.B. B&#228;ume = Baeume, W&#252;ste=Wueste.
+              </li>
+              <li>
+                Dateiende: Es kann vorkommen, das hinter der letzten Zeile des 
+                CR kein Zeilenumbruch ist.
+              </li>
+            </ul>
+            <h2>
+              <span class="mw-headline" id="Reservierte_Blocks_und_Tags">Reservierte 
+              Blocks und Tags</span>
+            </h2>
+            <ul>
+              <li>
+                VERSION ist der Block, der die Datei beschreibt. Es ist der 
+                erste Block im CR. Ein guter Parser sollte mehrere 
+                VERSIONs-Bl&#246;cke in seiner Eingabe verarbeiten, und diesen Fall 
+                so behandeln, als sei ein zweiter Report eingelesen worden 
+                (Beispiel: cat 1.cr 2.cr 3.cr | parser).
+              </li>
+              <li>
+                Runde ist ein Tag, in dem das Alter des Blocks enthalten ist. 
+                Blocks innerhalb eines CR k&#246;nnen unterschiedlich datiert sein, 
+                wenn z.B. ein Report aus Informationen mehrere Runden 
+                zusammengestellt wurde. Das Runde-Attribut sollte das Datum 
+                der aktuellsten Informationen &#252;ber den Block angeben. Es wird 
+                auf Unterbl&#246;cke vererbt, falls also diese Bl&#246;cke neueren oder 
+                &#228;lteren Stand repr&#228;sentieren, sollten sie ein eigenes 
+                Runde-Attribut bekommen. CRs ohne Rundeninformation sind am 
+                besten zu behandeln, als seine sie aus Runde 0.
+              </li>
+              <li>
+                Konfiguration ist ein Tag im Versionsblock. Es kann verwendet 
+                werden, um den Inhalt des CRs zu beschreiben, z.b. mit dem 
+                Namen des Tools, das ihn erzeugt hat, oder einer Beschreibung. 
+                Beispielsweise &quot;mercator-karte&quot;, &quot;EMap-export&quot;. Der Wert 
+                &quot;Standard&quot; ist reserviert f&#252;r den Eressea-Server.
+              </li>
+            </ul>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a href="/index.php/XML_Format" title="XML Format">XML Format</a>
+              </li>
+              <li>
+                <a class="external text" href="http://dose.0wnz.at/thewhitewolf/cr-format" rel="nofollow">CR-Format 
+                Details</a> gesammelt und aufbereitet von tww
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
 Cached time: 20220210201702
 Cache expiry: 86400
@@ -294,13 +299,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1639-0!canonical and timestamp 20220210201702 and revision id 5847
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1639-0!canonical and timestamp 20220210201702 and revision id 5847
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

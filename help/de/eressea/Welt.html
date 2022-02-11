@@ -1,410 +1,417 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>Die Welt</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>Die Welt</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      Die Welt
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <h2>
-            <span class="mw-headline" id="Die_Landschaft_von_Eressea">Die 
-            Landschaft von Eressea</span>
-          </h2>
-          <p>
-            <i>Ruhig blickte Selen Ard'Ragorn zur T&#252;r, als Rahel, ihre junge 
-            Novizin, unbeholfen in die kleine Kammer im Bibliotheksfl&#252;gel des 
-            Tempels hineinstolperte. Leicht am&#252;siert betrachtete sie den etwas 
-            nerv&#246;s umherzuckenden Schwanz der jungen Katze, die sich ebenso 
-            verzweifelt wie erfolglos bem&#252;hte, ihr in Unordnung geratenes 
-            Gewand zu gl&#228;tten.</i>
-          </p>
-          <p>
-            <i>&quot;Komm n&#228;her, Kind&quot;, bat Selen, und etwas sch&#252;chtern n&#228;herte 
-            sich Rahel dem goldintarsiengeschm&#252;ckten Tisch, an dem die 
-            Tempelvorsteherin Platz genommen hatte. Als die Augen der 
-            Jungkatze &#252;ber das gro&#223;e Pergament glitten, welches ausgebreitet 
-            darauf lag, maunzte sie erstaunt auf. Auf dem Tisch lag eine 
-            feins&#228;uberlich gezeichnete Karte der ganzen bekannten Welt. 
-            Informationen aus allen im Blick der Gold&#228;ugigen Katze liegenden 
-            L&#228;ndern waren zusammengetragen und von geschickten H&#228;nden in 
-            dieser Karte eingetragen worden. Rahel erkannte Andune in der 
-            Mitte, die kleine, fast zweigeteilte Insel inmitten des Meeres. Um 
-            Andune herum sah sie die bekannten Konturen der Nachbarinseln, wie 
-            Andune selbst eingebettet in den unendlich scheinenden Ozean.</i>
-          </p>
-          <p>
-            Die Welt von Eressea besteht aus einer Vielzahl von Inseln und 
-            Kontinenten von ganz unterschiedlicher Gr&#246;&#223;e. Inseln wie Ozeane 
-            sind unterteilt in Regionen. In den Regionen findet man die 
-            Einheiten der Spieler, Geb&#228;ude und Schiffe, die Bauern und 
-            verschiedene Rohstoffe.
-          </p>
-          <p>
-            <i>Rahel betrachtete noch verbl&#252;fft die eigentlich geheime Karte, 
-            als Selen mit dem Finger auf eine der Inseln ganz am Rande 
-            deutete. &quot;Sieh, Rahel. Dort ist eine Insel, die gerade erst 
-            eingetragen wurde. Erkennst du, wie unsere Kartographen arbeiten?&quot;</i>
-          </p>
-          <p>
-            <a class="image" href="/index.php/Datei:Karte.gif"><img alt="Karte.gif" decoding="async" height="240" src="images/Karte.gif" width="415">
-            </a>
-          </p>
-          <p>
-            <i>Angestrengt betrachtete die Novizin die Karte. Offenbar hatte 
-            man sich bei ihrer Erstellung auf das wesentliche beschr&#228;nkt und 
-            die entdeckten Landstriche nur grob klassifiziert. Rahel erkannte 
-            W&#228;lder und Gebirge, viele S&#252;mpfe und einige unbewaldete Ebenen.</i>
-          </p>
-          <p>
-            In diesem Beispiel ist bei (0,0) ein Sumpf, nord&#246;stlich davon bei 
-            (0,1) ein Gebirge. Jede Partei in Eressea hat ein eigenes 
-            Koordinatensystem, welches mit dem Befehl <a href="URSPRUNG.html" title="URSPRUNG">URSPRUNG</a> 
-            verschoben werden kann, beispielsweise, um es an das einer anderen 
-            Partei anzugleichen.
-          </p>
-          <p>
-            <i>&quot;Gut, mein Kind&quot;, best&#228;tigte Selen die um so vieles j&#252;ngere 
-            Katze. &quot;Solche Karten dienen vor allem der Navigation unserer 
-            Schiffe. Wie du aber sicher leicht einsiehst, enthalten sie nicht 
-            sehr viele Informationen. Deshalb ...&quot; - und mit diesen Worten 
-            schlug Selen ein gro&#223;es schweres Buch auf, welches neben der Karte 
-            auf dem Tisch gelegen hatte, - &quot;... deshalb bekommen wir von jedem 
-            unserer Kundschafter jede Woche einen ausf&#252;hrlichen Bericht &#252;ber 
-            die erforschten Regionen. Wir sammeln diese Berichte, denn sie 
-            helfen uns sehr bei unseren Entscheidungen.&quot;</i>
-          </p>
-          <h2>
-            <span class="mw-headline" id="Die_Regionen_Eresseas">Die Regionen 
-            Eresseas</span>
-          </h2>
-          <p>
-            <i>Selen deutete auf die aufgeschlagene Seite. &quot;Sieh dir diesen 
-            Bericht einmal an, Rahel, und sag mir, was du siehst.&quot; Rahel sah 
-            nur einen Moment angestrengt hin, bevor sie begann.</i>
-          </p>
-          <p>
-            Im Report werden alle Regionen, in denen man eine Einheit hat, 
-            durch die man gereist ist oder Ozean-Regionen, die man von einem <a class="mw-redirect" href="Andere_Geb_ude.html#Leuchtturm" title="Leuchtturm">Leuchtturm</a> 
-            erblickt hat, aufgef&#252;hrt:
-          </p>
-          <p>
-            <code>Tetos (-1,0), Ebene, 1042 Bauern, 73/5 B&#228;ume, 10953 Silber, 
-            132 Pferde. Im Nordwesten der Region liegt der Wald von Faldorn 
-            (-2,1), im Nordosten die Ebene von Litforuvys (-1,1), im Osten die 
-            Ebene von Tumyvesfod (0,0), im S&#252;dosten der Sumpf von Titymovut 
-            (0,-1), im S&#252;dwesten die Ebene von Livedfir (-1,-1) und im Westen 
-            das Gebirge von Nipevan (-2,0).</code>
-          </p>
-          <p>
-            <i>&quot;Nun, zun&#228;chst findet sich dort der Name, unter dem die Region 
-            bei den Einheimischen bekannt ist, sowie ihre Position. Direkt 
-            dahinter hat der Kundschafter vermerkt, von welcher Beschaffenheit 
-            die Region ist. Auch die Zahl der dort lebenden Bauern und eine 
-            grobe Absch&#228;tzung ihres Reichtums ist dort zu finden. Und es ist 
-            auch vermerkt, wieviele B&#228;ume und Reittiere in dem Landstrich 
-            gefunden wurden.&quot;</i>
-          </p>
-          <p>
-            Die in der Region lebenden Bauern k&#246;nnen mit dem Befehl <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a> 
-            in die eigene Partei rekrutiert werden, die B&#228;ume und Pferde mit 
-            dem Befehl <a href="MACHE.html" title="MACHE">MACHE</a> 
-            eingeschlagen bzw. gez&#228;hmt werden.
-          </p>
-          <p>
-            <i>&quot;Sehr gut, Rahel. Und was steht in den Zeilen darunter 
-            vermerkt?&quot;</i>
-          </p>
-          <p>
-            <code>Auf dem Markt wird f&#252;r Weihrauch 4 Silber verlangt. Geboten 
-            wird f&#252;r Balsam 12 Silber, f&#252;r Gew&#252;rz 10 Silber, f&#252;r Juwelen 21 
-            Silber, f&#252;r Myrrhe 15 Silber, f&#252;r &#214;l 12 Silber und f&#252;r Seide 30 
-            Silber.<br><br>Statistik f&#252;r Tetos (-1,0):<br><br>Unterhaltung: 
-            max. 547 Silber<br>Lohn f&#252;r Arbeit: 11 Silber<br>Rekrutieren: 
-            max. 26 Bauern<br>Luxusg&#252;ter zum angegebenen Preis: 10<br>Personen: 
-            20<br>Silber: 821<br>Holz: 13<br>Schwerter: 2<br>Pferde: 4</code>
-          </p>
-          <p>
-            <i>Stolz strahlte die junge Novizin ihre offenbar zufriedene 
-            Lehrerin an. &quot;Dabei, Magistra, handelt um weitere Informationen, 
-            die unsere Kundschafter herausgefunden haben. Zun&#228;chst scheinen 
-            sie sich auf dem Markt umgesehen und die Preise notiert zu haben. 
-            In dem Abschnitt darunter ist vermerkt, wieviel Silber die 
-            Bewohner der Region f&#252;r Schausteller und Musiker auszugeben bereit 
-            sind, wieviel man f&#252;r einfache Arbeiten bekommt, wieviele Bauern 
-            bereit sind, sich einem Volk anzuschlie&#223;en und wieviele G&#252;ter auf 
-            den Markt &#252;berhaupt f&#252;r den oben angegebenen Preis verkauft 
-            werden. In den letzten Zeilen ist dann vermerkt, wieviele Personen 
-            unseres Volkes sich dort aufhalten, und was sie mit sich f&#252;hren.&quot;</i>
-          </p>
-          <p>
-            Bei Luxusg&#252;ter steht die Anzahl von Luxusg&#252;tern, die zum 
-            &quot;Listenpreis&quot; (siehe auch <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>), 
-            von den Bauern ver- bzw. gekauft werden. Werden mehr G&#252;ter 
-            gehandelt, ver&#228;ndert sich der Preis, unter Umst&#228;nden dauerhaft! 
-            N&#228;heres dazu siehe im Kapitel <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>.
-          </p>
-          <p>
-            <i>&quot;Ausgezeichnet, Rahel. Was du da vor dir siehst, ist ein 
-            vollst&#228;ndiger Bericht. Manchmal jedoch erhalten wir auch weniger 
-            umfassende Berichte, etwa, wenn ein Kundschafter lediglich in Eile 
-            durch eine Region hindurchgeritten ist. Solch ausf&#252;hrliche 
-            Berichte wie diesen bekommen wir nur, wenn sich Angeh&#246;rige unseres 
-            Volkes dort aufhalten.&quot;</i>
-          </p>
-          <p>
-            <i>Selen deutete mit der Hand auf den Stuhl auf der anderen Seite 
-            des Tisches. &quot;Du kannst dich jetzt setzen, mein Kind.&quot; Rahel ging 
-            zum Stuhl, nahm Platz, und gab ein kurzes Schnurren von sich, eine 
-            Mischung aus Zufriedenheit dar&#252;ber, da&#223; sie ihre Lehrerin offenbar 
-            nicht entt&#228;uscht hatte, und Erwartung des noch Kommenden. Die 
-            Geweihte der Gold&#228;ugigen Katzen lehnte sich in ihrem Stuhl zur&#252;ck 
-            und blickte Rahel einen Moment an. &quot;Was du dort siehst, sind nur 
-            Zahlen. N&#252;tzliche Zahlen, die es wert sind, bewahrt zu werden, ja. 
-            Aber wichtig ist es auch, die Gesetze zu erforschen, die hinter 
-            diesen Zahlen stehen.&quot;</i>
-          </p>
-          <p>
-            <i>Sie stand auf, griff in den Beutel, den sie unter dem Tisch 
-            plaziert hatte, und zog ein weiteres Pergament hervor, welches sie 
-            auf dem Tisch &#252;ber der Karte ausbreitete. Rahel blickte 
-            interessiert darauf, erkannte aber zun&#228;chst nur eine chaotische 
-            Zeichnung aus mehr oder weniger horizontalen Linien. Fragend 
-            blickte sie ihre Lehrerin an. &quot;Was bedeutet das, Magistra?&quot;</i>
-          </p>
-          <p>
-            <i>&quot;Das, mein Kind, ist ein Versuch, Naturgesetzen auf die Spur zu 
-            kommen. Jede Woche ver&#228;ndert sich die Zahl der B&#228;ume, Bauern und 
-            Pferde in einer Region. Sie sterben, werden geboren oder suchen 
-            ihr Gl&#252;ck anderswo. Ich habe mich bem&#252;ht, herauszufinden, warum 
-            sie das tun, ohne sie jemals zu befragen.&quot; Die Geweihte l&#228;chelte 
-            in sich hinein. &quot;Es scheint, als w&#252;rde viel vom Platz abh&#228;ngen, 
-            den es in einem Landstrich gibt. Bauern, B&#228;ume und Pferde nehmen 
-            sich gegenseitig den Platz.&quot; Die Novizin deutete auf eine an den 
-            Rand des Pergaments gekritzelte zweite kleine Zeichnung. &quot;Und was 
-            bedeutet diese Zeichnung? Sie sieht fast aus wie die gro&#223;e.&quot; &quot;In 
-            der gro&#223;en Zeichnung, Rahel, habe ich die Zahlen f&#252;r eine flache 
-            K&#252;stenregion mit ausgezeichnetem Boden aufgetragen. Die kleinere 
-            Zeichnung beschreibt die Entwicklung in einem unwirtlichen Sumpf. 
-            Wie du siehst, ist die Entwicklung &#228;hnlich, nur da&#223; im Sumpf von 
-            allem weniger zu finden ist.&quot;</i>
-          </p>
-          <p>
-            siehe <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a>, <a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTE</a>
-          </p>
-          <h2>
-            <span class="mw-headline" id="Die_Zeitrechnung_Eresseas">Die 
-            Zeitrechnung Eresseas</span>
-          </h2>
-          <p>
-            <i>Selen Ard'Ragorn erhob sich von ihrem Stuhl. Wie immer 
-            bewunderte Rahel, wie geschmeidig sich die alte Bibliothekarin und 
-            Tempelvorsteherin noch immer bewegte und erhob sich selbst. Sie 
-            wu&#223;te schon, was kommen w&#252;rde. Am Ende jeder Unterweisung 
-            unternahm die Magistra einen Spaziergang durch den weitl&#228;ufigen 
-            Park des Gro&#223;en Tempels, und erteilte ihre w&#228;hrenddessen einige 
-            weitere Lektionen.</i>
-          </p>
-          <p>
-            <i>Gemeinsam schritten sie durch ein kleines Erlenw&#228;ldchen des 
-            Parks. Bis jetzt hatte Selen geschwiegen, doch nun richtete sie 
-            ihr Wort an Rahel: &quot;Siehst du die untergehende Sonne? So fr&#252;h 
-            schon... Es wird langsam Winter. Schon bald geht der Sturmmond in 
-            den Monat des Herdfeuers &#252;ber. Eine entbehrungsreiche Zeit f&#252;r 
-            viele. F&#252;r die Insektenv&#246;lker zum Beispiel, denn sie k&#246;nnen sich 
-            in den Wintermonaten nicht vermehren.&quot; &quot;Ja, Magistra. Aber 
-            wenigstens unsere Seeleute atmen auf, da&#223; die Zeit der gro&#223;en 
-            Herbstst&#252;rme vorbei sind und die See wieder sicherer ist.&quot; &quot;Du 
-            hast recht, Rahel. So ist denn in allem auch etwas Gutes zu 
-            finden.&quot;</i>
-          </p>
-          <p>
-            <i>Bis sp&#228;t in den Abend konnten die Tempelwachen die beiden stumm 
-            durch den magisch erleuchteten Park wandern sehen...</i>
-          </p>
-          <p>
-            Das Jahr ist in der Welt von Eressea in neun Monate zu je drei 
-            Wochen eingeteilt:
-          </p>
-          <table border="1">
-            <tr>
-              <th>
-                Monat
-              </th>
-              <th>
-                Jahreszeit
-              </th>
-              <th>
-                Sturmh&#228;ufigkeit
-              </th>
-            </tr>
-            <tr>
-              <td>
-                Feldsegen
-              </td>
-              <td>
-                Sommer
-              </td>
-              <td>
-                0.5%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Nebeltage
-              </td>
-              <td>
-                Herbst
-              </td>
-              <td>
-                3%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Sturmmond
-              </td>
-              <td>
-                Herbst
-              </td>
-              <td>
-                4%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Herdfeuer
-              </td>
-              <td>
-                Winter
-              </td>
-              <td>
-                2.5%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Eiswind
-              </td>
-              <td>
-                Winter
-              </td>
-              <td>
-                1.5%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Schneebann
-              </td>
-              <td>
-                Winter
-              </td>
-              <td>
-                3%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Bl&#252;tenregen
-              </td>
-              <td>
-                Fr&#252;hling
-              </td>
-              <td>
-                3%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Mond der milden Winde
-              </td>
-              <td>
-                Fr&#252;hling
-              </td>
-              <td>
-                0.5%
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Sonnenfeuer
-              </td>
-              <td>
-                Sommer
-              </td>
-              <td>
-                3%
-              </td>
-            </tr>
-          </table>
-          <p>
-            Jede Runde des Spiels entspricht einer Woche in der Welt. In 
-            dieser Zeit kann man viel unternehmen. Es gibt aber ein paar 
-            Sachen, f&#252;r die man fast die gesamte Woche aufwenden mu&#223;: von 
-            diesen Aktionen, den sogenannten langen Befehlen, kann man jeweils 
-            nur eine pro Woche ausf&#252;hren (mehr dazu im Kapitel <a class="mw-redirect" href="Befehl.html" title="Befehle">Befehle</a>).
-          </p>
-          <p>
-            Wenngleich der Einflu&#223; der Jahreszeiten im allgemeinen nicht 
-            &#252;beraus stark hervortritt, so gibt es doch einige Bereiche bzw. 
-            Ereignisse die durchaus nennenswert beeinflu&#223;t werden. Hier eine 
-            kurze &#220;bersicht:
-          </p>
-          <ul>
-            <li>
-              V&#246;lker der Rasse <a class="mw-redirect" href="Rassen.html#Insekten" title="Insekt">Insekt</a> 
-              k&#246;nnen im Winter kaum rekrutieren
-            </li>
-            <li>
-              St&#252;rme auf <a href="Reisen.html" title="Reisen">See</a> 
-              sind im Herbst weitaus h&#228;ufiger
-            </li>
-            <li>
-              Die einzelnen Phasen des <a href="Rohstoffe.html#Tief_im_Wald" title="Rohstoffe">Waldwachstums</a> 
-              sind an bestimmte Jahreszeiten gekoppelt
-            </li>
-          </ul>
-          <table style="margin-top: 0pt; margin-right: 0pt; margin-bottom: 0pt; margin-left: 0pt; border-top-color: border-color; border-top-style: solid; border-top-width: 2px; border-right-color: border-color; border-right-style: solid; border-right-width: 2px; border-bottom-color: border-color; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: border-color; border-left-style: solid; border-left-width: 2px">
-            <caption align="left">
-              <small>Spielererfahrung: Asito Nehlrahm (Andras, 13. Welt)</small> 
+    <div id="mh-content">
+      <h1>
+        Die Welt
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <h2>
+              <span class="mw-headline" id="Die_Landschaft_von_Eressea">Die 
+              Landschaft von Eressea</span>
+            </h2>
+            <p>
+              <i>Ruhig blickte Selen Ard'Ragorn zur T&#252;r, als Rahel, ihre junge 
+              Novizin, unbeholfen in die kleine Kammer im Bibliotheksfl&#252;gel 
+              des Tempels hineinstolperte. Leicht am&#252;siert betrachtete sie den 
+              etwas nerv&#246;s umherzuckenden Schwanz der jungen Katze, die sich 
+              ebenso verzweifelt wie erfolglos bem&#252;hte, ihr in Unordnung 
+              geratenes Gewand zu gl&#228;tten.</i>
+            </p>
+            <p>
+              <i>&quot;Komm n&#228;her, Kind&quot;, bat Selen, und etwas sch&#252;chtern n&#228;herte 
+              sich Rahel dem goldintarsiengeschm&#252;ckten Tisch, an dem die 
+              Tempelvorsteherin Platz genommen hatte. Als die Augen der 
+              Jungkatze &#252;ber das gro&#223;e Pergament glitten, welches ausgebreitet 
+              darauf lag, maunzte sie erstaunt auf. Auf dem Tisch lag eine 
+              feins&#228;uberlich gezeichnete Karte der ganzen bekannten Welt. 
+              Informationen aus allen im Blick der Gold&#228;ugigen Katze liegenden 
+              L&#228;ndern waren zusammengetragen und von geschickten H&#228;nden in 
+              dieser Karte eingetragen worden. Rahel erkannte Andune in der 
+              Mitte, die kleine, fast zweigeteilte Insel inmitten des Meeres. 
+              Um Andune herum sah sie die bekannten Konturen der 
+              Nachbarinseln, wie Andune selbst eingebettet in den unendlich 
+              scheinenden Ozean.</i>
+            </p>
+            <p>
+              Die Welt von Eressea besteht aus einer Vielzahl von Inseln und 
+              Kontinenten von ganz unterschiedlicher Gr&#246;&#223;e. Inseln wie Ozeane 
+              sind unterteilt in Regionen. In den Regionen findet man die 
+              Einheiten der Spieler, Geb&#228;ude und Schiffe, die Bauern und 
+              verschiedene Rohstoffe.
+            </p>
+            <p>
+              <i>Rahel betrachtete noch verbl&#252;fft die eigentlich geheime 
+              Karte, als Selen mit dem Finger auf eine der Inseln ganz am 
+              Rande deutete. &quot;Sieh, Rahel. Dort ist eine Insel, die gerade 
+              erst eingetragen wurde. Erkennst du, wie unsere Kartographen 
+              arbeiten?&quot;</i>
+            </p>
+            <p>
+              <a class="image" href="/index.php/Datei:Karte.gif"><img alt="Karte.gif" decoding="async" height="240" src="/images/3/33/Karte.gif" width="415">
+              </a>
+            </p>
+            <p>
+              <i>Angestrengt betrachtete die Novizin die Karte. Offenbar hatte 
+              man sich bei ihrer Erstellung auf das wesentliche beschr&#228;nkt und 
+              die entdeckten Landstriche nur grob klassifiziert. Rahel 
+              erkannte W&#228;lder und Gebirge, viele S&#252;mpfe und einige unbewaldete 
+              Ebenen.</i>
+            </p>
+            <p>
+              In diesem Beispiel ist bei (0,0) ein Sumpf, nord&#246;stlich davon 
+              bei (0,1) ein Gebirge. Jede Partei in Eressea hat ein eigenes 
+              Koordinatensystem, welches mit dem Befehl <a href="URSPRUNG.html" title="URSPRUNG">URSPRUNG</a> 
+              verschoben werden kann, beispielsweise, um es an das einer 
+              anderen Partei anzugleichen.
+            </p>
+            <p>
+              <i>&quot;Gut, mein Kind&quot;, best&#228;tigte Selen die um so vieles j&#252;ngere 
+              Katze. &quot;Solche Karten dienen vor allem der Navigation unserer 
+              Schiffe. Wie du aber sicher leicht einsiehst, enthalten sie 
+              nicht sehr viele Informationen. Deshalb ...&quot; - und mit diesen 
+              Worten schlug Selen ein gro&#223;es schweres Buch auf, welches neben 
+              der Karte auf dem Tisch gelegen hatte, - &quot;... deshalb bekommen 
+              wir von jedem unserer Kundschafter jede Woche einen 
+              ausf&#252;hrlichen Bericht &#252;ber die erforschten Regionen. Wir sammeln 
+              diese Berichte, denn sie helfen uns sehr bei unseren 
+              Entscheidungen.&quot;</i>
+            </p>
+            <h2>
+              <span class="mw-headline" id="Die_Regionen_Eresseas">Die 
+              Regionen Eresseas</span>
+            </h2>
+            <p>
+              <i>Selen deutete auf die aufgeschlagene Seite. &quot;Sieh dir diesen 
+              Bericht einmal an, Rahel, und sag mir, was du siehst.&quot; Rahel sah 
+              nur einen Moment angestrengt hin, bevor sie begann.</i>
+            </p>
+            <p>
+              Im Report werden alle Regionen, in denen man eine Einheit hat, 
+              durch die man gereist ist oder Ozean-Regionen, die man von einem <a class="mw-redirect" href="Andere_Geb_ude.html#Leuchtturm" title="Leuchtturm">Leuchtturm</a> 
+              erblickt hat, aufgef&#252;hrt:
+            </p>
+            <p>
+              <code>Tetos (-1,0), Ebene, 1042 Bauern, 73/5 B&#228;ume, 10953 
+              Silber, 132 Pferde. Im Nordwesten der Region liegt der Wald von 
+              Faldorn (-2,1), im Nordosten die Ebene von Litforuvys (-1,1), im 
+              Osten die Ebene von Tumyvesfod (0,0), im S&#252;dosten der Sumpf von 
+              Titymovut (0,-1), im S&#252;dwesten die Ebene von Livedfir (-1,-1) 
+              und im Westen das Gebirge von Nipevan (-2,0).</code>
+            </p>
+            <p>
+              <i>&quot;Nun, zun&#228;chst findet sich dort der Name, unter dem die 
+              Region bei den Einheimischen bekannt ist, sowie ihre Position. 
+              Direkt dahinter hat der Kundschafter vermerkt, von welcher 
+              Beschaffenheit die Region ist. Auch die Zahl der dort lebenden 
+              Bauern und eine grobe Absch&#228;tzung ihres Reichtums ist dort zu 
+              finden. Und es ist auch vermerkt, wieviele B&#228;ume und Reittiere 
+              in dem Landstrich gefunden wurden.&quot;</i>
+            </p>
+            <p>
+              Die in der Region lebenden Bauern k&#246;nnen mit dem Befehl <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a> 
+              in die eigene Partei rekrutiert werden, die B&#228;ume und Pferde mit 
+              dem Befehl <a href="MACHE.html" title="MACHE">MACHE</a> 
+              eingeschlagen bzw. gez&#228;hmt werden.
+            </p>
+            <p>
+              <i>&quot;Sehr gut, Rahel. Und was steht in den Zeilen darunter 
+              vermerkt?&quot;</i>
+            </p>
+            <p>
+              <code>Auf dem Markt wird f&#252;r Weihrauch 4 Silber verlangt. 
+              Geboten wird f&#252;r Balsam 12 Silber, f&#252;r Gew&#252;rz 10 Silber, f&#252;r 
+              Juwelen 21 Silber, f&#252;r Myrrhe 15 Silber, f&#252;r &#214;l 12 Silber und 
+              f&#252;r Seide 30 Silber.<br><br>Statistik f&#252;r Tetos (-1,0):<br><br>Unterhaltung: 
+              max. 547 Silber<br>Lohn f&#252;r Arbeit: 11 Silber<br>Rekrutieren: 
+              max. 26 Bauern<br>Luxusg&#252;ter zum angegebenen Preis: 10<br>Personen: 
+              20<br>Silber: 821<br>Holz: 13<br>Schwerter: 2<br>Pferde: 4</code>
+            </p>
+            <p>
+              <i>Stolz strahlte die junge Novizin ihre offenbar zufriedene 
+              Lehrerin an. &quot;Dabei, Magistra, handelt um weitere Informationen, 
+              die unsere Kundschafter herausgefunden haben. Zun&#228;chst scheinen 
+              sie sich auf dem Markt umgesehen und die Preise notiert zu 
+              haben. In dem Abschnitt darunter ist vermerkt, wieviel Silber 
+              die Bewohner der Region f&#252;r Schausteller und Musiker auszugeben 
+              bereit sind, wieviel man f&#252;r einfache Arbeiten bekommt, wieviele 
+              Bauern bereit sind, sich einem Volk anzuschlie&#223;en und wieviele 
+              G&#252;ter auf den Markt &#252;berhaupt f&#252;r den oben angegebenen Preis 
+              verkauft werden. In den letzten Zeilen ist dann vermerkt, 
+              wieviele Personen unseres Volkes sich dort aufhalten, und was 
+              sie mit sich f&#252;hren.&quot;</i>
+            </p>
+            <p>
+              Bei Luxusg&#252;ter steht die Anzahl von Luxusg&#252;tern, die zum 
+              &quot;Listenpreis&quot; (siehe auch <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>), 
+              von den Bauern ver- bzw. gekauft werden. Werden mehr G&#252;ter 
+              gehandelt, ver&#228;ndert sich der Preis, unter Umst&#228;nden dauerhaft! 
+              N&#228;heres dazu siehe im Kapitel <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>.
+            </p>
+            <p>
+              <i>&quot;Ausgezeichnet, Rahel. Was du da vor dir siehst, ist ein 
+              vollst&#228;ndiger Bericht. Manchmal jedoch erhalten wir auch weniger 
+              umfassende Berichte, etwa, wenn ein Kundschafter lediglich in 
+              Eile durch eine Region hindurchgeritten ist. Solch ausf&#252;hrliche 
+              Berichte wie diesen bekommen wir nur, wenn sich Angeh&#246;rige 
+              unseres Volkes dort aufhalten.&quot;</i>
+            </p>
+            <p>
+              <i>Selen deutete mit der Hand auf den Stuhl auf der anderen 
+              Seite des Tisches. &quot;Du kannst dich jetzt setzen, mein Kind.&quot; 
+              Rahel ging zum Stuhl, nahm Platz, und gab ein kurzes Schnurren 
+              von sich, eine Mischung aus Zufriedenheit dar&#252;ber, da&#223; sie ihre 
+              Lehrerin offenbar nicht entt&#228;uscht hatte, und Erwartung des noch 
+              Kommenden. Die Geweihte der Gold&#228;ugigen Katzen lehnte sich in 
+              ihrem Stuhl zur&#252;ck und blickte Rahel einen Moment an. &quot;Was du 
+              dort siehst, sind nur Zahlen. N&#252;tzliche Zahlen, die es wert 
+              sind, bewahrt zu werden, ja. Aber wichtig ist es auch, die 
+              Gesetze zu erforschen, die hinter diesen Zahlen stehen.&quot;</i>
+            </p>
+            <p>
+              <i>Sie stand auf, griff in den Beutel, den sie unter dem Tisch 
+              plaziert hatte, und zog ein weiteres Pergament hervor, welches 
+              sie auf dem Tisch &#252;ber der Karte ausbreitete. Rahel blickte 
+              interessiert darauf, erkannte aber zun&#228;chst nur eine chaotische 
+              Zeichnung aus mehr oder weniger horizontalen Linien. Fragend 
+              blickte sie ihre Lehrerin an. &quot;Was bedeutet das, Magistra?&quot;</i>
+            </p>
+            <p>
+              <i>&quot;Das, mein Kind, ist ein Versuch, Naturgesetzen auf die Spur 
+              zu kommen. Jede Woche ver&#228;ndert sich die Zahl der B&#228;ume, Bauern 
+              und Pferde in einer Region. Sie sterben, werden geboren oder 
+              suchen ihr Gl&#252;ck anderswo. Ich habe mich bem&#252;ht, herauszufinden, 
+              warum sie das tun, ohne sie jemals zu befragen.&quot; Die Geweihte 
+              l&#228;chelte in sich hinein. &quot;Es scheint, als w&#252;rde viel vom Platz 
+              abh&#228;ngen, den es in einem Landstrich gibt. Bauern, B&#228;ume und 
+              Pferde nehmen sich gegenseitig den Platz.&quot; Die Novizin deutete 
+              auf eine an den Rand des Pergaments gekritzelte zweite kleine 
+              Zeichnung. &quot;Und was bedeutet diese Zeichnung? Sie sieht fast aus 
+              wie die gro&#223;e.&quot; &quot;In der gro&#223;en Zeichnung, Rahel, habe ich die 
+              Zahlen f&#252;r eine flache K&#252;stenregion mit ausgezeichnetem Boden 
+              aufgetragen. Die kleinere Zeichnung beschreibt die Entwicklung 
+              in einem unwirtlichen Sumpf. Wie du siehst, ist die Entwicklung 
+              &#228;hnlich, nur da&#223; im Sumpf von allem weniger zu finden ist.&quot;</i>
+            </p>
+            <p>
+              siehe <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a>, 
+              <a href="UNTERHALTE.html" title="UNTERHALTE">UNTERHALTE</a>
+            </p>
+            <h2>
+              <span class="mw-headline" id="Die_Zeitrechnung_Eresseas">Die 
+              Zeitrechnung Eresseas</span>
+            </h2>
+            <p>
+              <i>Selen Ard'Ragorn erhob sich von ihrem Stuhl. Wie immer 
+              bewunderte Rahel, wie geschmeidig sich die alte Bibliothekarin 
+              und Tempelvorsteherin noch immer bewegte und erhob sich selbst. 
+              Sie wu&#223;te schon, was kommen w&#252;rde. Am Ende jeder Unterweisung 
+              unternahm die Magistra einen Spaziergang durch den weitl&#228;ufigen 
+              Park des Gro&#223;en Tempels, und erteilte ihre w&#228;hrenddessen einige 
+              weitere Lektionen.</i>
+            </p>
+            <p>
+              <i>Gemeinsam schritten sie durch ein kleines Erlenw&#228;ldchen des 
+              Parks. Bis jetzt hatte Selen geschwiegen, doch nun richtete sie 
+              ihr Wort an Rahel: &quot;Siehst du die untergehende Sonne? So fr&#252;h 
+              schon... Es wird langsam Winter. Schon bald geht der Sturmmond 
+              in den Monat des Herdfeuers &#252;ber. Eine entbehrungsreiche Zeit 
+              f&#252;r viele. F&#252;r die Insektenv&#246;lker zum Beispiel, denn sie k&#246;nnen 
+              sich in den Wintermonaten nicht vermehren.&quot; &quot;Ja, Magistra. Aber 
+              wenigstens unsere Seeleute atmen auf, da&#223; die Zeit der gro&#223;en 
+              Herbstst&#252;rme vorbei sind und die See wieder sicherer ist.&quot; &quot;Du 
+              hast recht, Rahel. So ist denn in allem auch etwas Gutes zu 
+              finden.&quot;</i>
+            </p>
+            <p>
+              <i>Bis sp&#228;t in den Abend konnten die Tempelwachen die beiden 
+              stumm durch den magisch erleuchteten Park wandern sehen...</i>
+            </p>
+            <p>
+              Das Jahr ist in der Welt von Eressea in neun Monate zu je drei 
+              Wochen eingeteilt:
+            </p>
+            <table border="1">
+              <tr>
+                <th>
+                  Monat
+                </th>
+                <th>
+                  Jahreszeit
+                </th>
+                <th>
+                  Sturmh&#228;ufigkeit
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  Feldsegen
+                </td>
+                <td>
+                  Sommer
+                </td>
+                <td>
+                  0.5%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Nebeltage
+                </td>
+                <td>
+                  Herbst
+                </td>
+                <td>
+                  3%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Sturmmond
+                </td>
+                <td>
+                  Herbst
+                </td>
+                <td>
+                  4%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Herdfeuer
+                </td>
+                <td>
+                  Winter
+                </td>
+                <td>
+                  2.5%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Eiswind
+                </td>
+                <td>
+                  Winter
+                </td>
+                <td>
+                  1.5%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Schneebann
+                </td>
+                <td>
+                  Winter
+                </td>
+                <td>
+                  3%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Bl&#252;tenregen
+                </td>
+                <td>
+                  Fr&#252;hling
+                </td>
+                <td>
+                  3%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Mond der milden Winde
+                </td>
+                <td>
+                  Fr&#252;hling
+                </td>
+                <td>
+                  0.5%
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Sonnenfeuer
+                </td>
+                <td>
+                  Sommer
+                </td>
+                <td>
+                  3%
+                </td>
+              </tr>
+            </table>
+            <p>
+              Jede Runde des Spiels entspricht einer Woche in der Welt. In 
+              dieser Zeit kann man viel unternehmen. Es gibt aber ein paar 
+              Sachen, f&#252;r die man fast die gesamte Woche aufwenden mu&#223;: von 
+              diesen Aktionen, den sogenannten langen Befehlen, kann man 
+              jeweils nur eine pro Woche ausf&#252;hren (mehr dazu im Kapitel <a class="mw-redirect" href="Befehl.html" title="Befehle">Befehle</a>).
+            </p>
+            <p>
+              Wenngleich der Einflu&#223; der Jahreszeiten im allgemeinen nicht 
+              &#252;beraus stark hervortritt, so gibt es doch einige Bereiche bzw. 
+              Ereignisse die durchaus nennenswert beeinflu&#223;t werden. Hier eine 
+              kurze &#220;bersicht:
+            </p>
+            <ul>
+              <li>
+                V&#246;lker der Rasse <a class="mw-redirect" href="Rassen.html#Insekten" title="Insekt">Insekt</a> 
+                k&#246;nnen im Winter kaum rekrutieren
+              </li>
+              <li>
+                St&#252;rme auf <a href="Reisen.html" title="Reisen">See</a> 
+                sind im Herbst weitaus h&#228;ufiger
+              </li>
+              <li>
+                Die einzelnen Phasen des <a href="Rohstoffe.html#Tief_im_Wald" title="Rohstoffe">Waldwachstums</a> 
+                sind an bestimmte Jahreszeiten gekoppelt
+              </li>
+            </ul>
+            <table style="margin-top: 0pt; margin-right: 0pt; margin-bottom: 0pt; margin-left: 0pt; border-top-color: border-color; border-top-style: solid; border-top-width: 2px; border-right-color: border-color; border-right-style: solid; border-right-width: 2px; border-bottom-color: border-color; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: border-color; border-left-style: solid; border-left-width: 2px">
+              <caption align="left">
+                <small>Spielererfahrung: Asito Nehlrahm (Andras, 13. Welt)</small> 
+                
+              </caption>
+              <tr>
+                <td style="background-color: #ffffcc; padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px">
+                  Einige erfahrene Kr&#228;uterkundler berichten, dass im Winter 
+                  offenbar das Wachstum der Kr&#228;uter zum Erliegen kommt
+                </td>
+              </tr>
+            </table>
+            <p>
+              <br>
               
-            </caption>
-            <tr>
-              <td style="background-color: #ffffcc; padding-top: 2px; padding-right: 2px; padding-bottom: 2px; padding-left: 2px">
-                Einige erfahrene Kr&#228;uterkundler berichten, dass im Winter 
-                offenbar das Wachstum der Kr&#228;uter zum Erliegen kommt
-              </td>
-            </tr>
-          </table>
-          <p>
-            <br>
-            
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <table>
-            <tr>
-              <td align="left" style="background-color: #ffffaa">
-                Weiterlesen:
-              </td>
-              <td style="background-color: #ffffcc">
-                <a href="Parteien.html" title="Parteien">Parteien</a>
-              </td>
-            </tr>
-          </table>
-          <!-- 
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <table>
+              <tr>
+                <td align="left" style="background-color: #ffffaa">
+                  Weiterlesen:
+                </td>
+                <td style="background-color: #ffffcc">
+                  <a href="Parteien.html" title="Parteien">Parteien</a>
+                </td>
+              </tr>
+            </table>
+            <!-- 
 NewPP limit report
 Cached time: 20220210235325
 Cache expiry: 86400
@@ -420,15 +427,16 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    2.831      1 -total
  50.48%    1.429      1 Vorlage:Geruecht
  46.62%    1.320      1 Vorlage:Weiter
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1559-0!canonical and timestamp 20220210235325 and revision id 6517
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1559-0!canonical and timestamp 20220210235325 and revision id 6517
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

@@ -1,79 +1,80 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>ROUTE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>ROUTE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      ROUTE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>ROUTE</b> <i>himmelsrichtung</i> [<i>himmelsrichtung</i> 
-            ...]</tt>
-          </p>
-          <p>
-            Mit diesem Befehl bewegt sich die Einheit genauso wie mit dem 
-            Befehl <tt><a href="NACH.html" title="NACH">NACH</a></tt> durch 
-            die Welt von Eressea.
-          </p>
-          <p>
-            Mit dem <tt>ROUTE</tt>-Befehl kann jedoch eine &quot;Kreisbewegung&quot; 
-            erstellen, so dass eine Einheit immer zwischen zwei oder mehr 
-            Punkten pendelt. Alle Bewegungen, die abgearbeitet wurden, werden 
-            wieder hinten an den <tt>ROUTE</tt>-Befehl angeh&#228;ngt.
-          </p>
-          <p>
-            Um eine Bewegung vorzeitig abzubrechen (z.B. bei Schiffen, die 
-            nicht so weit segeln sollen, wie sie k&#246;nnen), kann man ein <tt>PAUSE</tt> 
-            (kann <tt>P</tt> abgek&#252;rzt werden) einf&#252;gen. Hat eine Einheit ihre 
-            Bewegung vollendet und als n&#228;chstes kommt ein <tt>PAUSE</tt>, 
-            so wird dies mit hinten angeh&#228;ngt, obwohl die Einheit bereits 
-            stoppt.
-          </p>
-          <p>
-            Ein Reiter kommt mit Stra&#223;en drei Regionen weit. Er bekommt 
-            folgenden <tt>ROUTE</tt>-Befehl:
-          </p>
-          <pre> ROUTE NO Osten Pause Osten Osten SO Westen Westen Pause SW Westen NW</pre>
-          <p>
-            N&#228;chste Runde sieht der Befehl so aus:
-          </p>
-          <pre> ROUTE Osten Osten SO Westen Westen Pause SW Westen NW NO Osten Pause</pre>
-          <p>
-            Und in der Runde darauf:
-          </p>
-          <pre> ROUTE Westen Westen Pause SW Westen NW NO Osten Pause Osten Osten SO</pre>
-          <p>
-            Und in der Runde darauf:
-          </p>
-          <pre> ROUTE SW Westen NW NO Osten Pause Osten Osten SO Westen Westen Pause</pre>
-          <p>
-            Und schlie&#223;lich wieder wie am Anfang.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="Reisen.html" title="Reisen">Reisen</a>
-            </li>
-            <li>
-              <a href="NACH.html" title="NACH">NACH</a>
-            </li>
-            <li>
-              <a href="FOLGE.html" title="FOLGE">FOLGE</a>
-            </li>
-          </ul>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        ROUTE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>ROUTE</b> <i>himmelsrichtung</i> [<i>himmelsrichtung</i> 
+              ...]</tt>
+            </p>
+            <p>
+              Mit diesem Befehl bewegt sich die Einheit genauso wie mit dem 
+              Befehl <tt><a href="NACH.html" title="NACH">NACH</a></tt> durch 
+              die Welt von Eressea.
+            </p>
+            <p>
+              Mit dem <tt>ROUTE</tt>-Befehl kann jedoch eine &quot;Kreisbewegung&quot; 
+              erstellen, so dass eine Einheit immer zwischen zwei oder mehr 
+              Punkten pendelt. Alle Bewegungen, die abgearbeitet wurden, 
+              werden wieder hinten an den <tt>ROUTE</tt>-Befehl angeh&#228;ngt.
+            </p>
+            <p>
+              Um eine Bewegung vorzeitig abzubrechen (z.B. bei Schiffen, die 
+              nicht so weit segeln sollen, wie sie k&#246;nnen), kann man ein <tt>PAUSE</tt> 
+              (kann <tt>P</tt> abgek&#252;rzt werden) einf&#252;gen. Hat eine Einheit 
+              ihre Bewegung vollendet und als n&#228;chstes kommt ein <tt>PAUSE</tt>, 
+              so wird dies mit hinten angeh&#228;ngt, obwohl die Einheit bereits 
+              stoppt.
+            </p>
+            <p>
+              Ein Reiter kommt mit Stra&#223;en drei Regionen weit. Er bekommt 
+              folgenden <tt>ROUTE</tt>-Befehl:
+            </p>
+            <pre> ROUTE NO Osten Pause Osten Osten SO Westen Westen Pause SW Westen NW</pre>
+            <p>
+              N&#228;chste Runde sieht der Befehl so aus:
+            </p>
+            <pre> ROUTE Osten Osten SO Westen Westen Pause SW Westen NW NO Osten Pause</pre>
+            <p>
+              Und in der Runde darauf:
+            </p>
+            <pre> ROUTE Westen Westen Pause SW Westen NW NO Osten Pause Osten Osten SO</pre>
+            <p>
+              Und in der Runde darauf:
+            </p>
+            <pre> ROUTE SW Westen NW NO Osten Pause Osten Osten SO Westen Westen Pause</pre>
+            <p>
+              Und schlie&#223;lich wieder wie am Anfang.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a href="Reisen.html" title="Reisen">Reisen</a>
+              </li>
+              <li>
+                <a href="NACH.html" title="NACH">NACH</a>
+              </li>
+              <li>
+                <a href="FOLGE.html" title="FOLGE">FOLGE</a>
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
 Cached time: 20220210235356
 Cache expiry: 86400
@@ -89,13 +90,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1513-0!canonical and timestamp 20220210235356 and revision id 2699
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1513-0!canonical and timestamp 20220210235356 and revision id 2699
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

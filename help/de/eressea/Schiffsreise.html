@@ -1,356 +1,362 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>Schiffsreise</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>Schiffsreise</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      Schiffsreise
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            Nur mit <a href="Schiff.html" title="Schiff">Schiffen</a> kann man 
-            seine Insel verlassen und so z.B. neue M&#228;rkte erschlie&#223;en oder 
-            direkten Kontakt zu anderen Parteien aufnehmen. Mit einem Schiff 
-            kann man bis zu 7 Regionen weit segeln, unter Einsatz von 
-            Meermenschen oder Magie sogar noch weiter.
-          </p>
-          <p>
-            Alle Schiffe gr&#246;&#223;er als ein Boot (das schlie&#223;t Langboote ein) 
-            k&#246;nnen nur in Ebenen und W&#228;ldern anlegen. Alle anderen 
-            Regionstypen (z.B. Berge, Hochl&#228;nder, S&#252;mpfe) brauchen einen <a href="Andere_Geb_ude.html#Hafen" title="Andere Gebäude"><b>Hafen</b></a>, 
-            damit dort Schiffe anlegen k&#246;nnen. Ablegen k&#246;nnen Schiffe &#252;berall, 
-            man kann also Schiffe in allen K&#252;stenregionen bauen und dann zu 
-            Wasser lassen.
-          </p>
-          <p>
-            Schiffe k&#246;nnen aber nicht direkt - ohne &#252;ber eine Ozeanregion zu 
-            segeln - von einer K&#252;ste in die benachbarte K&#252;stenregion gelangen. 
-            Ebenso k&#246;nnen sie nicht in alle Richtungen ablegen, sondern nur in 
-            die Richtung, aus der sie kamen und deren Nachbarrichtungen. Ein 
-            Schiff, welches aus Osten kam (im Report steht dann auch an der 
-            Ostkueste), kann also nach Osten, Nordosten und S&#252;dosten ablegen. 
-            Verf&#252;gt eine Region jedoch &#252;ber einen Hafen, dann k&#246;nnen Schiffe 
-            des Hafeneigners und von Parteien, die vom Hafeneigner <a href="HELFE.html" title="HELFE">HELFE</a> 
-            BEWACHE haben, auch in andere Richtungen ablegen, sofern es sich 
-            um Ozeanregionen handelt.
-          </p>
-          <p>
-            Auf hoher See - das sind Ozeanregionen, an die keine Landregion 
-            grenzt - k&#246;nnen Schiffe durch St&#252;rme in eine Nachbarregion 
-            abtreiben und Schaden nehmen. Die gilt nicht f&#252;r Schiffe die <a href="FOLGE.html" title="FOLGE">FOLGE</a> 
-            oder <a href="Krieg.html#Piraterie" title="Krieg">Piraterie</a> 
-            ausf&#252;hren.
-          </p>
-          <p>
-            Um ein Schiff segeln zu k&#246;nnen, braucht man ausgebildete Matrosen, 
-            sprich Einheiten, die das Talent Segeln erlernt haben. In der 
-            folgenden Tabelle steht unter &quot;Kapit&#228;n&quot; der Mindesttalentwert, den 
-            der Kapit&#228;n (die erste Einheit auf dem Schiff im Report) des 
-            Schiffes in Segeln haben muss. Zudem braucht man auf dem Schiff 
-            eine gewisse Anzahl Matrosen. In der Tabelle steht, wie viele 
-            Talentstufen Segeln insgesamt auf dem Schiff &quot;versammelt&quot; sein 
-            m&#252;ssen. Haben die Matrosen also einen Talentwert von 2 im Segeln, 
-            braucht man nur noch halb so viele Matrosen, wie in der Liste 
-            stehen. F&#252;r das Gesamttalent werden alle Einheiten an Bord 
-            ber&#252;cksichtigt, auch die von anderen und nicht einmal mit dem 
-            Kapit&#228;n alliierten Parteien. Die in der Tabelle aufgef&#252;hrte 
-            Reichweite gilt pro Runde, d.h. ein Schiff kann pro Runde maximal 
-            so weit segeln. Schiffe, die von einem Meermenschen einer 
-            Meermenschenpartei gesteuert werden (ein Migranten-Meermensch 
-            einer Menschenpartei z&#228;hlt also nicht), k&#246;nnen jeweils ein Feld 
-            weiter segeln.
-          </p>
-          <table border="0" cellpadding="3" cellspacing="0">
-            <caption>
-              Schiffe - Reichweite, Kapazit&#228;t, Talente 
-            </caption>
-            <tr style="background-color: #aaaaaa">
-              <th>
-                Typ
-              </th>
-              <th>
-                Reichweite
-              </th>
-              <th>
-                Kapazit&#228;t
-              </th>
-              <th>
-                Kapit&#228;n/Besatzung
-              </th>
-              <th>
-                Bautalent
-              </th>
-              <th>
-                Bauholz
-              </th>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <td>
-                Boot
-              </td>
-              <td align="right">
-                2
-              </td>
-              <td align="right">
-                50
-              </td>
-              <td align="right">
-                1/2
-              </td>
-              <td align="right">
-                1
-              </td>
-              <td align="right">
-                5
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <td>
-                Langboot
-              </td>
-              <td align="right">
-                3
-              </td>
-              <td align="right">
-                500
-              </td>
-              <td align="right">
-                1/10
-              </td>
-              <td align="right">
-                1
-              </td>
-              <td align="right">
-                50
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <td>
-                Drachenschiff
-              </td>
-              <td align="right">
-                5*
-              </td>
-              <td align="right">
-                1000
-              </td>
-              <td align="right">
-                2/50
-              </td>
-              <td align="right">
-                2
-              </td>
-              <td align="right">
-                100
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <td>
-                Karavelle
-              </td>
-              <td align="right">
-                5
-              </td>
-              <td align="right">
-                3000
-              </td>
-              <td align="right">
-                3/30
-              </td>
-              <td align="right">
-                3
-              </td>
-              <td align="right">
-                250
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <td>
-                Trireme
-              </td>
-              <td align="right">
-                7
-              </td>
-              <td align="right">
-                2000
-              </td>
-              <td align="right">
-                4/120
-              </td>
-              <td align="right">
-                4
-              </td>
-              <td align="right">
-                200
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <td>
-                Galeone
-              </td>
-              <td align="right">
-                5
-              </td>
-              <td align="right">
-                20000
-              </td>
-              <td align="right">
-                5/250**
-              </td>
-              <td align="right">
-                5
-              </td>
-              <td align="right">
-                2000
-              </td>
-            </tr>
-            <tr>
-              <td colspan="6">
-                * Drachenschiffgeschwindigkeit abh&#228;ngig vom Kapit&#228;nstalent
-              </td>
-            </tr>
-            <tr>
-              <td colspan="6">
-                ** F&#252;r das Gesamttalent der Galeone werden nur Einheiten ab T2 
-                in Segeln herangezogen
-              </td>
-            </tr>
-          </table>
-          <table border="0" cellpadding="3" cellspacing="0">
-            <caption>
-              Drachenschiffgeschwindigkeit 
-            </caption>
-            <tr style="background-color: #aaaaaa">
-              <td>
-                Kapit&#228;n
-              </td>
-              <td>
-                2
-              </td>
-              <td>
-                6
-              </td>
-              <td>
-                18
-              </td>
-              <td>
-                54
-              </td>
-              <td>
-                162
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                Reichweite
-              </th>
-              <th>
-                5
-              </th>
-              <th>
-                6
-              </th>
-              <th>
-                7
-              </th>
-              <th>
-                8
-              </th>
-              <th>
-                9
-              </th>
-            </tr>
-          </table>
-          <p>
-            <br>
-            Ist ein Schiff nicht mit genug Matrosen ausger&#252;stet, kann es nicht 
-            ablegen. Passiert dies auf See (z.B. durch einen Kampf oder 
-            Einheiten verhungerten wegen Silbermangel), treibt es steuerlos 
-            umher, bis es an eine K&#252;stenregion trifft. Dabei nimmt es st&#228;ndig 
-            Schaden, so dass es nach kurzer Zeit versinken wird (siehe auch <a class="mw-redirect" href="Schiff.html" title="Schiffe">hier</a> 
-            ).
-          </p>
-          <p>
-            Befindet sich eine Einheit auf einem Schiff, so muss das 
-            Gesamtgewicht der Einheit einschlie&#223;lich des Gewichtes von 
-            Pferden, Wagen, Leuten und nat&#252;rlich aller Waren und Silber der 
-            Einheit vom Schiff getragen werden k&#246;nnen. Ist dies nicht der 
-            Fall, so kann das Schiff nicht segeln (es wird allerdings auch 
-            nicht sofort untergehen). Die Kapazit&#228;ten der Schiffe werden in 
-            der obigen Tabelle aufgef&#252;hrt und sind immer im Report angezeigt. 
-            Die Gewichte der Gegenst&#228;nde sind in <a href="Waren.html" title="Waren">dieser</a> 
-            Tabelle zu finden, die der Personen der verschiedenen Rassen in <a href="Reisen.html" title="Reisen">dieser</a>.
-          </p>
-          <p>
-            Regul&#228;re Personen, die sich auf einem Ozeanfeld befinden, k&#246;nnen 
-            keine langen Befehle ausf&#252;hren (Ausnahme sind die Meermenschen) - 
-            au&#223;er dem Kapit&#228;n nat&#252;rlich, der das Schiff mit <a href="NACH.html" title="NACH">NACH</a> 
-            oder <a href="ROUTE.html" title="ROUTE">ROUTE</a> steuert. 
-            Trotzdem verbrauchen alle Einheiten auf dem Schiff den 
-            w&#246;chentlichen Unterhalt, man sollte also stets genug Silber an 
-            Bord haben.
-          </p>
-          <p>
-            Wollen Einheiten ein Schiff verlassen, so m&#252;ssen sie dies erst mit <a href="VERLASSE.html" title="VERLASSE">VERLASSE</a> 
-            tun. Sofern die Region nicht von einer nicht-alliierten Partei 
-            bewacht wird, k&#246;nnen die Einheiten sich dann mit NACH bewegen, 
-            ansonsten erst in der kommenden Runde. Dies gilt nat&#252;rlich genauso 
-            f&#252;r <a href="FAHRE.html" title="FAHRE">FAHRE</a> und <a class="mw-redirect" href="FAHRE.html" title="TRANSPORTIERE">TRANSPORTIERE</a>.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Anschwimmen">Anschwimmen</span>
-          </h2>
-          <p>
-            <a class="mw-redirect" href="Rassen.html#Meermenschen" title="Meermenschen">Meermenschen</a> 
-            k&#246;nnen von einem Schiff, welches sich in einer Ozean-Regionen 
-            direkt neben Land-Regionen befindet, an Land schwimmen, nicht aber 
-            umgekehrt. Dies funktioniert wie die normale Bewegung mit <tt><a href="NACH.html" title="NACH">NACH</a></tt> 
-            und nur dann, wenn die Einheit nicht &#252;berladen ist. Dabei k&#246;nnen 
-            sie zwar Gegenst&#228;nde mitnehmen, aber keine Pferde, selbst wenn die 
-            anschwimmende Einheit diese normalerweise tragen k&#246;nnte. Auch <a class="mw-redirect" href="FAHRE.html" title="TRANSPORTIERE">Transportieren</a> 
-            von Personen anderer Rassen ist so nicht m&#246;glich, Meermenschen 
-            k&#246;nnen sich aber gegenseitig transportieren. Diese Bewegung findet 
-            vor der Bewegung von Schiffen statt, ein Schiff kann also 
-            Einheiten absetzen und dann weiterfahren. <a href="VERLASSE.html" title="VERLASSE">VERLASSE</a> 
-            ist beim Anschwimmen nicht notwendig, beziehungsweise sogar ein 
-            Fehler.
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a class="mw-redirect" href="Schiff.html" title="Schiffe">Schiffe</a>
-            </li>
-          </ul>
-          <p>
-            <br>
-            
-          </p>
-          <table>
-            <tr>
-              <td align="left" style="background-color: #ffffaa">
-                Weiterlesen:
-              </td>
-              <td style="background-color: #ffffcc">
-                <a href="Produktion.html" title="Produktion">Produktion</a>
-              </td>
-            </tr>
-          </table>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        Schiffsreise
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              Nur mit <a href="Schiff.html" title="Schiff">Schiffen</a> kann 
+              man seine Insel verlassen und so z.B. neue M&#228;rkte erschlie&#223;en 
+              oder direkten Kontakt zu anderen Parteien aufnehmen. Mit einem 
+              Schiff kann man bis zu 7 Regionen weit segeln, unter Einsatz von 
+              Meermenschen oder Magie sogar noch weiter.
+            </p>
+            <p>
+              Alle Schiffe gr&#246;&#223;er als ein Boot (das schlie&#223;t Langboote ein) 
+              k&#246;nnen nur in Ebenen und W&#228;ldern anlegen. Alle anderen 
+              Regionstypen (z.B. Berge, Hochl&#228;nder, S&#252;mpfe) brauchen einen <a href="Andere_Geb_ude.html#Hafen" title="Andere Gebäude"><b>Hafen</b></a>, 
+              damit dort Schiffe anlegen k&#246;nnen. Ablegen k&#246;nnen Schiffe 
+              &#252;berall, man kann also Schiffe in allen K&#252;stenregionen bauen und 
+              dann zu Wasser lassen.
+            </p>
+            <p>
+              Schiffe k&#246;nnen aber nicht direkt - ohne &#252;ber eine Ozeanregion zu 
+              segeln - von einer K&#252;ste in die benachbarte K&#252;stenregion 
+              gelangen. Ebenso k&#246;nnen sie nicht in alle Richtungen ablegen, 
+              sondern nur in die Richtung, aus der sie kamen und deren 
+              Nachbarrichtungen. Ein Schiff, welches aus Osten kam (im Report 
+              steht dann auch an der Ostkueste), kann also nach Osten, 
+              Nordosten und S&#252;dosten ablegen. Verf&#252;gt eine Region jedoch &#252;ber 
+              einen Hafen, dann k&#246;nnen Schiffe des Hafeneigners und von 
+              Parteien, die vom Hafeneigner <a href="HELFE.html" title="HELFE">HELFE</a> 
+              BEWACHE haben, auch in andere Richtungen ablegen, sofern es sich 
+              um Ozeanregionen handelt.
+            </p>
+            <p>
+              Auf hoher See - das sind Ozeanregionen, an die keine Landregion 
+              grenzt - k&#246;nnen Schiffe durch St&#252;rme in eine Nachbarregion 
+              abtreiben und Schaden nehmen. Die gilt nicht f&#252;r Schiffe die <a href="FOLGE.html" title="FOLGE">FOLGE</a> 
+              oder <a href="Krieg.html#Piraterie" title="Krieg">Piraterie</a> 
+              ausf&#252;hren.
+            </p>
+            <p>
+              Um ein Schiff segeln zu k&#246;nnen, braucht man ausgebildete 
+              Matrosen, sprich Einheiten, die das Talent Segeln erlernt haben. 
+              In der folgenden Tabelle steht unter &quot;Kapit&#228;n&quot; der 
+              Mindesttalentwert, den der Kapit&#228;n (die erste Einheit auf dem 
+              Schiff im Report) des Schiffes in Segeln haben muss. Zudem 
+              braucht man auf dem Schiff eine gewisse Anzahl Matrosen. In der 
+              Tabelle steht, wie viele Talentstufen Segeln insgesamt auf dem 
+              Schiff &quot;versammelt&quot; sein m&#252;ssen. Haben die Matrosen also einen 
+              Talentwert von 2 im Segeln, braucht man nur noch halb so viele 
+              Matrosen, wie in der Liste stehen. F&#252;r das Gesamttalent werden 
+              alle Einheiten an Bord ber&#252;cksichtigt, auch die von anderen und 
+              nicht einmal mit dem Kapit&#228;n alliierten Parteien. Die in der 
+              Tabelle aufgef&#252;hrte Reichweite gilt pro Runde, d.h. ein Schiff 
+              kann pro Runde maximal so weit segeln. Schiffe, die von einem 
+              Meermenschen einer Meermenschenpartei gesteuert werden (ein 
+              Migranten-Meermensch einer Menschenpartei z&#228;hlt also nicht), 
+              k&#246;nnen jeweils ein Feld weiter segeln.
+            </p>
+            <table border="0" cellpadding="3" cellspacing="0">
+              <caption>
+                Schiffe - Reichweite, Kapazit&#228;t, Talente 
+              </caption>
+              <tr style="background-color: #aaaaaa">
+                <th>
+                  Typ
+                </th>
+                <th>
+                  Reichweite
+                </th>
+                <th>
+                  Kapazit&#228;t
+                </th>
+                <th>
+                  Kapit&#228;n/Besatzung
+                </th>
+                <th>
+                  Bautalent
+                </th>
+                <th>
+                  Bauholz
+                </th>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <td>
+                  Boot
+                </td>
+                <td align="right">
+                  2
+                </td>
+                <td align="right">
+                  50
+                </td>
+                <td align="right">
+                  1/2
+                </td>
+                <td align="right">
+                  1
+                </td>
+                <td align="right">
+                  5
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <td>
+                  Langboot
+                </td>
+                <td align="right">
+                  3
+                </td>
+                <td align="right">
+                  500
+                </td>
+                <td align="right">
+                  1/10
+                </td>
+                <td align="right">
+                  1
+                </td>
+                <td align="right">
+                  50
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <td>
+                  Drachenschiff
+                </td>
+                <td align="right">
+                  5*
+                </td>
+                <td align="right">
+                  1000
+                </td>
+                <td align="right">
+                  2/50
+                </td>
+                <td align="right">
+                  2
+                </td>
+                <td align="right">
+                  100
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <td>
+                  Karavelle
+                </td>
+                <td align="right">
+                  5
+                </td>
+                <td align="right">
+                  3000
+                </td>
+                <td align="right">
+                  3/30
+                </td>
+                <td align="right">
+                  3
+                </td>
+                <td align="right">
+                  250
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <td>
+                  Trireme
+                </td>
+                <td align="right">
+                  7
+                </td>
+                <td align="right">
+                  2000
+                </td>
+                <td align="right">
+                  4/120
+                </td>
+                <td align="right">
+                  4
+                </td>
+                <td align="right">
+                  200
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <td>
+                  Galeone
+                </td>
+                <td align="right">
+                  5
+                </td>
+                <td align="right">
+                  20000
+                </td>
+                <td align="right">
+                  5/250**
+                </td>
+                <td align="right">
+                  5
+                </td>
+                <td align="right">
+                  2000
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  * Drachenschiffgeschwindigkeit abh&#228;ngig vom Kapit&#228;nstalent
+                </td>
+              </tr>
+              <tr>
+                <td colspan="6">
+                  ** F&#252;r das Gesamttalent der Galeone werden nur Einheiten ab 
+                  T2 in Segeln herangezogen
+                </td>
+              </tr>
+            </table>
+            <table border="0" cellpadding="3" cellspacing="0">
+              <caption>
+                Drachenschiffgeschwindigkeit 
+              </caption>
+              <tr style="background-color: #aaaaaa">
+                <td>
+                  Kapit&#228;n
+                </td>
+                <td>
+                  2
+                </td>
+                <td>
+                  6
+                </td>
+                <td>
+                  18
+                </td>
+                <td>
+                  54
+                </td>
+                <td>
+                  162
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  Reichweite
+                </th>
+                <th>
+                  5
+                </th>
+                <th>
+                  6
+                </th>
+                <th>
+                  7
+                </th>
+                <th>
+                  8
+                </th>
+                <th>
+                  9
+                </th>
+              </tr>
+            </table>
+            <p>
+              <br>
+              Ist ein Schiff nicht mit genug Matrosen ausger&#252;stet, kann es 
+              nicht ablegen. Passiert dies auf See (z.B. durch einen Kampf 
+              oder Einheiten verhungerten wegen Silbermangel), treibt es 
+              steuerlos umher, bis es an eine K&#252;stenregion trifft. Dabei nimmt 
+              es st&#228;ndig Schaden, so dass es nach kurzer Zeit versinken wird 
+              (siehe auch <a class="mw-redirect" href="Schiff.html" title="Schiffe">hier</a> 
+              ).
+            </p>
+            <p>
+              Befindet sich eine Einheit auf einem Schiff, so muss das 
+              Gesamtgewicht der Einheit einschlie&#223;lich des Gewichtes von 
+              Pferden, Wagen, Leuten und nat&#252;rlich aller Waren und Silber der 
+              Einheit vom Schiff getragen werden k&#246;nnen. Ist dies nicht der 
+              Fall, so kann das Schiff nicht segeln (es wird allerdings auch 
+              nicht sofort untergehen). Die Kapazit&#228;ten der Schiffe werden in 
+              der obigen Tabelle aufgef&#252;hrt und sind immer im Report 
+              angezeigt. Die Gewichte der Gegenst&#228;nde sind in <a href="Waren.html" title="Waren">dieser</a> 
+              Tabelle zu finden, die der Personen der verschiedenen Rassen in <a href="Reisen.html" title="Reisen">dieser</a>.
+            </p>
+            <p>
+              Regul&#228;re Personen, die sich auf einem Ozeanfeld befinden, k&#246;nnen 
+              keine langen Befehle ausf&#252;hren (Ausnahme sind die Meermenschen) 
+              - au&#223;er dem Kapit&#228;n nat&#252;rlich, der das Schiff mit <a href="NACH.html" title="NACH">NACH</a> 
+              oder <a href="ROUTE.html" title="ROUTE">ROUTE</a> steuert. 
+              Trotzdem verbrauchen alle Einheiten auf dem Schiff den 
+              w&#246;chentlichen Unterhalt, man sollte also stets genug Silber an 
+              Bord haben.
+            </p>
+            <p>
+              Wollen Einheiten ein Schiff verlassen, so m&#252;ssen sie dies erst 
+              mit <a href="VERLASSE.html" title="VERLASSE">VERLASSE</a> tun. 
+              Sofern die Region nicht von einer nicht-alliierten Partei 
+              bewacht wird, k&#246;nnen die Einheiten sich dann mit NACH bewegen, 
+              ansonsten erst in der kommenden Runde. Dies gilt nat&#252;rlich 
+              genauso f&#252;r <a href="FAHRE.html" title="FAHRE">FAHRE</a> 
+              und <a class="mw-redirect" href="FAHRE.html" title="TRANSPORTIERE">TRANSPORTIERE</a>.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Anschwimmen">Anschwimmen</span>
+            </h2>
+            <p>
+              <a class="mw-redirect" href="Rassen.html#Meermenschen" title="Meermenschen">Meermenschen</a> 
+              k&#246;nnen von einem Schiff, welches sich in einer Ozean-Regionen 
+              direkt neben Land-Regionen befindet, an Land schwimmen, nicht 
+              aber umgekehrt. Dies funktioniert wie die normale Bewegung mit <tt><a href="NACH.html" title="NACH">NACH</a></tt> 
+              und nur dann, wenn die Einheit nicht &#252;berladen ist. Dabei k&#246;nnen 
+              sie zwar Gegenst&#228;nde mitnehmen, aber keine Pferde, selbst wenn 
+              die anschwimmende Einheit diese normalerweise tragen k&#246;nnte. 
+              Auch <a class="mw-redirect" href="FAHRE.html" title="TRANSPORTIERE">Transportieren</a> 
+              von Personen anderer Rassen ist so nicht m&#246;glich, Meermenschen 
+              k&#246;nnen sich aber gegenseitig transportieren. Diese Bewegung 
+              findet vor der Bewegung von Schiffen statt, ein Schiff kann also 
+              Einheiten absetzen und dann weiterfahren. <a href="VERLASSE.html" title="VERLASSE">VERLASSE</a> 
+              ist beim Anschwimmen nicht notwendig, beziehungsweise sogar ein 
+              Fehler.
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a class="mw-redirect" href="Schiff.html" title="Schiffe">Schiffe</a>
+              </li>
+            </ul>
+            <p>
+              <br>
+              
+            </p>
+            <table>
+              <tr>
+                <td align="left" style="background-color: #ffffaa">
+                  Weiterlesen:
+                </td>
+                <td style="background-color: #ffffcc">
+                  <a href="Produktion.html" title="Produktion">Produktion</a>
+                </td>
+              </tr>
+            </table>
+            <!-- 
 NewPP limit report
 Cached time: 20220210200609
 Cache expiry: 86400
@@ -366,14 +372,15 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 3/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    1.060      1 Vorlage:Weiter
 100.00%    1.060      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1608-0!canonical and timestamp 20220210200609 and revision id 7238
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1608-0!canonical and timestamp 20220210200609 and revision id 7238
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

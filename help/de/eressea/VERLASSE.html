@@ -1,67 +1,68 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>VERLASSE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>VERLASSE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      VERLASSE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>VERLASSE</b></tt>
-          </p>
-          <p>
-            Die Einheit wird das Schiff oder das Geb&#228;ude, in dem sie sich 
-            befindet, verlassen. Wenn man die Befehle <tt><a href="BETRETE.html" title="BETRETE">BETRETE</a></tt> 
-            oder <tt><a href="NACH.html" title="NACH">NACH</a></tt> verwendet, 
-            verlassen die Einheiten z.T. automatisch ihre Schiffe und Geb&#228;ude. 
-            Dies funktioniert allerdings nicht immer: ist die Einheit Kapit&#228;n 
-            eines Schiffs und verwendet NACH, wird sie versuchen in diese 
-            Richtung zu segeln, auch wenn dort Festland ist. Kapit&#228;ne m&#252;ssen 
-            ihr Schiff zuerst <tt>VERLASSEN</tt>, alle anderen Segler k&#246;nnen 
-            sich aber mit <tt>NACH</tt> &#252;ber Land bewegen und verlassen das 
-            Schiff dabei automatisch.
-          </p>
-          <div align="center" style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: black; border-bottom-style: solid; border-bottom-width: 0px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px">
-            <small><b><a href="Das_dritte_Zeitalter.html" title="Das dritte Zeitalter">E3A 
-            &#8212; Das Dritte Zeitalter</a></b></small>
-          </div>
-          <div style="border-top-color: black; border-top-style: solid; border-top-width: 0px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-left: 5px">
-            Geb&#228;udebesitzer m&#252;ssen ebenfalls das Geb&#228;ude <tt>VERLASSEN</tt> 
-            oder das Kommando abgeben, um sich zu Bewegen oder ein anderes 
-            Geb&#228;ude oder Schiff zu betreten.
-          </div>
-          <p>
-            Verl&#228;&#223;t eine Einheit ein Geb&#228;ude oder ein Schiff, &#252;ber das sie das 
-            Kommando hat, f&#228;llt dieses nicht zwangsweise an die folgende 
-            Einheit des Reports. Hier sollte man mit <tt><a href="GIB.html" title="GIB">GIB 
-            <i>einheit</i> KOMMANDO</a></tt> die Kommando-&#220;bergabe 
-            kontrolliert vonstatten gehen lassen. Die Reihenfolge der 
-            Einheiten ist w&#228;hrend der Auswertung nicht immer die dem Report 
-            entsprechende. Sind eigene Einheiten in dem Geb&#228;ude oder auf dem 
-            Schiff, f&#228;llt das Kommando aber diesen zu.
-          </p>
-          <p>
-            Befindet sich die Einheit auf einem Schiff und wird die Region von 
-            einer nicht-alliierten Partei bewacht, muss sie das Schiff erst 
-            verlassen, wenn sie bestimmte Aktionen durchf&#252;hren will. Siehe 
-            hierzu N&#228;heres unter <tt><a href="BEWACHE.html" title="BEWACHE">BEWACHE</a></tt>. 
-            Auf offener See funktioniert der Verlasse-Befehl nicht. Eine 
-            M&#246;glichkeit um Personen trotzdem &#252;ber Bord springen zu lassen ist 
-            &quot;Gib 0 [Anzahl] Personen&quot;. Eine andere, nur f&#252;r Meermenschen 
-            bereitstehende L&#246;sung, bei der die Personen nicht umkommen, ist 
-            das <a href="Schiffsreise.html#Anschwimmen" title="Schiffsreise">Anschwimmen</a>.
-          </p>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        VERLASSE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>VERLASSE</b></tt>
+            </p>
+            <p>
+              Die Einheit wird das Schiff oder das Geb&#228;ude, in dem sie sich 
+              befindet, verlassen. Wenn man die Befehle <tt><a href="BETRETE.html" title="BETRETE">BETRETE</a></tt> 
+              oder <tt><a href="NACH.html" title="NACH">NACH</a></tt> 
+              verwendet, verlassen die Einheiten z.T. automatisch ihre Schiffe 
+              und Geb&#228;ude. Dies funktioniert allerdings nicht immer: ist die 
+              Einheit Kapit&#228;n eines Schiffs und verwendet NACH, wird sie 
+              versuchen in diese Richtung zu segeln, auch wenn dort Festland 
+              ist. Kapit&#228;ne m&#252;ssen ihr Schiff zuerst <tt>VERLASSEN</tt>, 
+              alle anderen Segler k&#246;nnen sich aber mit <tt>NACH</tt> &#252;ber 
+              Land bewegen und verlassen das Schiff dabei automatisch.
+            </p>
+            <div align="center" style="background-color: #00cccc; background-image: null; background-repeat: repeat; background-attachment: scroll; background-position: null; border-top-color: purple; border-top-style: solid; border-top-width: 2px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: black; border-bottom-style: solid; border-bottom-width: 0px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px">
+              <small><b><a href="Das_dritte_Zeitalter.html" title="Das dritte Zeitalter">E3A 
+              &#8212; Das Dritte Zeitalter</a></b></small>
+            </div>
+            <div style="border-top-color: black; border-top-style: solid; border-top-width: 0px; border-right-color: purple; border-right-style: solid; border-right-width: 2px; border-bottom-color: purple; border-bottom-style: solid; border-bottom-width: 2px; border-left-color: purple; border-left-style: solid; border-left-width: 2px; padding-left: 5px">
+              Geb&#228;udebesitzer m&#252;ssen ebenfalls das Geb&#228;ude <tt>VERLASSEN</tt> 
+              oder das Kommando abgeben, um sich zu Bewegen oder ein anderes 
+              Geb&#228;ude oder Schiff zu betreten.
+            </div>
+            <p>
+              Verl&#228;&#223;t eine Einheit ein Geb&#228;ude oder ein Schiff, &#252;ber das sie 
+              das Kommando hat, f&#228;llt dieses nicht zwangsweise an die folgende 
+              Einheit des Reports. Hier sollte man mit <tt><a href="GIB.html" title="GIB">GIB 
+              <i>einheit</i> KOMMANDO</a></tt> die Kommando-&#220;bergabe 
+              kontrolliert vonstatten gehen lassen. Die Reihenfolge der 
+              Einheiten ist w&#228;hrend der Auswertung nicht immer die dem Report 
+              entsprechende. Sind eigene Einheiten in dem Geb&#228;ude oder auf dem 
+              Schiff, f&#228;llt das Kommando aber diesen zu.
+            </p>
+            <p>
+              Befindet sich die Einheit auf einem Schiff und wird die Region 
+              von einer nicht-alliierten Partei bewacht, muss sie das Schiff 
+              erst verlassen, wenn sie bestimmte Aktionen durchf&#252;hren will. 
+              Siehe hierzu N&#228;heres unter <tt><a href="BEWACHE.html" title="BEWACHE">BEWACHE</a></tt>. 
+              Auf offener See funktioniert der Verlasse-Befehl nicht. Eine 
+              M&#246;glichkeit um Personen trotzdem &#252;ber Bord springen zu lassen 
+              ist &quot;Gib 0 [Anzahl] Personen&quot;. Eine andere, nur f&#252;r Meermenschen 
+              bereitstehende L&#246;sung, bei der die Personen nicht umkommen, ist 
+              das <a href="Schiffsreise.html#Anschwimmen" title="Schiffsreise">Anschwimmen</a>.
+            </p>
+            <!-- 
 NewPP limit report
 Cached time: 20220210201650
 Cache expiry: 86400
@@ -77,14 +78,15 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.945      1 Vorlage:E3A
 100.00%    0.945      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1499-0!canonical and timestamp 20220210201650 and revision id 6718
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1499-0!canonical and timestamp 20220210201650 and revision id 6718
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

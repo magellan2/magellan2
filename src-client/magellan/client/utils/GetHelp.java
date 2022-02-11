@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -261,7 +262,7 @@ public class GetHelp extends JPanel {
 
     public void setLevel(int level) {
       this.level = level;
-    };
+    }
 
     public int getLevel() {
       return level;
@@ -345,7 +346,6 @@ public class GetHelp extends JPanel {
 
   }
 
-  private static final String PAGE_FILE = "help/de/pagelist.txt";
   private static final String BASE_URL = "https://wiki.eressea.de/index.php?title=";
   private static final String FILE_ENCODING = "utf-8";
   private static final String RAW_ACTION = "&redirect=no&action=raw";
@@ -353,19 +353,26 @@ public class GetHelp extends JPanel {
   private static final String HTML_ENCODING = "iso-8859-1";
   private static final String HTML_LANGUAGE = "de";
 
-  private static final String RULES_HTML_HEADER =
+  private static final String RULES_HTML_TEMPLATE =
       "<!DOCTYPE html>\n" +
           "<html lang=\"%s\">\n" +
           "<head>\n" +
           "<meta charset=\"%s\" />\n" +
           "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n" +
           "<meta name=\"keywords\" content=\"Magellan, Dokumentation, Eressea, PbeM, JavaClient\" />\n" +
+          "<meta name=\"generator\" content=\"magellan.client.utils.GetHelp\">" +
           "<meta name=\"description\" content=\"Magellan Dokumentation\" />\n" +
           "\n" +
           "<title>%s</title>\n" +
           "\n" +
           "<link rel=\"stylesheet\" href=\"./default.css\" type=\"text/css\" />\n" +
-          "</head>\n";
+          "</head>\n" +
+          "<body><div id='mh-content'>\n" +
+          "<h1>%s</h1>\n" +
+          "<div id='gh-content'></div>\n" +
+          "</div>\n" +
+          "</body>\n" +
+          "</html>";
   private JList<Page> pageList;
   private JEditorPane pageArea;
   private DefaultListModel<Page> pageModel;
@@ -551,10 +558,8 @@ public class GetHelp extends JPanel {
 
       HTMLEditorKit kit = new HTMLEditorKit();
       HTMLDocument doc = (HTMLDocument) kit.createDefaultDocument();
-      doc.setInnerHTML(doc.getDefaultRootElement(),
-          String.format(RULES_HTML_HEADER, HTML_LANGUAGE, HTML_ENCODING, page.getName()) +
-              "<body><div id='mh-content'><h1>" + page.getName()
-              + "</h1>\n<div id='gh-content'></div>\n</div>\n</body>\n");
+      kit.read(new StringReader(
+          String.format(RULES_HTML_TEMPLATE, HTML_LANGUAGE, HTML_ENCODING, page.getName(), page.getName())), doc, 0);
       doc.setInnerHTML(doc.getElement("gh-content"), strWriter.toString());
       page.setDocument(doc);
     } catch (ParserConfigurationException e) {

@@ -1,114 +1,115 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>TARNE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>TARNE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      TARNE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>TARNE</b> [<i>stufe</i>]<br><b>TARNE</b> PARTEI [NICHT]<br><b>TARNE</b> 
-            PARTEI NUMMER [<i>nummer</i>]<br><b>TARNE</b> <i>rasse</i></tt>
-          </p>
-          <p>
-            Mit der ersten Variante kann man einstellen, wie &quot;intensiv&quot; eine 
-            Einheit sich zu tarnen versucht. <tt>stufe</tt> kann nat&#252;rlich 
-            nicht h&#246;her als das <a href="Tarnung.html" title="Tarnung">Talent</a> 
-            der Einheit sein. Ohne Parameterangabe wird das Maximum gesetzt.
-          </p>
-          <p>
-            Mit <tt>TARNE PARTEI</tt> kann man seine Parteizugeh&#246;rigkeit zu 
-            verbergen versuchen. Die Parteizugeh&#246;rigkeit wird f&#252;r andere 
-            Spieler dann als &quot;anonym&quot; angezeigt. Im Gegensatz zum normalen 
-            Tarnung/Wahrnehmungs-Mechanismus kann man die Parteizugeh&#246;rigkeit 
-            einer solchen Einheit nur noch mit <a href="Liste_der_Talente.html" title="Liste der Talente">Spionage</a> 
-            erkennen. Mit <tt>TARNE PARTEI NICHT</tt> wird diese 
-            Anonymisierung wieder aufgehoben und andere Spieler sehen die 
-            korrekte Parteizugeh&#246;rigkeit - so sie denn &#252;ber ausreichend 
-            Wahrnehmung verf&#252;gen und die Einheit &#252;berhaupt in ihrem Report 
-            ersp&#228;hen.
-          </p>
-          <p>
-            <tt>TARNE PARTEI NUMMER nummer</tt> tarnt die Einheit mit der 
-            angegebenen Parteinummer, sie kann sich also als einer beliebigen 
-            anderen Partei zugeh&#246;rig tarnen. Es gibt keinen einfachen Weg, 
-            diese Form der Tarnung zu durchschauen. Um wieder der eigenen 
-            Partei zugeh&#246;rig zu erscheinen, mu&#223; f&#252;r <tt>nummer</tt> 
-            die eigene Parteinummer verwendet werden. Die angegebene Partei 
-            muss der Partei, welche den Befehl gibt, bekannt sein, d.h. in 
-            deren Report auftauchen, ansonsten schl&#228;gt der Befehl fehl. 
-            Parteien, die von der Partei oder Gruppe der Einheit <a href="HELFE.html" title="HELFE">HELFE 
-            xyz PARTEITARNUNG</a> bekommen, k&#246;nnen die wahre 
-            Parteizugeh&#246;rigkeit der Einheit sehen.
-          </p>
-          <p>
-            Mit <tt>TARNE rasse</tt> k&#246;nnen <a class="mw-redirect" href="Rassen.html#D.C3.A4monen" title="Dämonen">D&#228;monen</a> 
-            sich als andere Rasse tarnen.
-          </p>
-          <p>
-            Soweit, so einfach. Diese Tarnung bringt jedoch ein paar 
-            Besonderheiten mit sich, die hier in loser Reihenfolge aufgez&#228;hlt 
-            werden:
-          </p>
-          <ul>
-            <li>
-              Die (scheinbare) Rasse der Einheit &#228;ndert sich dadurch nicht, 
-              ein Goblin bleibt ein Goblin, auch wenn er sich als der Partei 
-              der Lichtelfen zugeh&#246;rig ausgibt.
-            </li>
-            <li>
-              Die Einheiten &#228;ndern ihr Verhalten durch die Tarnung nicht. Sie 
-              spenden z.B. kein Silber an die Verb&#252;ndeten der Partei, als die 
-              sie sich tarnen. Wer also die Tarnung perfektionieren will, 
-              sollte mit den Einheiten eine Gruppe bilden und f&#252;r diese Gruppe 
-              entsprechende Helfe-Stati setzen.<br>So getarnte Einheiten 
-              k&#246;nnen auch nicht pl&#246;tzlich Geb&#228;ude oder Schiffe betreten, die 
-              sie ansonsten nicht betreten d&#252;rfen, oder Steuern eintreiben, wo 
-              ihnen das normalerweise untersagt ist.
-            </li>
-            <li>
-              Im Kampf bilden derartige Einheiten ein eigenes Heer. Beispiel: 
-              Es gibt drei Parteien, die Waldelfen, die Flusselfen und die 
-              Eisenzwerge. Alle Parteien habe jeweils eine Einheit: Waldelf, 
-              Flusself und Eisenzwerg. W&#228;hrend Waldelf sich als Flusself 
-              tarnt, behalten alle anderen Einheiten ihre wahre Identit&#228;t bei.<br>Nun 
-              greift der Eisenzwerg den Flusself an. Dadurch erscheinen im 
-              Kampfreport drei Heere: Die Eisenzwerge, und zwei 
-              Flusselfen-Heere.
-            </li>
-          </ul>
-          <p>
-            <a href="GRUPPE.html" title="GRUPPE">GRUPPE</a> hat allerdings 
-            auch die Nebenwirkung mit den mehreren Heeren. Auf diese Weise 
-            kann man also nicht sehen ob Einheiten sich als eine fremde Partei 
-            ausgeben oder ob der Betreffende nur mehrere Gruppen hat.
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="Tarnung.html" title="Tarnung">Tarnung</a>
-            </li>
-            <li>
-              <a href="Wahrnehmung.html" title="Wahrnehmung">Wahrnehmung</a>
-            </li>
-          </ul>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        TARNE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>TARNE</b> [<i>stufe</i>]<br><b>TARNE</b> PARTEI [NICHT]<br><b>TARNE</b> 
+              PARTEI NUMMER [<i>nummer</i>]<br><b>TARNE</b> <i>rasse</i></tt>
+            </p>
+            <p>
+              Mit der ersten Variante kann man einstellen, wie &quot;intensiv&quot; eine 
+              Einheit sich zu tarnen versucht. <tt>stufe</tt> kann nat&#252;rlich 
+              nicht h&#246;her als das <a href="Tarnung.html" title="Tarnung">Talent</a> 
+              der Einheit sein. Ohne Parameterangabe wird das Maximum gesetzt.
+            </p>
+            <p>
+              Mit <tt>TARNE PARTEI</tt> kann man seine Parteizugeh&#246;rigkeit zu 
+              verbergen versuchen. Die Parteizugeh&#246;rigkeit wird f&#252;r andere 
+              Spieler dann als &quot;anonym&quot; angezeigt. Im Gegensatz zum normalen 
+              Tarnung/Wahrnehmungs-Mechanismus kann man die 
+              Parteizugeh&#246;rigkeit einer solchen Einheit nur noch mit <a href="Liste_der_Talente.html" title="Liste der Talente">Spionage</a> 
+              erkennen. Mit <tt>TARNE PARTEI NICHT</tt> wird diese 
+              Anonymisierung wieder aufgehoben und andere Spieler sehen die 
+              korrekte Parteizugeh&#246;rigkeit - so sie denn &#252;ber ausreichend 
+              Wahrnehmung verf&#252;gen und die Einheit &#252;berhaupt in ihrem Report 
+              ersp&#228;hen.
+            </p>
+            <p>
+              <tt>TARNE PARTEI NUMMER nummer</tt> tarnt die Einheit mit der 
+              angegebenen Parteinummer, sie kann sich also als einer 
+              beliebigen anderen Partei zugeh&#246;rig tarnen. Es gibt keinen 
+              einfachen Weg, diese Form der Tarnung zu durchschauen. Um wieder 
+              der eigenen Partei zugeh&#246;rig zu erscheinen, mu&#223; f&#252;r <tt>nummer</tt> 
+              die eigene Parteinummer verwendet werden. Die angegebene Partei 
+              muss der Partei, welche den Befehl gibt, bekannt sein, d.h. in 
+              deren Report auftauchen, ansonsten schl&#228;gt der Befehl fehl. 
+              Parteien, die von der Partei oder Gruppe der Einheit <a href="HELFE.html" title="HELFE">HELFE 
+              xyz PARTEITARNUNG</a> bekommen, k&#246;nnen die wahre 
+              Parteizugeh&#246;rigkeit der Einheit sehen.
+            </p>
+            <p>
+              Mit <tt>TARNE rasse</tt> k&#246;nnen <a class="mw-redirect" href="Rassen.html#D.C3.A4monen" title="Dämonen">D&#228;monen</a> 
+              sich als andere Rasse tarnen.
+            </p>
+            <p>
+              Soweit, so einfach. Diese Tarnung bringt jedoch ein paar 
+              Besonderheiten mit sich, die hier in loser Reihenfolge 
+              aufgez&#228;hlt werden:
+            </p>
+            <ul>
+              <li>
+                Die (scheinbare) Rasse der Einheit &#228;ndert sich dadurch nicht, 
+                ein Goblin bleibt ein Goblin, auch wenn er sich als der Partei 
+                der Lichtelfen zugeh&#246;rig ausgibt.
+              </li>
+              <li>
+                Die Einheiten &#228;ndern ihr Verhalten durch die Tarnung nicht. 
+                Sie spenden z.B. kein Silber an die Verb&#252;ndeten der Partei, 
+                als die sie sich tarnen. Wer also die Tarnung perfektionieren 
+                will, sollte mit den Einheiten eine Gruppe bilden und f&#252;r 
+                diese Gruppe entsprechende Helfe-Stati setzen.<br>So getarnte 
+                Einheiten k&#246;nnen auch nicht pl&#246;tzlich Geb&#228;ude oder Schiffe 
+                betreten, die sie ansonsten nicht betreten d&#252;rfen, oder 
+                Steuern eintreiben, wo ihnen das normalerweise untersagt ist.
+              </li>
+              <li>
+                Im Kampf bilden derartige Einheiten ein eigenes Heer. 
+                Beispiel: Es gibt drei Parteien, die Waldelfen, die Flusselfen 
+                und die Eisenzwerge. Alle Parteien habe jeweils eine Einheit: 
+                Waldelf, Flusself und Eisenzwerg. W&#228;hrend Waldelf sich als 
+                Flusself tarnt, behalten alle anderen Einheiten ihre wahre 
+                Identit&#228;t bei.<br>Nun greift der Eisenzwerg den Flusself 
+                an. Dadurch erscheinen im Kampfreport drei Heere: Die 
+                Eisenzwerge, und zwei Flusselfen-Heere.
+              </li>
+            </ul>
+            <p>
+              <a href="GRUPPE.html" title="GRUPPE">GRUPPE</a> hat allerdings 
+              auch die Nebenwirkung mit den mehreren Heeren. Auf diese Weise 
+              kann man also nicht sehen ob Einheiten sich als eine fremde 
+              Partei ausgeben oder ob der Betreffende nur mehrere Gruppen hat.
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a href="Tarnung.html" title="Tarnung">Tarnung</a>
+              </li>
+              <li>
+                <a href="Wahrnehmung.html" title="Wahrnehmung">Wahrnehmung</a>
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
 Cached time: 20220210201649
 Cache expiry: 86400
@@ -124,13 +125,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1525-0!canonical and timestamp 20220210201648 and revision id 7134
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1525-0!canonical and timestamp 20220210201648 and revision id 7134
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

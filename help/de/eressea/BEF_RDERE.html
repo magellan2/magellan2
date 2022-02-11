@@ -1,345 +1,346 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>BEFÖRDERE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>BEFÖRDERE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      BEF&#214;RDERE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>BEF&#214;RDERE</b></tt>
-          </p>
-          <p>
-            Bef&#246;rdert eine Einheit der eigenen Parteirasse zum Helden.
-          </p>
-          <p>
-            Helden sind besonders stark im <a href="Krieg.html" title="Krieg">Kampf</a>. 
-            Sie schlagen in jeder Kampfrunde 10 mal zu. <b>Achtung!</b> Helden 
-            greifen weder mit Magie, noch mit Armbr&#252;sten oder Katapulten 
-            h&#228;ufiger an.
-          </p>
-          <p>
-            Wenn eine Einheit bef&#246;rdert werden soll, ben&#246;tigt sie pro Person 
-            (Gesamt-Personen-Zahl der Partei) Silber. Fehlendes Silber wird 
-            wie gew&#246;hnlich aus dem <a class="mw-redirect" href="Materialpool.html" title="Silberpool">Silberpool</a> 
-            genommen, wenn genug da ist. Die maximale Anzahl der Helden ist 
-            begrenzt, steigt aber mit der Parteigr&#246;&#223;e. Die Formel daf&#252;r ist 
-            log10(Parteigr&#246;&#223;e&#247;50)&#215;20. Bef&#246;rdert werden k&#246;nnen nur Personen der 
-            eigenen Rasse, also weder Monster noch Migranten. Die <tt>BEF&#214;RDERUNG</tt> 
-            findet nach REKRUTIERE statt. Sowohl f&#252;r die Zahl der m&#246;glichen 
-            Helden als auch f&#252;r die Kosten von Bef&#246;rdere werden die 
-            Personenzahlen nach dem Rekrutieren in der aktuellen Wochen 
-            herangezogen.
-          </p>
-          <p>
-            Einheiten die bef&#246;rdert wurden, k&#246;nnen keine weiteren Personen 
-            rekrutieren und k&#246;nnen auch nicht mit anderen 
-            Nicht-Helden-Einheiten zusammengef&#252;hrt werden.
-          </p>
-          <p>
-            F&#252;r Rechenfaule hier eine Tabelle, bei welcher Personenzahl in der 
-            Partei wie viele Helden verf&#252;gbar sind.
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <table border="0" cellspacing="1">
-            <tr>
-              <th align="left" style="background-color: #aaaaaa">
-                Personen
-              </th>
-              <td align="right" style="background-color: #eeeeed">
-                57
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                63
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                71
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                80
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                89
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                100
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                112
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                126
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                141
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                159
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                178
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                200
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                224
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                251
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                282
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                316
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                354
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                398
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                446
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                500
-              </td>
-            </tr>
-            <tr>
-              <th align="left" style="background-color: #aaaaaa">
-                Helden
-              </th>
-              <td align="right" style="background-color: #eeeeed">
-                1
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                2
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                3
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                4
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                5
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                6
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                7
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                8
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                9
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                10
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                11
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                12
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                13
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                14
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                15
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                16
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                17
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                18
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                19
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                20
-              </td>
-            </tr>
-            <tr>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <th align="left" style="background-color: #aaaaaa">
-                Personen
-              </th>
-              <td align="right" style="background-color: #eeeeed">
-                562
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                630
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                707
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                793
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                890
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                998
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                1120
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                1256
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                1410
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                1582
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                2812
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                5000
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                8892
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                15812
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                28118
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                50000
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                88914
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                158114
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                281171
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                500000
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                ....
-
-                <p>
-                  <br>
+    <div id="mh-content">
+      <h1>
+        BEF&#214;RDERE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>BEF&#214;RDERE</b></tt>
+            </p>
+            <p>
+              Bef&#246;rdert eine Einheit der eigenen Parteirasse zum Helden.
+            </p>
+            <p>
+              Helden sind besonders stark im <a href="Krieg.html" title="Krieg">Kampf</a>. 
+              Sie schlagen in jeder Kampfrunde 10 mal zu. <b>Achtung!</b> 
+              Helden greifen weder mit Magie, noch mit Armbr&#252;sten oder 
+              Katapulten h&#228;ufiger an.
+            </p>
+            <p>
+              Wenn eine Einheit bef&#246;rdert werden soll, ben&#246;tigt sie pro Person 
+              (Gesamt-Personen-Zahl der Partei) Silber. Fehlendes Silber wird 
+              wie gew&#246;hnlich aus dem <a class="mw-redirect" href="Materialpool.html" title="Silberpool">Silberpool</a> 
+              genommen, wenn genug da ist. Die maximale Anzahl der Helden ist 
+              begrenzt, steigt aber mit der Parteigr&#246;&#223;e. Die Formel daf&#252;r ist 
+              log10(Parteigr&#246;&#223;e&#247;50)&#215;20. Bef&#246;rdert werden k&#246;nnen nur Personen 
+              der eigenen Rasse, also weder Monster noch Migranten. Die <tt>BEF&#214;RDERUNG</tt> 
+              findet nach REKRUTIERE statt. Sowohl f&#252;r die Zahl der m&#246;glichen 
+              Helden als auch f&#252;r die Kosten von Bef&#246;rdere werden die 
+              Personenzahlen nach dem Rekrutieren in der aktuellen Wochen 
+              herangezogen.
+            </p>
+            <p>
+              Einheiten die bef&#246;rdert wurden, k&#246;nnen keine weiteren Personen 
+              rekrutieren und k&#246;nnen auch nicht mit anderen 
+              Nicht-Helden-Einheiten zusammengef&#252;hrt werden.
+            </p>
+            <p>
+              F&#252;r Rechenfaule hier eine Tabelle, bei welcher Personenzahl in 
+              der Partei wie viele Helden verf&#252;gbar sind.
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <table border="0" cellspacing="1">
+              <tr>
+                <th align="left" style="background-color: #aaaaaa">
+                  Personen
+                </th>
+                <td align="right" style="background-color: #eeeeed">
+                  57
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  63
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  71
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  80
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  89
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  100
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  112
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  126
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  141
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  159
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  178
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  200
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  224
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  251
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  282
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  316
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  354
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  398
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  446
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  500
+                </td>
+              </tr>
+              <tr>
+                <th align="left" style="background-color: #aaaaaa">
+                  Helden
+                </th>
+                <td align="right" style="background-color: #eeeeed">
+                  1
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  2
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  3
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  4
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  5
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  6
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  7
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  8
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  9
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  10
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  11
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  12
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  13
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  14
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  15
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  16
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  17
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  18
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  19
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  20
+                </td>
+              </tr>
+              <tr>
+                <td>
                   
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <th align="left" style="background-color: #aaaaaa">
-                Helden
-              </th>
-              <td align="right" style="background-color: #eeeeed">
-                21
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                22
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                23
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                24
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                25
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                26
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                27
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                28
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                29
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                30
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                35
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                40
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                45
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                50
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                55
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                60
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                65
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                70
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                75
-              </td>
-              <td align="right" style="background-color: #aaaaaa">
-                80
-              </td>
-              <td align="right" style="background-color: #eeeeed">
-                ....
-              </td>
-            </tr>
-          </table>
-          <!-- 
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <th align="left" style="background-color: #aaaaaa">
+                  Personen
+                </th>
+                <td align="right" style="background-color: #eeeeed">
+                  562
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  630
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  707
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  793
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  890
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  998
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  1120
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  1256
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  1410
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  1582
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  2812
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  5000
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  8892
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  15812
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  28118
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  50000
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  88914
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  158114
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  281171
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  500000
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  ....
+
+                  <p>
+                    <br>
+                    
+                  </p>
+                </td>
+              </tr>
+              <tr>
+                <th align="left" style="background-color: #aaaaaa">
+                  Helden
+                </th>
+                <td align="right" style="background-color: #eeeeed">
+                  21
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  22
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  23
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  24
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  25
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  26
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  27
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  28
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  29
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  30
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  35
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  40
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  45
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  50
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  55
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  60
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  65
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  70
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  75
+                </td>
+                <td align="right" style="background-color: #aaaaaa">
+                  80
+                </td>
+                <td align="right" style="background-color: #eeeeed">
+                  ....
+                </td>
+              </tr>
+            </table>
+            <!-- 
 NewPP limit report
-Cached time: 20220210171104
+Cached time: 20220211172233
 Cache expiry: 86400
 Dynamic content: false
 CPU time usage: 0.012 seconds
@@ -353,13 +354,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1460-0!canonical and timestamp 20220210171104 and revision id 6736
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1460-0!canonical and timestamp 20220211172233 and revision id 6736
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

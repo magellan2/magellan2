@@ -1,111 +1,112 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>RESERVIERE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>RESERVIERE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      RESERVIERE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>RESERVIERE</b> <i>anzahl</i> <i>gegenstand</i><br><b>RESERVIERE</b> 
-            ALLES <i>gegenstand</i><br><b>RESERVIERE</b> JE <i>anzahl</i> <i>gegenstand</i></tt>
-          </p>
-          <p>
-            Hiermit kann sich eine Einheit Gegenst&#228;nde oder Silber von anderen 
-            Einheiten der Region nehmen und &quot;sichern&quot;. Dabei ist zu beachten, 
-            dass die Einheit sich ihre Waren von irgendeiner Einheit nimmt (in 
-            der Regel von oben nach unten entsprechend der Reihenfolge im NR), 
-            es sei denn, diese Einheit hat ihrerseits diesen Gegenstand 
-            reserviert (siehe dazu aber <a href="Materialpool.html" title="Materialpool">Materialpool</a>!).
-          </p>
-          <p>
-            Mit <tt>RESERVIERE ALLES <i>gegenstand</i></tt> reserviert eine 
-            Einheit von dem angegebenen Gegenstand alles, was sie besitzt.
-          </p>
-          <p>
-            Mit <tt>RESERVIERE JE</tt> werden <tt><i>anzahl</i></tt> 
-            Gegenst&#228;nde <i>pro Person</i> reserviert.
-          </p>
-          <pre>RESERVIERE JE 100 Silber</pre>
-          <p>
-            reserviert bei einer Einheit mit 10 Personen also 1000 Silber.
-          </p>
-          <p>
-            <br>
-            
-          </p>
-          <h2>
-            <span class="mw-headline" id="Fehlerquellen">Fehlerquellen</span>
-          </h2>
-          <ul>
-            <li>
-              <tt>TEMP</tt>-Einheiten k&#246;nnen nicht reservieren! Silber wie 
-              Gegenst&#228;nde m&#252;ssen ihnen mit <tt><a href="GIB.html" title="GIB">GIB</a></tt> 
-              &#252;bergeben werden.
-            </li>
-            <li>
-              <tt>RESERVIERE</tt> kommt vor <a href="GIB.html" title="GIB">GIB</a> 
-              und <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a> 
-              in der <a href="Befehlsreihenfolge.html" title="Befehlsreihenfolge">Befehlsreihenfolge</a>. 
-              Also bezieht sich <tt>JE</tt> auf die Anzahl der Personen vor 
-              Personen&#252;bergabe und Rekrutierungen.
-            </li>
-            <li>
-              Wird von den Einheiten einer Partei mehr von einem Gegenstand 
-              reserviert, als in der Region (im Materialpool) insgesamt 
-              vorhanden ist, ist das Ergebnis schwer vorhersagbar. F&#252;r weitere 
-              Details siehe <a href="Materialpool.html" title="Materialpool">Materialpool</a>.
-            </li>
-            <li>
-              Wird ein und derselbe Gegenstand von einer Einheiten mehrmals 
-              reserviert, so gilt nur der letzte Eintrag.
-            </li>
-          </ul>
-          <h2>
-            <span class="mw-headline" id="Beispiele">Beispiele</span>
-          </h2>
-          <p>
-            Mit
-          </p>
-          <pre> RESERVIERE JE 1 Schwert
+    <div id="mh-content">
+      <h1>
+        RESERVIERE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>RESERVIERE</b> <i>anzahl</i> <i>gegenstand</i><br><b>RESERVIERE</b> 
+              ALLES <i>gegenstand</i><br><b>RESERVIERE</b> JE <i>anzahl</i> <i>gegenstand</i></tt>
+            </p>
+            <p>
+              Hiermit kann sich eine Einheit Gegenst&#228;nde oder Silber von 
+              anderen Einheiten der Region nehmen und &quot;sichern&quot;. Dabei ist zu 
+              beachten, dass die Einheit sich ihre Waren von irgendeiner 
+              Einheit nimmt (in der Regel von oben nach unten entsprechend der 
+              Reihenfolge im NR), es sei denn, diese Einheit hat ihrerseits 
+              diesen Gegenstand reserviert (siehe dazu aber <a href="Materialpool.html" title="Materialpool">Materialpool</a>!).
+            </p>
+            <p>
+              Mit <tt>RESERVIERE ALLES <i>gegenstand</i></tt> reserviert eine 
+              Einheit von dem angegebenen Gegenstand alles, was sie besitzt.
+            </p>
+            <p>
+              Mit <tt>RESERVIERE JE</tt> werden <tt><i>anzahl</i></tt> 
+              Gegenst&#228;nde <i>pro Person</i> reserviert.
+            </p>
+            <pre>RESERVIERE JE 100 Silber</pre>
+            <p>
+              reserviert bei einer Einheit mit 10 Personen also 1000 Silber.
+            </p>
+            <p>
+              <br>
+              
+            </p>
+            <h2>
+              <span class="mw-headline" id="Fehlerquellen">Fehlerquellen</span>
+            </h2>
+            <ul>
+              <li>
+                <tt>TEMP</tt>-Einheiten k&#246;nnen nicht reservieren! Silber wie 
+                Gegenst&#228;nde m&#252;ssen ihnen mit <tt><a href="GIB.html" title="GIB">GIB</a></tt> 
+                &#252;bergeben werden.
+              </li>
+              <li>
+                <tt>RESERVIERE</tt> kommt vor <a href="GIB.html" title="GIB">GIB</a> 
+                und <a href="REKRUTIERE.html" title="REKRUTIERE">REKRUTIERE</a> 
+                in der <a href="Befehlsreihenfolge.html" title="Befehlsreihenfolge">Befehlsreihenfolge</a>. 
+                Also bezieht sich <tt>JE</tt> auf die Anzahl der Personen vor 
+                Personen&#252;bergabe und Rekrutierungen.
+              </li>
+              <li>
+                Wird von den Einheiten einer Partei mehr von einem Gegenstand 
+                reserviert, als in der Region (im Materialpool) insgesamt 
+                vorhanden ist, ist das Ergebnis schwer vorhersagbar. F&#252;r 
+                weitere Details siehe <a href="Materialpool.html" title="Materialpool">Materialpool</a>.
+              </li>
+              <li>
+                Wird ein und derselbe Gegenstand von einer Einheiten mehrmals 
+                reserviert, so gilt nur der letzte Eintrag.
+              </li>
+            </ul>
+            <h2>
+              <span class="mw-headline" id="Beispiele">Beispiele</span>
+            </h2>
+            <p>
+              Mit
+            </p>
+            <pre> RESERVIERE JE 1 Schwert
  RESERVIERE JE 1 Schild
  GIB depo ALLES</pre>
-          <p>
-            kann eine Einheit, auch nach einem verlustreichen Kampf, pro 
-            Person eine Waffe und einen Schild behalten und alles andere 
-            (Beute) an eine Depot-Einheit abgeben.
-          </p>
-          <p>
-            Mit
-          </p>
-          <pre> @RESERVIERE 100 Silber
+            <p>
+              kann eine Einheit, auch nach einem verlustreichen Kampf, pro 
+              Person eine Waffe und einen Schild behalten und alles andere 
+              (Beute) an eine Depot-Einheit abgeben.
+            </p>
+            <p>
+              Mit
+            </p>
+            <pre> @RESERVIERE 100 Silber
  RESERVIERE 1 Schwert
  RESERVIERE 50 Silber</pre>
-          <p>
-            wird die Einheit ein Schwert und 50 Silber reservieren.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="Materialpool.html" title="Materialpool">Materialpool</a>
-            </li>
-            <li>
-              <a href="GIB.html" title="GIB">GIB</a>
-            </li>
-          </ul>
-          <!-- 
+            <p>
+              wird die Einheit ein Schwert und 50 Silber reservieren.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a href="Materialpool.html" title="Materialpool">Materialpool</a>
+              </li>
+              <li>
+                <a href="GIB.html" title="GIB">GIB</a>
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
 Cached time: 20220210201647
 Cache expiry: 86400
@@ -121,13 +122,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1512-0!canonical and timestamp 20220210201647 and revision id 5930
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1512-0!canonical and timestamp 20220210201647 and revision id 5930
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

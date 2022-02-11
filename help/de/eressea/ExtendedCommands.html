@@ -1,121 +1,122 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>ExtendedCommands</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>ExtendedCommands</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      ExtendedCommands
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            ExtendedCommands sind ein Plugin f&#252;r <a class="external text" href="http://magellan-client.sf.net" rel="nofollow">Magellan</a>, 
-            das im Standardlieferumfang enthalten ist und mit dem man Befehle 
-            automatisieren kann.
-          </p>
-          <p>
-            Auf der <a class="external text" href="http://magellan.narabi.de/plugins_extcmds_en.php" rel="nofollow">offiziellen 
-            Seite</a> gibt es eine Einf&#252;hrung und ein paar Beispielscripte.
-          </p>
-          <p>
-            Die Script-Bibliothek versteckt sich im Magellan Men&#252;: Plugins -&gt; 
-            Erweiterte Befehle -&gt; Bibliothek Bearbeiten... Es geht seitlich 
-            ein neuer View auf, mit einer grossen Textarea zum Code eingeben, 
-            sowie Buttons zum Ausf&#252;hren und Speichern.
-          </p>
-          <p>
-            Was folgt sind Metas Beispielskripte. Einen anderen Ansatz 
-            verfolgen der <a href="/index.php/E3CommandParser" title="E3CommandParser">E3CommandParser</a> 
-            von Solthar.
-          </p>
-          <div class="toc" id="toc">
-            <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
-            
+    <div id="mh-content">
+      <h1>
+        ExtendedCommands
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              ExtendedCommands sind ein Plugin f&#252;r <a class="external text" href="http://magellan-client.sf.net" rel="nofollow">Magellan</a>, 
+              das im Standardlieferumfang enthalten ist und mit dem man 
+              Befehle automatisieren kann.
+            </p>
+            <p>
+              Auf der <a class="external text" href="http://magellan.narabi.de/plugins_extcmds_en.php" rel="nofollow">offiziellen 
+              Seite</a> gibt es eine Einf&#252;hrung und ein paar Beispielscripte.
+            </p>
+            <p>
+              Die Script-Bibliothek versteckt sich im Magellan Men&#252;: Plugins 
+              -&gt; Erweiterte Befehle -&gt; Bibliothek Bearbeiten... Es geht 
+              seitlich ein neuer View auf, mit einer grossen Textarea zum Code 
+              eingeben, sowie Buttons zum Ausf&#252;hren und Speichern.
+            </p>
+            <p>
+              Was folgt sind Metas Beispielskripte. Einen anderen Ansatz 
+              verfolgen der <a href="/index.php/E3CommandParser" title="E3CommandParser">E3CommandParser</a> 
+              von Solthar.
+            </p>
+            <div class="toc" id="toc">
+              <input class="toctogglecheckbox" id="toctogglecheckbox" role="button" type="checkbox" style="display: none">
+              
 
-            <div class="toctitle" dir="ltr" lang="de">
-              <h2>
-                Inhaltsverzeichnis
-              </h2>
-              <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
-              </span>
+              <div class="toctitle" dir="ltr" lang="de">
+                <h2>
+                  Inhaltsverzeichnis
+                </h2>
+                <span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox">
+                </span>
+              </div>
+              <ul>
+                <li class="toclevel-1 tocsection-1">
+                  <a href="#Metas_Skripte"><span class="tocnumber">1</span> <span class="toctext">Metas 
+                  Skripte</span></a>
+
+                  <ul>
+                    <li class="toclevel-2 tocsection-2">
+                      <a href="#Meta.27s_BurgenbauSchilder"><span class="tocnumber">1.1</span> 
+                      <span class="toctext">Meta's BurgenbauSchilder</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-3">
+                      <a href="#Meta.27s_FreundFeindSchilder"><span class="tocnumber">1.2</span> 
+                      <span class="toctext">Meta's FreundFeindSchilder</span></a>
+                    </li>
+                    <li class="toclevel-2 tocsection-4">
+                      <a href="#Meta.27s_BefehlsChecker"><span class="tocnumber">1.3</span> 
+                      <span class="toctext">Meta's BefehlsChecker</span></a>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </div>
-            <ul>
-              <li class="toclevel-1 tocsection-1">
-                <a href="#Metas_Skripte"><span class="tocnumber">1</span> <span class="toctext">Metas 
-                Skripte</span></a>
-
-                <ul>
-                  <li class="toclevel-2 tocsection-2">
-                    <a href="#Meta.27s_BurgenbauSchilder"><span class="tocnumber">1.1</span> 
-                    <span class="toctext">Meta's BurgenbauSchilder</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-3">
-                    <a href="#Meta.27s_FreundFeindSchilder"><span class="tocnumber">1.2</span> 
-                    <span class="toctext">Meta's FreundFeindSchilder</span></a>
-                  </li>
-                  <li class="toclevel-2 tocsection-4">
-                    <a href="#Meta.27s_BefehlsChecker"><span class="tocnumber">1.3</span> 
-                    <span class="toctext">Meta's BefehlsChecker</span></a>
-                  </li>
-                </ul>
+            <h2>
+              <span class="mw-headline" id="Metas_Skripte">Metas Skripte</span>
+            </h2>
+            <p>
+              Generell kann man die Scripte einem nach dem anderen 
+              reinkopieren, aber ich hab es bei mir in 4 Teile aufgeteilt:
+            </p>
+            <ol>
+              <li>
+                Imports: Nur 2 Zeilen reinkopieren.
               </li>
-            </ul>
-          </div>
-          <h2>
-            <span class="mw-headline" id="Metas_Skripte">Metas Skripte</span>
-          </h2>
-          <p>
-            Generell kann man die Scripte einem nach dem anderen reinkopieren, 
-            aber ich hab es bei mir in 4 Teile aufgeteilt:
-          </p>
-          <ol>
-            <li>
-              Imports: Nur 2 Zeilen reinkopieren.
-            </li>
-            <li>
-              Funktionenbibliothek: Einfach reinkopieren
-            </li>
-            <li>
-              Konfiguration: Hier muss man etwas Hand anlegen
-            </li>
-            <li>
-              Aufrufe: Da kann man halt jeweils einstellen was man tun will.
-            </li>
-          </ol>
-          <p>
-            Wenn man selber was schreiben will findet man unter 
-            Desktop-&gt;Erweiterte Befehle Hilfe alles was man braucht. Mittels 
-            Button &quot;Browser&quot; kann man sich die Seite auch im Browser anzeigen 
-            lassen.
-          </p>
-          <p>
-            Achja, hier sind die 2 Zeilen f&#252;r den Import:
-          </p>
-          <pre>import magellan.library.*;
+              <li>
+                Funktionenbibliothek: Einfach reinkopieren
+              </li>
+              <li>
+                Konfiguration: Hier muss man etwas Hand anlegen
+              </li>
+              <li>
+                Aufrufe: Da kann man halt jeweils einstellen was man tun will.
+              </li>
+            </ol>
+            <p>
+              Wenn man selber was schreiben will findet man unter 
+              Desktop-&gt;Erweiterte Befehle Hilfe alles was man braucht. Mittels 
+              Button &quot;Browser&quot; kann man sich die Seite auch im Browser 
+              anzeigen lassen.
+            </p>
+            <p>
+              Achja, hier sind die 2 Zeilen f&#252;r den Import:
+            </p>
+            <pre>import magellan.library.*;
 import magellan.library.rules.*;</pre>
-          <p>
-            Hier sind meine vorgefertigten Scripts:
-          </p>
-          <h3>
-            <span class="mw-headline" id="Meta.27s_BurgenbauSchilder">Meta's 
-            BurgenbauSchilder</span>
-          </h3>
-          <p>
-            Ein Aufruf von <code>metaBurgenbauSchilder()</code> bekommt man in 
-            allen Regionen ein Schild mit folgenden Infos: Burggr&#246;sse M Moral 
-            Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten Burgupgrade 
-            Steineffizienz (=Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten 
-            Burgupgrade)
-          </p>
-          <pre>/*********************************************
+            <p>
+              Hier sind meine vorgefertigten Scripts:
+            </p>
+            <h3>
+              <span class="mw-headline" id="Meta.27s_BurgenbauSchilder">Meta's 
+              BurgenbauSchilder</span>
+            </h3>
+            <p>
+              Ein Aufruf von <code>metaBurgenbauSchilder()</code> bekommt man 
+              in allen Regionen ein Schild mit folgenden Infos: Burggr&#246;sse M 
+              Moral Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten Burgupgrade 
+              Steineffizienz (=Silber pro Burgengr&#246;sse / Stein f&#252;r n&#228;chsten 
+              Burgupgrade)
+            </p>
+            <pre>/*********************************************
 *        Meta's BurgenbauSchilder            *
 * Version 0.5                                *
 *********************************************/
@@ -159,15 +160,15 @@ metaBurgenbauSchilder() {
     }
   }
 }</pre>
-          <h3>
-            <span class="mw-headline" id="Meta.27s_FreundFeindSchilder">Meta's 
-            FreundFeindSchilder</span>
-          </h3>
-          <p>
-            Das ist etwas komplizierter, da es etwas an Konfiguration 
-            erfordert. Genauere Doku wird noch nachgeliefert:
-          </p>
-          <pre>/*********************************************
+            <h3>
+              <span class="mw-headline" id="Meta.27s_FreundFeindSchilder">Meta's 
+              FreundFeindSchilder</span>
+            </h3>
+            <p>
+              Das ist etwas komplizierter, da es etwas an Konfiguration 
+              erfordert. Genauere Doku wird noch nachgeliefert:
+            </p>
+            <pre>/*********************************************
 *        Meta's FreundFeindSchilder          *
 * Version 0.6                                *
 *********************************************/
@@ -301,30 +302,31 @@ metaDiplomatieListe(String chefdiplomat,String outputType){
   }
   unit.addOrderAt(0,&quot;/&quot;+&quot;/ TODO Factionliste rauskopieren&quot;);
 }</pre>
-          <p>
-            Zur Konfiguration braucht man noch eine weitere Funktion, in der 
-            jede Parteinummer die einem speziellen Allianz zugeteilt werden 
-            soll, eine Zuordnung:
-          </p>
-          <pre>metaFriendFoeCallback(HashMap tmpCallback){
+            <p>
+              Zur Konfiguration braucht man noch eine weitere Funktion, in der 
+              jede Parteinummer die einem speziellen Allianz zugeteilt werden 
+              soll, eine Zuordnung:
+            </p>
+            <pre>metaFriendFoeCallback(HashMap tmpCallback){
 tmpCallback.put(&quot;ii&quot;,&quot;MOB&quot;);//Monster
 return tmpCallback;
 }</pre>
-          <p>
-            <br>
-            
-          </p>
-          <h3>
-            <span class="mw-headline" id="Meta.27s_BefehlsChecker">Meta's 
-            BefehlsChecker</span>
-          </h3>
-          <p>
-            Auch das ist etwas komplizierter. Wird mittels 
-            metaBefehlChecker(&quot;partei#&quot;); aufgerufen. Dadurch bekommen 
-            Einheiten die die Zeilen <code>// m/abbauen/stein</code> bzw. auch 
-            f&#252;r eisen oder holz gesetzt haben, die entsprechenden Befehle.
-          </p>
-          <pre>/*********************************************
+            <p>
+              <br>
+              
+            </p>
+            <h3>
+              <span class="mw-headline" id="Meta.27s_BefehlsChecker">Meta's 
+              BefehlsChecker</span>
+            </h3>
+            <p>
+              Auch das ist etwas komplizierter. Wird mittels 
+              metaBefehlChecker(&quot;partei#&quot;); aufgerufen. Dadurch bekommen 
+              Einheiten die die Zeilen <code>// m/abbauen/stein</code> bzw. 
+              auch f&#252;r eisen oder holz gesetzt haben, die entsprechenden 
+              Befehle.
+            </p>
+            <pre>/*********************************************
 *        Meta's BefehlsChecker               *
 * Version 0.6                                *
 *********************************************/
@@ -435,7 +437,7 @@ int metaGetUnitSkillLevel(Unit unit, String skillName) {//eigentlich aus Helper 
     }
   return 0;
 } </pre>
-          <!-- 
+            <!-- 
 NewPP limit report
 Cached time: 20220210181059
 Cache expiry: 86400
@@ -451,13 +453,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 11982/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1887-0!canonical and timestamp 20220210181059 and revision id 5882
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1887-0!canonical and timestamp 20220210181059 and revision id 5882
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

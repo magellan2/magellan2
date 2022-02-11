@@ -1,82 +1,84 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>KAUFE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>KAUFE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      KAUFE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>KAUFE</b> <i>anzahl</i> <i>luxusgut</i></tt>
-          </p>
-          <p>
-            Wenn die Einheit das Talent <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handeln</a> 
-            hat, wird sie versuchen, die genannte Anzahl Luxusg&#252;ter zu kaufen. 
-            Dies geht nur, wenn sich in der Region erstens ein Handelsposten 
-            oder ein gr&#246;&#223;erer Burgtyp befindet, in dessen N&#228;he der Markt 
-            abgehalten werden kann, und zweitens das Produkt &#252;berhaupt in der 
-            Region produziert wird. Um etwas zu kaufen, ist kein Kontakt zum 
-            Burgherren notwendig; trotzdem ist es nat&#252;rlich diplomatischer, 
-            vorher zu fragen ...
-          </p>
-          <p>
-            <tt>KAUFE</tt> ist wie <tt><a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a></tt> 
-            ein <a href="Befehl.html" title="Befehl">&quot;pseudolanger&quot; Befehl</a>. 
-            Man kann insgesamt Talentstufe(Handeln)*10 Luxusg&#252;ter umsetzen, 
-            allerdings keine anderen langen Befehle geben.
-          </p>
-          <p>
-            Beispiel:
-          </p>
-          <pre> EINHEIT hndl;     Marktschreier [1, $1000]
+    <div id="mh-content">
+      <h1>
+        KAUFE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>KAUFE</b> <i>anzahl</i> <i>luxusgut</i></tt>
+            </p>
+            <p>
+              Wenn die Einheit das Talent <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handeln</a> 
+              hat, wird sie versuchen, die genannte Anzahl Luxusg&#252;ter zu 
+              kaufen. Dies geht nur, wenn sich in der Region erstens ein 
+              Handelsposten oder ein gr&#246;&#223;erer Burgtyp befindet, in dessen N&#228;he 
+              der Markt abgehalten werden kann, und zweitens das Produkt 
+              &#252;berhaupt in der Region produziert wird. Um etwas zu kaufen, ist 
+              kein Kontakt zum Burgherren notwendig; trotzdem ist es nat&#252;rlich 
+              diplomatischer, vorher zu fragen ...
+            </p>
+            <p>
+              <tt>KAUFE</tt> ist wie <tt><a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a></tt> 
+              ein <a href="Befehl.html" title="Befehl">&quot;pseudolanger&quot; Befehl</a>. 
+              Man kann insgesamt Talentstufe(Handeln)*10 Luxusg&#252;ter umsetzen, 
+              allerdings keine anderen langen Befehle geben.
+            </p>
+            <p>
+              Beispiel:
+            </p>
+            <pre> EINHEIT hndl;     Marktschreier [1, $1000]
    ; Handel 3 [180]
    VERKAUFE 15 Juwelen
    VERKAUFE 15 &#214;l
    KAUFE 10 Weihrauch</pre>
-          <p>
-            Dieser H&#228;ndler wird 10 Weihrauch kaufen, 15 Juwelen und 5 &#214;l 
-            verkaufen. KAUF-Order haben Priorit&#228;t vor Verk&#228;ufen, und f&#252;r 
-            Verk&#228;ufe gilt die Reihenfolge der Befehlsabgabe, so da&#223; nach 5 &#214;l 
-            sein Limit erreicht ist.
-          </p>
-          <p>
-            <tt>KAUFE</tt> wie <tt>VERKAUFE</tt> tauchen nicht im Normalreport 
-            auf, so da&#223; es scheint, als h&#228;tte die Einheit keinen <a href="Befehl.html" title="Befehl">Defaultbefehl</a>. 
-            Dies ist aber nur, damit nicht eine gro&#223;e Liste von Befehlen dort 
-            steht. Im Computerreport und der Zugvorlage sind alle Befehle nur 
-            aufgef&#252;hrt, wenn ihnen ein @ vorangestellt ist.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>
-            </li>
-            <li>
-              <a href="Geld.html" title="Geld">Geld</a>
-            </li>
-            <li>
-              <a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a>
-            </li>
-          </ul>
-          <!-- 
+            <p>
+              Dieser H&#228;ndler wird 10 Weihrauch kaufen, 15 Juwelen und 5 &#214;l 
+              verkaufen. KAUF-Order haben Priorit&#228;t vor Verk&#228;ufen, und f&#252;r 
+              Verk&#228;ufe gilt die Reihenfolge der Befehlsabgabe, so da&#223; nach 5 
+              &#214;l sein Limit erreicht ist.
+            </p>
+            <p>
+              <tt>KAUFE</tt> wie <tt>VERKAUFE</tt> tauchen nicht im 
+              Normalreport auf, so da&#223; es scheint, als h&#228;tte die Einheit 
+              keinen <a href="Befehl.html" title="Befehl">Defaultbefehl</a>. 
+              Dies ist aber nur, damit nicht eine gro&#223;e Liste von Befehlen 
+              dort steht. Im Computerreport und der Zugvorlage sind alle 
+              Befehle nur aufgef&#252;hrt, wenn ihnen ein @ vorangestellt ist.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a class="mw-redirect" href="Geld.html#Handel" title="Handel">Handel</a>
+              </li>
+              <li>
+                <a href="Geld.html" title="Geld">Geld</a>
+              </li>
+              <li>
+                <a href="VERKAUFE.html" title="VERKAUFE">VERKAUFE</a>
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
-Cached time: 20220210082547
+Cached time: 20220211101758
 Cache expiry: 86400
 Dynamic content: false
 CPU time usage: 0.006 seconds
-Real time usage: 0.006 seconds
+Real time usage: 0.007 seconds
 Preprocessor visited node count: 3/1000000
 Preprocessor generated node count: 8/1000000
 Post?expand include size: 0/2097152 bytes
@@ -86,13 +88,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1515-0!canonical and timestamp 20220210082547 and revision id 6346
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1515-0!canonical and timestamp 20220211101758 and revision id 6346
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

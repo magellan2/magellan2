@@ -1,1545 +1,1549 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>Tränke</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>Tränke</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      Tr&#228;nke
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            Alchemistische <b>Tr&#228;nke</b> werden mit Hilfe von <a href="Kr_uter.html" title="Kräuter">Kr&#228;utern</a> 
-            und anderen Zutaten gebraut und k&#246;nnen dann von jeder Einheit 
-            angewandt werden. Um einen Trank herstellen zu k&#246;nnen, braucht man 
-            nat&#252;rlich das Talent <a href="Liste_der_Talente.html" title="Liste der Talente">Alchemie</a>, 
-            und um die ben&#246;tigten Kr&#228;uter finden zu k&#246;nnen, braucht man das 
-            Talent <a href="Liste_der_Talente.html" title="Liste der Talente">Kr&#228;uterkunde</a>.
-          </p>
-          <p>
-            Tr&#228;nke werden mit dem Befehl <tt><a href="MACHE.html" title="MACHE">MACHE</a> 
-            &quot;Trank&quot;</tt> hergestellt. Pro Trank braucht man diverse 
-            Zutaten. Welche dies sind, erf&#228;hrt man aus den Rezepten, die man 
-            mit Erlangen einer neuen Stufe in Alchemie automatisch f&#252;r diese 
-            Stufe erf&#228;hrt. Um einen Trank herstellen zu k&#246;nnen, muss die Stufe 
-            des Alchemisten doppelt so hoch sein wie die Stufe des Trankes. 
-            Ein Alchemist kann jede Runde Talentstufe/(Trankstufe*2) Tr&#228;nke 
-            herstellen. Ein Alchemist der Stufe 6 kann also maximal einen 
-            Trank der Stufe 3, einen der zweiten Stufe oder drei Tr&#228;nke der 
-            ersten Stufe herstellen.
-          </p>
-          <p>
-            Will man einen Trank anwenden, so tut man dies mit dem Befehl <tt><a href="BENUTZE.html" title="BENUTZE">BENUTZE</a> 
-            [anzahl] &quot;Trank&quot; [einheit-nr]</tt>. Ein Trank l&#228;sst sich 
-            nicht auf mehrere Einheiten aufteilen - man kann aber nach der 
-            Trank-Benutzung eine gro&#223;e Einheit in mehrere kleinere Einheiten 
-            aufteilen.
-          </p>
-          <p>
-            Die meisten Tr&#228;nke nutzen der Einheit, die sie anwendet. Ausnahmen 
-            sind Tr&#228;nke, die sich auf eine Region beziehen - hier wird der 
-            Effekt in der Region erzielt, in der sich die Einheit bei 
-            Zugbeginn aufh&#228;lt - oder die auf andere Einheiten wirken 
-            (Dumpfbackenbrot).
-          </p>
-          <p>
-            Ein Trank wirkt normalerweise f&#252;r 10 Personen bzw. Gegenst&#228;nde 
-            (dies ist in den Rezepten auch angegeben), und zwar in der Runde, 
-            in der er benutzt wurde. Tr&#228;nke, die auf die Gegenst&#228;nde einer 
-            Einheit wirken, verfallen, wenn sie nicht benutzt werden k&#246;nnen, 
-            weil die Einheit diese Gegenst&#228;nde nicht (mehr) hat. Viele Tr&#228;nke 
-            wirken so, dass zu viele Personen in der Einheit nichts ausmachen, 
-            d.h. bei 12 Personen und einem Trank (wirkt f&#252;r 10) betrifft die 
-            Wirkung eben nur 10 der 12 Leute. Beim &quot;Berserkerblut&quot; ist dies 
-            nicht m&#246;glich, da im Kampf die Beteiligten nicht als Einheit 
-            auftreten. Hier ist es notwendig, dass vor dem Kampf alle Personen 
-            der Einheit die Wirkung des Trankes haben, da er sonst nicht wirkt!
-          </p>
-          <p>
-            Die &quot;Restwirkung&quot; von Tr&#228;nken verf&#228;llt nicht bei allen Tr&#228;nken, so 
-            dass z.B. eine Person nach Anwendung von einem Gehirnschmalz oder 
-            Schaffenstrunk zehn Wochen von der Wirkung profitieren kann.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Trankliste">Trankliste</span>
-          </h2>
-          <table align="center" border="0" cellspacing="2">
-            <caption>
-              Trankliste 
-            </caption>
-            <tr style="background-color: #aaaaaa">
-              <th>
-                Stufe
-              </th>
-              <th>
-                K&#252;rzel
-              </th>
-              <th>
-                Name
-              </th>
-              <th>
-                Zutaten
-              </th>
-              <th>
-                Beschreibung
-              </th>
-              <th>
-                Wirkung
-              </th>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                1
-              </th>
-              <td>
-                Sm
-              </td>
-              <td>
-                Siebenmeilentee
-              </td>
-              <td>
-                Blauer Baumringel, Windbeutel
-              </td>
-              <td>
-                10 Leute schnell wie Pferde
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                1
-              </th>
-              <td>
-                Gw
-              </td>
-              <td>
-                Goliathwasser
-              </td>
-              <td>
-                Gurgelkraut, Fjordwuchs
-              </td>
-              <td>
-                10 Leute Tragkraft wie Pferde
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                1
-              </th>
-              <td>
-                WL
-              </td>
-              <td>
-                Wasser des Lebens
-              </td>
-              <td>
-                Elfenlieb, Knotiger Saugwurz
-              </td>
-              <td>
-                macht aus 10 Holz/Mallorn 10 Sch&#246;&#223;linge/Mallornsch&#246;&#223;linge
-              </td>
-              <td>
-                Region
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                1
-              </th>
-              <td>
-                TW
-              </td>
-              <td>
-                Trank der Wahrheit
-              </td>
-              <td>
-                Flachwurz, Fjordwuchs
-              </td>
-              <td>
-                Anwender durchschaut Illusionen
-              </td>
-              <td>
-                Region
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                2
-              </th>
-              <td>
-                St
-              </td>
-              <td>
-                Schaffenstrunk
-              </td>
-              <td>
-                Alraune, Spaltwachs, W&#252;rziger Wagemut
-              </td>
-              <td>
-                verdoppelt Produktivit&#228;t von 10 Leuten (nur bei <tt>MACHE</tt>)
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                2
-              </th>
-              <td>
-                Ws
-              </td>
-              <td>
-                Wundsalbe
-              </td>
-              <td>
-                Blauer Baumringel, Wei&#223;er W&#252;terich, W&#252;rziger Wagemut
-              </td>
-              <td>
-                bringt bis zu 400 Trefferpunkte zur&#252;ck
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                2
-              </th>
-              <td>
-                Ba
-              </td>
-              <td>
-                Bauernblut
-              </td>
-              <td>
-                H&#246;hlenglimm, Fjordwuchs, Blauer Baumringel, Bauer
-              </td>
-              <td>
-                bis zu 100 D&#228;monen brauchen keinen Bauern zum Fra&#223;
-              </td>
-              <td>
-                Einheit*
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                3
-              </th>
-              <td>
-                Gs
-              </td>
-              <td>
-                Gehirnschmalz
-              </td>
-              <td>
-                Wasserfinder, Steinbei&#223;er, Windbeutel, Gurgelkraut
-              </td>
-              <td>
-                erh&#246;hte Lernchance f&#252;r 10 Personen
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                3
-              </th>
-              <td>
-                Db
-              </td>
-              <td>
-                Dumpfbackenbrot
-              </td>
-              <td>
-                Eulenauge, Gr&#252;ner Spinnerich, H&#246;hlenglimm, Fjordwuchs
-              </td>
-              <td>
-                bei 10 Leuten: kein Lernen oder Lehrer bringt nichts oder 
-                vergessen 1 Woche des besten Talents
-              </td>
-              <td>
-                (fremde) Einheit**
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                3
-              </th>
-              <td>
-                Nw
-              </td>
-              <td>
-                Nestw&#228;rme
-              </td>
-              <td>
-                Eisblume, Gr&#252;ner Spinnerich, Spaltwachs, Kakteenschwitz
-              </td>
-              <td>
-                Insekten k&#246;nnen auch im Winter rekrutieren
-              </td>
-              <td>
-                Region
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                3
-              </th>
-              <td>
-                Pg
-              </td>
-              <td>
-                Pferdegl&#252;ck
-              </td>
-              <td>
-                Blauer Baumringel, Sandf&#228;ule, Kakteenschwitz, Knotiger Saugwurz
-              </td>
-              <td>
-                50 Pferde vermehren sich bis zu vier mal
-              </td>
-              <td>
-                Region
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                3
-              </th>
-              <td>
-                Be
-              </td>
-              <td>
-                Berserkerblut
-              </td>
-              <td>
-                Wei&#223;er W&#252;terich, Alraune, Flachwurz, Sandf&#228;ule
-              </td>
-              <td>
-                10 Leute im Kampf Angriff +1
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                4
-              </th>
-              <td>
-                Bl
-              </td>
-              <td>
-                Bauernlieb
-              </td>
-              <td>
-                Alraune, Schneekristall, Steinbei&#223;er, Blasenmorchel, Elfenlieb
-              </td>
-              <td>
-                gibt bis zu 1000 Bauern in der Region die zehnfache Chance, 
-                sich zu vermehren
-              </td>
-              <td>
-                Region
-              </td>
-            </tr>
-            <tr style="background-color: #cccccc">
-              <th>
-                4
-              </th>
-              <td>
-                EM
-              </td>
-              <td>
-                Elixier der Macht
-              </td>
-              <td>
-                Elfenlieb, Wasserfinder, Windbeutel, Gr&#252;ner Spinnerich, 
-                Blasenmorchel, Drachenblut
-              </td>
-              <td>
-                gibt 10 Personen f&#252;nffache Trefferpunkte
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-            <tr style="background-color: #eeeeee">
-              <th>
-                4
-              </th>
-              <td>
-                Ht
-              </td>
-              <td>
-                Heiltrank
-              </td>
-              <td>
-                Gurgelkraut, Windbeutel, Eisblume, Elfenlieb, Spaltwachs
-              </td>
-              <td>
-                eine Person &#252;berlebt sonst t&#246;dlichen Schaden; pro Person nur 
-                einmal pro Woche m&#246;glich
-              </td>
-              <td>
-                Einheit
-              </td>
-            </tr>
-          </table>
-          <p>
-            * Wirkt auf die Einheit, aber alle D&#228;monen der Partei in der 
-            Region bedienen sich davon, wenn etwas &#252;brig ist. Es reicht also 
-            eine Einheit (pro Region) damit zu best&#252;cken, solange sie genug 
-            Bauernblut f&#252;r alle D&#228;monen trinkt.
-          </p>
-          <p>
-            ** Der Trank wird auf eine andere Einheit mit dem Befehl BENUTZE 
-            Dumpfbackenbrot abcd angewandt. Hierbei ist zu beachten: Ist das 
-            Tarnungstalent des Anwenders kleiner oder gleich Wahrnehmung+2 des 
-            Opfers, so geht die Anwendung fehl. Im Falle dass die Anwendung 
-            schief geht, bleibt das Dumpfbackenbrot beim Anwender und er 
-            bekommt eine Fehlermeldung.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Kr.C3.A4utermatrix">Kr&#228;utermatrix</span>
-          </h2>
-          <table class="wikitable">
-            <tr>
-              <th>
-                Kraut
-              </th>
-              <th>
-                TW
-              </th>
-              <th>
-                Sm
-              </th>
-              <th>
-                Gw
-              </th>
-              <th>
-                WL
-              </th>
-              <th>
-                Ba
-              </th>
-              <th>
-                St
-              </th>
-              <th>
-                Ws
-              </th>
-              <th>
-                Be
-              </th>
-              <th>
-                Db
-              </th>
-              <th>
-                Gs
-              </th>
-              <th>
-                Pg
-              </th>
-              <th>
-                Nw
-              </th>
-              <th>
-                Bl
-              </th>
-              <th>
-                EM
-              </th>
-              <th>
-                Ht
-              </th>
-            </tr>
-            <tr>
-              <td>
-                Flachwurz
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                W&#252;rziger Wagemut
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Eulenauge
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Gr&#252;ner Spinnerich
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Blauer Baumringel
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Elfenlieb
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Gurgelkraut
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Knotiger Saugwurz
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Blasenmorchel
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Wasserfinder
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Kakteenschwitz
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Sandf&#228;ule
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Windbeutel
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Fjordwuchs
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Alraune
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Steinbei&#223;er
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Spaltwachs
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-            </tr>
-            <tr>
-              <td>
-                H&#246;hlenglimm
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Eisblume
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Wei&#223;er W&#252;terich
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-            <tr>
-              <td>
-                Schneekristall
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                X
-              </td>
-              <td>
-                
-              </td>
-              <td>
-                
-              </td>
-            </tr>
-          </table>
-          <p>
-            <br>
-            
-          </p>
-          <table>
-            <tr>
-              <td align="left" style="background-color: #ffffaa">
-                Weiterlesen:
-              </td>
-              <td style="background-color: #ffffcc">
-                <a href="Befehl.html" title="Befehl">Befehl</a>
-              </td>
-            </tr>
-          </table>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        Tr&#228;nke
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              Alchemistische <b>Tr&#228;nke</b> werden mit Hilfe von <a href="Kr_uter.html" title="Kräuter">Kr&#228;utern</a> 
+              und anderen Zutaten gebraut und k&#246;nnen dann von jeder Einheit 
+              angewandt werden. Um einen Trank herstellen zu k&#246;nnen, braucht 
+              man nat&#252;rlich das Talent <a href="Liste_der_Talente.html" title="Liste der Talente">Alchemie</a>, 
+              und um die ben&#246;tigten Kr&#228;uter finden zu k&#246;nnen, braucht man das 
+              Talent <a href="Liste_der_Talente.html" title="Liste der Talente">Kr&#228;uterkunde</a>.
+            </p>
+            <p>
+              Tr&#228;nke werden mit dem Befehl <tt><a href="MACHE.html" title="MACHE">MACHE</a> 
+              &quot;Trank&quot;</tt> hergestellt. Pro Trank braucht man 
+              diverse Zutaten. Welche dies sind, erf&#228;hrt man aus den Rezepten, 
+              die man mit Erlangen einer neuen Stufe in Alchemie automatisch 
+              f&#252;r diese Stufe erf&#228;hrt. Um einen Trank herstellen zu k&#246;nnen, 
+              muss die Stufe des Alchemisten doppelt so hoch sein wie die 
+              Stufe des Trankes. Ein Alchemist kann jede Runde 
+              Talentstufe/(Trankstufe*2) Tr&#228;nke herstellen. Ein Alchemist der 
+              Stufe 6 kann also maximal einen Trank der Stufe 3, einen der 
+              zweiten Stufe oder drei Tr&#228;nke der ersten Stufe herstellen.
+            </p>
+            <p>
+              Will man einen Trank anwenden, so tut man dies mit dem Befehl <tt><a href="BENUTZE.html" title="BENUTZE">BENUTZE</a> 
+              [anzahl] &quot;Trank&quot; [einheit-nr]</tt>. Ein Trank l&#228;sst 
+              sich nicht auf mehrere Einheiten aufteilen - man kann aber nach 
+              der Trank-Benutzung eine gro&#223;e Einheit in mehrere kleinere 
+              Einheiten aufteilen.
+            </p>
+            <p>
+              Die meisten Tr&#228;nke nutzen der Einheit, die sie anwendet. 
+              Ausnahmen sind Tr&#228;nke, die sich auf eine Region beziehen - hier 
+              wird der Effekt in der Region erzielt, in der sich die Einheit 
+              bei Zugbeginn aufh&#228;lt - oder die auf andere Einheiten wirken 
+              (Dumpfbackenbrot).
+            </p>
+            <p>
+              Ein Trank wirkt normalerweise f&#252;r 10 Personen bzw. Gegenst&#228;nde 
+              (dies ist in den Rezepten auch angegeben), und zwar in der 
+              Runde, in der er benutzt wurde. Tr&#228;nke, die auf die Gegenst&#228;nde 
+              einer Einheit wirken, verfallen, wenn sie nicht benutzt werden 
+              k&#246;nnen, weil die Einheit diese Gegenst&#228;nde nicht (mehr) hat. 
+              Viele Tr&#228;nke wirken so, dass zu viele Personen in der Einheit 
+              nichts ausmachen, d.h. bei 12 Personen und einem Trank (wirkt 
+              f&#252;r 10) betrifft die Wirkung eben nur 10 der 12 Leute. Beim 
+              &quot;Berserkerblut&quot; ist dies nicht m&#246;glich, da im Kampf die 
+              Beteiligten nicht als Einheit auftreten. Hier ist es notwendig, 
+              dass vor dem Kampf alle Personen der Einheit die Wirkung des 
+              Trankes haben, da er sonst nicht wirkt!
+            </p>
+            <p>
+              Die &quot;Restwirkung&quot; von Tr&#228;nken verf&#228;llt nicht bei allen Tr&#228;nken, 
+              so dass z.B. eine Person nach Anwendung von einem Gehirnschmalz 
+              oder Schaffenstrunk zehn Wochen von der Wirkung profitieren kann.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Trankliste">Trankliste</span>
+            </h2>
+            <table align="center" border="0" cellspacing="2">
+              <caption>
+                Trankliste 
+              </caption>
+              <tr style="background-color: #aaaaaa">
+                <th>
+                  Stufe
+                </th>
+                <th>
+                  K&#252;rzel
+                </th>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Zutaten
+                </th>
+                <th>
+                  Beschreibung
+                </th>
+                <th>
+                  Wirkung
+                </th>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  1
+                </th>
+                <td>
+                  Sm
+                </td>
+                <td>
+                  Siebenmeilentee
+                </td>
+                <td>
+                  Blauer Baumringel, Windbeutel
+                </td>
+                <td>
+                  10 Leute schnell wie Pferde
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  1
+                </th>
+                <td>
+                  Gw
+                </td>
+                <td>
+                  Goliathwasser
+                </td>
+                <td>
+                  Gurgelkraut, Fjordwuchs
+                </td>
+                <td>
+                  10 Leute Tragkraft wie Pferde
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  1
+                </th>
+                <td>
+                  WL
+                </td>
+                <td>
+                  Wasser des Lebens
+                </td>
+                <td>
+                  Elfenlieb, Knotiger Saugwurz
+                </td>
+                <td>
+                  macht aus 10 Holz/Mallorn 10 Sch&#246;&#223;linge/Mallornsch&#246;&#223;linge
+                </td>
+                <td>
+                  Region
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  1
+                </th>
+                <td>
+                  TW
+                </td>
+                <td>
+                  Trank der Wahrheit
+                </td>
+                <td>
+                  Flachwurz, Fjordwuchs
+                </td>
+                <td>
+                  Anwender durchschaut Illusionen
+                </td>
+                <td>
+                  Region
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  2
+                </th>
+                <td>
+                  St
+                </td>
+                <td>
+                  Schaffenstrunk
+                </td>
+                <td>
+                  Alraune, Spaltwachs, W&#252;rziger Wagemut
+                </td>
+                <td>
+                  verdoppelt Produktivit&#228;t von 10 Leuten (nur bei <tt>MACHE</tt>)
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  2
+                </th>
+                <td>
+                  Ws
+                </td>
+                <td>
+                  Wundsalbe
+                </td>
+                <td>
+                  Blauer Baumringel, Wei&#223;er W&#252;terich, W&#252;rziger Wagemut
+                </td>
+                <td>
+                  bringt bis zu 400 Trefferpunkte zur&#252;ck
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  2
+                </th>
+                <td>
+                  Ba
+                </td>
+                <td>
+                  Bauernblut
+                </td>
+                <td>
+                  H&#246;hlenglimm, Fjordwuchs, Blauer Baumringel, Bauer
+                </td>
+                <td>
+                  bis zu 100 D&#228;monen brauchen keinen Bauern zum Fra&#223;
+                </td>
+                <td>
+                  Einheit*
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  3
+                </th>
+                <td>
+                  Gs
+                </td>
+                <td>
+                  Gehirnschmalz
+                </td>
+                <td>
+                  Wasserfinder, Steinbei&#223;er, Windbeutel, Gurgelkraut
+                </td>
+                <td>
+                  erh&#246;hte Lernchance f&#252;r 10 Personen
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  3
+                </th>
+                <td>
+                  Db
+                </td>
+                <td>
+                  Dumpfbackenbrot
+                </td>
+                <td>
+                  Eulenauge, Gr&#252;ner Spinnerich, H&#246;hlenglimm, Fjordwuchs
+                </td>
+                <td>
+                  bei 10 Leuten: kein Lernen oder Lehrer bringt nichts oder 
+                  vergessen 1 Woche des besten Talents
+                </td>
+                <td>
+                  (fremde) Einheit**
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  3
+                </th>
+                <td>
+                  Nw
+                </td>
+                <td>
+                  Nestw&#228;rme
+                </td>
+                <td>
+                  Eisblume, Gr&#252;ner Spinnerich, Spaltwachs, Kakteenschwitz
+                </td>
+                <td>
+                  Insekten k&#246;nnen auch im Winter rekrutieren
+                </td>
+                <td>
+                  Region
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  3
+                </th>
+                <td>
+                  Pg
+                </td>
+                <td>
+                  Pferdegl&#252;ck
+                </td>
+                <td>
+                  Blauer Baumringel, Sandf&#228;ule, Kakteenschwitz, Knotiger 
+                  Saugwurz
+                </td>
+                <td>
+                  50 Pferde vermehren sich bis zu vier mal
+                </td>
+                <td>
+                  Region
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  3
+                </th>
+                <td>
+                  Be
+                </td>
+                <td>
+                  Berserkerblut
+                </td>
+                <td>
+                  Wei&#223;er W&#252;terich, Alraune, Flachwurz, Sandf&#228;ule
+                </td>
+                <td>
+                  10 Leute im Kampf Angriff +1
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  4
+                </th>
+                <td>
+                  Bl
+                </td>
+                <td>
+                  Bauernlieb
+                </td>
+                <td>
+                  Alraune, Schneekristall, Steinbei&#223;er, Blasenmorchel, 
+                  Elfenlieb
+                </td>
+                <td>
+                  gibt bis zu 1000 Bauern in der Region die zehnfache Chance, 
+                  sich zu vermehren
+                </td>
+                <td>
+                  Region
+                </td>
+              </tr>
+              <tr style="background-color: #cccccc">
+                <th>
+                  4
+                </th>
+                <td>
+                  EM
+                </td>
+                <td>
+                  Elixier der Macht
+                </td>
+                <td>
+                  Elfenlieb, Wasserfinder, Windbeutel, Gr&#252;ner Spinnerich, 
+                  Blasenmorchel, Drachenblut
+                </td>
+                <td>
+                  gibt 10 Personen f&#252;nffache Trefferpunkte
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+              <tr style="background-color: #eeeeee">
+                <th>
+                  4
+                </th>
+                <td>
+                  Ht
+                </td>
+                <td>
+                  Heiltrank
+                </td>
+                <td>
+                  Gurgelkraut, Windbeutel, Eisblume, Elfenlieb, Spaltwachs
+                </td>
+                <td>
+                  eine Person &#252;berlebt sonst t&#246;dlichen Schaden; pro Person nur 
+                  einmal pro Woche m&#246;glich
+                </td>
+                <td>
+                  Einheit
+                </td>
+              </tr>
+            </table>
+            <p>
+              * Wirkt auf die Einheit, aber alle D&#228;monen der Partei in der 
+              Region bedienen sich davon, wenn etwas &#252;brig ist. Es reicht also 
+              eine Einheit (pro Region) damit zu best&#252;cken, solange sie genug 
+              Bauernblut f&#252;r alle D&#228;monen trinkt.
+            </p>
+            <p>
+              ** Der Trank wird auf eine andere Einheit mit dem Befehl BENUTZE 
+              Dumpfbackenbrot abcd angewandt. Hierbei ist zu beachten: Ist das 
+              Tarnungstalent des Anwenders kleiner oder gleich Wahrnehmung+2 
+              des Opfers, so geht die Anwendung fehl. Im Falle dass die 
+              Anwendung schief geht, bleibt das Dumpfbackenbrot beim Anwender 
+              und er bekommt eine Fehlermeldung.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Kr.C3.A4utermatrix">Kr&#228;utermatrix</span>
+            </h2>
+            <table class="wikitable">
+              <tr>
+                <th>
+                  Kraut
+                </th>
+                <th>
+                  TW
+                </th>
+                <th>
+                  Sm
+                </th>
+                <th>
+                  Gw
+                </th>
+                <th>
+                  WL
+                </th>
+                <th>
+                  Ba
+                </th>
+                <th>
+                  St
+                </th>
+                <th>
+                  Ws
+                </th>
+                <th>
+                  Be
+                </th>
+                <th>
+                  Db
+                </th>
+                <th>
+                  Gs
+                </th>
+                <th>
+                  Pg
+                </th>
+                <th>
+                  Nw
+                </th>
+                <th>
+                  Bl
+                </th>
+                <th>
+                  EM
+                </th>
+                <th>
+                  Ht
+                </th>
+              </tr>
+              <tr>
+                <td>
+                  Flachwurz
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  W&#252;rziger Wagemut
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Eulenauge
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Gr&#252;ner Spinnerich
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Blauer Baumringel
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Elfenlieb
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Gurgelkraut
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Knotiger Saugwurz
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Blasenmorchel
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Wasserfinder
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Kakteenschwitz
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Sandf&#228;ule
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Windbeutel
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Fjordwuchs
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Alraune
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Steinbei&#223;er
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Spaltwachs
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  H&#246;hlenglimm
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Eisblume
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Wei&#223;er W&#252;terich
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Schneekristall
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  X
+                </td>
+                <td>
+                  
+                </td>
+                <td>
+                  
+                </td>
+              </tr>
+            </table>
+            <p>
+              <br>
+              
+            </p>
+            <table>
+              <tr>
+                <td align="left" style="background-color: #ffffaa">
+                  Weiterlesen:
+                </td>
+                <td style="background-color: #ffffcc">
+                  <a href="Befehl.html" title="Befehl">Befehl</a>
+                </td>
+              </tr>
+            </table>
+            <!-- 
 NewPP limit report
-Cached time: 20220210125234
+Cached time: 20220211135231
 Cache expiry: 86400
 Dynamic content: false
-CPU time usage: 0.031 seconds
-Real time usage: 0.031 seconds
+CPU time usage: 0.032 seconds
+Real time usage: 0.032 seconds
 Preprocessor visited node count: 33/1000000
 Preprocessor generated node count: 119/1000000
 Post?expand include size: 126/2097152 bytes
@@ -1549,14 +1553,15 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 3/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
-100.00%    1.009      1 Vorlage:Weiter
-100.00%    1.009      1 -total
+100.00%    1.158      1 Vorlage:Weiter
+100.00%    1.158      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1424-0!canonical and timestamp 20220210125234 and revision id 7237
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1424-0!canonical and timestamp 20220211135231 and revision id 7237
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

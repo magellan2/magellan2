@@ -1,135 +1,138 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>KÄMPFE</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>KÄMPFE</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      K&#196;MPFE
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <tt><b>K&#196;MPFE</b> VORNE<br><b>K&#196;MPFE</b> AGGRESSIV<br><b>K&#196;MPFE</b> 
-            HINTEN<br><b>K&#196;MPFE</b> DEFENSIV<br><b>K&#196;MPFE</b> NICHT<br><b>K&#196;MPFE</b> 
-            FLIEHE<br><b>K&#196;MPFE</b> HELFE [NICHT]</tt>
-          </p>
-          <p>
-            Mit diesem Befehl wird die Reaktion einer Einheit im Falle eines 
-            Kampfes bestimmt (siehe im Kapitel <a href="Krieg.html" title="Krieg">Vom 
-            Kriege</a> auch den Abschnitt <a class="mw-redirect" href="Krieg.html#Die_Schlacht" title="Schlacht">Kampfreihen</a>).
-          </p>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE AGGRESSIV</tt>: Im Kampf steht die Einheit an 
-              der Front und wird nie fliehen, sondern bis zum Tode k&#228;mpfen. 
-              Dies verwendet man mit Vorteil, wenn es wirklich auf das letzte 
-              bisschen Offensivkraft ankommt.
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE VORNE</tt>: Im Kampf steht die Einheit an der 
-              Front. Sie wird versuchen zu fliehen, wenn sie weniger oder 
-              gleich 20% ihrer Trefferpunkte hat. Dies verwendet man mit 
-              Vorteil f&#252;r gute Schwertk&#228;mpfer. Kann auch mit <tt>K&#196;MPFE</tt> 
-              gesetzt werden.
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE HINTEN</tt>: Die Einheit k&#228;mpft in der zweiten 
-              Reihe. Ist die Front aufgerieben, werden diese Einheiten 
-              trotzdem in den Nahkampf hineingezogen! Dies verwendet man mit 
-              Vorteil f&#252;r Sch&#252;tzen. Die Einheit versucht zu fliehen, wenn sie 
-              weniger oder gleich 20% ihrer Trefferpunkte hat.
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE DEFENSIV</tt>: Wie <tt>K&#196;MPFE HINTEN</tt>, 
-              aber die Einheit wird schon fliehen, wenn sie noch 90% ihrer 
-              Trefferpunkte hat. Dies verwendet man mit Vorteil f&#252;r Magier.
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE NICHT</tt>: Die Einheit k&#228;mpft nur noch dann 
-              mit, wenn sie selber das Ziel eines feindlichen <tt><a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a></tt>-Befehls 
-              ist. Dies setzt man mit Vorteil f&#252;r Einheiten ein, die sich aus 
-              dem Kampf heraushalten, aber nicht fliehen sollen, weil sie z.B. 
-              ein Geb&#228;ude besetzt halten sollen. Die Einheit versucht zu 
-              fliehen, wenn sie noch 90% ihrer Trefferpunkte hat.<br>
-            </li>
-          </ul>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE FLIEHE</tt>: Wird eine fluchtbereite Einheit in 
-              einen Kampf verwickelt, versucht sie vor jeder Kampfrunde zu 
-              fliehen. F&#252;r weitere Informationen &#252;ber das &quot;Fluchtverhalten&quot;, 
-              siehe den Abschnitt <a class="mw-redirect" href="Krieg.html#Die_Flucht" title="Die Flucht">Flucht</a> 
-              im Kapitel Kampf. Diesen Kampfstatus setzt man mit Vorteil f&#252;r 
-              fast alle &quot;Zivilisten&quot; ein. Flieht aus einer Einheit auch nur 
-              eine Person erfolgreich aus einem Kampf, verl&#228;sst diese 
-              automatisch Geb&#228;ude oder an Land liegende Schiffe, in denen sie 
-              sich befindet. Es gilt daher abzuw&#228;gen, ob dieser Status f&#252;r 
-              Geb&#228;udeinsassen sinnvoll ist. Einheiten mit diesem Kampfstatus 
-              k&#246;nnen auch nicht <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a>N 
-              oder <a class="mw-redirect" href="BEWACHE.html" title="BEWACHEN">BEWACHEN</a>. 
-              Setzt eine bewachende Einheit K&#196;MPFE FLIEHE, wird das Bewachen 
-              sofort aufgehoben, mit entsprechenden Konsequenzen. Einheiten 
-              mit dem Kampfstatus k&#246;nnen sich nach dem Kampf noch bewegen (mit <a href="NACH.html" title="NACH">NACH</a>, 
-              <a href="ROUTE.html" title="ROUTE">ROUTE</a>, <a href="FOLGE.html" title="FOLGE">FOLGE</a>).
-            </li>
-          </ul>
-          <p>
-            <i>Achtung</i>! Einheiten mit K&#196;MPFE FLIEHE oder K&#196;MPFE NICHT, 
-            k&#228;mpfen, falls sie attackiert werden und die ersten beiden Reihen 
-            &#252;berrannt. Das hei&#223;t, Magier zaubern auch. Pr&#228;- und 
-            Postkampfzauber werden (derzeit) selbst dann gezaubert, wenn die 
-            ersten Reihen nicht &#252;berrannt werden. Soll dies verhindert werden, 
-            kann man die <a href="KAMPFZAUBER.html" title="KAMPFZAUBER">Kampfzauber</a> 
-            deaktivieren.
-          </p>
-          <p>
-            Katapulte zu bedienen ist eine Aufgabe, die viel Vorbereitung 
-            erfordert, daher werden Einheiten mit dem Kampfstatus K&#196;MPFE NICHT 
-            und K&#196;MPFE FLIEHE keine Munition verschie&#223;en, aber zu anderen 
-            Waffen greifen, so sie welche dabei haben und beherrschen.
-          </p>
-          <p>
-            <i>Achtung</i>! Personen mit niedrigen Trefferpunkten, die nicht <tt>K&#196;MPFE 
-            FLIEHE</tt> gesetzt haben, fliehen erst dann, wenn sie im Kampf 
-            auch einen Treffer abbekommen haben. Dabei z&#228;hlen auch Treffer, 
-            deren Schadenspunkte vollst&#228;ndig von der R&#252;stung aufgehalten 
-            wurden und fehlgeschlagene Trefferversuche. Personen mit <tt>K&#196;MPFE 
-            FLIEHE</tt> fliehen nat&#252;rlich schon vorher.
-          </p>
-          <ul>
-            <li>
-              <tt>K&#196;MPFE HELFE</tt>: Einer Einheit mit <tt>K&#196;MPFE HELFE 
-              NICHT</tt> wird im Kampf nicht geholfen, weder von Einheiten der 
-              eigenen Partei noch von Verb&#252;ndeten. Wird eine solche Einheit 
-              attackiert, werden keine anderen Einheiten in den Kampf gezogen. 
-              Dies gilt nat&#252;rlich nur, wenn nicht zus&#228;tzlich andere Einheiten 
-              ohne einen solchen Status attackiert werden.
-            </li>
-          </ul>
-          <p>
-            Die eigene Partei ist immer dann involviert, wenn sie angreift, 
-            oder wenn sie oder eine Partei, der sie hilft, angegriffen wird. 
-            Weitere Details unter <tt><a href="HELFE.html" title="HELFE">HELFE</a></tt> 
-            und in den Kapiteln <a href="Krieg.html" title="Krieg">Kampf</a> 
-            und <a href="Allianz.html" title="Allianz">Allianz</a>.
-          </p>
-          <!-- 
+    <div id="mh-content">
+      <h1>
+        K&#196;MPFE
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <tt><b>K&#196;MPFE</b> VORNE<br><b>K&#196;MPFE</b> AGGRESSIV<br><b>K&#196;MPFE</b> 
+              HINTEN<br><b>K&#196;MPFE</b> DEFENSIV<br><b>K&#196;MPFE</b> NICHT<br><b>K&#196;MPFE</b> 
+              FLIEHE<br><b>K&#196;MPFE</b> HELFE [NICHT]</tt>
+            </p>
+            <p>
+              Mit diesem Befehl wird die Reaktion einer Einheit im Falle eines 
+              Kampfes bestimmt (siehe im Kapitel <a href="Krieg.html" title="Krieg">Vom 
+              Kriege</a> auch den Abschnitt <a class="mw-redirect" href="Krieg.html#Die_Schlacht" title="Schlacht">Kampfreihen</a>).
+            </p>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE AGGRESSIV</tt>: Im Kampf steht die Einheit an 
+                der Front und wird nie fliehen, sondern bis zum Tode k&#228;mpfen. 
+                Dies verwendet man mit Vorteil, wenn es wirklich auf das 
+                letzte bisschen Offensivkraft ankommt.
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE VORNE</tt>: Im Kampf steht die Einheit an der 
+                Front. Sie wird versuchen zu fliehen, wenn sie weniger oder 
+                gleich 20% ihrer Trefferpunkte hat. Dies verwendet man mit 
+                Vorteil f&#252;r gute Schwertk&#228;mpfer. Kann auch mit <tt>K&#196;MPFE</tt> 
+                gesetzt werden.
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE HINTEN</tt>: Die Einheit k&#228;mpft in der zweiten 
+                Reihe. Ist die Front aufgerieben, werden diese Einheiten 
+                trotzdem in den Nahkampf hineingezogen! Dies verwendet man mit 
+                Vorteil f&#252;r Sch&#252;tzen. Die Einheit versucht zu fliehen, wenn 
+                sie weniger oder gleich 20% ihrer Trefferpunkte hat.
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE DEFENSIV</tt>: Wie <tt>K&#196;MPFE HINTEN</tt>, 
+                aber die Einheit wird schon fliehen, wenn sie noch 90% ihrer 
+                Trefferpunkte hat. Dies verwendet man mit Vorteil f&#252;r Magier.
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE NICHT</tt>: Die Einheit k&#228;mpft nur noch dann 
+                mit, wenn sie selber das Ziel eines feindlichen <tt><a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a></tt>-Befehls 
+                ist. Dies setzt man mit Vorteil f&#252;r Einheiten ein, die sich 
+                aus dem Kampf heraushalten, aber nicht fliehen sollen, weil 
+                sie z.B. ein Geb&#228;ude besetzt halten sollen. Die Einheit 
+                versucht zu fliehen, wenn sie noch 90% ihrer Trefferpunkte hat.<br>
+              </li>
+            </ul>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE FLIEHE</tt>: Wird eine fluchtbereite Einheit 
+                in einen Kampf verwickelt, versucht sie vor jeder Kampfrunde 
+                zu fliehen. F&#252;r weitere Informationen &#252;ber das 
+                &quot;Fluchtverhalten&quot;, siehe den Abschnitt <a class="mw-redirect" href="Krieg.html#Die_Flucht" title="Die Flucht">Flucht</a> 
+                im Kapitel Kampf. Diesen Kampfstatus setzt man mit Vorteil f&#252;r 
+                fast alle &quot;Zivilisten&quot; ein. Flieht aus einer Einheit auch nur 
+                eine Person erfolgreich aus einem Kampf, verl&#228;sst diese 
+                automatisch Geb&#228;ude oder an Land liegende Schiffe, in denen 
+                sie sich befindet. Es gilt daher abzuw&#228;gen, ob dieser Status 
+                f&#252;r Geb&#228;udeinsassen sinnvoll ist. Einheiten mit diesem 
+                Kampfstatus k&#246;nnen auch nicht <a href="ATTACKIERE.html" title="ATTACKIERE">ATTACKIERE</a>N 
+                oder <a class="mw-redirect" href="BEWACHE.html" title="BEWACHEN">BEWACHEN</a>. 
+                Setzt eine bewachende Einheit K&#196;MPFE FLIEHE, wird das Bewachen 
+                sofort aufgehoben, mit entsprechenden Konsequenzen. Einheiten 
+                mit dem Kampfstatus k&#246;nnen sich nach dem Kampf noch bewegen 
+                (mit <a href="NACH.html" title="NACH">NACH</a>, <a href="ROUTE.html" title="ROUTE">ROUTE</a>, 
+                <a href="FOLGE.html" title="FOLGE">FOLGE</a>).
+              </li>
+            </ul>
+            <p>
+              <i>Achtung</i>! Einheiten mit K&#196;MPFE FLIEHE oder K&#196;MPFE NICHT, 
+              k&#228;mpfen, falls sie attackiert werden und die ersten beiden 
+              Reihen &#252;berrannt. Das hei&#223;t, Magier zaubern auch. Pr&#228;- und 
+              Postkampfzauber werden (derzeit) selbst dann gezaubert, wenn die 
+              ersten Reihen nicht &#252;berrannt werden. Soll dies verhindert 
+              werden, kann man die <a href="KAMPFZAUBER.html" title="KAMPFZAUBER">Kampfzauber</a> 
+              deaktivieren.
+            </p>
+            <p>
+              Katapulte zu bedienen ist eine Aufgabe, die viel Vorbereitung 
+              erfordert, daher werden Einheiten mit dem Kampfstatus K&#196;MPFE 
+              NICHT und K&#196;MPFE FLIEHE keine Munition verschie&#223;en, aber zu 
+              anderen Waffen greifen, so sie welche dabei haben und 
+              beherrschen.
+            </p>
+            <p>
+              <i>Achtung</i>! Personen mit niedrigen Trefferpunkten, die nicht <tt>K&#196;MPFE 
+              FLIEHE</tt> gesetzt haben, fliehen erst dann, wenn sie im Kampf 
+              auch einen Treffer abbekommen haben. Dabei z&#228;hlen auch Treffer, 
+              deren Schadenspunkte vollst&#228;ndig von der R&#252;stung aufgehalten 
+              wurden und fehlgeschlagene Trefferversuche. Personen mit <tt>K&#196;MPFE 
+              FLIEHE</tt> fliehen nat&#252;rlich schon vorher.
+            </p>
+            <ul>
+              <li>
+                <tt>K&#196;MPFE HELFE</tt>: Einer Einheit mit <tt>K&#196;MPFE HELFE 
+                NICHT</tt> wird im Kampf nicht geholfen, weder von Einheiten 
+                der eigenen Partei noch von Verb&#252;ndeten. Wird eine solche 
+                Einheit attackiert, werden keine anderen Einheiten in den 
+                Kampf gezogen. Dies gilt nat&#252;rlich nur, wenn nicht zus&#228;tzlich 
+                andere Einheiten ohne einen solchen Status attackiert werden.
+              </li>
+            </ul>
+            <p>
+              Die eigene Partei ist immer dann involviert, wenn sie angreift, 
+              oder wenn sie oder eine Partei, der sie hilft, angegriffen wird. 
+              Weitere Details unter <tt><a href="HELFE.html" title="HELFE">HELFE</a></tt> 
+              und in den Kapiteln <a href="Krieg.html" title="Krieg">Kampf</a> 
+              und <a href="Allianz.html" title="Allianz">Allianz</a>.
+            </p>
+            <!-- 
 NewPP limit report
 Cached time: 20220210180908
 Cache expiry: 86400
@@ -145,13 +148,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1494-0!canonical and timestamp 20220210180908 and revision id 7216
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1494-0!canonical and timestamp 20220210180908 and revision id 7216
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

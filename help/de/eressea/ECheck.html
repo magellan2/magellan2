@@ -1,71 +1,73 @@
-<html>
+<html lang="de">
   <head>
-    <meta name="generator" content="magellan.client.utils.GetHelp">
-    <title>ECheck</title>
-    <meta http-equiv="Content-Language" content="de">
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-    <meta name="description" content="Magellan-Dokumentation">
+    <meta name="generator" content="magellan.client.utils.GetHelp">
+    <meta name="description" content="Magellan Dokumentation">
+    <title>ECheck</title>
     <link rel="stylesheet" href="./default.css" type="text/css">
     
   </head>
   <body>
-    <h1>
-      ECheck
-    </h1>
-    <div id="gh-content">
-      <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
-        <div class="mw-parser-output">
-          <p>
-            <b>ECheck</b> ist der Zugchecker, der auch auf dem Eressea-Server 
-            seinen Dienst tut. ECheck ist nicht perfekt und nicht vollst&#228;ndig. 
-            Es kann sowohl falsch negative, als auch falsch positive Meldungen 
-            geben. Wenn ECheck also keine Fehler meldet, hei&#223;t das nicht 
-            zwingend, dass die Befehle korrekt sind. Wenn ECheck Fehler 
-            meldet, hei&#223;t das nicht zwingend, dass die Befehle ung&#252;ltig sind. 
-            Besonders bei Regel&#228;nderungen oder seltenen Gegenst&#228;nden, wei&#223; 
-            ECheck nicht immer sofort Bescheid. ECheck ist vielmehr als 
-            Hilfestellung gedacht, um gegebenenfalls die Befehle noch einmal 
-            zu pr&#252;fen.
-          </p>
-          <p>
-            ECheck kann auf verschieden Arten aufgerufen werden:
-          </p>
-          <ul>
-            <li>
-              Beim Einschicken von Befehlen wird ECheck automatisch aufgerufen 
-              und die Antwortmail vom Server enth&#228;lt das Ergebnis. Hier wird 
-              nur auf Warnstufe 1 (siehe unten) gepr&#252;ft.
-            </li>
-            <li>
-              In Magellan. Hier kann man die Optionen beliebig einstellen. 
-              Magellan kann au&#223;erdem die &quot;Meta-Befehle&quot; automatisch 
-              hinzuf&#252;gen. Das sind Kommentare, die ECheck helfen, zum Beispiel 
-              den Silberverbrauch zu pr&#252;fen. Es gibt aber eigentlich keinen 
-              Grund mehr, ECheck von Magellan aufzurufen, da Magellans eigene 
-              Mechanismen (Syntaxcheck und &quot;Offene Probleme&quot;) zuverl&#228;ssiger 
-              sind und mehr k&#246;nnen.
-            </li>
-            <li>
-              Auf der Kommandozeile (unter Windows Eingabeaufforderung 
-              (&quot;cmd&quot;), unter Linux in jedem Terminal). Dann muss man die unten 
-              aufgef&#252;hrten Parameter mit angeben.
-            </li>
-          </ul>
-          <p>
-            Es gibt verschiedene Warnstufen, die durch Kommandozeilenparameter 
-            gesteuert werden. Mit `-w1` werden nur Syntaxfehler ausgegeben. 
-            Die Stufen `w2` bis `w4 geben zus&#228;tzliche Warnungen, zum Beispiel 
-            &#252;ber Silberverbrauch, Lehrer oder Routen aus. Die noxxx-Parameter 
-            k&#246;nnen au&#223;erdem bestimmte Warnungen unterdr&#252;cken. ECheck geht 
-            normalerweise davon aus, dass man deutsche Befehle f&#252;r E2 eingibt. 
-            Englische Befehle kann man zum Beispiel mit dem Parameter -Len 
-            pr&#252;fen, Befehle f&#252;r E3 mit -Re3.
-          </p>
-          <h2>
-            <span class="mw-headline" id="Aufruf">Aufruf</span>
-          </h2>
-          <pre> Benutzung: ./echeck [Optionen] Befehlsdatei
+    <div id="mh-content">
+      <h1>
+        ECheck
+      </h1>
+      <div id="gh-content">
+        <div class="mw-content-ltr" dir="ltr" id="mw-content-text" lang="de">
+          <div class="mw-parser-output">
+            <p>
+              <b>ECheck</b> ist der Zugchecker, der auch auf dem 
+              Eressea-Server seinen Dienst tut. ECheck ist nicht perfekt und 
+              nicht vollst&#228;ndig. Es kann sowohl falsch negative, als auch 
+              falsch positive Meldungen geben. Wenn ECheck also keine Fehler 
+              meldet, hei&#223;t das nicht zwingend, dass die Befehle korrekt sind. 
+              Wenn ECheck Fehler meldet, hei&#223;t das nicht zwingend, dass die 
+              Befehle ung&#252;ltig sind. Besonders bei Regel&#228;nderungen oder 
+              seltenen Gegenst&#228;nden, wei&#223; ECheck nicht immer sofort Bescheid. 
+              ECheck ist vielmehr als Hilfestellung gedacht, um gegebenenfalls 
+              die Befehle noch einmal zu pr&#252;fen.
+            </p>
+            <p>
+              ECheck kann auf verschieden Arten aufgerufen werden:
+            </p>
+            <ul>
+              <li>
+                Beim Einschicken von Befehlen wird ECheck automatisch 
+                aufgerufen und die Antwortmail vom Server enth&#228;lt das 
+                Ergebnis. Hier wird nur auf Warnstufe 1 (siehe unten) gepr&#252;ft.
+              </li>
+              <li>
+                In Magellan. Hier kann man die Optionen beliebig einstellen. 
+                Magellan kann au&#223;erdem die &quot;Meta-Befehle&quot; automatisch 
+                hinzuf&#252;gen. Das sind Kommentare, die ECheck helfen, zum 
+                Beispiel den Silberverbrauch zu pr&#252;fen. Es gibt aber 
+                eigentlich keinen Grund mehr, ECheck von Magellan aufzurufen, 
+                da Magellans eigene Mechanismen (Syntaxcheck und &quot;Offene 
+                Probleme&quot;) zuverl&#228;ssiger sind und mehr k&#246;nnen.
+              </li>
+              <li>
+                Auf der Kommandozeile (unter Windows Eingabeaufforderung 
+                (&quot;cmd&quot;), unter Linux in jedem Terminal). Dann muss man die 
+                unten aufgef&#252;hrten Parameter mit angeben.
+              </li>
+            </ul>
+            <p>
+              Es gibt verschiedene Warnstufen, die durch 
+              Kommandozeilenparameter gesteuert werden. Mit `-w1` werden nur 
+              Syntaxfehler ausgegeben. Die Stufen `w2` bis `w4 geben 
+              zus&#228;tzliche Warnungen, zum Beispiel &#252;ber Silberverbrauch, Lehrer 
+              oder Routen aus. Die noxxx-Parameter k&#246;nnen au&#223;erdem bestimmte 
+              Warnungen unterdr&#252;cken. ECheck geht normalerweise davon aus, 
+              dass man deutsche Befehle f&#252;r E2 eingibt. Englische Befehle kann 
+              man zum Beispiel mit dem Parameter -Len pr&#252;fen, Befehle f&#252;r E3 
+              mit -Re3.
+            </p>
+            <h2>
+              <span class="mw-headline" id="Aufruf">Aufruf</span>
+            </h2>
+            <pre> Benutzung: ./echeck [Optionen] Befehlsdatei
  
  -Ppfad  Pfadangabe f&#252;r die Zusatzdateien; das Locale de wird angeh&#228;ngt
  -Rgame  Zusatzdateien aus Unterverzeichnis game einlesen; Standardeinstellung: e2
@@ -103,39 +105,39 @@
  -vm.l   Mainversion.Level - f&#252;r Test, ob richtige ECheck-Version
  -Q      Leise
  -C      Kompakte Ausgabe</pre>
-          <p>
-            <br>
-            
-          </p>
-          <h2>
-            <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
-          </h2>
-          <ul>
-            <li>
-              <a href="Befehle_einschicken.html" title="Befehle einschicken">Befehle 
-              einschicken</a>
-            </li>
-          </ul>
-          <h2>
-            <span class="mw-headline" id="Externe_Links_und_Downloads">Externe 
-            Links und Downloads</span>
-          </h2>
-          <ul>
-            <li>
-              <a class="external text" href="https://github.com/eressea/echeck/releases" rel="nofollow">Download 
-              eines Zip-Archivs mit Versionen f&#252;r Windows (echeck.exe), Linux 
-              (echeck) oder MacOS (echeck.mac) </a>
-            </li>
-            <li>
-              <a class="external text" href="https://github.com/eressea/echeck" rel="nofollow">ECheck 
-              Sourcecode</a>
-            </li>
-            <li>
-              <a class="external text" href="https://www.eressea.de/files/echeck.zip" rel="nofollow">ECheck-Download 
-              f&#252;r Windows (m&#246;glicherweise veraltete Version)</a>
-            </li>
-          </ul>
-          <!-- 
+            <p>
+              <br>
+              
+            </p>
+            <h2>
+              <span class="mw-headline" id="Siehe_auch">Siehe auch</span>
+            </h2>
+            <ul>
+              <li>
+                <a href="Befehle_einschicken.html" title="Befehle einschicken">Befehle 
+                einschicken</a>
+              </li>
+            </ul>
+            <h2>
+              <span class="mw-headline" id="Externe_Links_und_Downloads">Externe 
+              Links und Downloads</span>
+            </h2>
+            <ul>
+              <li>
+                <a class="external text" href="https://github.com/eressea/echeck/releases" rel="nofollow">Download 
+                eines Zip-Archivs mit Versionen f&#252;r Windows (echeck.exe), 
+                Linux (echeck) oder MacOS (echeck.mac) </a>
+              </li>
+              <li>
+                <a class="external text" href="https://github.com/eressea/echeck" rel="nofollow">ECheck 
+                Sourcecode</a>
+              </li>
+              <li>
+                <a class="external text" href="https://www.eressea.de/files/echeck.zip" rel="nofollow">ECheck-Download 
+                f&#252;r Windows (m&#246;glicherweise veraltete Version)</a>
+              </li>
+            </ul>
+            <!-- 
 NewPP limit report
 Cached time: 20220210235402
 Cache expiry: 86400
@@ -151,13 +153,14 @@ Expensive parser function count: 0/100
 Unstrip recursion depth: 0/20
 Unstrip post?expand size: 0/5000000 bytes
 -->
-          <!--
+            <!--
 Transclusion expansion time report (%,ms,calls,template)
 100.00%    0.000      1 -total
 -->
-          <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1550-0!canonical and timestamp 20220210235402 and revision id 6699
+            <!-- Saved in parser cache with key hungryhipp-wiki_:pcache:idhash:1550-0!canonical and timestamp 20220210235402 and revision id 6699
  -->
-          </div>
+            </div>
+        </div>
       </div>
     </div>
   </body>

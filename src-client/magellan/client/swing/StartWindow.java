@@ -152,7 +152,7 @@ public class StartWindow extends JFrame {
     StyleConstants.setBold(set, true);
 
     MutableAttributeSet set2 = new SimpleAttributeSet();
-    StyleConstants.setFontSize(set2, 10);
+    // StyleConstants.setFontSize(set2, 10);
 
     try {
       styled.insertString(0, names, set);

@@ -23,10 +23,12 @@
 //
 package magellan.client.swing.layout;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Insets;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIDefaults;
@@ -37,7 +39,7 @@ import javax.swing.UIDefaults;
  * @author stm
  * @version 1.0, Jul 14, 2021
  */
-public class WrappableLabel extends JScrollPane {
+public class WrappableLabel extends JPanel {
 
   /**
    * Factory method.
@@ -51,12 +53,26 @@ public class WrappableLabel extends JScrollPane {
 
   private JTextArea label;
 
+  // private WrappableLabel(String text) {
+  // super(new BorderLayout());
+  // JComponent comment = new JLabel(
+  // String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
+  // text));
+  //
+  // comment.setPreferredSize(new Dimension(300, 100));
+  // add(comment, BorderLayout.CENTER);
+  // // setMinimumSize(new Dimension(300, 100));
+  // }
+
   private WrappableLabel(String text) {
     super();
+    setLayout(new BorderLayout());
     label = new JTextArea(text);
+    JScrollPane sPane = new JScrollPane(label);
     // label.setMinimumSize(new Dimension(200, 50));
-    setViewportView(label);
-    setBorder(null);
+    add(sPane, BorderLayout.CENTER);
+    sPane.setViewportView(label);
+    sPane.setBorder(null);
     label.setBorder(null);
     label.setMargin(new Insets(0, 0, 0, 0));
 

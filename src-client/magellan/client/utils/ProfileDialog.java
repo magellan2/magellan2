@@ -22,7 +22,8 @@
 //
 package magellan.client.utils;
 
-import java.awt.Component;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -33,6 +34,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -45,7 +47,6 @@ import javax.swing.ListSelectionModel;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.utils.ProfileManager.ProfileException;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * A Dialog for selecting profiles.
@@ -53,13 +54,12 @@ import magellan.library.utils.logging.Logger;
  * @author stm
  */
 public class ProfileDialog extends JDialog {
-  private static final Logger log = Logger.getInstance(ProfileDialog.class);
 
   private boolean abort = true;
 
-  private DefaultListModel profiles;
+  private DefaultListModel<String> profiles;
 
-  private JList profileList;
+  private JList<String> profileList;
 
   private JCheckBox bAlwaysAsk;
 
@@ -73,6 +73,7 @@ public class ProfileDialog extends JDialog {
     super(parent, Resources.get("profiledialog.window.caption"), true);
 
     initGUI();
+    setModal(true);
 
     SwingUtils.center(this);
   }
@@ -80,18 +81,25 @@ public class ProfileDialog extends JDialog {
   private void initGUI() {
     final JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new GridBagLayout());
-
-    setModal(true);
+    // mainPanel.setMinimumSize(new Dimension(300, 1900));
 
     GridBagConstraints gc =
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.FIRST_LINE_START,
             GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
 
-    Component comment = WrappableLabel.getLabel(Resources.get("profiledialog.explanation"));
-    comment.setFont(new JLabel().getFont());
+    // JComponent comment = new JLabel(
+    // String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
+    // Resources.get("profiledialog.explanation")));
 
+    JComponent comment = WrappableLabel.getLabel(Resources.get("profiledialog.explanation"));
+    comment.setFont(new JLabel().getFont());
+    comment.setPreferredSize(new Dimension(300, 70));
+    JComponent pcomment = new JPanel(new BorderLayout());
+    pcomment.add(comment, BorderLayout.CENTER);
+    pcomment.setMinimumSize(new Dimension(300, 70));
+    // JComponent pcomment = comment;
     profiles = initProfiles();
-    profileList = new JList(profiles);
+    profileList = new JList<String>(profiles);
     profileList.setSelectedIndex(profiles.indexOf(ProfileManager.getCurrentProfile()));
     profileList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -137,7 +145,6 @@ public class ProfileDialog extends JDialog {
     final JButton btnQuit = new JButton(Resources.get("profiledialog.btn.quit.caption"));
     btnQuit.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
-
         quit(true);
       }
     });
@@ -158,19 +165,21 @@ public class ProfileDialog extends JDialog {
     gc.gridy = 0;
     gc.gridwidth = 2;
     gc.weightx = 1.0;
+    gc.weighty = 1.0;
     gc.fill = GridBagConstraints.HORIZONTAL;
-    mainPanel.add(comment, gc);
+    mainPanel.add(pcomment, gc);
     gc.gridwidth = 1;
     gc.gridy++;
     gc.fill = GridBagConstraints.BOTH;
     gc.weightx = 1.0;
+    gc.weighty = 0.0;
     mainPanel.add(new JScrollPane(profileList), gc);
-    gc.fill = GridBagConstraints.NONE;
+    gc.fill = GridBagConstraints.BOTH;
     gc.weightx = 0.0;
     gc.gridx++;
     mainPanel.add(buttonPanel, gc);
-    gc.fill = GridBagConstraints.HORIZONTAL;
-    gc.weighty = 1.0;
+    gc.fill = GridBagConstraints.BOTH;
+    gc.weighty = 0.0;
     gc.gridx = 0;
     gc.gridy++;
     gc.gridwidth = 2;
@@ -189,7 +198,7 @@ public class ProfileDialog extends JDialog {
   protected void quit(boolean abort) {
     this.abort = abort;
     if (!abort) {
-      ProfileManager.setProfile((String) profileList.getSelectedValue());
+      ProfileManager.setProfile(profileList.getSelectedValue());
       ProfileManager.setAlwaysAsk(bAlwaysAsk.isSelected());
     }
     dispose();
@@ -220,7 +229,7 @@ public class ProfileDialog extends JDialog {
         JOptionPane.showInputDialog(Resources.get("profiledialog.inputdialog.copy.message"));
     if (name != null) {
       try {
-        ProfileManager.add(name, (String) profileList.getSelectedValue());
+        ProfileManager.add(name, profileList.getSelectedValue());
         profiles.addElement(name);
         profileList.setSelectedValue(name, true);
       } catch (ProfileException e) {
@@ -235,7 +244,7 @@ public class ProfileDialog extends JDialog {
    */
   protected void remove() {
     if (profiles.size() > 1) {
-      String name = (String) profileList.getSelectedValue();
+      String name = profileList.getSelectedValue();
       int remove =
           JOptionPane
               .showConfirmDialog(this, Resources.get("profiledialog.inputdialog.remove.message",
@@ -253,8 +262,8 @@ public class ProfileDialog extends JDialog {
    * 
    * @return List of profile names
    */
-  private DefaultListModel initProfiles() {
-    profiles = new DefaultListModel();
+  private DefaultListModel<String> initProfiles() {
+    profiles = new DefaultListModel<String>();
     for (String name : ProfileManager.getProfiles()) {
       profiles.addElement(name);
     }

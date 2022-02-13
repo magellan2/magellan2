@@ -21,7 +21,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -48,13 +47,15 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.utils.ImageFactory;
 import magellan.library.Building;
+import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Identifiable;
-import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.utils.Resources;
 
 /**
@@ -80,8 +81,11 @@ public class QuickFindAction extends MenuAction {
     public Component getListCellRendererComponent(JList<? extends Identifiable> list, Identifiable value, int index,
         boolean isSelected, boolean cellHasFocus) {
       JPanel p = new JPanel(new BorderLayout());
-
-      JLabel l = new JLabel(value == null ? "---" : String.valueOf(value));
+      String name = String.valueOf(value);
+      if (name.length() > 40) {
+        name = name.substring(0, 40).concat("...");
+      }
+      JLabel l = new JLabel(value == null ? "---" : name);
       l.setIcon(iconizer.get(value));
       p.add(l, BorderLayout.WEST);
       p.add(new JPanel(), BorderLayout.CENTER);
@@ -150,77 +154,7 @@ public class QuickFindAction extends MenuAction {
     }
   }
 
-  static final int TYPES = 4, SIZE = 3;
-
-  static class Cache extends HashMap<String, Identifiable[][]> implements Map<String, Identifiable[][]> {
-
-    private GameData data;
-
-    public void update(GameData data) {
-      if (data != this.data || true) {
-        this.data = data;
-        clear();
-        for (int i = 4; i >= 0; --i) {
-          addAll(i, data.getUnits(), 0);
-          addAll(i, data.getShips(), 1);
-          addAll(i, data.getBuildings(), 2);
-          addAll(i, data.getRegions(), 3);
-        }
-      }
-
-    }
-
-    private void addAll(int length, Collection<? extends Identifiable> nameds, int type) {
-      for (Identifiable named : nameds) {
-        String id;
-        if (named instanceof Region) {
-          String name = ((Region) named).getName();
-          if (name != null) {
-            id = ((Region) named).getCoordinate().toString(",", true);
-            add(length, named, type, id);
-            add(length, named, type, name);
-          }
-        } else {
-          id = named.getID().toString();
-          add(length, named, type, id);
-          if (named instanceof Named) {
-            add(length, named, type, ((Named) named).getName());
-          }
-        }
-      }
-    }
-
-    private void add(int length, Identifiable named, int type, String id) {
-      if (id.length() >= length && (length > 0 || id.length() > 4)) {
-        String pre = length > 0 ? id.toLowerCase().substring(0, length) : id.toLowerCase();
-        Identifiable[][] found = get(pre);
-        if (found == null) {
-          found = new Identifiable[TYPES][];
-          put(pre, found);
-        }
-        if (found[type] == null) {
-          found[type] = new Identifiable[SIZE];
-        }
-        Identifiable[] list = found[type];
-        if (length == 0 || length == id.length()) {
-          for (int i = SIZE - 1; i > 0; --i) {
-            list[i] = list[i - 1];
-          }
-          list[0] = named;
-        } else {
-          int i;
-          for (i = 0; i < SIZE; ++i) {
-            if (list[i] == null) {
-              list[i] = named;
-              break;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  Cache cache;
+  static final int TYPES = 4;
 
   /**
    * Tries to find a unit, a ship, or a building (in this order) with the id given as string.
@@ -229,21 +163,57 @@ public class QuickFindAction extends MenuAction {
    * @return The found entity or <code>null</code> if none was found
    */
   public Identifiable findEntity(String input) {
-    Identifiable[][] cand = findCandidates(input);
-    if (cand == null)
-      return null;
-    for (Identifiable[] names : cand)
-      if (names != null && names[0] != null)
-        return names[0];
+    Identifiable[] cand = findCandidates(input);
+    for (Identifiable name : cand)
+      if (name != null)
+        return name;
     return null;
   }
 
-  public Identifiable[][] findCandidates(String input) {
-    if (cache == null) {
-      cache = new Cache();
+  public Identifiable[] findCandidates(String input) {
+    Identifiable[] cand = new Identifiable[TYPES];
+    String id = input.trim().toLowerCase();
+    GameData data = client.getData();
+    try {
+      cand[0] = data.getUnit(UnitID.createUnitID(id, data.base));
+    } catch (Exception e) {
+      //
     }
-    cache.update(client.getData());
-    return cache.get(input.trim().toLowerCase().substring(0, Math.min(input.trim().length(), 4)));
+    try {
+      cand[1] = data.getShip(EntityID.createEntityID(id, data.base));
+    } catch (Exception e) {
+      //
+    }
+    try {
+      cand[2] = data.getBuilding(EntityID.createEntityID(id, data.base));
+    } catch (Exception e) {
+      //
+    }
+    try {
+      cand[3] = data.getRegion(CoordinateID.parse(id, ","));
+    } catch (Exception e) {
+      //
+    }
+    if (cand[3] == null) {
+      try {
+        int c = id.indexOf(',');
+        if (c > 0) {
+          id = id.substring(0, c);
+        }
+        int x = Integer.parseInt(id);
+        for (int y = 0; y < 10; ++y) {
+          for (int sgn = -1; sgn <= 1; sgn += 2) {
+            cand[3] = data.getRegion(CoordinateID.create(x, sgn * y));
+          }
+          if (cand[3] != null) {
+            break;
+          }
+        }
+      } catch (NumberFormatException e) {
+        // ignore
+      }
+    }
+    return cand;
   }
 
   /**
@@ -351,20 +321,13 @@ public class QuickFindAction extends MenuAction {
         }
 
         private void update() {
-          Identifiable[][] found = findCandidates(idInput.getText());
+          Identifiable[] cand = findCandidates(idInput.getText());
           entityModel.clear();
-          if (found == null)
-            return;
-          for (int p = 0; p < SIZE; ++p) {
-            for (int t = 0; t < TYPES; ++t) {
-              if (entityModel.size() < 3) {
-                if (found[t] != null && found[t][p] != null) {
-                  entityModel.addElement(found[t][p]);
-                }
-              }
+          for (Identifiable found : cand) {
+            if (found != null) {
+              entityModel.addElement(found);
             }
           }
-
           QuickFindDialog.this.validate();
           QuickFindDialog.this.pack();
         }

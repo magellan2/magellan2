@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -64,12 +63,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.plaf.FontUIResource;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
@@ -649,31 +645,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         quit(true);
       }
     });
-
-    /* setup font size */
-    try {
-      float fScale = PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
-
-      if (fScale != 1.0f) {
-        // TODO(pavkovic): the following code bloats the fonts in an
-        // undesired way, perhaps
-        // we remove this configuration option?
-        UIDefaults table = UIManager.getDefaults();
-        Enumeration<?> eKeys = table.keys();
-
-        while (eKeys.hasMoreElements()) {
-          Object obj = eKeys.nextElement();
-          Font font = UIManager.getFont(obj);
-
-          if (font != null) {
-            font = new FontUIResource(font.deriveFont(font.getSize2D() * fScale));
-            UIManager.put(obj, font);
-          }
-        }
-      }
-    } catch (Throwable e) {
-      Client.log.error(e);
-    }
 
     // select all in textfields on focus gain globally
     KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(

@@ -2,63 +2,70 @@
 
 <html>
 <head>
-	<title>Window: Region Overview</title>
-	<meta http-equiv="Content-Language" content="en">
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
-	<meta name="description" content="Magellan Dokumentation">
-	<meta name="AUTHOR" content="rb@behme.space.net">
- 	<link rel=stylesheet href="../../default.css" type="text/css">
+<title>Window: Region Overview</title>
+<meta http-equiv="Content-Language" content="en">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+<meta name="description" content="Magellan Dokumentation">
+<meta name="AUTHOR" content="rb@behme.space.net">
+<link rel=stylesheet href="../../default.css" type="text/css">
 </head>
 
 <body>
-<a name="top"></a>
+  <a name="top"></a>
 
-<!-- Inhalt -->
+  <!-- Inhalt -->
 
-<h1>Region Overview</h1>
+  <h1>Region Overview</h1>
 
-<p>In the region widnow all units and regions are displayed in a tree. The tree's structure is
-set up as follows, in descending order:</p>
+  <p>In the region widnow all units and regions are displayed in a tree.
+    The tree's structure is set up as follows, in descending order:</p>
 
-<ol>
-	<li>Islands
-	<li>Regions
-	<li>Factions / Buildings / Ships / Streets
-	<li>Units
-</ol>
+  <ol>
+    <li>Islands
+    <li>Regions
+    <li>Factions / Buildings / Ships / Streets
+    <li>Units
+  </ol>
 
-<p align="center"><img src="../images/windows_region.gif" alt="" border=0></p>
+  <p align="center">
+    <img src="../images/windows_region.gif" alt="" border=0>
+  </p>
 
-<p>Nodes that have units with <a href="orders.html">unconfirmed orders</a> are shown in bold. The display of the region window
-can be adjusted to your tastes in the <a href="../menus/extras/options_region.html">options</a>.</p>
+  <p>
+    Nodes that have units with <a href="orders.html">unconfirmed orders</a> are
+    shown in bold. The display of the region window can be adjusted to your
+    tastes in the <a href="../menus/extras/options_region.html">options</a>.
+  </p>
 
-<p>Units have a context menu that can be opened by right-clicking on them. This menu has the following options:</p>
+  <p>Units have a context menu that can be opened by right-clicking on
+    them. This menu has the following options:</p>
 
-<ul>
-	<li><b>Copy ID</b><br>
-	Copies the unit's ID to the clipboard.
+  <ul>
+    <li><b>Copy ID</b><br> Copies the unit's ID to the clipboard.
+    <li><b>Copy ID and name</b><br> Copies the unit's ID and name to
+      the clipboard.
+    <li><b>Copy ID and name and person count</b><br> Copies the
+      unit's ID and name, as well as the number of persons in it to the
+      clipboard.
+    <li><b>Disguise unit</b><br> Creates the following orders to
+      disguise the unit:<br> <TT>
+        NUMBER UNIT <br> NAME UNIT ""<br> DESCRIBE UNIT ""<br>
+        HIDE FACTION
+      </TT><br> The old values are inserted as persistent comments, so that you
+      can fairly easily undo this action.
+  </ul>
 
-	<li><b>Copy ID and name</b><br>
-	Copies the unit's ID and name to the clipboard.
+  <p>
+    The faction node has an <b>alliance status icon</b> that shows your HELP
+    status to this faction. Green squares mean this HELP status is set, red
+    squares mean it's not. The squares have the following meaning: silver,
+    combat, give, guard, factionstealth. Your own faction's squares are shwon
+    in blue.
+  </p>
 
-	<li><b>Copy ID and name and person count</b><br>
-	Copies the unit's ID and name, as well as the number of persons in it to the clipboard.
-
-	<li><b>Disguise unit</b><br>
-	Creates the following orders to disguise the unit:<br>
-	<TT>NUMBER UNIT <br>
-	NAME UNIT ""<br>
-	DESCRIBE UNIT ""<br>
-	HIDE FACTION</TT><br>
-	The old values are inserted as persistent comments, so that you can fairly easily undo this action.
-</ul>
-
-<p>The faction node has an <b>alliance status icon</b> that shows your HELP status to this faction.
-Green squares mean this HELP status is set, red squares mean it's not. The squares have the following meaning:
-silver, combat, give, guard, factionstealth. Your own faction's squares are shwon in blue.</p>
-
-<!-- Inhalt - Ende -->
+  <!-- Inhalt - Ende -->
 
 </body>
 </html>

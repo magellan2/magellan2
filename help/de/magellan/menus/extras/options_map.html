@@ -1,263 +1,180 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-    <title>
-      Optionen: Karte
-    </title>
-    <meta http-equiv="Content-Language" content="de-DE" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>Optionen: Karte</title>
+<meta http-equiv="Content-Language" content="de-DE" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
 
-    <link rel="stylesheet" href="../../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->  
-    <h1>
-      Karte
-    </h1>
-    <p>
-      Hier läßt sich die Art der Anzeige auf der Karte und der Übersichtskarte
-      konfigurieren. Die Karte wird von verschiedenen "Renderern" gezeichnet,
-      die sich hier getrennt voneinander konfigurieren und abschalten lassen.
-    </p>
-    <p style="text-align: center">
-      <img src="../../images/menu_extras_options_map.gif"
-      alt="Optionen - Karte" border="0" />
-    </p>
-    <p>
-      <b>Anzeige der Navigationsleiste am oberen Kartenrand.</b><br>
-      Oberhalb der Hauptkarte können einige Einstellmöglichkeiten eingeblendet werden.
-      Zum einen ein Regler für die Vergrösserung oder Zoom der Karte, weiterhin eine Auswahlmöglichkeit
-      des angezeigten Levels bzw der angezeigten Ebene und abschliessend kann, falls Hotspots definiert
-      wurden, zu diesen Hotspots gesprungen werden.<br>
-      Diese Möglichkeiten nehmen ein wenig Platz ein und können deaktiviert werden, die Funktionalität
-      ist dann lediglich über einen Rechtsclick in die Karte nutzbar. Das erscheinende PopUp-Menu (Contextmenu) 
-      enthält die entsprechenden Menüpunkte. 
-    </p>
-    <p>
-      <b>Zeige zusätzliche zur Jahreszeit passende Bilder an</b>
-      Schneebedeckte Berge im Winter und Eisschollen an den Meeresküsten - werden nur angezeigt, wenn diese Einstellung
-      ausgewählt worden ist.<br>
-      Ist sie nicht aktiviert, wird das Standardgrafikset für alle Jahreszeiten benutzt.
-    </p>
-    <p>
-      <b>Karte sofort zeichen, ohne Grafiken vollständig zu laden</b><br />
-       Ist diese Option aktiviert, wird nach dem Laden des CR sofort mit dem
-      Zeichnen der Karte begonnen ohne zunächst alle Regionsgrafiken in den
-      Cache zu laden. Damit ist die initiale Darstellung der Karte etwas
-      schneller, allerdings werden nur die Grafiken von Regionstypen geladen,
-      die auf dem aktuellen Kartenabschnitt vorkommen. Somit kann es beim
-      Verschieben des Kartenausschnittes zu Verzögerungen kommen wenn noch
-      Regionsgrafiken nachgeladen werden müssen.
-    </p>
-    <p>
-      <b>Tooltips anzeigen</b><br />
-       Wenn diese Option aktiviert ist, werden beim Verweilen der Maus über
-      Regionen auf der Karte Tooltips dargestellt in denen Regionsnamen, Typ,
-      Bauern und Poolsilber angezeigt werden.
-    </p>
-    <br />
-     
-    <h2>
-      Hauptkarte
-    </h2>
-    <p>
-      Die Rendering-Ebene unterteilt die Darstellung in logische Unterobjekte,
-      wie Regionen, Straßen, Gebäude etc., deren jeweilige
-      Einstellmöglichkeiten, dann im Kasten unterhalb eingeblendet werden.
-    </p>
-    <h3>
-      Regionen
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Regionen werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Regionsrenderer</b><br />
-         Dies ist die Default-Einstellung, bei der die Regionen mit Grafiken
-        dargestellt werden.
-      </li>
-      <li>
-        <b>Regionsrenderer (geometrisch/politisch)</b><br />
-         Dieser Modus stellt die Regionen als unterschiedlich farbige Flächen
-        dar. Folgende Darstellungsmodi sind möglich 
-        <ul>
-          <li>
-            <b>Regionstyp</b><br />
-             Hier läßt sich jeden Regionstyp (Berg, Sumpf etc.) eine Farbe
-            zuordnen.
-          </li>
-          <li>
-            <b>Politisch</b><br />
-             Ist dieser Modus aktiv, so wird die Region in der Farbe
-            eingefärbt, die der Partei mit den meisten Personen in der Region
-            zugeordnet ist.
-          </li>
-          <li>
-            <b>Alle Parteien</b><br />
-             Hier kann man jeder im Report vorhandenen Partei eine Farbe
-            zuordnen. Die Regionen werden, sofern mehr als eine Partei in ihnen
-            vorhanden ist, durch senkrechte Unterteilungen in den den
-            jeweiligen Parteien entsprechenden Farben angezeigt.
-          </li>
-          <li>
-            <b>Vertrauenslevel</b><br />
-             Anzeige der Regionsfarben nach Vertrauenslevel der dortigen
-            Parteien.
-          </li>
-          <li>
-            <b>Vertrauenslevel (Bewachung)</b><br />
-             Anzeige der Regionsfarben nach Vertrauenslevel der bewachenden
-            Parteien.
-          </li>
-        </ul>
-      </li>
-      <li>
-        <b>ARR (advanced region renderer)</b><br />
-         Dieser Modus gibt einen die Möglichkeit die Darstellung der Region in
-        Abhängigkeit von selbst erstellten Bedingungen zu gestalten. 
-        <p>
-          Bei allen Einstellungen ist zu beachten, daß die Farbzuordnung der
-          Parteien für alle unterschiedlichen Darstellungsmodi identisch ist.
-        </p>
-      </li>
-    </ul>
-    <h3>
-      Straßen
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Straßen werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Straßenrenderer</b><br />
-         Dies ist die Default-Einstellung, bei der die Straßen mit Grafiken
-        dargestellt werden.
-      </li>
-    </ul>
-    <h3>
-      Gebäude
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Gebäude werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Gebäuderenderer</b><br />
-         Dies ist die Default-Einstellung, bei der die Burgen mit Grafiken
-        dargestellt werden.
-      </li>
-    </ul>
-    <h3>
-      Schiffe
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Schiffe werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Schiffsrenderer</b><br />
-         Ist diese Option aktiv, so werden vorhandene Schiffe auf der Karte
-        dargestellt. Angelegte Schiffe werden an der jeweiligen Anlegeküste
-        dargestellt, Schiffe im Bau und auf dem Ozean in der Mitte der Region.
-      </li>
-    </ul>
-    <h3>
-      Beschriftungen
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Regionsnamen werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Regionsnamenrenderer</b><br />
-         Ist diese Option aktiv, so wird der Name über der jeweiligen Region
-        eingeblendet. Zusätzlich besteht hier die Möglichkeit Schriftart und
-        -typ einzustellen.
-      </li>
-    </ul>
-    <h3>
-      Pfade
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Pfade werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Pfadrenderer</b><br />
-         Ist diese Option aktiv, so werden Pfeile auf der Karte eingeblendet,
-        wenn eine gerade aktive Einheit einen NACH oder ROUTE Befehl hat.
-      </li>
-    </ul>
-    <h3>
-      Markierungen
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Markierungen werden nicht dargestellt.
-      </li>
-      <li>
-        <b>Markierungsrenderer</b><br />
-         Ist diese Option aktiv, so wird die gerade aktive Region durch einen
-        weißen Umriß hervorgehoben und markierte Regionen werden mit einem
-        diffusen Nebel versehen (je nach geladenem <a
-        href="../reference/graphicsets.html">Grafikset</a> unterschiedlich).
-      </li>
-      <li>
-        <b>Markierungsrenderer (geometrisch)</b><br />
-         Ist diese Option aktiv, so wird die gerade aktive Region durch einen
-        roten Umriß hervorgehoben und markierte Regionen werden mit einem
-        weißen Umriß versehen.
-      </li>
-    </ul>
-    <h3>
-      Zusätzl. Markierungen
-    </h3>
-    <ul>
-      <li>
-        &lt;inaktiv&gt;<br />
-         Zusätzliche Markierungen werden nicht dargestellt.
-      </li>
-      <li>
-        <b>zusätzl. Bilder</b><br />
-         Ist diese Option aktiv, so können eigene Bilder auf der Karte
-        eingeblendet werden. Dazu muss muss z.B. mit Vorlage innerhalb des
-        Regionskontextes das tag <i>"Bildname";regionicon</i> gesetzt werden.
-        Die Bilder selber müssen sich unterhalb des magellan.jar Verzeichnisses
-        im Pfad /res/images/map befinden und dem unter <a
-        href="../reference/graphicsets_making.html">Grafikset erstellen</a>
-        beschriebenen Format entsprechen.
-      </li>
-    </ul>
-    <br />
-     
-    <h2>
-      MiniMap
-    </h2>
-    <p style="text-align: center">
-      <img src="../../images/menu_extras_options_map_minimap.gif"
+<link rel="stylesheet" href="../../../default.css" type="text/css" />
+</head>
+<body>
+  <a id="top" name="top"></a>
+  <!-- Inhalt -->
+  <h1>Karte</h1>
+  <p>Hier läßt sich die Art der Anzeige auf der Karte und der
+    Übersichtskarte konfigurieren. Die Karte wird von verschiedenen "Renderern"
+    gezeichnet, die sich hier getrennt voneinander konfigurieren und abschalten
+    lassen.</p>
+  <p style="text-align: center">
+    <img src="../../images/menu_extras_options_map.gif" alt="Optionen - Karte"
+      border="0" />
+  </p>
+  <p>
+    <b>Anzeige der Navigationsleiste am oberen Kartenrand.</b><br>
+      Oberhalb der Hauptkarte können einige Einstellmöglichkeiten eingeblendet
+      werden. Zum einen ein Regler für die Vergrösserung oder Zoom der Karte,
+      weiterhin eine Auswahlmöglichkeit des angezeigten Levels bzw der
+      angezeigten Ebene und abschliessend kann, falls Hotspots definiert
+      wurden, zu diesen Hotspots gesprungen werden.<br> Diese
+        Möglichkeiten nehmen ein wenig Platz ein und können deaktiviert werden,
+        die Funktionalität ist dann lediglich über einen Rechtsclick in die
+        Karte nutzbar. Das erscheinende PopUp-Menu (Contextmenu) enthält die
+        entsprechenden Menüpunkte. 
+  </p>
+  <p>
+    <b>Zeige zusätzliche zur Jahreszeit passende Bilder an</b> Schneebedeckte
+    Berge im Winter und Eisschollen an den Meeresküsten - werden nur angezeigt,
+    wenn diese Einstellung ausgewählt worden ist.<br> Ist sie nicht
+      aktiviert, wird das Standardgrafikset für alle Jahreszeiten benutzt. 
+  </p>
+  <p>
+    <b>Karte sofort zeichen, ohne Grafiken vollständig zu laden</b><br /> Ist
+    diese Option aktiviert, wird nach dem Laden des CR sofort mit dem Zeichnen
+    der Karte begonnen ohne zunächst alle Regionsgrafiken in den Cache zu
+    laden. Damit ist die initiale Darstellung der Karte etwas schneller,
+    allerdings werden nur die Grafiken von Regionstypen geladen, die auf dem
+    aktuellen Kartenabschnitt vorkommen. Somit kann es beim Verschieben des
+    Kartenausschnittes zu Verzögerungen kommen wenn noch Regionsgrafiken
+    nachgeladen werden müssen.
+  </p>
+  <p>
+    <b>Tooltips anzeigen</b><br /> Wenn diese Option aktiviert ist, werden
+    beim Verweilen der Maus über Regionen auf der Karte Tooltips dargestellt in
+    denen Regionsnamen, Typ, Bauern und Poolsilber angezeigt werden.
+  </p>
+  <br />
+
+  <h2>Hauptkarte</h2>
+  <p>Die Rendering-Ebene unterteilt die Darstellung in logische
+    Unterobjekte, wie Regionen, Straßen, Gebäude etc., deren jeweilige
+    Einstellmöglichkeiten, dann im Kasten unterhalb eingeblendet werden.</p>
+  <h3>Regionen</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Regionen werden nicht dargestellt.
+    </li>
+    <li><b>Regionsrenderer</b><br /> Dies ist die Default-Einstellung,
+      bei der die Regionen mit Grafiken dargestellt werden.</li>
+    <li><b>Regionsrenderer (geometrisch/politisch)</b><br /> Dieser Modus
+      stellt die Regionen als unterschiedlich farbige Flächen dar. Folgende
+      Darstellungsmodi sind möglich
+      <ul>
+        <li><b>Regionstyp</b><br /> Hier läßt sich jeden Regionstyp
+          (Berg, Sumpf etc.) eine Farbe zuordnen.</li>
+        <li><b>Politisch</b><br /> Ist dieser Modus aktiv, so wird die
+          Region in der Farbe eingefärbt, die der Partei mit den meisten
+          Personen in der Region zugeordnet ist.</li>
+        <li><b>Alle Parteien</b><br /> Hier kann man jeder im Report
+          vorhandenen Partei eine Farbe zuordnen. Die Regionen werden, sofern
+          mehr als eine Partei in ihnen vorhanden ist, durch senkrechte
+          Unterteilungen in den den jeweiligen Parteien entsprechenden Farben
+          angezeigt.</li>
+        <li><b>Vertrauenslevel</b><br /> Anzeige der Regionsfarben nach
+          Vertrauenslevel der dortigen Parteien.</li>
+        <li><b>Vertrauenslevel (Bewachung)</b><br /> Anzeige der
+          Regionsfarben nach Vertrauenslevel der bewachenden Parteien.</li>
+      </ul></li>
+    <li><b>ARR (advanced region renderer)</b><br /> Dieser Modus gibt
+      einen die Möglichkeit die Darstellung der Region in Abhängigkeit von
+      selbst erstellten Bedingungen zu gestalten.
+      <p>Bei allen Einstellungen ist zu beachten, daß die Farbzuordnung der
+        Parteien für alle unterschiedlichen Darstellungsmodi identisch ist.</p></li>
+  </ul>
+  <h3>Straßen</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Straßen werden nicht dargestellt.
+    </li>
+    <li><b>Straßenrenderer</b><br /> Dies ist die Default-Einstellung,
+      bei der die Straßen mit Grafiken dargestellt werden.</li>
+  </ul>
+  <h3>Gebäude</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Gebäude werden nicht dargestellt.
+    </li>
+    <li><b>Gebäuderenderer</b><br /> Dies ist die Default-Einstellung,
+      bei der die Burgen mit Grafiken dargestellt werden.</li>
+  </ul>
+  <h3>Schiffe</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Schiffe werden nicht dargestellt.
+    </li>
+    <li><b>Schiffsrenderer</b><br /> Ist diese Option aktiv, so werden
+      vorhandene Schiffe auf der Karte dargestellt. Angelegte Schiffe werden an
+      der jeweiligen Anlegeküste dargestellt, Schiffe im Bau und auf dem Ozean
+      in der Mitte der Region.</li>
+  </ul>
+  <h3>Beschriftungen</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Regionsnamen werden nicht dargestellt.
+    </li>
+    <li><b>Regionsnamenrenderer</b><br /> Ist diese Option aktiv, so wird
+      der Name über der jeweiligen Region eingeblendet. Zusätzlich besteht hier
+      die Möglichkeit Schriftart und -typ einzustellen.</li>
+  </ul>
+  <h3>Pfade</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Pfade werden nicht dargestellt.
+    </li>
+    <li><b>Pfadrenderer</b><br /> Ist diese Option aktiv, so werden
+      Pfeile auf der Karte eingeblendet, wenn eine gerade aktive Einheit einen
+      NACH oder ROUTE Befehl hat.</li>
+  </ul>
+  <h3>Markierungen</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Markierungen werden nicht dargestellt.
+    </li>
+    <li><b>Markierungsrenderer</b><br /> Ist diese Option aktiv, so wird
+      die gerade aktive Region durch einen weißen Umriß hervorgehoben und
+      markierte Regionen werden mit einem diffusen Nebel versehen (je nach
+      geladenem <a href="../reference/graphicsets.html">Grafikset</a>
+      unterschiedlich).</li>
+    <li><b>Markierungsrenderer (geometrisch)</b><br /> Ist diese Option
+      aktiv, so wird die gerade aktive Region durch einen roten Umriß
+      hervorgehoben und markierte Regionen werden mit einem weißen Umriß
+      versehen.</li>
+  </ul>
+  <h3>Zusätzl. Markierungen</h3>
+  <ul>
+    <li>&lt;inaktiv&gt;<br /> Zusätzliche Markierungen werden nicht
+      dargestellt.
+    </li>
+    <li><b>zusätzl. Bilder</b><br /> Ist diese Option aktiv, so können
+      eigene Bilder auf der Karte eingeblendet werden. Dazu muss muss z.B. mit
+      Vorlage innerhalb des Regionskontextes das tag <i>"Bildname";regionicon</i>
+      gesetzt werden. Die Bilder selber müssen sich unterhalb des magellan.jar
+      Verzeichnisses im Pfad /res/images/map befinden und dem unter <a
+      href="../reference/graphicsets_making.html">Grafikset erstellen</a>
+      beschriebenen Format entsprechen.</li>
+  </ul>
+  <br />
+
+  <h2>MiniMap</h2>
+  <p style="text-align: center">
+    <img src="../../images/menu_extras_options_map_minimap.gif"
       alt="Optionen - Übersichtskarte" border="0" />
-    </p>
-    <p>
-      Die Übersichtskarte beherrscht alle Darstellungsmodi des Regionsrenderers
-      (geometrisch/politisch). Die Farbzuordnung ist demnach auch bei diesem
-      einzustellen. Mit <b><i>Synchronisiere Farben</i></b> kann man die oben
-      gemachten Farbeinstellungen auf die MiniMap übertragen. Auch die
-      Skalierung der MiniMap kann hier eingestellt werden.
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+  </p>
+  <p>
+    Die Übersichtskarte beherrscht alle Darstellungsmodi des Regionsrenderers
+    (geometrisch/politisch). Die Farbzuordnung ist demnach auch bei diesem
+    einzustellen. Mit <b><i>Synchronisiere Farben</i></b> kann man die oben
+    gemachten Farbeinstellungen auf die MiniMap übertragen. Auch die Skalierung
+    der MiniMap kann hier eingestellt werden.
+  </p>
+  <!-- Inhalt - Ende -->
+</body>
 </html>
 

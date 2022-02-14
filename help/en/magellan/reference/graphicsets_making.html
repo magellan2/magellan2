@@ -1,153 +1,108 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      Erstellen von Grafiksets
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<head>
+<title>Erstellen von Grafiksets</title>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
 
-    <link rel="stylesheet" href="../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Erstellen von Grafiksets
-    </h1>
-    <p>
-      <em>Warum schon wieder ein neues Grafiksetformat?</em> Genau diese Frage
-      stellte sich beim Entwurf des neuen Kartenmoduls; das Ergebnis ist
-      eigentlich kein weiteres Grafiksetformat, denn mit dem hier vorgestellten
-      Konzept ist die Anpassung an beliebige Formate möglich, solange die
-      notwendigen Information über die Zellengeometrie zur Verfügung stehen.
-      Dadurch können beispielsweise auch existierende Grafiksets anderer
-      Clients unverändert übernommen werden, wenn die Grafiken im GIF oder PNG
-      Format vorliegen. Man muss lediglich eine passende Datei cellgeometry.txt
-      erzeugen, die die Geometrieinformation über das vorliegende Grafikset
-      enthält.
-    </p>
-    <h2>
-      Ressourcenpfade
-    </h2>
-    <p>
-      Die <a href="ressources.html">Resourcenseite</a> enthält grundlegenede
-      Informationen zu Resourcen und Resourcenpfaden.
-    </p>
-    <p>
-      Magellan lädt Dateien (z.B. Grafiken) immer aus bestimmten
-      Verzeichnissen, die auf den Verwendugszweck der Datei hinweisen. Bei den
-      Grafikdateien für die Karte ist das 'images/map/', ein Grafikset besteht
-      deshalb immer aus einem Verzeichnis oder einem Archiv (ZIP oder JAR
-      Datei), das die Kartengrafiken in diesen Unterverzeichnissen enthält.
-    </p>
-    <p>
-      Ein Ressourcenpfad ist ein Verweis auf so eine Ressourcenquelle, beim
-      Laden der Datei Ebene.png wird z.B. einfach der Ressourcenpfad, das
-      Verzeichnis 'images/map' und der Dateiname 'Ebene.png' aneinander
-      gehängt, um auf die Datei zuzugreifen, also z.B.
-      'C:\Grafiksets\images\map\Ebene.gif" wenn man "C:\Grafiksets" als
-      Ressourcenpfad eingestellt ist. Beim Zugriff werden zunächst alle
-      Ressourcenpfade durchsucht und dann, falls sie in keinem Ressourcenpfad
-      gefunden werden konnte, auf die Standardgrafiken in der Magellan
-      Jar-Datei zugegriffen.
-    </p>
-    <p>
-      Man kann ein Grafikset auch als Archiv (ZIP oder JAR Datei) an andere
-      weitergeben, um die Handhabung zu vereinfachen. Dazu muss man nur das
-      Set, also die Grafikdateien und cellgeometry.txt, in eine ZIP Datei oder
-      JAR Datei packen. Die Dateien müßen aber auf jeden Fall innerhalb dieses
-      Archivs in einem 'images/map/' Unterverzeichnis liegen. Dann kann jeder
-      Magellan Benutzer das Grafikset nutzen, indem er dieses Archiv als
-      Ressourcenpfad im Optionsdialog von Magellan einträgt.
-    </p>
-    <h2>
-      Dateinamen
-    </h2>
-    <p>
-      Hier sind die Namen der Dateien aufgeführt, die die bisher existierenden
-      Renderer verwenden, um bestimmte Objekte darzustellen. Für den
-      vollständigen Namen, den die Datei tatsächlich tragen muss, ist jeweils
-      die Endung ".png", ".gif" und/oder "-alpha.gif" anzuhängen.
-    </p>
-    <p>
-      Die Dateinamen müssen alle kleingeschrieben werden, sonst kann Magellan
-      nicht auf sie zugreifen!
-    </p>
-    <ul>
-      <li>
-        Regionen: Alle Regionsnamen ohne Umlaute (z.B. "wueste"), zusätzlich
-        "nebel" für den Fog-of-War
-      </li>
-      <li>
-        Grenzen: "strasse0" (NW) bis "strasse5" (SW, im Uhrzeigersinn) sowie
-        "strasse_incomplete0" (NW) bis "strasse_incomplete5" (SW, im
-        Uhrzeigersinn). Gibt es keine Grafiken für unfertige Strassen, werden
-        die Grafiken für fertige Strassen genommen.
-      </li>
-      <li>
-        Gebäude: Alle Gebäudenamen ohne Umlaute (z.B. "saegewerk")
-      </li>
-      <li>
-        Schiffe: "schiff0" (Keine Küste), "schiff1" (NW) bis "schiff6" (SW, im
-        Uhrzeigersinn)
-      </li>
-      <li>
-        Richtungsanzeigen: "pfeil0" (NW) bis "pfeil5" (SW, im Uhrzeigersinn)
-      </li>
-      <li>
-        Selektionsmarkierungen: "active", "selected"
-      </li>
-    </ul>
-    <p>
-      Alle Dateien sollten zusammen mit der Datei cellgeometry.txt (siehe
-      'Zellengeometrie') in einem gemeinsamen Verzeichnis 'images/map/' liegen.
-    </p>
-    <h2>
-      Dateiformat
-    </h2>
-    <p>
-      Die Grafikdateien dürfen vom Format PNG oder GIF sein, von Alphakanälen
-      bzw. Transparenz wird dabei in unterschiedlicher Art und Weise Gebrauch
-      gemacht:
-    </p>
-    <p>
-      PNG: Wird eine Datei mit der Endung .png gefunden, wird sie verwendet und
-      die enthaltene Alphakanalinformation direkt genutzt. PNG Dateien haben
-      den Vorteil, dass sie 24 Bit Farbtiefe und einen integrierten 8-bit
-      Alphakanal erlauben, leider unterstützt Java 1.2 noch keine PNG Grafiken,
-      deshalb können nur Anwender mit einem JRE &gt;= 1.3 solche Grafiksets
-      benutzen.
-    </p>
-    <p>
-      GIF + Alphakanal: Wird keine Datei mit der Endung ".png" gefunden, sucht
-      der Renderer nach einer Datei mit der Endung ".gif", die die RGB
-      Informationen des Bildes enthält und einer Datei mit der Endung
-      "-alpha.gif", die als Graustufenbild interpretiert und als Alphakanal für
-      das andere GIF verwendet wird.
-    </p>
-    <p>
-      GIF: Gibt es keine Datei mit der Endung "-alpha.gif", aber eine
-      Standard-GIF Datei, wird die darin enthaltenen RGB und
-      Transparenzinformation genutzt.
-    </p>
-    <h2>
-      Größe der Grafiken / Zellengeometrie
-    </h2>
-    <p>
-      Prinzipiell ist die Größe der Grafiken beliebig, muss aber innerhalb
-      eines Grafiksets für alle Bilder gleich sein. Außerdem benötigt der
-      Client Informationen über die Geometrie des Regionssechsecks, also dessen
-      Eckkoordinaten, sowie dessen Position in der Grafik und die Gesamtgröße
-      der Grafik. Das sieht dann ungefähr folgendermaßen aus:
-    </p>
-    <img src="../images/reference_graphicsets_cellgeometry.gif" alt=""
-    border="0" /> 
-<pre>
+<link rel="stylesheet" href="../../default.css" type="text/css" />
+</head>
+<body>
+  <a id="top" name="top"></a>
+  <!-- Inhalt -->
+
+  <h1>Erstellen von Grafiksets</h1>
+  <p>
+    <em>Warum schon wieder ein neues Grafiksetformat?</em> Genau diese Frage
+    stellte sich beim Entwurf des neuen Kartenmoduls; das Ergebnis ist
+    eigentlich kein weiteres Grafiksetformat, denn mit dem hier vorgestellten
+    Konzept ist die Anpassung an beliebige Formate möglich, solange die
+    notwendigen Information über die Zellengeometrie zur Verfügung stehen.
+    Dadurch können beispielsweise auch existierende Grafiksets anderer Clients
+    unverändert übernommen werden, wenn die Grafiken im GIF oder PNG Format
+    vorliegen. Man muss lediglich eine passende Datei cellgeometry.txt
+    erzeugen, die die Geometrieinformation über das vorliegende Grafikset
+    enthält.
+  </p>
+  <h2>Ressourcenpfade</h2>
+  <p>
+    Die <a href="ressources.html">Resourcenseite</a> enthält grundlegenede
+    Informationen zu Resourcen und Resourcenpfaden.
+  </p>
+  <p>Magellan lädt Dateien (z.B. Grafiken) immer aus bestimmten
+    Verzeichnissen, die auf den Verwendugszweck der Datei hinweisen. Bei den
+    Grafikdateien für die Karte ist das 'images/map/', ein Grafikset besteht
+    deshalb immer aus einem Verzeichnis oder einem Archiv (ZIP oder JAR Datei),
+    das die Kartengrafiken in diesen Unterverzeichnissen enthält.</p>
+  <p>Ein Ressourcenpfad ist ein Verweis auf so eine Ressourcenquelle, beim
+    Laden der Datei Ebene.png wird z.B. einfach der Ressourcenpfad, das
+    Verzeichnis 'images/map' und der Dateiname 'Ebene.png' aneinander gehängt,
+    um auf die Datei zuzugreifen, also z.B.
+    'C:\Grafiksets\images\map\Ebene.gif" wenn man "C:\Grafiksets" als
+    Ressourcenpfad eingestellt ist. Beim Zugriff werden zunächst alle
+    Ressourcenpfade durchsucht und dann, falls sie in keinem Ressourcenpfad
+    gefunden werden konnte, auf die Standardgrafiken in der Magellan Jar-Datei
+    zugegriffen.</p>
+  <p>Man kann ein Grafikset auch als Archiv (ZIP oder JAR Datei) an andere
+    weitergeben, um die Handhabung zu vereinfachen. Dazu muss man nur das Set,
+    also die Grafikdateien und cellgeometry.txt, in eine ZIP Datei oder JAR
+    Datei packen. Die Dateien müßen aber auf jeden Fall innerhalb dieses
+    Archivs in einem 'images/map/' Unterverzeichnis liegen. Dann kann jeder
+    Magellan Benutzer das Grafikset nutzen, indem er dieses Archiv als
+    Ressourcenpfad im Optionsdialog von Magellan einträgt.</p>
+  <h2>Dateinamen</h2>
+  <p>Hier sind die Namen der Dateien aufgeführt, die die bisher
+    existierenden Renderer verwenden, um bestimmte Objekte darzustellen. Für
+    den vollständigen Namen, den die Datei tatsächlich tragen muss, ist jeweils
+    die Endung ".png", ".gif" und/oder "-alpha.gif" anzuhängen.</p>
+  <p>Die Dateinamen müssen alle kleingeschrieben werden, sonst kann
+    Magellan nicht auf sie zugreifen!</p>
+  <ul>
+    <li>Regionen: Alle Regionsnamen ohne Umlaute (z.B. "wueste"),
+      zusätzlich "nebel" für den Fog-of-War</li>
+    <li>Grenzen: "strasse0" (NW) bis "strasse5" (SW, im Uhrzeigersinn)
+      sowie "strasse_incomplete0" (NW) bis "strasse_incomplete5" (SW, im
+      Uhrzeigersinn). Gibt es keine Grafiken für unfertige Strassen, werden die
+      Grafiken für fertige Strassen genommen.</li>
+    <li>Gebäude: Alle Gebäudenamen ohne Umlaute (z.B. "saegewerk")</li>
+    <li>Schiffe: "schiff0" (Keine Küste), "schiff1" (NW) bis "schiff6"
+      (SW, im Uhrzeigersinn)</li>
+    <li>Richtungsanzeigen: "pfeil0" (NW) bis "pfeil5" (SW, im
+      Uhrzeigersinn)</li>
+    <li>Selektionsmarkierungen: "active", "selected"</li>
+  </ul>
+  <p>Alle Dateien sollten zusammen mit der Datei cellgeometry.txt (siehe
+    'Zellengeometrie') in einem gemeinsamen Verzeichnis 'images/map/' liegen.</p>
+  <h2>Dateiformat</h2>
+  <p>Die Grafikdateien dürfen vom Format PNG oder GIF sein, von
+    Alphakanälen bzw. Transparenz wird dabei in unterschiedlicher Art und Weise
+    Gebrauch gemacht:</p>
+  <p>PNG: Wird eine Datei mit der Endung .png gefunden, wird sie verwendet
+    und die enthaltene Alphakanalinformation direkt genutzt. PNG Dateien haben
+    den Vorteil, dass sie 24 Bit Farbtiefe und einen integrierten 8-bit
+    Alphakanal erlauben, leider unterstützt Java 1.2 noch keine PNG Grafiken,
+    deshalb können nur Anwender mit einem JRE &gt;= 1.3 solche Grafiksets
+    benutzen.</p>
+  <p>GIF + Alphakanal: Wird keine Datei mit der Endung ".png" gefunden,
+    sucht der Renderer nach einer Datei mit der Endung ".gif", die die RGB
+    Informationen des Bildes enthält und einer Datei mit der Endung
+    "-alpha.gif", die als Graustufenbild interpretiert und als Alphakanal für
+    das andere GIF verwendet wird.</p>
+  <p>GIF: Gibt es keine Datei mit der Endung "-alpha.gif", aber eine
+    Standard-GIF Datei, wird die darin enthaltenen RGB und
+    Transparenzinformation genutzt.</p>
+  <h2>Größe der Grafiken / Zellengeometrie</h2>
+  <p>Prinzipiell ist die Größe der Grafiken beliebig, muss aber innerhalb
+    eines Grafiksets für alle Bilder gleich sein. Außerdem benötigt der Client
+    Informationen über die Geometrie des Regionssechsecks, also dessen
+    Eckkoordinaten, sowie dessen Position in der Grafik und die Gesamtgröße der
+    Grafik. Das sieht dann ungefähr folgendermaßen aus:</p>
+  <img src="../images/reference_graphicsets_cellgeometry.gif" alt="" border="0" />
+  <pre>
 x0=32  &lt;- x-Koordinate des Eckpunktes auf 12 Uhr
 x1=63  &lt;- x-Koordinate des Eckpunktes auf 2 Uhr
 x2=63
@@ -165,74 +120,47 @@ imgOffsety=8  &lt;- Abstand zwischen oberem Sechsecksrand und Grafikrand
 imgSizex=80  &lt;- Breite der Grafikdatei
 imgSizey=80  &lt;- Höhe der Grafikdatei
 </pre>
-    <p>
-      Alle Angaben sind hier in Pixel. Entspricht die Breite und Höhe des
-      Regionssechsecks der der Grafikdatei, gibt es keine Überlappungen beim
-      Zeichnen der einzelnen Grafiken. Wählt man die Grafikgröße jedoch größer
-      als die des Regionssechsecks, so ergeben sich Überlappungen beim Zeichnen
-      der Grafiken, abhängig vom Wert imgOffsetx/y über, unter, links oder
-      rechts des Regionssechsecks. Zusammen mit der Ausnutzung von
-      Transparenzinformation in den Grafiken lassen sich dadurch allerlei
-      Effekte erzeugen, z.B. kaum merkliche Uebergänge zwischen Regionen. Dabei
-      ist zu beachten, dass auf allen Renderingschichten die Regionen von links
-      oben zeilenweise nach rechts unten gezeichnet werden.
-    </p>
-    <p>
-      Die Datei mit diesen Informationen muss "cellgeometry.txt" heißen und im
-      selben Verzeichnis (images/map/) wie die Grafiken liegen. Der Inhalt
-      dieser Datei mag etwas obskur erscheinen, die Bedeutung sollte aber
-      schnell klar werden, wenn man sich ihren Inhalt bei existierende
-      Grafiksets ansieht.
-    </p>
-    <h2>
-      Renderer
-    </h2>
-    <p>
-      Magellan unterstützt fuer jede Teilschicht der Karte verschiedene
-      'Renderer', also Submodule, die die Grafikdateien auf den Bildschirm
-      bringen. Sie sind in mehreren Schichten angeordnet, um eine festgelegte
-      Reihenfolge beim Rendern zu haben, die sich in der Tiefenanordnung der
-      gezeichneten Grafiken wiederspiegelt. Die Reihenfolge ist derzeit:
-    </p>
-    <ol>
-      <li>
-        Regionen
-      </li>
-      <li>
-        Grenzen (Straßen)
-      </li>
-      <li>
-        Gebäude
-      </li>
-      <li>
-        Schiffe
-      </li>
-      <li>
-        Regionsnamen
-      </li>
-      <li>
-        Richtungspfeile
-      </li>
-      <li>
-        Selektionsmarkierungen
-      </li>
-    </ol>
-    <p>
-      D.h. dass frühere Schichten durch spätere Schichten überdeckt werden. Im
-      Augenblick gibt es nur einen Standardrenderer für jede der Schichten,
-      diese sollten aber für die meisten Zwecke ausreichend flexibel sein.
-    </p>
-    <p>
-      Beim Entwurf der Grafiken und beim Festlegen eventueller Ueberlappungen
-      der Grafiken ist zu beachten, dass auf allen Renderingschichten die
-      Regionen von links oben zeilenweise nach rechts unten gezeichnet werden.
-    </p>
-    <p>
-      Es ist übrigens sehr simpel, neue Renderer zu programmieren, um z.B.
-      weitere Objekte auf der Karte oder bestimmte Regionseigenschaften
-      darzustellen.
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+  <p>Alle Angaben sind hier in Pixel. Entspricht die Breite und Höhe des
+    Regionssechsecks der der Grafikdatei, gibt es keine Überlappungen beim
+    Zeichnen der einzelnen Grafiken. Wählt man die Grafikgröße jedoch größer
+    als die des Regionssechsecks, so ergeben sich Überlappungen beim Zeichnen
+    der Grafiken, abhängig vom Wert imgOffsetx/y über, unter, links oder rechts
+    des Regionssechsecks. Zusammen mit der Ausnutzung von
+    Transparenzinformation in den Grafiken lassen sich dadurch allerlei Effekte
+    erzeugen, z.B. kaum merkliche Uebergänge zwischen Regionen. Dabei ist zu
+    beachten, dass auf allen Renderingschichten die Regionen von links oben
+    zeilenweise nach rechts unten gezeichnet werden.</p>
+  <p>Die Datei mit diesen Informationen muss "cellgeometry.txt" heißen und
+    im selben Verzeichnis (images/map/) wie die Grafiken liegen. Der Inhalt
+    dieser Datei mag etwas obskur erscheinen, die Bedeutung sollte aber schnell
+    klar werden, wenn man sich ihren Inhalt bei existierende Grafiksets
+    ansieht.</p>
+  <h2>Renderer</h2>
+  <p>Magellan unterstützt fuer jede Teilschicht der Karte verschiedene
+    'Renderer', also Submodule, die die Grafikdateien auf den Bildschirm
+    bringen. Sie sind in mehreren Schichten angeordnet, um eine festgelegte
+    Reihenfolge beim Rendern zu haben, die sich in der Tiefenanordnung der
+    gezeichneten Grafiken wiederspiegelt. Die Reihenfolge ist derzeit:</p>
+  <ol>
+    <li>Regionen</li>
+    <li>Grenzen (Straßen)</li>
+    <li>Gebäude</li>
+    <li>Schiffe</li>
+    <li>Regionsnamen</li>
+    <li>Richtungspfeile</li>
+    <li>Selektionsmarkierungen</li>
+  </ol>
+  <p>D.h. dass frühere Schichten durch spätere Schichten überdeckt werden.
+    Im Augenblick gibt es nur einen Standardrenderer für jede der Schichten,
+    diese sollten aber für die meisten Zwecke ausreichend flexibel sein.</p>
+  <p>Beim Entwurf der Grafiken und beim Festlegen eventueller
+    Ueberlappungen der Grafiken ist zu beachten, dass auf allen
+    Renderingschichten die Regionen von links oben zeilenweise nach rechts
+    unten gezeichnet werden.</p>
+  <p>Es ist übrigens sehr simpel, neue Renderer zu programmieren, um z.B.
+    weitere Objekte auf der Karte oder bestimmte Regionseigenschaften
+    darzustellen.</p>
+  <!-- Inhalt - Ende -->
+</body>
 </html>
 

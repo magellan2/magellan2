@@ -1,220 +1,155 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      Optionen: Detailanzeige
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<head>
+<title>Optionen: Detailanzeige</title>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
 
-    <link rel="stylesheet" href="../../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Detailanzeige
-    </h1>
-    <p>
-      In diesem Dialog können die Optionen der Detailanzeige und der
-      Befehlsergänzung konfiguriert werden:
-    </p>
-    <p style="text-align: center">
-      <img src="../../images/menu_extras_options_detail.gif"
+<link rel="stylesheet" href="../../../default.css" type="text/css" />
+</head>
+<body>
+  <a id="top" name="top"></a>
+  <!-- Inhalt -->
+
+  <h1>Detailanzeige</h1>
+  <p>In diesem Dialog können die Optionen der Detailanzeige und der
+    Befehlsergänzung konfiguriert werden:</p>
+  <p style="text-align: center">
+    <img src="../../images/menu_extras_options_detail.gif"
       alt="Optionen - Detailanzeige" border="0" />
-    </p>
-    <h3>
-      Datenanzeige
-    </h3>
-    <ul>
-      <li>
-        <b>Zeige Tag-Buttons</b><br />
-         Ist diese Option aktiviert werden in der Detailanzeige zwei
-        Schaltflächen zum Hinzufügen und Enfernen von zusätzlichen CR-tags
-        angezeigt, die man dann z.B. mit Vorlage auswerten kann.
-      </li>
-      <li>
-        <b>Erlaube eigene Icons</b><br />
-         Damit ist es möglich, eigenen Einheiten und Parteien ein eigenes Icon
-        zuzuordnen. Diese Icons müssen im Unterverzeichnis
-        <code>etc/images/icons/custom</code> abgelegt werden.<br />
-         
-        <ul>
-          <li>
-            Für Parteien muss eine GIF Datei wie folgt abgelegt werden:
-            <code>etc/images/icons/custom/factions/&lt;parteinummer&gt;.gif</code>
-          </li>
-          <li>
-            Für Einheiten muss eine GIF Datei wie folgt abgelegt werden:
-            <code>etc/images/icons/custom/units/&lt;einheitennummer&gt;.gif</code>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <b>Regionskurzinfo</b><br />
-         In diesem Feld können die Regionsinhalte bestimmt werden, die
-        permanent in dem grauen Bereich oberhalb der Detailanzeige eingeblendet
-        werden. Dieser Text ist Format von ATR. Eine genauere Beschreibung der
-        Sprache findest Du unter <a
-        href="http://www.duckstein.net/atranleitung.html">http://www.duckstein.net/atranleitung.html</a>.
-      </li>
-    </ul>
-    <h2>
-      Befehlseditor
-    </h2>
-    <p style="text-align: center">
-      <img src="../../images/menu_extras_options_detail_orders.gif"
+  </p>
+  <h3>Datenanzeige</h3>
+  <ul>
+    <li><b>Zeige Tag-Buttons</b><br /> Ist diese Option aktiviert werden
+      in der Detailanzeige zwei Schaltflächen zum Hinzufügen und Enfernen von
+      zusätzlichen CR-tags angezeigt, die man dann z.B. mit Vorlage auswerten
+      kann.</li>
+    <li><b>Erlaube eigene Icons</b><br /> Damit ist es möglich, eigenen
+      Einheiten und Parteien ein eigenes Icon zuzuordnen. Diese Icons müssen im
+      Unterverzeichnis <code>etc/images/icons/custom</code> abgelegt werden.<br />
+
+      <ul>
+        <li>Für Parteien muss eine GIF Datei wie folgt abgelegt werden: <code>etc/images/icons/custom/factions/&lt;parteinummer&gt;.gif</code>
+        </li>
+        <li>Für Einheiten muss eine GIF Datei wie folgt abgelegt werden: <code>etc/images/icons/custom/units/&lt;einheitennummer&gt;.gif</code>
+        </li>
+      </ul></li>
+    <li><b>Regionskurzinfo</b><br /> In diesem Feld können die
+      Regionsinhalte bestimmt werden, die permanent in dem grauen Bereich
+      oberhalb der Detailanzeige eingeblendet werden. Dieser Text ist Format
+      von ATR. Eine genauere Beschreibung der Sprache findest Du unter <a
+      href="http://www.duckstein.net/atranleitung.html">http://www.duckstein.net/atranleitung.html</a>.
+    </li>
+  </ul>
+  <h2>Befehlseditor</h2>
+  <p style="text-align: center">
+    <img src="../../images/menu_extras_options_detail_orders.gif"
       alt="Optionen - Detailanzeige - Befehlseditor" border="0" />
-    </p>
-    <ul>
-      <li>
-        <b>Multi-Editor Layout</b><br />
-         Wird diese Option aktiviert, stehen die Befehle aller Einheiten der
-        Region untereinander im Befehlsfenster.<br />
-         Ist das Multi-Editor Layout deaktiviert, stehen nur die Befehle der
-        gerade gewählten Einheit im Befehlsfenster.
-      </li>
-      <li>
-        <b>Knöpfe verstecken</b><br />
-         Wählt man diese Funktion, dann werden die TEMP-Knöpfe unten nicht
-        angezeigt und man gewinnt etwas Platz.
-      </li>
-      <li>
-        <b>Alle Parteien editierbar</b><br>
-        Normalerweise können nur Befehle von Parteien gesehen und bearbeitet werden,
-        die <i>priviligiert</i> sind. Im Normalfalle ist das die Partei, deren Passwort 
-        bekannt ist und für die Befehle erstellt werden.<br>
-        Für besondere Konstellationen kann es gewünscht sein, auch von anderen Parteien die
-        Befehle zu sehen und zu editieren, um zum Beispiel eine geplante Übergabe zu simulieren und
-        das resultierende Gewicht zu prüfen. Für eine Darstellung und Änderung der Befehle von nicht-priviligierten 
-        Dateien muss diese Funktion aktiviert sein.
-      </li>
-      <li>
-        <b>Farben</b><br />
-         Der Hintergrund der Befehlsbox kann dabei für die aktive Einheit
-        anders eingefärbt werden als für die übrigen Einheiten. Dazu klickt man
-        einfach auf das jeweilige Farbfeld.
-      </li>
-      <li>
-        <b>Syntaxhighlighting</b><br />
-         Hier kann man das Syntaxhighlighting (syntaxabhängige Färbung der
-        Befehle) aktivieren und die Farben einstellen.
-      </li>
-      <li>
-        <b>Editor-Liste</b><br />
-         Die Einstellungen beeinflussen die Menge der dargestellten Einheiten
-        im der Befehlsliste. Einschränken lässt sich diese Menge der
-        dargestellten Einheiten auf Inseln, Regionen und Parteien.
-      </li>
-    </ul>
-    <h3>
-      Befehlsvervollständigung
-    </h3>
-    <p style="text-align: center">
-      <img src="../../images/menu_extras_options_detail_ordercompletion.gif"
+  </p>
+  <ul>
+    <li><b>Multi-Editor Layout</b><br /> Wird diese Option aktiviert,
+      stehen die Befehle aller Einheiten der Region untereinander im
+      Befehlsfenster.<br /> Ist das Multi-Editor Layout deaktiviert, stehen
+      nur die Befehle der gerade gewählten Einheit im Befehlsfenster.</li>
+    <li><b>Knöpfe verstecken</b><br /> Wählt man diese Funktion, dann
+      werden die TEMP-Knöpfe unten nicht angezeigt und man gewinnt etwas Platz.
+    </li>
+    <li><b>Alle Parteien editierbar</b><br> Normalerweise können nur
+        Befehle von Parteien gesehen und bearbeitet werden, die <i>priviligiert</i>
+        sind. Im Normalfalle ist das die Partei, deren Passwort bekannt ist und
+        für die Befehle erstellt werden.<br> Für besondere Konstellationen
+          kann es gewünscht sein, auch von anderen Parteien die Befehle zu
+          sehen und zu editieren, um zum Beispiel eine geplante Übergabe zu
+          simulieren und das resultierende Gewicht zu prüfen. Für eine
+          Darstellung und Änderung der Befehle von nicht-priviligierten Dateien
+          muss diese Funktion aktiviert sein. </li>
+    <li><b>Farben</b><br /> Der Hintergrund der Befehlsbox kann dabei für
+      die aktive Einheit anders eingefärbt werden als für die übrigen
+      Einheiten. Dazu klickt man einfach auf das jeweilige Farbfeld.</li>
+    <li><b>Syntaxhighlighting</b><br /> Hier kann man das
+      Syntaxhighlighting (syntaxabhängige Färbung der Befehle) aktivieren und
+      die Farben einstellen.</li>
+    <li><b>Editor-Liste</b><br /> Die Einstellungen beeinflussen die
+      Menge der dargestellten Einheiten im der Befehlsliste. Einschränken lässt
+      sich diese Menge der dargestellten Einheiten auf Inseln, Regionen und
+      Parteien.</li>
+  </ul>
+  <h3>Befehlsvervollständigung</h3>
+  <p style="text-align: center">
+    <img src="../../images/menu_extras_options_detail_ordercompletion.gif"
       alt="Optionen - Befehlsvervollständigung" border="0" />
-    </p>
-    <p>
-      Die automatische Befehlsvervollständigung erleichtert das Eingeben von
-      Befehlen für die Einheiten. Dabei werden je nach Kontext sinnvolle bzw.
-      mögliche Befehle vorgeschlagen und können mit wenigen Tastendrücken oder
-      Klicks ausgewählt werden.<br />
-      Beispiel:<br />
-      Man tippt ein "G". Nun werden alle Befehle, die mit "G" beginnen zur
-      Auswahl angezeigt. Nach Auswahl des Befehls "GIB" folgt hier eine Liste
-      aller Einheiten in der Region. Nachdem so die Einheitennummer eingegeben
-      wurde erscheint eine Liste mit allen Gegenständen, die die Einheit
-      besitzt.
-    </p>
-    <ul>
-      <li>
-        <b>Autovervollständigen aktivieren:</b><br />
-         Hier kann man die automatisch Befehlsvervollständigung de- und
-        aktivieren.
-      </li>
-      <li>
-        <b>MACHEN-Ergänzung einschränken:</b><br />
-         Wenn diese Option gewählt ist, werden beim MACHEN-Befehl nur
-        Gegenstände vorgeschlagen für die die notwendigen Ressourcen verfügbar
-        sind.
-      </li>
-      <li>
-        <b>Sofortige Anzeige:</b><br />
-         Aktiviert die sofortige Anzeige der Befehlvorschläge nach der Eingabe
-        eines Befehls. Das bedeutet, daß der nächste Teilbefehl vorgeschlagen
-        wird, bevor der Wortanfang getippt wurde. Ist diese Option deaktiviert,
-        muß man vor dem Befehlsvorschlag min. 1 Zeichen tippen.
-      </li>
-      <li>
-        <b>Zeit:</b><br />
-         Im Feld <i>Zeit</i> kann man die Verzögerung für die Anzeige des
-        Befehlsvorschlages in ms einstellen.
-      </li>
-      <li>
-        <b>Modus:</b><br />
-         Für die Autovervollständigung stehen zwei Modi zur Verfügung: 
-        <ul>
-          <li>
-            Liste<br />
-             Sobald ein oder mehrere Zeichen eingegeben wurden, erscheint eine
-            Liste mit möglichen Ergänzungen. Jede weitere Eingabe von Zeichen
-            schränkt die Auswahl weiter ein.<br />
-             Beispiel:<br />
-             L -&gt; "LEHREN, LERNEN, LIEFERE"<br />
-             LE -&gt; "LEHREN, LERNEN"<br />
-             LEH -&gt; "LEHREN"<br />
-             Man kann in der Liste mittels der Cursortasten nach oben und unten
-            wandern. Ein Druck auf die TAB-Taste oder ein Doppelklick auf den
-            Eintrag vervollständigt den Befehl.<br />
-          </li>
-          <li>
-            Markierter Text<br />
-             Statt der Auswahlliste wird das Wort bis zur nächsten
-            Unterscheidungsmöglichkeit vervollständigt. Der eingefügte Text ist
-            markiert und wird so beim weitertippen überschrieben. Den Vorschlag
-            übernimmt man auch hier mit der TAB-Taste.<br />
-          </li>
-          <li>
-            Keine Anzeige<br />
-             Schaltet die Anzeige der Vorschläge ab. Das Einfügen der
-            (unsichtbaren) Vorschläge ist dennoch möglich.
-          </li>
-        </ul>
-      </li>
-      <li>
-        Bei den Eingabefeldern für <b>Vorwärts, Rückwärts, Einsetzen</b> und
-        <b>Abbrechen</b> kann man die Tastenkombinationen für die jeweiligen
-        Funktionen einstellen. <b>Vorwärts</b> springt einen Vorschlag vor,
-        <b>Rückwärts</b> springt einen Vorschlag zurück, <b>Einsetzen</b> setzt
-        den aktuellen Vorschlag ein und mit <b>Abbrechen</b> wird die Eingabe
-        abgebrochen.<br />
-      </li>
-      <li>
-        <b>Selbstdefinierte Befehlsergänzungen</b><br />
-         Im unteren Bereich des Fensters hat man die Möglichkeit, selbst
-        beliebige Kürzel zu definieren, die dann bei den Befehlsergänzungen vor
-        den normalen Befehlen angezeigt werden. Hat man z.B. das Kürzel
-        <i>lh</i> für <i>lernen Hiebwaffen</i> definiert, so wird das analog
-        dem obigen Beispiel folgendermaßen angezeigt:<br />
-         L -&gt; "lh, LEHREN, LERNEN, LIEFERE"<br />
-         LE -&gt; "LEHREN, LERNEN"<br />
-         Wählt man während der Befehlserstellung das Kürzel aus, so wird der
-        definierte Textbaustein anstatt des Kürzels eingesetzt. Dieser Baustein
-        kann auch länger als eine Zeile sein.<br />
-         Im linken Teil der Anzeige befindet sich eine Liste der bisher
-        definierten Kürzel. Wählt man eines der Kürzel mit der Maus aus, so
-        wird im rechten Teil der Anzeige der dazugehörige Textbaustein
-        angezeigt. Mittels der Schaltfläche <i><b>Hinzufügen</b></i> lassen
-        sich neue Kürzel definieren, während die Schaltfläche
-        <i><b>Entfernen</b></i> das gerade ausgewählte Kürzel aus der Liste
-        löscht.
-      </li>
-    </ul>
-    <!-- Inhalt - Ende -->
-  </body>
+  </p>
+  <p>
+    Die automatische Befehlsvervollständigung erleichtert das Eingeben von
+    Befehlen für die Einheiten. Dabei werden je nach Kontext sinnvolle bzw.
+    mögliche Befehle vorgeschlagen und können mit wenigen Tastendrücken oder
+    Klicks ausgewählt werden.<br /> Beispiel:<br /> Man tippt ein "G". Nun
+    werden alle Befehle, die mit "G" beginnen zur Auswahl angezeigt. Nach
+    Auswahl des Befehls "GIB" folgt hier eine Liste aller Einheiten in der
+    Region. Nachdem so die Einheitennummer eingegeben wurde erscheint eine
+    Liste mit allen Gegenständen, die die Einheit besitzt.
+  </p>
+  <ul>
+    <li><b>Autovervollständigen aktivieren:</b><br /> Hier kann man die
+      automatisch Befehlsvervollständigung de- und aktivieren.</li>
+    <li><b>MACHEN-Ergänzung einschränken:</b><br /> Wenn diese Option
+      gewählt ist, werden beim MACHEN-Befehl nur Gegenstände vorgeschlagen für
+      die die notwendigen Ressourcen verfügbar sind.</li>
+    <li><b>Sofortige Anzeige:</b><br /> Aktiviert die sofortige Anzeige
+      der Befehlvorschläge nach der Eingabe eines Befehls. Das bedeutet, daß
+      der nächste Teilbefehl vorgeschlagen wird, bevor der Wortanfang getippt
+      wurde. Ist diese Option deaktiviert, muß man vor dem Befehlsvorschlag
+      min. 1 Zeichen tippen.</li>
+    <li><b>Zeit:</b><br /> Im Feld <i>Zeit</i> kann man die Verzögerung
+      für die Anzeige des Befehlsvorschlages in ms einstellen.</li>
+    <li><b>Modus:</b><br /> Für die Autovervollständigung stehen zwei
+      Modi zur Verfügung:
+      <ul>
+        <li>Liste<br /> Sobald ein oder mehrere Zeichen eingegeben
+          wurden, erscheint eine Liste mit möglichen Ergänzungen. Jede weitere
+          Eingabe von Zeichen schränkt die Auswahl weiter ein.<br /> Beispiel:<br />
+          L -&gt; "LEHREN, LERNEN, LIEFERE"<br /> LE -&gt; "LEHREN, LERNEN"<br />
+          LEH -&gt; "LEHREN"<br /> Man kann in der Liste mittels der
+          Cursortasten nach oben und unten wandern. Ein Druck auf die TAB-Taste
+          oder ein Doppelklick auf den Eintrag vervollständigt den Befehl.<br />
+        </li>
+        <li>Markierter Text<br /> Statt der Auswahlliste wird das Wort
+          bis zur nächsten Unterscheidungsmöglichkeit vervollständigt. Der
+          eingefügte Text ist markiert und wird so beim weitertippen
+          überschrieben. Den Vorschlag übernimmt man auch hier mit der
+          TAB-Taste.<br />
+        </li>
+        <li>Keine Anzeige<br /> Schaltet die Anzeige der Vorschläge ab.
+          Das Einfügen der (unsichtbaren) Vorschläge ist dennoch möglich.
+        </li>
+      </ul></li>
+    <li>Bei den Eingabefeldern für <b>Vorwärts, Rückwärts, Einsetzen</b>
+      und <b>Abbrechen</b> kann man die Tastenkombinationen für die jeweiligen
+      Funktionen einstellen. <b>Vorwärts</b> springt einen Vorschlag vor, <b>Rückwärts</b>
+      springt einen Vorschlag zurück, <b>Einsetzen</b> setzt den aktuellen
+      Vorschlag ein und mit <b>Abbrechen</b> wird die Eingabe abgebrochen.<br />
+    </li>
+    <li><b>Selbstdefinierte Befehlsergänzungen</b><br /> Im unteren
+      Bereich des Fensters hat man die Möglichkeit, selbst beliebige Kürzel zu
+      definieren, die dann bei den Befehlsergänzungen vor den normalen Befehlen
+      angezeigt werden. Hat man z.B. das Kürzel <i>lh</i> für <i>lernen
+        Hiebwaffen</i> definiert, so wird das analog dem obigen Beispiel
+      folgendermaßen angezeigt:<br /> L -&gt; "lh, LEHREN, LERNEN, LIEFERE"<br />
+      LE -&gt; "LEHREN, LERNEN"<br /> Wählt man während der Befehlserstellung
+      das Kürzel aus, so wird der definierte Textbaustein anstatt des Kürzels
+      eingesetzt. Dieser Baustein kann auch länger als eine Zeile sein.<br />
+      Im linken Teil der Anzeige befindet sich eine Liste der bisher
+      definierten Kürzel. Wählt man eines der Kürzel mit der Maus aus, so wird
+      im rechten Teil der Anzeige der dazugehörige Textbaustein angezeigt.
+      Mittels der Schaltfläche <i><b>Hinzufügen</b></i> lassen sich neue Kürzel
+      definieren, während die Schaltfläche <i><b>Entfernen</b></i> das gerade
+      ausgewählte Kürzel aus der Liste löscht.</li>
+  </ul>
+  <!-- Inhalt - Ende -->
+</body>
 </html>
 

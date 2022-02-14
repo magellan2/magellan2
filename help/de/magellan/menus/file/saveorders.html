@@ -1,138 +1,88 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta name="generator" content="HTML Tidy, see www.w3.org" />
-    <title>
-      Befehle speichern
-    </title>
-    <meta http-equiv="Content-Language" content="de-DE" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org" />
+<title>Befehle speichern</title>
+<meta http-equiv="Content-Language" content="de-DE" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
 
-    <link rel="stylesheet" href="../../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Befehle speichern
-    </h1>
-    <p>
-      <img src="../../images/menu_file_saveorders.gif" alt="" border="0" />
-    </p>
-    <p>
-      Zum Speichern/Verschicken der Befehle stehen folgende Optionen zur
-      Verfügung:
-    </p>
-    <ul>
-      <li>
-        <b>Speichern</b>:<br />
-         speichert die Befehlsdatei am angegebenen Ort.<br />
-      </li>
-      <li>
-        <b>Zwischenablage</b>:<br />
-         kopiert die Befehlsdatei in die Zwischenablage. Von dort kann sie z.B.
-        sehr einfach in ein Mailprogramm übernommen werden.<br />
-      </li>
-      <li>
-        <b>Mail</b>:<br />
-         verschickt die Befehle direkt per Mail. Dabei werden die Einstellungen
-        im unteren Teil des Dialoges verwendet: 
-        <ul>
-          <li>
-            <b>SMTP-Server:</b><br />
-             Hier trägt man den Mailserver seines Internetproviders ein. Im
-            Zweifel dort nachfragen.
-          </li>
-          <li>
-            <b>Authentifizierung:</b><br />
-             Mittlerweile benötigen die meisten Mailserver eine
-            Authentifizierung. Hier kann man diese Einstellungen setzen.
-            Magellan versucht dann, sich am SMTP Server mit ASMTP anzumelden
-            (TLS supported).
-          </li>
-          <li>
-            <b>Empfängeradresse:</b><br />
-             Hier wird die Mail-Adresse des Eressea-Servers angegeben. (default
-            wird aus der Reportdatei geladen bzw.
-            "eressea-server@eressea.kn-bremen.de").
-          </li>
-          <li>
-            <b>Absenderadresse:</b><br />
-             Hier trägt man die eigene Mailadresse ein.
-          </li>
-          <li>
-            <b>Subject:</b><br />
-             Der Betreff der Mail (default: "Eressea Befehle").
-          </li>
-        </ul>
-      </li>
-      <li>
-        <b>Auto-Dateiname</b>:<br />
-         generiert einen Dateinamen zur Speicherung der Befehle als Datei.<br>
-         Als Vorlage dient der in den Optionen 
-         <a href="../extras/options_system.html">(System)</a>
-         definierte Text.
-      </li>
-      <li>
-        <b>Schließen</b>:<br />
-         schließt den Dialog.
-      </li>
-    </ul>
-    <br />
-     
-    <h2>
-      Ausgabeoptionen
-    </h2>
-    <ul>
-      <li>
-        <b>Automatischer Zeilenumbruch</b><br />
-         bricht die Befehlsdatei nach <i>n</i> Zeichen um. Längere Zeilen
-        (Beschreibungen, Botschaften, etc.) werden dabei automatisch mit " \"
-        getrennt. Vermeidet Probleme mit dem automatischen Zeilenumbruch von
-        Mailprogrammen.
-      </li>
-      <li>
-        <b>ECHECK-Kommentare</b><br />
-         fügt ECHECK-Kommentare (wie Angaben über Silber und Personen) in die
-        Befehlsdatei ein.
-      </li>
-      <li>
-        <b>mit ';' beginnende Kommentare entfernen</b>:<br />
-         entfernt nichtpersistente Kommentare aus der Befehlsdatei. Nach
-        Möglichkeit sollte diese Option zum verschicken der Mail an den
-        Eressea-Server angewählt sein um die Befehlsdatei so klein wie möglich
-        zu machen. Allerdings gehen hierbei auch die Informationen über die
-        Bestätigung der Befehle der Einheiten verloren, da diese in
-        ';'-Kommentaren abgelegt werden.
-      </li>
-      <li>
-        <b>mit '//' beginnende Kommentare entfernen</b>:<br />
-         entfernt persistente Kommentare aus der Befehlsdatei. Vorlage-Benutzer
-        sollten diese Option tunlichst nicht benutzen, da so auch alle
-        Metabefehle gelöscht werden.
-      </li>
-      <li>
-        <b>nur Einheiten mit bestätigten Befehlen</b>:<br />
-         Nur Befehle bestätigter Einheiten werden geschrieben. Unbestätigte
-        Einheiten werden ignoriert. Diese Option ist sehr praktisch für
-        Spieler, die sich eine Partei teilen.
-      </li>
-      <li>
-        <b>Ausgewählte Regionen</b>:<br />
-         Hiermit kann man festlegen, dass nur Befehle für Einheiten verschickt
-        werden, die gerade ausgewählt (selektiert) sind. So kann man stückweise
-        Befehle an den Server schicken.
-      </li>
-      <li>
-        <b>Unbekannte Tags als Vorlage einfügen</b>:<br />
-         Damit werden unbekannte Tags in die Befehlsdatei geschrieben.
-      </li>
-    </ul>
-    <!-- Inhalt - Ende -->
-  </body>
+<link rel="stylesheet" href="../../../default.css" type="text/css" />
+</head>
+<body>
+  <a id="top" name="top"></a>
+  <!-- Inhalt -->
+
+  <h1>Befehle speichern</h1>
+  <p>
+    <img src="../../images/menu_file_saveorders.gif" alt="" border="0" />
+  </p>
+  <p>Zum Speichern/Verschicken der Befehle stehen folgende Optionen zur
+    Verfügung:</p>
+  <ul>
+    <li><b>Speichern</b>:<br /> speichert die Befehlsdatei am angegebenen
+      Ort.<br /></li>
+    <li><b>Zwischenablage</b>:<br /> kopiert die Befehlsdatei in die
+      Zwischenablage. Von dort kann sie z.B. sehr einfach in ein Mailprogramm
+      übernommen werden.<br /></li>
+    <li><b>Mail</b>:<br /> verschickt die Befehle direkt per Mail. Dabei
+      werden die Einstellungen im unteren Teil des Dialoges verwendet:
+      <ul>
+        <li><b>SMTP-Server:</b><br /> Hier trägt man den Mailserver
+          seines Internetproviders ein. Im Zweifel dort nachfragen.</li>
+        <li><b>Authentifizierung:</b><br /> Mittlerweile benötigen die
+          meisten Mailserver eine Authentifizierung. Hier kann man diese
+          Einstellungen setzen. Magellan versucht dann, sich am SMTP Server mit
+          ASMTP anzumelden (TLS supported).</li>
+        <li><b>Empfängeradresse:</b><br /> Hier wird die Mail-Adresse des
+          Eressea-Servers angegeben. (default wird aus der Reportdatei geladen
+          bzw. "eressea-server@eressea.kn-bremen.de").</li>
+        <li><b>Absenderadresse:</b><br /> Hier trägt man die eigene
+          Mailadresse ein.</li>
+        <li><b>Subject:</b><br /> Der Betreff der Mail (default: "Eressea
+          Befehle").</li>
+      </ul></li>
+    <li><b>Auto-Dateiname</b>:<br /> generiert einen Dateinamen zur
+      Speicherung der Befehle als Datei.<br> Als Vorlage dient der in den
+        Optionen <a href="../extras/options_system.html">(System)</a>
+        definierte Text. </li>
+    <li><b>Schließen</b>:<br /> schließt den Dialog.</li>
+  </ul>
+  <br />
+
+  <h2>Ausgabeoptionen</h2>
+  <ul>
+    <li><b>Automatischer Zeilenumbruch</b><br /> bricht die Befehlsdatei
+      nach <i>n</i> Zeichen um. Längere Zeilen (Beschreibungen, Botschaften,
+      etc.) werden dabei automatisch mit " \" getrennt. Vermeidet Probleme mit
+      dem automatischen Zeilenumbruch von Mailprogrammen.</li>
+    <li><b>ECHECK-Kommentare</b><br /> fügt ECHECK-Kommentare (wie
+      Angaben über Silber und Personen) in die Befehlsdatei ein.</li>
+    <li><b>mit ';' beginnende Kommentare entfernen</b>:<br /> entfernt
+      nichtpersistente Kommentare aus der Befehlsdatei. Nach Möglichkeit sollte
+      diese Option zum verschicken der Mail an den Eressea-Server angewählt
+      sein um die Befehlsdatei so klein wie möglich zu machen. Allerdings gehen
+      hierbei auch die Informationen über die Bestätigung der Befehle der
+      Einheiten verloren, da diese in ';'-Kommentaren abgelegt werden.</li>
+    <li><b>mit '//' beginnende Kommentare entfernen</b>:<br /> entfernt
+      persistente Kommentare aus der Befehlsdatei. Vorlage-Benutzer sollten
+      diese Option tunlichst nicht benutzen, da so auch alle Metabefehle
+      gelöscht werden.</li>
+    <li><b>nur Einheiten mit bestätigten Befehlen</b>:<br /> Nur Befehle
+      bestätigter Einheiten werden geschrieben. Unbestätigte Einheiten werden
+      ignoriert. Diese Option ist sehr praktisch für Spieler, die sich eine
+      Partei teilen.</li>
+    <li><b>Ausgewählte Regionen</b>:<br /> Hiermit kann man festlegen,
+      dass nur Befehle für Einheiten verschickt werden, die gerade ausgewählt
+      (selektiert) sind. So kann man stückweise Befehle an den Server schicken.
+    </li>
+    <li><b>Unbekannte Tags als Vorlage einfügen</b>:<br /> Damit werden
+      unbekannte Tags in die Befehlsdatei geschrieben.</li>
+  </ul>
+  <!-- Inhalt - Ende -->
+</body>
 </html>
 

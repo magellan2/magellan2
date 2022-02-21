@@ -116,7 +116,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://github.com/stm2/magellan2/releases/tag/v2.1-latest/updates.xml">
+  <installerGui autoUpdateDescriptorUrl="https://github.com/magellan2/magellan2/releases/tag/v2.1-latest/updates.xml">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>

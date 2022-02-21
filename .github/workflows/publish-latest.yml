@@ -146,6 +146,7 @@ jobs:
           RELEASENOTES.txt
           CHANGELOG.txt
           VERSION
+          installer/install4j/updates.xml
           magellan_v${{ steps.get-version.outputs.VERSION }}.zip
           Magellan_installer_windows-x64_v${{ steps.get-version.outputs.VERSION }}.exe
           Magellan_installer_unix_v${{ steps.get-version.outputs.VERSION }}.sh

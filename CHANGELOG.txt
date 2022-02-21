@@ -1,3 +1,11 @@
+2022-02-21 / Build 765 - stm (stm2@users.sourceforge.net)
+    * grabbed Eressea help from wiki
+    * allow resetting atr/arr to standard from quick menu
+    * show battles under region nodes
+    * killed UI font size selection, which did not work
+    * improved QuickFind action
+    * display battle report
+
 2022-02-03 / Build 762 - stm (stm2@users.sourceforge.net)
     * improved MacOS compatibility (#425)
     * set log level from preferences

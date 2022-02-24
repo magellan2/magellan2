@@ -432,7 +432,7 @@ return console.askYesNo(message, true);
           </screen>
         </screens>
       </application>
-      <application name="Update downloader with silent version check" id="146" beanClass="com.install4j.runtime.beans.applications.CustomApplication" automaticLauncherIntegration="true">
+      <application name="Update downloader with silent version check" id="146" beanClass="com.install4j.runtime.beans.applications.CustomApplication" automaticLauncherIntegration="true" launchMode="startupSync">
         <serializedBean>
           <property name="customIconImageFiles">
             <add>

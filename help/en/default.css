@@ -22,9 +22,11 @@ p, h1, h2, h3, h4 {
 }
 
 #center p, li {
+  
 }
 
 p, blockquote, li, h1, h2, h3, h4 {
+  
 }
 
 blockquote {
@@ -160,4 +162,14 @@ p.caps {
 li {
   padding-left: 2px;
   padding-right: 2px;
+}
+
+h3.faq {
+  font-size: 100%;
+  font-weight: bold;
+  margin-bottom: 0pt;
+}
+
+h3.faq+p {
+  margin-top: 0pt;
 }

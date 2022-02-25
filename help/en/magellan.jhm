@@ -95,6 +95,7 @@
   <mapID target="reference_ressources" url="magellan/reference/resources.html"/>
   <mapID target="reference_cr" url="magellan/reference/cr.html"/>
   <mapID target="reference_shortcuts" url="magellan/reference/shortcuts.html"/>
+  <mapID target="reference_atr" url="magellan/reference/atr_arr.html"/>
   <mapID target="reference_commandline" url="magellan/reference/commandline.html"/>
   <mapID target="faq" url="magellan/faq.html"/>
   <mapID target="feedback" url="magellan/feedback.html"/>

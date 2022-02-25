@@ -114,6 +114,7 @@
 		<tocitem text="Resources" image="topic" target="reference_ressources"></tocitem>
 		<tocitem text="Computerreports" image="topic" target="reference_cr"></tocitem>
 		<tocitem text="Shortcuts" image="topic" target="reference_shortcuts"></tocitem>
+		<tocitem text="ATR, ARR, Tooltips, Region Info" image="topic" target="reference_atr"></tocitem>
 		<tocitem text="Commandline-Parameters" image="topic" target="reference_commandline"></tocitem>
 	</tocitem>
 	<tocitem text="FAQ" image="topic" target="faq"></tocitem>

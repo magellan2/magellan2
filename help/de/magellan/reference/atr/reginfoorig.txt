@@ -1,0 +1,48 @@
+<html>
+<body>
+<table  cellpadding=0 width=100%>
+<tr>
+<td>Bauern:</td>
+<td align=right>§peasants§</td>
+<td width=5%></td>
+<td>§if§<§0§mallorn§Mallorn:§else§Bäume:§end§</td>
+<td align=right>§if§>§mallorn§0§mallorn§else§trees§end§</td>
+</tr>
+<tr>
+<td>Rekruten:</td>
+<td align=right>§recruit§</td>
+<td></td>
+<td>Schößlinge:</td>
+<td align=right>§sprouts§</td>
+</tr>
+<tr>
+<td>Überschuss:</td>
+<td align=right>§if§<§peasants§maxWorkers§*§peasants§-§peasantWage§10§else§-§*§maxWorkers§peasantWage§*§10§peasants§end§</td>
+<td></td>
+<td>Pferde:</td>
+<td align=right>§horses§</td>
+</tr>
+<tr>
+<td>Unterhaltung:</td>
+<td align=right>§entertain§</td>
+<td></td>
+<td>§if§<§0§laen§if§<§0§iron§Eisen/Laen:§else§Laen:§end§else§Eisen:§end§</td>
+<td align=right>§if§<§0§laen§if§<§0§iron§iron§ / §laen§else§laen§end§else§if§<§0§iron§iron§else§-?-§end§end§</td>
+</tr>
+<tr>
+<td>Silberpool:</td>
+<td align=right>§priv§100§item§Silber§priv§clear§</td>
+<td></td>
+<td>Steine:</td>
+<td align=right>§stones§</td>
+</tr>
+<tr>
+<td>Handel:</td>
+<td align=right>§maxtrade§</td>
+<td></td>
+<td>Kraut:</td>
+<td align=right>§herb§</td>
+</tr>
+</table>
+</body>
+</html>

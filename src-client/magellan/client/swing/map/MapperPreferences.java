@@ -1288,6 +1288,10 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
         tooltipList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane jsp = new JScrollPane(tooltipList);
+        String[] currentTT = source.getTooltipDefinition();
+        if (currentTT != null && currentTT[0] != null) {
+          tooltipList.setSelectedValue(currentTT[0], true);
+        }
         listComp = jsp;
         listCont.add(jsp, BorderLayout.CENTER);
       } else {

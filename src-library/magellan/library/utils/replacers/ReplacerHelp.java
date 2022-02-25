@@ -103,7 +103,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("entertain", regionMethod, args);
     args[0] = "getPeasantWage";
     drf.putReplacer("peasantWage", regionMethod, args);
-    args[0] = "morale";
+    args[0] = "getMorale";
     drf.putReplacer("morale", regionMethod, args);
 
     // Fiete 20061222 coords
@@ -151,6 +151,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("tagblank", TagReplacer.class, Boolean.TRUE);
 
     // description
+    drf.putReplacer("name", NameReplacer.class);
     drf.putReplacer("description", DescriptionReplacer.class);
     drf.putReplacer("privDesc", PrivDescReplacer.class);
 
@@ -171,6 +172,8 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("-", SubtractionOperator.class);
     drf.putReplacer("*", MultiplicationOperator.class);
     drf.putReplacer("/", DivisionOperator.class);
+
+    drf.putReplacer("substr", SubstrOperator.class);
 
     // op switch
     drf.putReplacer("op", OperationSwitch.class);

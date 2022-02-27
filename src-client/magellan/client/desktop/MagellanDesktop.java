@@ -647,7 +647,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     // search in component table to activate directly
     if (components.get(id) != null) {
-      components.get(id).requestFocus();
+      components.get(id).requestFocusInWindow();
     }
   }
 

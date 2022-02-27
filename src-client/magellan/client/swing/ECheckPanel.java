@@ -113,6 +113,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
   private JButton btnHide;
 
+  private JButton btnRun;
+
   /**
    * Creates a new ECheckPanel object.
    */
@@ -166,10 +168,17 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
+    btnRun.requestFocusInWindow();
+  }
+
+  @Override
+  public void setVisible(boolean aFlag) {
+    super.setVisible(aFlag);
+    getRootPane().setDefaultButton(btnRun);
   }
 
   private Container getButtonPanel() {
-    JButton btnRun = new JButton(Resources.get("echeckdialog.btn.run.caption"));
+    btnRun = new JButton(Resources.get("echeckdialog.btn.run.caption"));
     btnRun.setMnemonic(Resources.get("echeckdialog.btn.run.mnemonic").charAt(0));
     btnRun.setDefaultCapable(true);
     btnRun.addActionListener(new ActionListener() {
@@ -223,6 +232,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     JPanel filler = new JPanel();
     // filler.setPreferredSize(new Dimension(1, 1000));
     buttonPanel.add(filler, c);
+
     return buttonPanel;
   }
 
@@ -929,6 +939,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     case 0:
       DesktopEnvironment.requestFocus(MagellanDesktop.ECHECK_IDENTIFIER);
+      btnRun.requestFocusInWindow();
       break;
     }
   }

@@ -1650,7 +1650,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     case 0:
     case 1:
       DesktopEnvironment.requestFocus(MagellanDesktop.OVERVIEW_IDENTIFIER);
-      tree.requestFocus(); // activate the tree, not the scrollpane
+      tree.requestFocusInWindow(); // activate the tree, not the scrollpane
 
       break;
 

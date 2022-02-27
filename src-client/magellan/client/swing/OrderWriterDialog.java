@@ -62,6 +62,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1870,35 +1871,31 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    */
   private String showPasswordDialog() {
     String title = Resources.get("orderwriterdialog.lbl.smtpserver.password");
-    JPasswordField passwd = new JPasswordField(20) {
-      @Override
-      public void setVisible(boolean b) {
-        super.setVisible(b);
-        if (b) {
-          requestFocus();
-        }
-      }
-    };
-    class MyPanel extends JPanel {
-      JPasswordField pwd;
-
-      MyPanel(JPasswordField passwdf) {
-        pwd = passwdf;
-      }
-
-      @Override
-      public void requestFocus() {
-        pwd.requestFocus();
-      }
-    }
-
     JLabel passwdLabel = new JLabel(title);
-    JPanel panel = new MyPanel(passwd);
+    final JPasswordField passwd = new JPasswordField(30);
+    boolean[] gainedFocusBefore = new boolean[] { false };
+    JPanel panel = new JPanel();
     panel.add(passwdLabel);
     panel.add(passwd);
-    int value = JOptionPane.showOptionDialog(ancestor, panel, title, JOptionPane.OK_CANCEL_OPTION,
-        JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (value == 0)
+
+    JOptionPane op = new JOptionPane(panel, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+
+    JDialog dlg = op.createDialog(ancestor, title);
+
+    // Wire up FocusListener to ensure JPasswordField is able to request focus when the dialog is first shown.
+    dlg.addWindowFocusListener(new WindowAdapter() {
+      @Override
+      public void windowGainedFocus(WindowEvent e) {
+        if (!gainedFocusBefore[0]) {
+          gainedFocusBefore[0] = true;
+          passwd.requestFocusInWindow();
+        }
+      }
+    });
+
+    dlg.setVisible(true);
+
+    if (op.getValue() != null && op.getValue().equals(JOptionPane.OK_OPTION))
       return new String(passwd.getPassword());
     else
       return null;

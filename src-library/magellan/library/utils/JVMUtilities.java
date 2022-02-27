@@ -25,7 +25,10 @@ import magellan.library.utils.logging.Logger;
 /**
  * This class provides static functions for jvm specific bullshit (e.g. changed focus system from
  * jvm 1.3.x to 1.4.x It also checks for necessary systems, e.g. XML
+ * 
+ * @deprecated All this stuff should go away.
  */
+@Deprecated
 public class JVMUtilities {
   private static final Logger log = Logger.getInstance(JVMUtilities.class);
 
@@ -50,54 +53,24 @@ public class JVMUtilities {
 
   /**
    * Request the focus in the current window.
+   * 
+   * @deprecated Since project default was Java 8 just use aObj.requestFocusInWindow();
    */
+  @Deprecated
   public static final boolean requestFocusInWindow(Component aObj) {
-    try {
-      Object result =
-          aObj.getClass().getMethod("requestFocusInWindow", new Class[] {}).invoke(aObj,
-              new Object[] {});
-
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log
-            .debug("JVMUtitities : successfully called Component.requestFocusInWindow()!");
-      }
-
-      return ((Boolean) result).booleanValue();
-    } catch (java.lang.NoSuchMethodException ex) {
-    } catch (java.lang.IllegalAccessException ex) {
-    } catch (java.lang.reflect.InvocationTargetException ex) {
-    } catch (ClassCastException ex) {
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log.debug(ex);
-      }
-    }
-
-    // fallback for java < 1.4
-    aObj.requestFocus();
-
+    aObj.requestFocusInWindow();
     return false;
   }
 
   /**
    * This function calls Component.setFocusableWindowState (in java &ge; 1.4) to keep GUI consistent
    * with java 1.3.x
+   * 
+   * @deprecated Since project default was Java 8 just use the method.
    */
+  @Deprecated
   public static final void setFocusableWindowState(Window aObj, boolean aFlag) {
-    try {
-      // try to call setFocusableWindowState (true) on java 1.4 while staying compatible with Java
-      // 1.3
-      aObj.getClass().getMethod("setFocusableWindowState", new Class[] { Boolean.TYPE }).invoke(
-          aObj, new Object[] { aFlag ? Boolean.TRUE : Boolean.FALSE });
-
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log
-            .debug("JVMUtitities : successfully called Component.setFocusableWindowState(" + aFlag
-                + ")!");
-      }
-    } catch (java.lang.NoSuchMethodException ex) {
-    } catch (java.lang.IllegalAccessException ex) {
-    } catch (java.lang.reflect.InvocationTargetException ex) {
-    }
+    aObj.setFocusableWindowState(aFlag);
   }
 
   /** DOCUMENT-ME */
@@ -122,59 +95,26 @@ public class JVMUtilities {
   /**
    * This function calls Frame.getExtendedState (in java &ge; 1.4) to keep GUI consistent with java
    * 1.3.x
+   * 
+   * @deprecated Since project default was Java 8 just use the method.
    */
+  @Deprecated
   public static final int getExtendedState(Frame aObj) {
-    try {
-      Object result =
-          aObj.getClass().getMethod("getExtendedState", new Class[] {}).invoke(aObj, new Object[] {
-
-          });
-
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log.debug("JVMUtitities : successfully called Window.getExtendedState()!");
-      }
-
-      return ((Integer) result).intValue();
-    } catch (java.lang.NoSuchMethodException ex) {
-    } catch (java.lang.IllegalAccessException ex) {
-    } catch (java.lang.reflect.InvocationTargetException ex) {
-    } catch (ClassCastException ex) {
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log.debug(ex);
-      }
-    }
-
-    return JVMUtilities.UNKNOWN;
+    return aObj.getExtendedState();
   }
 
   /**
    * This function calls Frame.setExtendedState (in java &ge; 1.4) to keep GUI consistent with java
    * 1.3.x
+   * 
+   * @deprecated Since project default was Java 8 just use the method.
    */
+  @Deprecated
   public static final boolean setExtendedState(Frame aObj, int state) {
     if (state == JVMUtilities.UNKNOWN)
       return false;
-
-    try {
-      aObj.getClass().getMethod("setExtendedState", new Class[] { Integer.TYPE }).invoke(aObj,
-          new Object[] { Integer.valueOf(state) });
-
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log.debug("JVMUtitities : successfully called Window.setExtendedState("
-            + state + ")!");
-      }
-
-      return true;
-    } catch (java.lang.NoSuchMethodException ex) {
-    } catch (java.lang.IllegalAccessException ex) {
-    } catch (java.lang.reflect.InvocationTargetException ex) {
-    } catch (ClassCastException ex) {
-      if (JVMUtilities.log.isDebugEnabled()) {
-        JVMUtilities.log.debug(ex);
-      }
-    }
-
-    return false;
+    aObj.setExtendedState(state);
+    return true;
   }
 
   /** 'true' iff the current runtime version is 1.2 or later */

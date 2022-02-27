@@ -238,6 +238,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     getContentPane().add(mainPanel);
 
     pack();
+    getRootPane().setDefaultButton(btn_OK);
     btn_OK.requestFocusInWindow();
   }
 

@@ -182,6 +182,8 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     gridBagConstraints1.weightx = 1.0;
     gridBagConstraints1.weighty = 1.0;
     getContentPane().add(jPanel2, gridBagConstraints1);
+
+    getRootPane().setDefaultButton(btnOK);
   }
 
   /**
@@ -234,7 +236,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
       result = Integer.parseInt(edit.getText());
       edit.setBackground(defaultColor);
     } catch (NumberFormatException e) {
-      edit.requestFocus();
+      edit.requestFocusInWindow();
       edit.setBackground(Color.RED);
       throw e;
     }

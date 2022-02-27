@@ -229,6 +229,8 @@ public class SetGirthDialog extends JDialog {
     d.height = d.height * 2;
     d.width = 400;
     setPreferredSize(d);
+
+    getRootPane().setDefaultButton(btnOK);
   }
 
   /**
@@ -309,13 +311,13 @@ public class SetGirthDialog extends JDialog {
     // do not allow xmin=something, xmax = nothing
     if ((xmin != Integer.MAX_VALUE && xmax == Integer.MIN_VALUE)
         || (xmin == Integer.MAX_VALUE && xmax != Integer.MIN_VALUE)) {
-      editXmin.requestFocus();
+      editXmin.requestFocusInWindow();
       editXmin.setBackground(Color.RED);
       return;
     }
     if ((ymin != Integer.MAX_VALUE && ymax == Integer.MIN_VALUE)
         || (ymin == Integer.MAX_VALUE && ymax != Integer.MIN_VALUE)) {
-      editYmin.requestFocus();
+      editYmin.requestFocusInWindow();
       editYmin.setBackground(Color.RED);
       return;
     }
@@ -335,7 +337,7 @@ public class SetGirthDialog extends JDialog {
     try {
       result = Integer.parseInt(edit.getText());
     } catch (NumberFormatException e) {
-      edit.requestFocus();
+      edit.requestFocusInWindow();
       edit.setBackground(Color.RED);
       throw e;
     }

@@ -13,6 +13,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
@@ -185,7 +186,6 @@ import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.InspectorInterceptor;
 import magellan.library.tasks.Problem;
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
@@ -2676,15 +2676,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void saveExtendedState() {
     if (getProperties() == null)
       return;
-    getProperties().setProperty("Client.extendedState", String.valueOf(JVMUtilities
-        .getExtendedState(this)));
+    getProperties().setProperty("Client.extendedState", String.valueOf(getExtendedState()));
   }
 
   private void resetExtendedState() {
     int state = PropertiesHelper.getInteger(getProperties(), "Client.extendedState", -1);
 
     if (state != -1) {
-      JVMUtilities.setExtendedState(this, state);
+      if (!getToolkit().isFrameStateSupported(state)) {
+        log.warn("unsupported state " + state);
+        getProperties().setProperty("Client.extendedState", String.valueOf(Frame.NORMAL));
+        state = Frame.NORMAL;
+      } else {
+        setExtendedState(state);
+      }
     }
 
   }

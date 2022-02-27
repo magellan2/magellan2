@@ -188,6 +188,7 @@ public class ProfileDialog extends JDialog {
     getContentPane().add(mainPanel);
 
     pack();
+    getRootPane().setDefaultButton(btnOK);
   }
 
   /**

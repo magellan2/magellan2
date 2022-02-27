@@ -1106,7 +1106,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 1:
       // request FOcus CTRL + 2 or ALT + 2
       magellan.client.desktop.DesktopEnvironment.requestFocus(MagellanDesktop.MAP_IDENTIFIER);
-      mapper.requestFocus(); // activate the mapper, not the scrollpane
+      mapper.requestFocusInWindow(); // activate the mapper, not the scrollpane
 
       break;
 

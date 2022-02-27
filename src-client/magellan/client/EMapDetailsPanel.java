@@ -8,6 +8,7 @@
 package magellan.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -63,6 +64,7 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ToolTipManager;
+import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
@@ -508,9 +510,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         new JScrollPane(description, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    // ClearLook suggests to remove border
-    descScrollPane.setBorder(null);
-
+    descScrollPane.setBorder(new LineBorder(Color.GRAY));
+    name.setBorder(new LineBorder(Color.GRAY));
+    description.setBorder(null);
     // panel combining name and description
     nameDescPanel = new JPanel(new BorderLayout(0, 2));
     nameDescPanel.add(name, BorderLayout.NORTH);

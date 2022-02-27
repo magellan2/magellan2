@@ -35,7 +35,7 @@
     </p>
     <p>Diese Möglichkeiten nehmen ein wenig Platz ein und können
       deaktiviert werden, die Funktionalität ist dann lediglich über einen
-      Rechtsclick in die Karte nutzbar. Das erscheinende PopUp-Menu
+      Rechtsklick in die Karte nutzbar. Das erscheinende PopUp-Menu
       (Kontextmenü) enthält die entsprechenden Menüpunkte.</p>
     <p>
       <b>Zeige zusätzliche zur Jahreszeit passende Bilder an</b> Schneebedeckte
@@ -63,6 +63,7 @@
     <p>Die Rendering-Ebene unterteilt die Darstellung in logische
       Unterobjekte, wie Regionen, Straßen, Gebäude etc., deren jeweilige
       Einstellmöglichkeiten, dann im Kasten unterhalb eingeblendet werden.</p>
+
     <h3>Regionen</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Regionen werden nicht dargestellt.
@@ -88,14 +89,18 @@
           <li><b>Vertrauenslevel (Bewachung)</b><br /> Anzeige der
             Regionsfarben nach Vertrauenslevel der bewachenden Parteien.</li>
         </ul></li>
-      <li><b>ARR (advanced region renderer)</b><br /> Dieser Modus gibt
-        einen die Möglichkeit die Darstellung der Region in Abhängigkeit von
-        selbst erstellten Bedingungen zu gestalten. Mehr Informationen findest du <a
-        href="../../reference/atr_arr.html">hier</a>.
+      <li><p>
+          <b>ARR (advanced region renderer)</b><br /> Dieser Modus gibt einen
+          die Möglichkeit die Darstellung der Region in Abhängigkeit von selbst
+          erstellten Bedingungen zu gestalten. Mehr Informationen findest du in
+          der <a href="../../reference/atr_arr.html">Beschreibung des
+            Ersetzersystems</a>.
+        </p>
         <p>Bei allen Einstellungen ist zu beachten, dass die Farbzuordnung
           der Parteien für alle unterschiedlichen Darstellungsmodi identisch
           ist.</p></li>
     </ul>
+
     <h3>Straßen</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Straßen werden nicht dargestellt.
@@ -103,6 +108,7 @@
       <li><b>Straßenrenderer</b><br /> Dies ist die Default-Einstellung,
         bei der die Straßen mit Grafiken dargestellt werden.</li>
     </ul>
+
     <h3>Gebäude</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Gebäude werden nicht dargestellt.
@@ -110,6 +116,7 @@
       <li><b>Gebäuderenderer</b><br /> Dies ist die Default-Einstellung,
         bei der die Burgen mit Grafiken dargestellt werden.</li>
     </ul>
+
     <h3>Schiffe</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Schiffe werden nicht dargestellt.
@@ -119,6 +126,7 @@
         an der jeweiligen Anlegeküste dargestellt, Schiffe im Bau und auf dem
         Ozean in der Mitte der Region.</li>
     </ul>
+
     <h3>Beschriftungen</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Regionsnamen werden nicht dargestellt.
@@ -126,10 +134,14 @@
       <li><b>Regionsnamenrenderer</b><br /> Ist diese Option aktiv, so
         wird der Name über der jeweiligen Region eingeblendet. Zusätzlich
         besteht hier die Möglichkeit Schriftart und -typ einzustellen.</li>
-        <li><b>Handelsrenderer</b> Ist diese Option ausgewählt, werden das Handelsgut und -menge angezeigt.</li>
-        <li><b>ATR</b> Hiermit kann man eine Beschriftung selbst definieren. Genauere Informationen dazu <a
-        href="../../reference/atr_arr.html">hier</a>.
+      <li><b>Handelsrenderer</b> Ist diese Option ausgewählt, werden das
+        Handelsgut und -menge angezeigt.</li>
+      <li><b>ATR</b> Hiermit kann man eine Beschriftung selbst definieren.
+        Mehr Informationen findest du in der <a
+        href="../../reference/atr_arr.html">Beschreibung des
+          Ersetzersystems</a>.</li>
     </ul>
+
     <h3>Pfade</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Pfade werden nicht dargestellt.
@@ -138,6 +150,7 @@
         Pfeile auf der Karte eingeblendet, wenn eine gerade aktive Einheit
         einen NACH oder ROUTE Befehl hat.</li>
     </ul>
+
     <h3>Markierungen</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Markierungen werden nicht dargestellt.
@@ -145,13 +158,14 @@
       <li><b>Markierungsrenderer</b><br /> Ist diese Option aktiv, so
         wird die gerade aktive Region durch einen weißen Umriß hervorgehoben
         und markierte Regionen werden mit einem diffusen Nebel versehen (je
-        nach geladenem <a href="../reference/graphicsets.html">Grafikset</a>
+        nach geladenem <a href="../../reference/graphicsets.html">Grafikset</a>
         unterschiedlich).</li>
       <li><b>Markierungsrenderer (geometrisch)</b><br /> Ist diese Option
         aktiv, so wird die gerade aktive Region durch einen roten Umriss
         hervorgehoben und markierte Regionen werden mit einem weißen Umriss
         versehen.</li>
     </ul>
+
     <h3>Zusätzl. Markierungen</h3>
     <ul>
       <li>&lt;inaktiv&gt;<br /> Zusätzliche Markierungen werden nicht
@@ -162,7 +176,7 @@
         mit Vorlage innerhalb des Regionskontextes das tag <i>"Bildname";regionicon</i>
         gesetzt werden. Die Bilder selber müssen sich unterhalb des
         magellan.jar Verzeichnisses im Pfad /res/images/map befinden und dem
-        unter <a href="../reference/graphicsets_making.html">Grafikset
+        unter <a href="../../reference/graphicsets_making.html">Grafikset
           erstellen</a> beschriebenen Format entsprechen.</li>
     </ul>
 
@@ -174,8 +188,7 @@
     <p>
       Die Übersichtskarte beherrscht alle Darstellungsmodi des Regionsrenderers
       (geometrisch/politisch). Die Farbzuordnung ist demnach auch bei diesem
-      einzustellen. Mit <b><i>Synchronisiere Farben</i></b> kann man die oben
-      gemachten Farbeinstellungen auf die MiniMap übertragen. Auch die
+      einzustellen. Auch die
       Skalierung der MiniMap kann hier eingestellt werden.
     </p>
     <!-- Inhalt - Ende -->

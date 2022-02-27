@@ -8,11 +8,13 @@
 package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -200,12 +203,14 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     PopupListener popupListener = new PopupListener();
     // react on double clicks on a row
     table.addMouseListener(popupListener);
+    table.addKeyListener(popupListener);
     table.setToolTipText(Resources.get("tasks.tooltip", false));
 
     // layout component
     setLayout(new BorderLayout());
     JScrollPane tablePane = new JScrollPane(table);
     tablePane.getViewport().addMouseListener(popupListener);
+    tablePane.getViewport().addKeyListener(popupListener);
     this.add(tablePane, BorderLayout.CENTER);
 
     JPanel statusBar = new JPanel(new GridBagLayout());
@@ -248,8 +253,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     this.add(statusBar, BorderLayout.PAGE_END);
 
-    setFocusable(false);
-
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(1);
 
@@ -258,10 +261,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(new TTShortcutListener());
-
   }
 
-  class PopupListener extends MouseAdapter implements ActionListener, ItemListener {
+  class PopupListener extends MouseAdapter implements KeyListener, ActionListener, ItemListener {
     JPopupMenu tableMenu;
     JPopupMenu busyMenu;
     JPopupMenu activeRegionMenu;
@@ -324,37 +326,68 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       }
     }
 
-    private void maybeShowPopup(MouseEvent e) {
-      if (e.getSource() == activeRegionLabel) {
+    private void maybeShowPopup(MouseEvent mouseEvent) {
+      Object source = mouseEvent.getSource();
+      Component comp = mouseEvent.getComponent();
+      int x = mouseEvent.getX();
+      int y = mouseEvent.getY();
+      int row = table.rowAtPoint(mouseEvent.getPoint());
+      boolean popup = mouseEvent.isPopupTrigger();
+      maybeShowPopup(source, comp, x, y, row, popup);
+    }
+
+    private void maybeShowPopup(KeyEvent keyEvent) {
+      Object source = keyEvent.getSource();
+
+      Component comp = keyEvent.getComponent();
+
+      int x = table.getX();
+      int y = table.getY();
+      int row = table.getSelectedRow();
+      if (row >= 0) {
+        int col = table.getSelectedColumn();
+        if (col < 0) {
+          col = 0;
+        }
+        Rectangle rect = table.getCellRect(row, col, false);
+        x = rect.x;
+        y = rect.y;
+      }
+      boolean popup = keyEvent.getKeyCode() == KeyEvent.VK_CONTEXT_MENU;
+      maybeShowPopup(source, comp, x, y, row, popup);
+    }
+
+    private void maybeShowPopup(Object source, Component comp, int x, int y, int row, boolean popup) {
+      if (source == activeRegionLabel) {
         // activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
-      } else if (e.getSource() == selectionLabel) {
+      } else if (source == selectionLabel) {
         // selectionMenu.show(e.getComponent(), e.getX(), e.getY());
-      } else if (e.getSource() == globalLabel) {
+      } else if (source == globalLabel) {
         // globalMenu.show(e.getComponent(), e.getX(), e.getY());
-      } else if (e.getSource() == refreshButton) {
+      } else if (source == refreshButton) {
         //
       } else {
         if (updateDispatcher.isBusy()) {
-          busyMenu.show(e.getComponent(), e.getX(), e.getY());
+          busyMenu.show(comp, x, y);
           return;
         }
         // unselected rows if user clicks another row
-        int rowClicked = table.rowAtPoint(e.getPoint());
-        if (rowClicked >= 0) {
+
+        if (row >= 0) {
           boolean clickedOnSelection = false;
           for (int i : table.getSelectedRows()) {
-            if (rowClicked == i) {
+            if (row == i) {
               clickedOnSelection = true;
               break;
             }
           }
           if (!clickedOnSelection) {
             table.clearSelection();
-            table.addRowSelectionInterval(rowClicked, rowClicked);
+            table.addRowSelectionInterval(row, row);
           }
         }
-        if (e.isPopupTrigger()) {
-          if (rowClicked >= 0 && table.getSelectedRowCount() > 0) {
+        if (popup) {
+          if (row >= 0 && table.getSelectedRowCount() > 0) {
             if (table.getSelectedRowCount() > 1) {
               acknowledgeMenu.setText(Resources.get("tasks.contextmenu.acknowledge.title"));
             } else {
@@ -369,7 +402,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             removeTypeMenu.setEnabled(false);
             selectMenu.setEnabled(false);
           }
-          tableMenu.show(e.getComponent(), e.getX(), e.getY());
+          tableMenu.show(comp, x, y);
         }
       }
     }
@@ -419,7 +452,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
       acknowledgeMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
-          acknowledge(table.getSelectedRows());
+          acknowledge(table.getSelectedRows(), false);
         }
       });
 
@@ -508,11 +541,61 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         refreshProblems();
       }
     }
+
+    public void keyTyped(KeyEvent e) {
+      //
+    }
+
+    public void keyPressed(KeyEvent e) {
+      switch (e.getKeyCode()) {
+      case KeyEvent.VK_CONTEXT_MENU:
+        maybeShowPopup(e);
+        break;
+      case KeyEvent.VK_ENTER:
+        if (updateDispatcher.isBusy())
+          return;
+        if (e.getSource() == table) {
+          int row = table.getSelectedRow();
+          if (row >= 0 && row < sorter.getRowCount()) {
+            showObjectOnRow(row);
+            e.consume();
+          }
+        }
+        break;
+      case KeyEvent.VK_SPACE:
+        if (updateDispatcher.isBusy())
+          return;
+        int row = table.getSelectedRow();
+        if (row >= 0 && row < sorter.getRowCount()) {
+          int col = table.getSelectedColumn();
+          if (col < 0) {
+            col = 0;
+          }
+          selectObjectOnRow(row, col);
+        }
+        e.consume();
+        break;
+      case KeyEvent.VK_DELETE:
+        if (updateDispatcher.isBusy())
+          return;
+        if (e.isControlDown()) {
+          removeType(table.getSelectedRows());
+        } else {
+          acknowledge(table.getSelectedRows(), true);
+        }
+        e.consume();
+        break;
+      }
+    }
+
+    public void keyReleased(KeyEvent e) {
+      //
+    }
   }
 
   protected void unAcknowledge() {
-    if ((JOptionPane.showConfirmDialog(this, Resources.get(
-        "tasks.confirmunacknowledge.message"))) != JOptionPane.YES_OPTION)
+    if ((JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmunacknowledge.message"), null,
+        JOptionPane.YES_NO_OPTION)) != JOptionPane.YES_OPTION)
       // cancel
       return;
 
@@ -554,7 +637,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
   }
 
-  protected void acknowledge(int selectedRows[]) {
+  protected void acknowledge(int selectedRows[], boolean confirm) {
+    if (selectedRows.length == 0)
+      return;
+
+    if (confirm)
+      if (JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmdelete.message", selectedRows.length), null,
+          JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+        return;
+
     // sort problems by line
     List<Problem> problems = new ArrayList<Problem>();
     for (int row : selectedRows) {
@@ -606,8 +697,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         desc = desc.substring(0, 70) + " ... " + desc.substring(desc.length() - 40, desc.length()
             - 1);
       }
-      if ((option = JOptionPane.showConfirmDialog(this, Resources.get(
-          "tasks.confirmremovetype.message", p.getType(), desc))) == JOptionPane.YES_OPTION) {
+      if ((option = JOptionPane.showConfirmDialog(this,
+          Resources.get("tasks.confirmremovetype.message", p.getType(), desc))) == JOptionPane.YES_OPTION) {
         addIgnoredProblem(p);
       }
       if (option == JOptionPane.CANCEL_OPTION) {
@@ -645,7 +736,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     String desc = " (" + p.getType().getDescription() + ")";
     text.append(Resources.get("tasks.showfull.message", p.getMessage(), p.getObject(), p
         .getRegion(), p.getFaction(), p.getLine(), p.getType(), desc));
-    final TextAreaDialog d = (new TextAreaDialog((JFrame) null, Resources.get(
+    final TextAreaDialog d = (new TextAreaDialog((JFrame) SwingUtilities.getWindowAncestor(this), Resources.get(
         "tasks.showfull.dialog.title"), text.toString()));
     d.setPreferredSize(new Dimension(400, 200));
     d.pack();
@@ -1938,6 +2029,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
 
       case 0:
         DesktopEnvironment.requestFocus(MagellanDesktop.TASKS_IDENTIFIER);
+        table.requestFocusInWindow();
         break;
       }
     }

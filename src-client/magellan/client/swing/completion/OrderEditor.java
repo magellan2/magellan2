@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIDefaults;
@@ -135,8 +134,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     myCaret = new OrderEditorCaret();
     setCaret(myCaret);
 
-    // for new DefaultEditorKit
-    setEditorKit(new OrderEditorKit());
     this.settings = settings;
 
     this.parser = parser; // (data != null) ? data.getGameSpecificStuff().getOrderParser(data) :
@@ -172,18 +169,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     errorColor = Colors.decode(settings.getProperty("OrderEditor.errorBgColor", "255,128,0"));
 
     initStyles();
-
-    // bind ctrl-shift C to OrderEditor
-    super.getInputMap().put(KeyStroke.getKeyStroke(OrderEditorKit.copyLineActionKeyStroke),
-        OrderEditorKit.copyLineAction);
-
-    // if(log.isDebugEnabled()) {
-    // if(!swingInspected) {
-    // swingInspected = true;
-    // log.debug("KEYBINDING FOR OrderEditor:\n"+
-    // com.eressea.util.logging.SwingInspector.printKeybindings(this));
-    // }
-    // }
   }
 
   /**
@@ -296,12 +281,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
         && ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e
             .getKeyCode() == KeyEvent.VK_DELETE))) {
       setOrdersAndFireEvent();
-    } else if (e.getKeyCode() == KeyEvent.VK_C) {
-      // int mask = KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK;
-
-      // if(e.getModifiers() == mask) {
-      // moved to ordereditorkit!
-      // }
     }
   }
 

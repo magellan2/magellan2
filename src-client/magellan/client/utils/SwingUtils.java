@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.utils;
 
 import java.awt.Component;
@@ -29,7 +29,11 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.Properties;
+
+import javax.swing.KeyStroke;
 
 import magellan.library.utils.PropertiesHelper;
 
@@ -185,6 +189,26 @@ public class SwingUtils {
     r.x = Math.max(r.x, -r.width / 2 + 10);
     r.y = Math.max(r.y, -r.height / 2 + 10);
     return r;
+  }
+
+  public static String getKeyStroke(KeyStroke stroke) {
+    return SwingUtils.getKeyStroke(stroke.getModifiers(), stroke.getKeyCode());
+  }
+
+  public static String getKeyStroke(int modifiers, int keyCode) {
+
+    if (keyCode == KeyEvent.VK_UNDEFINED || isModifier(keyCode))
+      return InputEvent.getModifiersExText(modifiers);
+    else if (modifiers != 0)
+      return InputEvent.getModifiersExText(modifiers) + " + "
+          + KeyEvent.getKeyText(keyCode);
+    else
+      return KeyEvent.getKeyText(keyCode);
+  }
+
+  public static boolean isModifier(int key) {
+    return ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
+        || (key == KeyEvent.VK_ALT_GRAPH));
   }
 
 }

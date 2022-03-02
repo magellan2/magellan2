@@ -31,9 +31,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,6 +50,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
@@ -67,6 +65,7 @@ import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.KeyTextField;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -360,12 +359,12 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     c.gridx = 1;
     keyFields = new KeyTextField[AutoCompletion.numKeys];
 
-    int ck[][] = s.getCompleterKeys();
+    KeyStroke[] ck = s.getCompleterKeys();
 
     for (int i = 0; i < AutoCompletion.numKeys; i++) {
       c.gridy = i;
-      keyFields[i] = new KeyTextField();
-      keyFields[i].init(ck[i][0], ck[i][1]);
+      keyFields[i] = new KeyTextField(20);
+      keyFields[i].init(ck[i]);
       p.add(keyFields[i], c);
     }
 
@@ -434,11 +433,10 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     source.setActivationTime(t);
 
     // maybe we could use the given array from AutoCompletion directly?
-    int ck[][] = new int[AutoCompletion.numKeys][2];
+    KeyStroke[] ck = new KeyStroke[AutoCompletion.numKeys];
 
     for (int i = 0; i < AutoCompletion.numKeys; i++) {
-      ck[i][0] = keyFields[i].getModifiers();
-      ck[i][1] = keyFields[i].getKeyCode();
+      ck[i] = keyFields[i].getKeyStroke();
     }
 
     source.setCompleterKeys(ck);
@@ -489,142 +487,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
         "AutoCompletion.SelfDefinedCompletions.name0", "TODO");
     settings.setProperty(
         "AutoCompletion.SelfDefinedCompletions.value0", "; TODO");
-  }
-
-  /**
-   * An input field that registers modifiers and keys.
-   */
-  private static class KeyTextField extends JTextField implements KeyListener {
-    protected int modifiers = 0;
-    protected int key = 0;
-
-    /**
-     * Creates a new KeyTextField object.
-     */
-    public KeyTextField() {
-      super(20);
-      addKeyListener(this);
-    }
-
-    /**
-     * Changes the value of the field.
-     * 
-     * @param modifiers
-     * @param key
-     */
-    public void init(int modifiers, int key) {
-      this.key = key;
-      this.modifiers = modifiers;
-
-      String s = InputEvent.getModifiersExText(modifiers);
-
-      if ((s != null) && (s.length() > 0)) {
-        s += ('+' + KeyEvent.getKeyText(key));
-      } else {
-        s = KeyEvent.getKeyText(key);
-      }
-
-      setText(s);
-    }
-
-    /**
-     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-     */
-    public void keyReleased(java.awt.event.KeyEvent p1) {
-      // maybe should delete any input if there's no "stable"(non-modifying)
-      // key
-    }
-
-    /**
-     * Changes the value.
-     * 
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    public void keyPressed(java.awt.event.KeyEvent p1) {
-      modifiers = p1.getModifiersEx();
-      key = p1.getKeyCode();
-
-      // avoid double string
-      if ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
-          || (key == KeyEvent.VK_ALT_GRAPH) || (key == KeyEvent.VK_META)) {
-        int xored = 0;
-
-        switch (key) {
-        case KeyEvent.VK_SHIFT:
-          xored = InputEvent.SHIFT_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_CONTROL:
-          xored = InputEvent.CTRL_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_ALT:
-          xored = InputEvent.ALT_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_ALT_GRAPH:
-          xored = InputEvent.ALT_GRAPH_DOWN_MASK;
-
-          break;
-
-        case KeyEvent.VK_META:
-          xored = InputEvent.META_DOWN_MASK;
-
-          break;
-        }
-
-        modifiers ^= xored;
-      }
-
-      String s = InputEvent.getModifiersExText(modifiers);
-
-      if ((s != null) && (s.length() > 0)) {
-        s += ('+' + KeyEvent.getKeyText(key));
-      } else {
-        s = KeyEvent.getKeyText(key);
-      }
-
-      setText(s);
-      p1.consume();
-    }
-
-    /**
-     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-     */
-    public void keyTyped(java.awt.event.KeyEvent p1) {
-      // dummy implementation
-    }
-
-    /**
-     * to allow "tab" as a key
-     * 
-     * @see javax.swing.JComponent#isManagingFocus()
-     */
-    @Override
-    public boolean isManagingFocus() {
-      return true;
-    }
-
-    /**
-     * Returns the current key code.
-     * 
-     * @see KeyEvent#getKeyCode()
-     */
-    public int getKeyCode() {
-      return key;
-    }
-
-    /**
-     * Returns the current modifiers.
-     * 
-     * @see KeyEvent#getModifiers()
-     */
-    public int getModifiers() {
-      return modifiers;
-    }
   }
 
   private static class DefineCompletionDialog extends InternationalizedDialog {

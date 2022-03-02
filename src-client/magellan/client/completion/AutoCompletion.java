@@ -17,9 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.CaretListener;
@@ -65,21 +65,20 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private int lastCaretPosition = 0;
 
   private static final AttributeSet SIMPLEATTRIBUTESET = new SimpleAttributeSet();
+
   /**
    * Keys for cycling, completing and breaking.
-   *
-   * <pre>
-   * completerKeys[]   completerKeys[][0]  completerKeys[1]
-   * cycle forward     modifier            key
-   * cycle backward    modifier            key
-   * complete          modifier            key
-   * break             modifier            key
-   * start             modifier            key
-   * </pre>
    */
-  private int completerKeys[][];
+  private KeyStroke completerKeys[];
+
+  public static final int CK_FORWARD = 0;
+  public static final int CK_BACKWARD = 1;
+  public static final int CK_COMPLETE = 2;
+  public static final int CK_BREAK = 3;
+  public static final int CK_START = 4;
   /** number of completer keys (cycle forward, cycle backward, complete, cancel, start */
   public static final int numKeys = 5;
+
   private Timer timer;
   private List<Completion> completions = null;
   private int completionIndex = 0;
@@ -127,7 +126,6 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   protected void loadSettings() {
-    convertOldKeys();
     String autoCmp = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED);
 
     if (autoCmp != null) {
@@ -163,114 +161,25 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       time = 150;
     }
 
-    completerKeys = new int[AutoCompletion.numKeys][2]; // cycle forward, cycle backward, complete,
-    // break, start
+    completerKeys = new KeyStroke[AutoCompletion.numKeys];
 
-    String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
-
-    try {
-      StringTokenizer st = new StringTokenizer(cycleForward, ",");
-      completerKeys[0][0] = Integer.parseInt(st.nextToken());
-      completerKeys[0][1] = Integer.parseInt(st.nextToken());
-    } catch (Exception exc) {
-      completerKeys[0][0] = InputEvent.CTRL_DOWN_MASK;
-      completerKeys[0][1] = KeyEvent.VK_DOWN;
-    }
-
-    String cycleBackward =
-        settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
-
-    try {
-      StringTokenizer st = new StringTokenizer(cycleBackward, ",");
-      completerKeys[1][0] = Integer.parseInt(st.nextToken());
-      completerKeys[1][1] = Integer.parseInt(st.nextToken());
-    } catch (Exception exc) {
-      completerKeys[1][0] = InputEvent.CTRL_DOWN_MASK;
-      completerKeys[1][1] = KeyEvent.VK_UP;
-    }
-
-    String complete = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE);
-
-    try {
-      StringTokenizer st = new StringTokenizer(complete, ",");
-      completerKeys[2][0] = Integer.parseInt(st.nextToken());
-      completerKeys[2][1] = Integer.parseInt(st.nextToken());
-    } catch (Exception exc) {
-      completerKeys[2][0] = 0;
-      completerKeys[2][1] = KeyEvent.VK_TAB;
-    }
-
-    String breakKey = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK);
-
-    try {
-      StringTokenizer st = new StringTokenizer(breakKey, ",");
-      completerKeys[3][0] = Integer.parseInt(st.nextToken());
-      completerKeys[3][1] = Integer.parseInt(st.nextToken());
-    } catch (Exception exc) {
-      completerKeys[3][0] = 0;
-      completerKeys[3][1] = KeyEvent.VK_ESCAPE;
-    }
-
-    String startKey = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START);
-
-    try {
-      StringTokenizer st = new StringTokenizer(startKey, ",");
-      completerKeys[4][0] = Integer.parseInt(st.nextToken());
-      completerKeys[4][1] = Integer.parseInt(st.nextToken());
-    } catch (Exception exc) {
-      completerKeys[4][0] = InputEvent.CTRL_DOWN_MASK;
-      completerKeys[4][1] = KeyEvent.VK_SPACE;
-    }
+    completerKeys[CK_FORWARD] = PropertiesHelper.getKeyStroke(settings,
+        PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD,
+        KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, InputEvent.CTRL_DOWN_MASK));
+    completerKeys[CK_BACKWARD] = PropertiesHelper.getKeyStroke(settings,
+        PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD,
+        KeyStroke.getKeyStroke(KeyEvent.VK_UP, InputEvent.CTRL_DOWN_MASK));
+    completerKeys[CK_COMPLETE] = PropertiesHelper.getKeyStroke(settings,
+        PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE,
+        KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+    completerKeys[CK_BREAK] = PropertiesHelper.getKeyStroke(settings,
+        PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK,
+        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+    completerKeys[CK_START] = PropertiesHelper.getKeyStroke(settings,
+        PropertiesHelper.AUTOCOMPLETION_KEYS_START,
+        KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK));
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
-  }
-
-  private void convertOldKeys() {
-    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
-
-    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
-
-    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE);
-
-    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK);
-
-    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_START);
-  }
-
-  @SuppressWarnings("deprecation")
-  protected void convertKey(String setting) {
-    String key = settings.getProperty(setting);
-    if (key == null)
-      return;
-    int[] oldKeys = new int[] { InputEvent.SHIFT_MASK, InputEvent.CTRL_MASK, InputEvent.ALT_MASK, InputEvent.META_MASK,
-        InputEvent.ALT_GRAPH_MASK };
-    int[] newKeys = new int[] { InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK, InputEvent.ALT_DOWN_MASK,
-        InputEvent.META_DOWN_MASK, InputEvent.ALT_GRAPH_DOWN_MASK };
-    try {
-      StringTokenizer st = new StringTokenizer(key, ",");
-      int key0 = Integer.parseInt(st.nextToken());
-      int key1 = Integer.parseInt(st.nextToken());
-      int newKey = 0;
-      for (int i = 0; i < oldKeys.length; ++i) {
-        int mod = oldKeys[i];
-        if ((key0 & mod) != 0) {
-          newKey |= newKeys[i];
-        }
-        key0 &= ~mod;
-      }
-      for (int newKey2 : newKeys) {
-        int mod = newKey2;
-        newKey |= key0 & mod;
-        key0 &= ~mod;
-      }
-      if (key0 != 0) {
-        log.warn("incomplete conversion for key " + setting + " = " + key0 + "," + key1);
-      }
-      settings.setProperty(setting, newKey + "," + key1);
-    } catch (Exception e) {
-      log.warn("invalid setting for key " + setting + " = " + key);
-      settings.remove(setting);
-    }
   }
 
   /**
@@ -733,34 +642,34 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+   * @see java.awt.event.KeyListener#keyReleased(KeyEvent)
    */
-  public void keyReleased(java.awt.event.KeyEvent p1) {
+  public void keyReleased(KeyEvent p1) {
     // dummy implementation
   }
 
   /**
    * Handles special keys to control the GUI, mainly.
    */
-  public void keyPressed(java.awt.event.KeyEvent e) {
+  public void keyPressed(KeyEvent e) {
     if (!enableAutoCompletion || (currentGUI == null) || !currentGUI.isOfferingCompletion())
       return;
 
-    if (isCompleterKey(e, 0)) {
+    if (isCompleterKey(e, CK_FORWARD)) {
       cycleForward();
       e.consume();
 
       return;
     }
 
-    if (isCompleterKey(e, 1)) {
+    if (isCompleterKey(e, CK_BACKWARD)) {
       cycleBackward();
       e.consume();
 
       return;
     }
 
-    if (isCompleterKey(e, 2)) {
+    if (isCompleterKey(e, CK_COMPLETE)) {
       Completion cmp = currentGUI.getSelectedCompletion();
 
       if (cmp != null) {
@@ -772,13 +681,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    if (isCompleterKey(e, 3)) {
+    if (isCompleterKey(e, CK_BREAK)) {
       currentGUI.stopOffer();
 
       return;
     }
 
-    if (isCompleterKey(e, 3))
+    if (isCompleterKey(e, CK_START))
       return;
 
     boolean plain = (e.getModifiersEx() == 0);
@@ -803,9 +712,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   public boolean isCompleterKey(KeyEvent e, int i) {
-    int modifiers = e.getModifiersEx();
-    int c = e.getKeyCode();
-    return modifiers == completerKeys[i][0] && c == completerKeys[i][1];
+    KeyStroke ks = KeyStroke.getKeyStrokeForEvent(e);
+    return ks.equals(completerKeys[i]);
   }
 
   /**
@@ -1000,15 +908,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Returns keys for cycling, completing and breaking.
    *
    * <pre>
-   * completerKeys[]   completerKeys[][0]  completerKeys[1]
-   * cycle forward     modifier            key
-   * cycle backward    modifier            key
-   * complete          modifier            key
-   * break             modifier            key
-   * start             modifier            key
+   * cycle forward
+   * cycle backward
+   * complete
+   * break
+   * start
    * </pre>
    */
-  public int[][] getCompleterKeys() {
+  public KeyStroke[] getCompleterKeys() {
     return completerKeys;
   }
 
@@ -1016,26 +923,20 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * Sets keys for cycling, completing and breaking.
    *
    * <pre>
-   * completerKeys[]   completerKeys[][0]  completerKeys[1]
-   * cycle forward     modifier            key
-   * cycle backward    modifier            key
-   * complete          modifier            key
-   * break             modifier            key
-   * start             modifier            key
+   * cycle forward
+   * cycle backward
+   * complete
+   * break
+   * start
    * </pre>
    */
-  public void setCompleterKeys(int ck[][]) {
+  public void setCompleterKeys(KeyStroke ck[]) {
     completerKeys = ck;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD,
-        String.valueOf(ck[0][0]) + ',' + String.valueOf(ck[0][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD,
-        String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE,
-        String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK,
-        String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START,
-        String.valueOf(ck[4][0]) + ',' + String.valueOf(ck[4][1]));
+    PropertiesHelper.setKeyStroke(settings, PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD, ck[CK_FORWARD]);
+    PropertiesHelper.setKeyStroke(settings, PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, ck[CK_BACKWARD]);
+    PropertiesHelper.setKeyStroke(settings, PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, ck[CK_COMPLETE]);
+    PropertiesHelper.setKeyStroke(settings, PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, ck[CK_BREAK]);
+    PropertiesHelper.setKeyStroke(settings, PropertiesHelper.AUTOCOMPLETION_KEYS_START, ck[CK_START]);
   }
 
   /**

@@ -395,41 +395,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
       @Override
       public void mouseReleased(MouseEvent e) {
-        if (((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) || !dragValidated
-            || ((e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0))
-          return;
-
-        Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
-
-        if (bounds.contains(e.getPoint()))
-          return;
-
-        JViewport viewport = scpMapper.getViewport();
-        Point viewPos = viewport.getViewPosition();
-        dragStart.translate(-e.getPoint().x, -e.getPoint().y);
-        dragStart.translate(viewPos.x, viewPos.y);
-
-        if (dragStart.x < 0) {
-          dragStart.x = 0;
-        } else {
-          int maxX = mapper.getWidth() - viewport.getWidth();
-
-          if (dragStart.x > maxX) {
-            dragStart.x = maxX;
-          }
-        }
-
-        if (dragStart.y < 0) {
-          dragStart.y = 0;
-        } else {
-          int maxY = mapper.getHeight() - viewport.getHeight();
-
-          if (dragStart.y > maxY) {
-            dragStart.y = maxY;
-          }
-        }
-
-        viewport.setViewPosition(dragStart);
+        //
       }
     });
 
@@ -439,12 +405,48 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.addMouseMotionListener(new MouseMotionAdapter() {
       @Override
       public void mouseDragged(MouseEvent e) {
-        if (!dragValidated) {
-          Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
+        if (e.isControlDown() || e.isAltDown()
+            || (e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == 0
+            || (e.getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0
+            || (e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0)
+          return;
 
+        Rectangle bounds = new Rectangle(dragStart.x - 3, dragStart.y - 3, 6, 6);
+        if (!dragValidated) {
           if (!bounds.contains(e.getPoint())) {
             dragValidated = true;
           }
+        } else {
+          if (bounds.contains(e.getPoint()))
+            return;
+
+          JViewport viewport = scpMapper.getViewport();
+          Point viewPos = viewport.getViewPosition();
+          Point target = (Point) dragStart.clone();
+          target.translate(-e.getPoint().x, -e.getPoint().y);
+          target.translate(viewPos.x, viewPos.y);
+
+          if (target.x < 0) {
+            target.x = 0;
+          } else {
+            int maxX = mapper.getWidth() - viewport.getWidth();
+
+            if (target.x > maxX) {
+              target.x = maxX;
+            }
+          }
+
+          if (target.y < 0) {
+            target.y = 0;
+          } else {
+            int maxY = mapper.getHeight() - viewport.getHeight();
+
+            if (target.y > maxY) {
+              target.y = maxY;
+            }
+          }
+
+          viewport.setViewPosition(target);
         }
       }
     });

@@ -257,7 +257,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     shortcuts = new ArrayList<KeyStroke>(1);
 
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_DOWN_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(new TTShortcutListener());

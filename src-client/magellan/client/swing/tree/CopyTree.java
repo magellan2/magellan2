@@ -13,7 +13,6 @@
 
 package magellan.client.swing.tree;
 
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -56,8 +55,8 @@ public class CopyTree extends JTree implements KeyListener {
 
     // shortcuts = new Vector();
     // 0-1 copyshortcut
-    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.CTRL_MASK));
-    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_MASK));
+    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_INSERT, KeyEvent.CTRL_DOWN_MASK));
+    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_C, KeyEvent.CTRL_DOWN_MASK));
     // register for shortcut
     addKeyListener(this);
   }
@@ -99,12 +98,11 @@ public class CopyTree extends JTree implements KeyListener {
         null);
   }
 
-  /*
-   * (non-Javadoc)
+  /**
    * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
    */
   public void keyPressed(KeyEvent e) {
-    if ((e.getModifiers() == InputEvent.CTRL_MASK)
+    if (e.isControlDown()
         && ((e.getKeyCode() == KeyEvent.VK_C) || (e.getKeyCode() == KeyEvent.VK_INSERT))) {
       // FIXME on my system (Linux i386 2.6.32-25-generic, Java 1.6.0_20 Sun Microsystems Inc.) this
       // call is shadowed by JComponent's (?) processKeyBinding mechanism which overwrites the
@@ -115,6 +113,7 @@ public class CopyTree extends JTree implements KeyListener {
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
    */
   public void keyTyped(KeyEvent e) {
@@ -122,6 +121,7 @@ public class CopyTree extends JTree implements KeyListener {
 
   /*
    * (non-Javadoc)
+   * 
    * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(KeyEvent e) {

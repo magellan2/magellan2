@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
@@ -84,6 +84,10 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -121,10 +125,6 @@ import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.filters.CollectionFilters;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A dialog for planning production of potions.
@@ -221,7 +221,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     };
     JMenuItem quitItem;
     menu.add(quitItem = new JMenuItem(quitAction));
-    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
+    quitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_DOWN_MASK));
 
     menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.update.title")));
 
@@ -750,8 +750,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
             writer.writeAttribute("name", info.item.getName());
             writer.writeAttribute("amount", String.valueOf(info.number));
           }
-          for (int pot = 0; pot < tableModel.getPotions().size(); ++pot) {
-            PotionInfo info = tableModel.getPotions().get(pot);
+          for (PotionInfo info : tableModel.getPotions()) {
             writer.writeCharacters("\n");
             writer.writeStartElement("potion");
             // writer.writeAttribute("id", info.getID().toString());
@@ -1208,8 +1207,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * Set production to 0.
      */
     public void resetProduction() {
-      for (int i = 0; i < potions.size(); ++i) {
-        potions.get(i).production = 0;
+      for (PotionInfo potion : potions) {
+        potion.production = 0;
       }
     }
 
@@ -1345,11 +1344,11 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * Returns the cell type. One of {@link #nameType}, {@link #noType}, {@link #restType},
      * {@link #noType}, {@link #stockType}, {@link #maxType}, {@link #currentMaxType},
      * {@link #productionType}, {@link #ingredientType}. <code>
-     * nameType (max possible)  | noType     | noType   | maxType        | ...
-     * nameType (remaining)     | noType     | noType   | currentMaxType | ...
-     * nameType (planned)       | noType     | noType   | productionType | ...
-     * nameType (Herb1)         | stockType  | restType | ingredientType | ...
-     * nameType (Herb2)         | stockType  | restType | ingredientType | ... 
+     * nameType (max possible) | noType | noType | maxType | ...
+     * nameType (remaining) | noType | noType | currentMaxType | ...
+     * nameType (planned) | noType | noType | productionType | ...
+     * nameType (Herb1) | stockType | restType | ingredientType | ...
+     * nameType (Herb2) | stockType | restType | ingredientType | ...
      * ...
      * <code>
      */
@@ -1505,11 +1504,11 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     /**
      * Returns the value at the specified cell this is either a String or a subclass of
      * {@link ValueMarker}. The table looks as follows: <code>
-     * String (max possible)  | null       | null      | MaxValue             | ...
-     * String (remaining)     | null       | null      | CurrentMaxValue      | ...
-     * String (planned)       | null       | null      | ProductionValue      | ...
-     * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
-     * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
+     * String (max possible) | null | null | MaxValue | ...
+     * String (remaining) | null | null | CurrentMaxValue | ...
+     * String (planned) | null | null | ProductionValue | ...
+     * HerbInfo (Herb1) | StockValue | RestValue | IngredientValue/null | ...
+     * HerbInfo (Herb2) | StockValue | RestValue | IngredientValue/null | ...
      * ...
      * <code>
      * 
@@ -1603,8 +1602,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      */
     private int getRest(HerbInfo herb) {
       int rest = herb.number;
-      for (int pot = 0; pot < potions.size(); ++pot) {
-        PotionInfo potion = potions.get(pot);
+      for (PotionInfo potion : potions) {
         if (potion.ingredients.containsKey(herb.item)) {
           rest -= potion.production * potion.ingredients.get(herb.item);
         }

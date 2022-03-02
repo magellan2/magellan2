@@ -706,11 +706,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     orders.attachEditorManager(editor);
     editor.setCompleter(orders);
     shortCuts = new ArrayList<KeyStroke>(3);
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_MASK));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.ALT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.ALT_DOWN_MASK));
 
     // toggle "limit make completion"
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 
     // split pane combining top split pane and orders
 

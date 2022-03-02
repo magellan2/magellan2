@@ -110,7 +110,7 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, MouseListener, CacheHandler {
+    OrderEditorList, SelectionListener, TempUnitListener, MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -599,7 +599,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * Processes CTRL+UP/DOWN keys.
    */
   public void keyPressed(KeyEvent e) {
-    if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+    if (e.isControlDown()) {
       if (e.getKeyCode() == KeyEvent.VK_SPACE) {
         getCompleter().offerCompletion(getCurrentEditor());
       }
@@ -1793,9 +1793,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         public Iterator<KeyStroke> getShortCuts() {
           if (shortcuts == null) {
             shortcuts = new LinkedList<KeyStroke>();
-            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK));
-            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK
-                | InputEvent.SHIFT_MASK));
+            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
+            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK
+                | InputEvent.SHIFT_DOWN_MASK));
           }
 
           return shortcuts.iterator();

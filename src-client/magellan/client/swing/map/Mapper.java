@@ -296,8 +296,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         if (me.isPopupTrigger()) {
           showContextMenu(region, c, me.getX(), me.getY());
         } else if ((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-          if (((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0 ||
-              (me.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) && !me.isPopupTrigger()) {
+          if ((me.isControlDown() || me.isAltDown()) && !me.isPopupTrigger()) {
             if (region != null) {
               // add region to selection -- do not add wrappers or voids
               if (selectedRegions.containsKey(region.getID()) == false) {
@@ -340,7 +339,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       @Override
       public void mouseDragged(MouseEvent me) {
         if (((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0)
-            && ((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)) {
+            && (me.isControlDown() || me.isAltDown())) {
           if (!pathPersistence) {
             pathRegions.clear();
           }

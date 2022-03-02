@@ -82,7 +82,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
   protected JCheckBox cPopup;
   protected JCheckBox cHotKey;
   protected JCheckBox cLimitMakeCompletion;
-  protected JComboBox cForGUIs;
+  protected JComboBox<CompletionGUI> cForGUIs;
   protected JTextField tTime;
   protected KeyTextField keyFields[];
 
@@ -149,7 +149,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     inner.add(tTime, con2);
     con2.gridy++;
 
-    cForGUIs = new JComboBox(source.getCompletionGUIs());
+    cForGUIs = new JComboBox<CompletionGUI>(source.getCompletionGUIs());
     cForGUIs.setEditable(false);
 
     if (source.getCurrentGUI() != null) {
@@ -516,7 +516,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       this.key = key;
       this.modifiers = modifiers;
 
-      String s = KeyEvent.getKeyModifiersText(modifiers);
+      String s = InputEvent.getModifiersExText(modifiers);
 
       if ((s != null) && (s.length() > 0)) {
         s += ('+' + KeyEvent.getKeyText(key));
@@ -541,32 +541,37 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
      * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
      */
     public void keyPressed(java.awt.event.KeyEvent p1) {
-      modifiers = p1.getModifiers();
+      modifiers = p1.getModifiersEx();
       key = p1.getKeyCode();
 
       // avoid double string
       if ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
-          || (key == KeyEvent.VK_ALT_GRAPH)) {
+          || (key == KeyEvent.VK_ALT_GRAPH) || (key == KeyEvent.VK_META)) {
         int xored = 0;
 
         switch (key) {
         case KeyEvent.VK_SHIFT:
-          xored = InputEvent.SHIFT_MASK;
+          xored = InputEvent.SHIFT_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_CONTROL:
-          xored = InputEvent.CTRL_MASK;
+          xored = InputEvent.CTRL_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_ALT:
-          xored = InputEvent.ALT_MASK;
+          xored = InputEvent.ALT_DOWN_MASK;
 
           break;
 
         case KeyEvent.VK_ALT_GRAPH:
-          xored = InputEvent.ALT_GRAPH_MASK;
+          xored = InputEvent.ALT_GRAPH_DOWN_MASK;
+
+          break;
+
+        case KeyEvent.VK_META:
+          xored = InputEvent.META_DOWN_MASK;
 
           break;
         }
@@ -574,7 +579,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
         modifiers ^= xored;
       }
 
-      String s = KeyEvent.getKeyModifiersText(modifiers);
+      String s = InputEvent.getModifiersExText(modifiers);
 
       if ((s != null) && (s.length() > 0)) {
         s += ('+' + KeyEvent.getKeyText(key));

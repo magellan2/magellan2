@@ -127,6 +127,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   protected void loadSettings() {
+    convertOldKeys();
     String autoCmp = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED);
 
     if (autoCmp != null) {
@@ -172,7 +173,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[0][0] = Integer.parseInt(st.nextToken());
       completerKeys[0][1] = Integer.parseInt(st.nextToken());
     } catch (Exception exc) {
-      completerKeys[0][0] = InputEvent.CTRL_MASK;
+      completerKeys[0][0] = InputEvent.CTRL_DOWN_MASK;
       completerKeys[0][1] = KeyEvent.VK_DOWN;
     }
 
@@ -184,7 +185,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[1][0] = Integer.parseInt(st.nextToken());
       completerKeys[1][1] = Integer.parseInt(st.nextToken());
     } catch (Exception exc) {
-      completerKeys[1][0] = InputEvent.CTRL_MASK;
+      completerKeys[1][0] = InputEvent.CTRL_DOWN_MASK;
       completerKeys[1][1] = KeyEvent.VK_UP;
     }
 
@@ -217,11 +218,59 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[4][0] = Integer.parseInt(st.nextToken());
       completerKeys[4][1] = Integer.parseInt(st.nextToken());
     } catch (Exception exc) {
-      completerKeys[4][0] = InputEvent.CTRL_MASK;
+      completerKeys[4][0] = InputEvent.CTRL_DOWN_MASK;
       completerKeys[4][1] = KeyEvent.VK_SPACE;
     }
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
+  }
+
+  private void convertOldKeys() {
+    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
+
+    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
+
+    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE);
+
+    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK);
+
+    convertKey(PropertiesHelper.AUTOCOMPLETION_KEYS_START);
+  }
+
+  @SuppressWarnings("deprecation")
+  protected void convertKey(String setting) {
+    String key = settings.getProperty(setting);
+    if (key == null)
+      return;
+    int[] oldKeys = new int[] { InputEvent.SHIFT_MASK, InputEvent.CTRL_MASK, InputEvent.ALT_MASK, InputEvent.META_MASK,
+        InputEvent.ALT_GRAPH_MASK };
+    int[] newKeys = new int[] { InputEvent.SHIFT_DOWN_MASK, InputEvent.CTRL_DOWN_MASK, InputEvent.ALT_DOWN_MASK,
+        InputEvent.META_DOWN_MASK, InputEvent.ALT_GRAPH_DOWN_MASK };
+    try {
+      StringTokenizer st = new StringTokenizer(key, ",");
+      int key0 = Integer.parseInt(st.nextToken());
+      int key1 = Integer.parseInt(st.nextToken());
+      int newKey = 0;
+      for (int i = 0; i < oldKeys.length; ++i) {
+        int mod = oldKeys[i];
+        if ((key0 & mod) != 0) {
+          newKey |= newKeys[i];
+        }
+        key0 &= ~mod;
+      }
+      for (int newKey2 : newKeys) {
+        int mod = newKey2;
+        newKey |= key0 & mod;
+        key0 &= ~mod;
+      }
+      if (key0 != 0) {
+        log.warn("incomplete conversion for key " + setting + " = " + key0 + "," + key1);
+      }
+      settings.setProperty(setting, newKey + "," + key1);
+    } catch (Exception e) {
+      log.warn("invalid setting for key " + setting + " = " + key);
+      settings.remove(setting);
+    }
   }
 
   /**
@@ -632,6 +681,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     try {
       return j.getText(lineBounds[0], lineBounds[1]);
     } catch (BadLocationException ble) {
+      // bail out
     }
 
     return null;
@@ -696,25 +746,21 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (!enableAutoCompletion || (currentGUI == null) || !currentGUI.isOfferingCompletion())
       return;
 
-    int code = e.getKeyCode();
-    int modifiers = e.getModifiers();
-    boolean plain = (e.getModifiers() == 0);
-
-    if ((completerKeys[0][0] == modifiers) && (completerKeys[0][1] == code)) {
+    if (isCompleterKey(e, 0)) {
       cycleForward();
       e.consume();
 
       return;
     }
 
-    if ((completerKeys[1][0] == modifiers) && (completerKeys[1][1] == code)) {
+    if (isCompleterKey(e, 1)) {
       cycleBackward();
       e.consume();
 
       return;
     }
 
-    if ((completerKeys[2][0] == modifiers) && (completerKeys[2][1] == code)) {
+    if (isCompleterKey(e, 2)) {
       Completion cmp = currentGUI.getSelectedCompletion();
 
       if (cmp != null) {
@@ -726,14 +772,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code)) {
+    if (isCompleterKey(e, 3)) {
       currentGUI.stopOffer();
 
       return;
     }
 
-    if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code))
+    if (isCompleterKey(e, 3))
       return;
+
+    boolean plain = (e.getModifiersEx() == 0);
 
     if (!plain)
       return;
@@ -744,6 +792,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     int keys[] = currentGUI.getSpecialKeys();
 
     if (keys != null) {
+      int code = e.getKeyCode();
       for (int key : keys) {
         if (code == key) {
           currentGUI.specialKeyPressed(code);
@@ -751,6 +800,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         }
       }
     }
+  }
+
+  public boolean isCompleterKey(KeyEvent e, int i) {
+    int modifiers = e.getModifiersEx();
+    int c = e.getKeyCode();
+    return modifiers == completerKeys[i][0] && c == completerKeys[i][1];
   }
 
   /**
@@ -971,18 +1026,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setCompleterKeys(int ck[][]) {
     completerKeys = ck;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD, String
-        .valueOf(ck[0][0])
-        + ',' + String.valueOf(ck[0][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, String
-        .valueOf(ck[1][0])
-        + ',' + String.valueOf(ck[1][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, String.valueOf(ck[2][0])
-        + ',' + String.valueOf(ck[2][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, String.valueOf(ck[3][0]) + ','
-        + String.valueOf(ck[3][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START, String.valueOf(ck[4][0]) + ','
-        + String.valueOf(ck[4][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD,
+        String.valueOf(ck[0][0]) + ',' + String.valueOf(ck[0][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD,
+        String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE,
+        String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK,
+        String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START,
+        String.valueOf(ck[4][0]) + ',' + String.valueOf(ck[4][1]));
   }
 
   /**

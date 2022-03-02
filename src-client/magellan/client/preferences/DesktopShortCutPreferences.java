@@ -132,7 +132,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           category = sl.toString();
         }
         try {
-          description = sl.getShortcutDescription(stroke);
+          description = sl.getShortcutDescription(strokeId);
           if (description == null) {
             description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
           }

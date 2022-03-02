@@ -64,17 +64,16 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
       return;
 
     int code = e.getKeyCode();
-    int modifiers = e.getModifiers();
 
     // no "real" key
+    if (e.isActionKey())
+      return;
     if ((code == KeyEvent.VK_CONTROL) || (code == KeyEvent.VK_SHIFT) || (code == KeyEvent.VK_ALT)
         || (code == KeyEvent.VK_TAB))
       return;
 
-    int sp[][] = ac.getCompleterKeys();
-
     for (int i = 0; i < 4; i++) {
-      if ((modifiers == sp[i][0]) && (code == sp[i][1]))
+      if (ac.isCompleterKey(e, i))
         return;
     }
 

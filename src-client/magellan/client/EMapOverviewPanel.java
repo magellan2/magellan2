@@ -2031,7 +2031,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);
 
-    return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index));
+    return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index), false);
   }
 
   /**

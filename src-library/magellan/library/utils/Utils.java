@@ -541,14 +541,16 @@ public class Utils {
    * @param visitor
    */
   public static <T> T spiralPattern(CoordinateID center, int maxDist, SpiralVisitor<T> visitor) {
-    visitor.visit(center, 0);
+    if (visitor.visit(center, 0))
+      return visitor.getResult();
+    int z = center.getZ();
 
     int cx = center.getX(), cy = center.getY();
     for (int dist = 1; dist <= (maxDist > 0 ? maxDist : Integer.MAX_VALUE); ++dist) {
       int dx = dist, dy = 0;
       for (int delta = 0; delta < 6; ++delta) {
         for (int step = 0; step < dist; ++step) {
-          if (visitor.visit(CoordinateID.create(cx + dx, cy + dy), dist))
+          if (visitor.visit(CoordinateID.create(cx + dx, cy + dy, z), dist))
             return visitor.getResult();
           dx += dxs[delta];
           dy += dys[delta];

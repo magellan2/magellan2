@@ -598,16 +598,22 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       /* heroes node */
       if (f.getMaxHeroes() > -1 || heros_count > 0) {
-        // n = new
-        // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.heroes"));
-        long maxHeros2 = 0;
-        if (personCounter > 50) {
-          double maxHeros = (java.lang.Math.log(personCounter / 50) / java.lang.Math.log(10)) * 20;
-          maxHeros2 = java.lang.Math.round(java.lang.Math.floor(maxHeros));
-        }
-
+        String maxHeros2 = "0 (!)";
         if (f.getMaxHeroes() > -1) {
-          maxHeros2 = f.getMaxHeroes();
+          maxHeros2 = String.valueOf(f.getMaxHeroes());
+        } else if (personCounter > 50) {
+          // hack, but it should be in the report anyway
+          // from week 1255 in E2, the first hero is at 550 people or so
+          int offset = getGameData().getDate().getDate() > 1255 ? 500 : 0;
+          long nsize = personCounter - offset;
+          double maxHeros = 0;
+          if (nsize > 0) {
+            maxHeros = (java.lang.Math.log(nsize / 50.0) / java.lang.Math.log(10)) * 20;
+            if (maxHeros < 0) {
+              maxHeros = 0;
+            }
+          }
+          maxHeros2 = java.lang.Math.round(java.lang.Math.floor(maxHeros)) + " (!)";
         }
 
         String actHeroes = "";

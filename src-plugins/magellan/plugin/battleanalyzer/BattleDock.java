@@ -57,6 +57,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -200,6 +201,7 @@ public class BattleDock extends JPanel implements ActionListener, GameDataListen
 
     // reset components
     // StringBuilder text = new StringBuilder();
+    int heroFactor = PropertiesHelper.getInteger(getProperties(), "plugins.battledock.herofactor", 5);
 
     battles = new LinkedHashMap<CoordinateID, BattleInfo>();
 
@@ -209,6 +211,7 @@ public class BattleDock extends JPanel implements ActionListener, GameDataListen
           BattleInfo info = battles.get(b.getID());
           if (info == null) {
             info = new BattleInfo(b.getID(), world);
+            info.setHeroFactor(heroFactor);
           }
           info.parse(b, f.getLocale());
 

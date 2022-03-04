@@ -808,6 +808,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("NACH 1", false);
     checkOrder("NACH o PAUSE", false);
     checkOrder("NACH e", false);
+
+    checkOrder("NA o", false);
+    checkOrder("NAC o");
   }
 
   /**

@@ -111,9 +111,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private static final Logger log = Logger.getInstance(MapperPanel.class);
 
   /** for 3 step zoom in and zoom out our 3 scalings */
-  private final float level3Scale1 = 0.3f;
-  private final float level3Scale2 = 1.3f;
-  private final float level3Scale3 = 2.3f;
+  private final float[] level3Scale = { 0.3f, 1.3f, 2.3f, 3f };
 
   /** fixed min and max factors for scaling */
   private final float minScale = 0.1f;
@@ -124,11 +122,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private JScrollPane scpMapper;
   private JLabel lblLevel;
   private JLabel lblScaling;
-  /** contains JComboBox<Integer> */
-  private JComboBox cmbLevel;
+  private JComboBox<Integer> cmbLevel;
   private JSlider sldScaling;
-  /** JComboBox<Bookmark> */
-  private JComboBox cmbHotSpots;
+  private JComboBox<Bookmark> cmbHotSpots;
   private Timer timer;
   private Point dragStart;
   private boolean dragValidated;
@@ -190,14 +186,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private void fillComboHotSpots() {
     cmbHotSpots.removeAllItems();
 
-    if ((getGameData() != null) && (getGameData().getBookmarks() != null)) {
-      List<Bookmark> hotSpots = new LinkedList<Bookmark>(getGameData().getBookmarks());
-      Collections.sort(hotSpots, new Comparator<Bookmark>() {
+    Collection<Bookmark> bm = getGameData().getBookmarks();
+    if ((getGameData() != null) && (bm != null)) {
+      Bookmark[] hotSpots = bm.toArray(new Bookmark[] {});
+      Arrays.sort(hotSpots, new Comparator<Bookmark>() {
         public int compare(Bookmark o1, Bookmark o2) {
           return o1.toString().compareTo(o2.toString());
         }
       });
-      cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
+      cmbHotSpots.setModel(new DefaultComboBoxModel<Bookmark>(hotSpots));
     }
   }
 
@@ -563,7 +560,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
    */
   public int getMinimapScale() {
     return minimapGeometry.getCellSize().width;
@@ -791,12 +787,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private Region findRegion(CoordinateID center, int maxDist) {
+    final int z = center.getZ();
     final GameData data = getGameData();
     return Utils.spiralPattern(center, maxDist, new Utils.SpiralVisitor<Region>() {
       Region result = null;
 
       public boolean visit(CoordinateID c, int distance) {
-        Region r = data.getRegion(CoordinateID.create(c.getX(), c.getY()));
+        Region r = data.getRegion(CoordinateID.create(c.getX(), c.getY(), z));
         if (r != null) {
           result = r;
           return true;
@@ -882,23 +879,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return mapper;
   }
 
-  // /**
-  // * Creates random integer values until one is not already used as a key in the game data's hot
-  // * spot map.
-  // *
-  // * @return an integer the Integer representation of which is not already used as a key in the
-  // * current game data's hot spot map.
-  // */
-  // private IntegerID getNewHotSpotID() {
-  // IntegerID i = null;
-  //
-  // do {
-  // i = IntegerID.create(random.nextInt());
-  // } while (getGameData().getHotSpot(i) != null);
-  //
-  // return i;
-  // }
-
   private Container getMainPane(Collection<MapCellRenderer> renderers, CellGeometry geo) {
     mapper = new Mapper(context, renderers, geo, "Mapper");
     scpMapper = new JScrollPane(mapper);
@@ -949,7 +929,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblScaling.setLabelFor(sldScaling);
 
     lblLevel = new JLabel(Resources.get("mapperpanel.lbl.level.caption"));
-    cmbLevel = new JComboBox(mapper.getLevels().toArray(new Integer[] {}));
+    cmbLevel = new JComboBox<Integer>(mapper.getLevels().toArray(new Integer[] {}));
 
     if (cmbLevel.getItemCount() > 0) {
       cmbLevel.setSelectedIndex(0);
@@ -958,7 +938,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbLevel.setMinimumSize(new Dimension(50, 25));
     cmbLevel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Integer level = (Integer) ((JComboBox) ae.getSource()).getSelectedItem();
+        Integer level = (Integer) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (level != null) {
           setLevel(level);
@@ -969,7 +949,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblLevel.setVisible(cmbLevel.getItemCount() > 1);
     cmbLevel.setVisible(cmbLevel.getItemCount() > 1);
 
-    cmbHotSpots = new JComboBox();
+    cmbHotSpots = new JComboBox<Bookmark>();
 
     fillComboHotSpots();
 
@@ -977,7 +957,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbHotSpots.setVisible(cmbHotSpots.getItemCount() != 0);
     cmbHotSpots.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Bookmark h = (Bookmark) ((JComboBox) ae.getSource()).getSelectedItem();
+        Bookmark h = (Bookmark) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (h != null) {
           showHotSpot(h);
@@ -1118,17 +1098,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           JOptionPane.showInputDialog(Resources.get("mapperpanel.msg.enterhotspotname.text"));
 
       if ((input != null) && !input.equals("")) {
-        assignHotSpot(input); // just CTRL
+        assignHotSpot(input);
       }
 
       break;
 
     case 3:
-      // remove HotSpot CTRL + ALT + H
+      // remove HotSpot SIFT + CTRL + H
       Bookmark h = (Bookmark) cmbHotSpots.getSelectedItem();
 
       if (h != null) {
-        removeHotSpot(h); // SHIFT + CTRL
+        removeHotSpot(h);
       }
 
       break;
@@ -1173,22 +1153,30 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 10:
     case 11:
       // 3 Step Zoom in ALT + "+"
-      if (getScaleFactor() < level3Scale3) {
-        float newScale = level3Scale3;
-        if (getScaleFactor() < (level3Scale2 - 0.2f)) {
-          newScale = level3Scale2;
+      float oldScale = getScaleFactor();
+      float newScale = level3Scale[level3Scale.length - 1];
+      for (float element : level3Scale) {
+        if (oldScale < element - .3f) {
+          newScale = element;
+          break;
         }
+      }
+      if (oldScale < newScale) {
         setNewScaleFactor(newScale);
       }
       break;
     case 12:
     case 13:
       // 3 Step Zoom out ALT + "-"
-      if (getScaleFactor() > level3Scale1) {
-        float newScale = level3Scale1;
-        if (getScaleFactor() > level3Scale2 + 0.2f) {
-          newScale = level3Scale2;
+      oldScale = getScaleFactor();
+      newScale = level3Scale[0];
+      for (int f = level3Scale.length - 1; f >= 0; --f) {
+        if (oldScale > level3Scale[f] + .3f) {
+          newScale = level3Scale[f];
+          break;
         }
+      }
+      if (oldScale > newScale) {
         setNewScaleFactor(newScale);
       }
       break;

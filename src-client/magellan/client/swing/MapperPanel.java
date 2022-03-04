@@ -33,14 +33,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -348,6 +348,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   private boolean showNavi = true;
 
+  protected CoordinateID wheelCenter;
+
   /**
    * Action event handler for timer events related to the scaling slider.
    *
@@ -358,9 +360,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.setCursor(waitCursor);
 
     CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
-    mapper.setScaleFactor(sldScaling2Scale(sldScaling.getValue()));
-    setCenter(center);
-    this.repaint();
+    float fScale = sldScaling2Scale(sldScaling.getValue());
+    float fScale2 = mapper.getScaleFactor();
+    if (fScale != fScale2) {
+      mapper.setScaleFactor(fScale);
+
+      setCenter(center);
+      this.repaint();
+    }
     setCursor(defaultCursor);
     mapper.setCursor(defaultCursor);
   }
@@ -381,25 +388,46 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     setLayout(new BorderLayout());
     add(getMainPane(customRenderers, geo), BorderLayout.CENTER);
 
-    // register own mouse listener for letting the user drag the
-    // map
+    // for ctrl-mouse wheel zooming
+    mapper.addMouseWheelListener(new MouseWheelListener() {
+
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
+          CoordinateID cOld = getMapper().getCoordinate(e.getPoint().x, e.getPoint().y);
+          int clicks = e.getWheelRotation();
+          if (clicks < 0) {
+            while (clicks++ < 0) {
+              if (getScaleFactor() < maxScale) {
+                setNewScaleFactor(getNextTickValue(), cOld, e.getPoint());
+              }
+            }
+          } else {
+            while (clicks-- > 0) {
+              if (getScaleFactor() > minScale) {
+                setNewScaleFactor(getPreviousTickValue());
+              }
+            }
+          }
+
+          e.consume();
+        } else {
+          for (MouseWheelListener l : scpMapper.getMouseWheelListeners()) {
+            l.mouseWheelMoved(e);
+          }
+        }
+      }
+    });
+
+    // use mousepressed to record start of the drag
     mapper.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
         dragStart = e.getPoint();
         dragValidated = false;
       }
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        //
-      }
     });
 
-    // use a mouse motion listener to confirm that the user actually moved the
-    // mouse while dragging
-    // to avoid unintended drag effects
-    mapper.addMouseMotionListener(new MouseMotionAdapter() {
+    mapper.addMouseMotionListener(new MouseAdapter() {
       @Override
       public void mouseDragged(MouseEvent e) {
         if (e.isControlDown() || e.isAltDown()
@@ -408,6 +436,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
             || (e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0)
           return;
 
+        // confirm that the user actually moved the
+        // mouse while dragging to avoid unintended drag effects
         Rectangle bounds = new Rectangle(dragStart.x - 3, dragStart.y - 3, 6, 6);
         if (!dragValidated) {
           if (!bounds.contains(e.getPoint())) {
@@ -619,18 +649,34 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     fScale = Math.max(minScale, fScale);
     fScale = Math.min(fScale, maxScale);
     sldScaling.setValue(scale2sldScaling(fScale));
+    fScale = sldScaling2Scale(sldScaling.getValue());
     mapper.setScaleFactor(fScale);
   }
 
   /**
-   * sets new scale factor for map, centers on same position and repaints
-   *
-   * @param fScale
+   * Sets new scale factor for map, centers on same position and repaints.
    */
   public void setNewScaleFactor(float fScale) {
-    CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+    setNewScaleFactor(fScale, null, null);
+  }
+
+  /**
+   * Sets new scale factor for map and position center at screenPos.
+   *
+   */
+  public void setNewScaleFactor(float fScale, CoordinateID center, Point screenPos) {
+    if (center == null) {
+      center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+    }
+
     setScaleFactor(fScale);
-    setCenter(center);
+
+    if (screenPos != null) {
+      Point offset = scpMapper.getViewport().getViewPosition();
+      screenPos.translate(-offset.x, -offset.y);
+    }
+
+    setCenter(center, screenPos);
     this.repaint();
   }
 
@@ -715,12 +761,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Centers the map on a certain region.
+   * Positions the map so that center is at screenPos
    *
-   * @param center the coordinate of the region to center the map on.
+   * @param center the coordinate of the region to position
+   * @param screenPos
    */
-  public void setCenter(CoordinateID center) {
-    Point newViewPosition = mapper.getCenteredViewPosition(scpMapper.getSize(), center);
+  public void setCenter(CoordinateID center, Point screenPos) {
+    if (screenPos == null) {
+      Dimension size = scpMapper.getSize();
+      screenPos = new Point(size.width / 2, size.height / 2);
+    }
+    Point newViewPosition = mapper.getViewPosition(screenPos, center);
 
     if (newViewPosition != null) {
       Dimension size = scpMapper.getViewport().getSize();
@@ -734,15 +785,26 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
+   * Positions the map so that center is at the center of the viewport.
+   *
+   * @param center the coordinate of the region to position
+   */
+  public void setCenter(CoordinateID center) {
+    setCenter(center, null);
+  }
+
+  /**
    * Centers the minimap on a certain region.
    *
    * @param center the coordinate of the region to center the map on.
    */
   public void setMinimapCenter(CoordinateID center) {
-    Point newViewPosition = minimap.getCenteredViewPosition(minimapPane.getSize(), center);
+    Dimension size = minimapPane.getSize();
+
+    Point newViewPosition = minimap.getViewPosition(new Point(size.width / 2, size.height / 2), center);
 
     if (newViewPosition != null) {
-      Dimension size = minimapPane.getViewport().getSize();
+      size = minimapPane.getViewport().getSize();
       newViewPosition.x = Math.max(0, newViewPosition.x);
       newViewPosition.x = Math.min(Math.max(0, minimap.getWidth() - size.width), newViewPosition.x);
       newViewPosition.y = Math.max(0, newViewPosition.y);

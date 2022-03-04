@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -73,13 +74,6 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
   protected List<Tip> nonShown;
   protected static final String NEXT = "next";
 
-  // FIXME unfortunately, java inserts linebreaks before <div> tags, which is ugly...
-  // public static final String SHORTCUT_STYLE =
-  // " .shortcut { font-weight: bold; text-decoration: underline; } ";
-  // public static final String MENU_STYLE =
-  // " .menu { font-family: monospace; font-style: italic; } ";
-  // public static final STRING STYLE =
-  // " <style type=\"text/css\"> "+SHORTCUT_STYLE+MENU_STYLE+" </style>";
   protected static final String HTML_START =
       "<html><body style=\"margin-left: 20px;margin-top: 15px; color:#4f3f30; font-size: 16pt; font-family: sans-serif;\">";
 
@@ -123,10 +117,20 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
     setLocationRelativeTo(parent);
   }
 
-  /*
-   * initializes the dialog design is: ++++++++++++++++++++++++++++++ + Image + "Did you know?" + +
-   * ++++++++++++++++++++++ + + Tip + ++++++++++++++++++++++++++++++ + Use +Next/Close +
+  /**
+   * initializes the dialog design is:
+   * 
+   * <pre>
    * ++++++++++++++++++++++++++++++
+   * + Image +    "Did you know?" +
+   * +       ++++++++++++++++++++++
+   * +       +                    +
+   * +       +     Tip            +
+   * +       +                    +
+   * ++++++++++++++++++++++++++++++
+   * + Use             Next/Close +
+   * ++++++++++++++++++++++++++++++
+   * </pre>
    */
   protected void initUI() {
     Color foreground = MagellanImages.FOREGROUND;
@@ -168,6 +172,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
     tipText.setForeground(foreground);
     tipText.setBackground(background);
     tipText.setBorder(null);
+    tipText.setFocusable(false);
 
     JScrollPane pane = new JScrollPane(tipText);
     pane.setBorder(null);
@@ -215,6 +220,13 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
     panel.add(actions, BorderLayout.SOUTH);
     setContentPane(panel);
+    getRootPane().setDefaultButton(close);
+    Vector<Component> components = new Vector<Component>();
+    components.add(next);
+    components.add(close);
+    components.add(showTips);
+
+    setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
 
     addWindowListener(new WindowAdapter() {
       @Override
@@ -234,6 +246,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
     try {
       count = Integer.parseInt(Resources.get("tipoftheday.numTips"));
     } catch (Exception exc) {
+      // 0
     }
 
     if (count > 0) {
@@ -248,6 +261,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
             allTips.add(tip);
           }
         } catch (Exception exc2) {
+          // ignore
         }
       }
 
@@ -271,6 +285,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
               }
             }
           } catch (Exception exc3) {
+            // ignore
           }
         }
       } else {
@@ -285,7 +300,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
   }
 
   /**
-   * DOCUMENT-ME
+   * Whether to show the tips
    */
   public boolean doShow() {
     return TipOfTheDay.firstTime || hasTips();

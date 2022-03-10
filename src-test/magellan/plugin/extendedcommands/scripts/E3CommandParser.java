@@ -1315,14 +1315,18 @@ class E3CommandParser {
       if (part.equals(PCOMMENTOrder) || part.equals(COMMENTOrder)) {
         if (tokenizer.hasMoreTokens()) {
           part = tokenizer.nextToken();
-          if (part.equals(scriptMarker)) {
-            List<String> result = new ArrayList<String>();
-            while (tokenizer.hasMoreTokens()) {
-              result.add(tokenizer.nextToken());
+          if (part.startsWith(scriptMarker)) {
+            if (!part.equals(scriptMarker)) {
+              addNewWarning("lines starting with '" + part + "' not allowed");
+            } else {
+              List<String> result = new ArrayList<String>();
+              while (tokenizer.hasMoreTokens()) {
+                result.add(tokenizer.nextToken());
+              }
+              if (result.size() == 0)
+                return null;
+              return result.toArray(new String[] {});
             }
-            if (result.size() == 0)
-              return null;
-            return result.toArray(new String[] {});
           }
         }
       }

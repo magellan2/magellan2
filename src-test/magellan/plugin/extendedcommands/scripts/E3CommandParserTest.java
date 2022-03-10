@@ -90,6 +90,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     data = builder.createSimpleGameData(350);
     unit = data.getUnits().iterator().next();
     unit.getFaction().setLocale(Locale.GERMAN);
+    unit.clearOrders();
     // client.setData(data);
     parser = new E3CommandParser(data, // helper =
         ExtendedCommandsProvider.createHelper(null, data, null, null));
@@ -309,6 +310,14 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertTrue("should accept foreign unit", parser.testUnit("f", unitF, warning, true));
     parser.updateCurrentOrders();
     assertEquals(0, unit.getOrders2().size());
+  }
+
+  @Test
+  public final void testCommandAlmost() {
+    unit.addOrder("// $cript2 LERNE Hiebwaffen");
+    parser.execute(unit.getFaction());
+    assertWarning("lines starting with", unit, 1);
+    assertEquals(3, unit.getOrders2().size());
   }
 
   /**
@@ -2860,7 +2869,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCollectStatsRegion() {
-    assertOrder("", unit, 0);
+    unit.addOrder("XYZ");
     parser.execute(unit.getFaction());
     // parser.collectStats(unit.getRegion());
     E3CommandParser.notifyMagellan(unit);
@@ -3217,8 +3226,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addFaction(data, "otto", "Others", "Menschen", 0);
     unit.addOrder("// $cript Erlaube otto 1 vwxyzabc");
     parser.execute(unit.getFaction());
-    assertEquals(4, unit.getOrders2().size());
-    assertError("Ungültige Einheitennummer", unit, 3);
+    assertEquals(3, unit.getOrders2().size());
+    assertError("Ungültige Einheitennummer", unit, 2);
   }
 
   /**

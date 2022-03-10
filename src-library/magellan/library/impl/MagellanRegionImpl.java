@@ -220,7 +220,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       for (Unit unit : units()) {
         Faction f = unit.getFaction();
 
-        if (TrustLevels.isPrivileged(f)) {
+        if (f != null && TrustLevels.isPrivileged(f)) {
           fogOfWar = 0;
 
           break;

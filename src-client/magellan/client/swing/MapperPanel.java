@@ -114,8 +114,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private final float[] level3Scale = { 0.3f, 1.3f, 2.3f, 3f };
 
   /** fixed min and max factors for scaling */
-  private final float minScale = 0.1f;
-  private final float maxScale = 3.3f;
+  private float speedup = 2;
+  private float minScale = 0.1f;
+  private float maxScale = 3.34f;
 
   /** The map component in this panel. */
   private Mapper mapper;
@@ -348,8 +349,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   private boolean showNavi = true;
 
-  protected CoordinateID wheelCenter;
-
   /**
    * Action event handler for timer events related to the scaling slider.
    *
@@ -398,13 +397,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           if (clicks < 0) {
             while (clicks++ < 0) {
               if (getScaleFactor() < maxScale) {
-                setNewScaleFactor(getNextTickValue(), cOld, e.getPoint());
+                setNewScaleFactor(getNextTickValue(1f), cOld, e.getPoint());
               }
             }
           } else {
             while (clicks-- > 0) {
               if (getScaleFactor() > minScale) {
-                setNewScaleFactor(getPreviousTickValue());
+                setNewScaleFactor(getPreviousTickValue(1f));
               }
             }
           }
@@ -1102,11 +1101,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private int scale2sldScaling(float fScale) {
-    return (int) ((fScale - minScale) * 50.0);
+    if (fScale > minScale)
+      return (int) (Math.exp(Math.log(fScale - minScale) / speedup) * 50);
+    else
+      return sldScaling.getMinimum();
   }
 
   private float sldScaling2Scale(int value) {
-    return (float) ((value / 50.0) + minScale);
+    return (float) (Math.pow(value / 50.0, speedup) + minScale);
   }
 
   /**
@@ -1201,14 +1203,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 7:
       // Zoom in CTRL + "+"
       if (getScaleFactor() < maxScale) {
-        setNewScaleFactor(getNextTickValue());
+        setNewScaleFactor(getNextTickValue(1));
       }
       break;
     case 8:
     case 9:
       // Zoom out CTRL + "-"
       if (getScaleFactor() > minScale) {
-        setNewScaleFactor(getPreviousTickValue());
+        setNewScaleFactor(getPreviousTickValue(1));
       }
       break;
 
@@ -1404,12 +1406,20 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return item;
   }
 
-  private float getNextTickValue() {
-    return sldScaling2Scale(sldScaling.getValue() + 2 * sldScaling.getMajorTickSpacing());
+  private float getNextTickValue(float multiplier) {
+    int nextTick = sldScaling.getValue() + (int) (multiplier * sldScaling.getMajorTickSpacing());
+    if (nextTick > sldScaling.getMaximum()) {
+      nextTick = sldScaling.getMaximum();
+    }
+    return sldScaling2Scale(nextTick);
   }
 
-  private float getPreviousTickValue() {
-    return sldScaling2Scale(sldScaling.getValue() - 2 * sldScaling.getMajorTickSpacing());
+  private float getPreviousTickValue(float multiplier) {
+    int nextTick = sldScaling.getValue() - (int) (multiplier * sldScaling.getMajorTickSpacing());
+    if (nextTick < sldScaling.getMinimum()) {
+      nextTick = sldScaling.getMinimum();
+    }
+    return sldScaling2Scale(nextTick);
   }
 
   /**

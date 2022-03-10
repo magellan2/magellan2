@@ -2588,15 +2588,15 @@ public class EresseaOrderParser extends AbstractOrderParser {
 
       if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_ADDRESSES))
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_REPORT))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_BZIP2))
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_COMPUTER))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ITEMPOOL))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SILVERPOOL))
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_STATISTICS))
-          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ZIPPED))
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SCORE))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_SKILLCHANGES))
           || t.equalsToken(getOrderTranslation(EresseaConstants.OC_TEMPLATE))) {
         retVal = readOptionOption(t);
+      } else if (t.equalsToken(getOrderTranslation(EresseaConstants.OC_BZIP2))
+          || t.equalsToken(getOrderTranslation(EresseaConstants.OC_ZIPPED))) {
+        retVal = checkFinal(getNextToken());
       } else {
         unexpected(t);
       }

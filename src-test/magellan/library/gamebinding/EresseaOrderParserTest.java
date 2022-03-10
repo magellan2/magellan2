@@ -859,7 +859,18 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   public void testOptionReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_OPTION) + " AUSWERTUNG");
     checkOrder("OPTION PUNKTE NICHT");
+    checkOrder("OPTION Computer");
+    checkOrder("OPTION zipped");
+    checkOrder("OPTION bzip2");
+    checkOrder("OPTION Statistik");
+    checkOrder("OPTION Punkte");
+    checkOrder("OPTION Zugvorlage");
+    checkOrder("OPTION Talentverschiebungen");
+    checkOrder("OPTION Adressen");
+    checkOrder("OPTION ZIPped nicht", false);
     checkOrder("OPTION PUNKTE NICHT MEHR", false);
+    checkOrder("OPTION Silberpool", false);
+    checkOrder("OPTION Materialpool", false);
   }
 
   /**

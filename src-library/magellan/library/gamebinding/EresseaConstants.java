@@ -55,6 +55,9 @@ public class EresseaConstants extends GameConstants {
   /** Option category ID PUNKTE */
   public static final StringID OPT_PUNKTE = StringID.create("PUNKTE");
 
+  /** Option category ID TALENTVERSCHIEBUNGEN */
+  public static final StringID OPT_TALENTVERSCHIEBUNGEN = StringID.create("TALENTVERSCHIEBUNGEN");
+
   /** Item category ID WEAPONS */
   public static final StringID C_WEAPONS = StringID.create("WEAPONS");
 
@@ -685,6 +688,11 @@ public class EresseaConstants extends GameConstants {
   public static final String O_SILVERPOOL = "SILVERPOOL";
   /** Order constant SILVERPOOL */
   public static final StringID OC_SILVERPOOL = StringID.create("SILVERPOOL");
+
+  /** Order constant SKILLCHANGES, deprecated */
+  public static final String O_SKILLCHANGES = "SKILLCHANGES";
+  /** Order constant SCORE */
+  public static final StringID OC_SKILLCHANGES = StringID.create("SKILLCHANGES");
 
   /** Order constant SORT */
   public static final String O_SORT = "SORT";

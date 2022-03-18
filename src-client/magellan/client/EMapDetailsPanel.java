@@ -3865,7 +3865,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         long amount = 0;
 
         if (ingredient.getItemType().equals(
-            getGameData().getRules().getItemType(StringID.create("Bauer")))) {
+            getGameData().getRules().getItemType(EresseaConstants.I_UPEASANT))) {
           amount = region.getPeasants();
         } else {
           magellan.library.utils.Units.StatItem item =

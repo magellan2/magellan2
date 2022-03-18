@@ -2953,7 +2953,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         plugIn.init(this, properties);
         plugIns.add(plugIn);
       } catch (Throwable t) {
-        ErrorWindow errorWindow = new ErrorWindow(this, t.getMessage(), "", t);
+        ErrorWindow errorWindow = new ErrorWindow(this, t);
         errorWindow.setVisible(true);
       }
     }

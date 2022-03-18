@@ -984,11 +984,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     try {
       paintMapperComponent(g);
     } catch (Throwable t) {
-      Mapper.log.error("", t);
-      ErrorWindow errorWindow =
-          new ErrorWindow(Client.INSTANCE, ErrorWindow.UNKNOWN_ERROR_MESSAGE, "", t);
+      Mapper.log.error("error during paint", t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, null, null, t);
       errorWindow.setShutdownOnCancel(true);
-      errorWindow.setVisible(true);
+      // we should normally call this synchronously, but in this case this leads to the error window not being painted,
+      // so we call it later.
+      SwingUtilities.invokeLater(() -> errorWindow.open());
+      throw t;
     }
   }
 

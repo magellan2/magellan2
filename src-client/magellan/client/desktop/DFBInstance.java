@@ -149,14 +149,11 @@ public class DFBInstance implements DockingFrameworkBuilder {
       DFBInstance.log.error("NPE", npe);
     } catch (Throwable t) {
       DFBInstance.log.fatal(t.getMessage(), t);
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t);
       errorWindow.setVisible(true);
     }
-    if (window == null) {
-      ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.");
-      errorWindow.open();
+    if (window == null)
       throw new RuntimeException("Could not load docking layouts.");
-    }
 
     DockingWindowsTheme theme = new ShapedGradientDockingTheme();
     window.getWindowBar(Direction.DOWN).setEnabled(true);
@@ -218,21 +215,24 @@ public class DFBInstance implements DockingFrameworkBuilder {
 
     try {
       layouts = DockingLayout.load(serializedViewData, viewMap, views, this);
-
-      DFBInstance.log.info("Loaded " + layouts.size() + " Docking layouts.");
-      for (DockingLayout layout : layouts) {
-        if (layout.isActive()) {
-          activeLayout = layout;
-          break;
+      if (layouts != null && layouts.size() > 0) {
+        DFBInstance.log.info("Loaded " + layouts.size() + " Docking layouts.");
+        for (DockingLayout layout : layouts) {
+          if (layout.isActive()) {
+            activeLayout = layout;
+            break;
+          }
         }
-      }
 
-      if (activeLayout == null
-          && layouts.size() > 0) {
-        activeLayout = layouts.get(0);
+        if (activeLayout == null
+            && layouts.size() > 0) {
+          activeLayout = layouts.get(0);
+        }
+        activeLayout.setActive(true);
+        activeLayout.open(window, settings);
+      } else {
+        log.warn("Could not load any docking layouts.");
       }
-      activeLayout.setActive(true);
-      activeLayout.open(window, settings);
 
     } catch (Exception exception) {
       DFBInstance.log.error(exception);
@@ -283,7 +283,7 @@ public class DFBInstance implements DockingFrameworkBuilder {
     try {
       root = DockingLayout.createDefaultLayout("Standard", true);
     } catch (LayoutException e) {
-      ErrorWindow errorWindow = new ErrorWindow("Could not create default docking layout.", e);
+      ErrorWindow errorWindow = new ErrorWindow(null, "Could not create default docking layout.", e);
       errorWindow.open();
       throw new RuntimeException(e);
     }

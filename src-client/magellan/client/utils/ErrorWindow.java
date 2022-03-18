@@ -10,45 +10,48 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.utils;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.text.JTextComponent;
+import javax.swing.WindowConstants;
 
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -71,11 +74,11 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   private static final String HIDE_DETAILS_BUTTON = Resources.get("buttons.details.less");
 
-  public static final String UNKNOWN_ERROR_MESSAGE = Resources.get("errorwindow.unknown");
+  private static final String UNKNOWN_ERROR_MESSAGE = Resources.get("errorwindow.unknown");
 
   protected JTextArea errorMessage = null;
 
-  protected JTextComponent errorDescription = null;
+  protected JTextArea errorDescription = null;
 
   protected JScrollPane scrollPane = null;
 
@@ -95,8 +98,6 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   protected boolean actionPerformed = false;
 
-  protected boolean showCancel = true;
-
   private static enum ActionCommand {
     CANCEL, DETAILS, OK;
   }
@@ -106,7 +107,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
    */
 
   public ErrorWindow() {
-    this(null, null, null);
+    this((JFrame) null, null, null, null);
   }
 
   // **********************************************************************
@@ -116,29 +117,29 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
    */
 
   public ErrorWindow(String message) {
-    this(message, message, null);
+    this((JFrame) null, message, null, null);
   }
 
   // **********************************************************************
   /**
    * @param message is a user friendly message with a question that the user can answer with "OK" or
    *          "Cancel".
-   * @param throwable is an occured exception or error, that couldn't be served or catched.
+   * @param throwable is an occurred exception or error, that couldn't be served or caught.
    */
 
   public ErrorWindow(String message, Throwable throwable) {
-    this(message, message, throwable);
+    this((JFrame) null, message, null, throwable);
   }
 
   // **********************************************************************
   /**
-   * @param throwable is an occured exception or error, that couldn't be served or catched.
+   * @param throwable is an occurred exception or error, that couldn't be served or caught.
    */
 
   public ErrorWindow(Throwable throwable) {
-    this(ErrorWindow.UNKNOWN_ERROR_MESSAGE, null, throwable);
+    this((JFrame) null, ErrorWindow.UNKNOWN_ERROR_MESSAGE, null, throwable);
     if (throwable != null && throwable.getMessage() != null) {
-      setErrorMessage(throwable.getMessage(), throwable.getMessage(), throwable);
+      setErrorMessage(throwable.getMessage(), null, throwable);
     }
   }
 
@@ -152,6 +153,10 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   public ErrorWindow(String message, String description, Throwable throwable) {
     this((Frame) null, message, description, throwable);
+  }
+
+  public ErrorWindow(Frame owner, Throwable throwable) {
+    this(owner, null, null, throwable);
   }
 
   // **********************************************************************
@@ -195,7 +200,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
    */
 
   public void setErrorMessage(String message) {
-    setErrorMessage(message, message, null);
+    setErrorMessage(message, null, null);
   }
 
   // **********************************************************************
@@ -245,7 +250,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
     StringBuffer sb = new StringBuffer();
     sb.append(message);
-    sb.append("\r\n");
+    sb.append("\n\n");
     if (description != null) {
       sb.append(description).append("\n\n");
     }
@@ -255,6 +260,8 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     }
 
     errorDescription.setText(sb.toString());
+    errorDescription.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+    detailsButton.setEnabled(description != null || throwable != null);
   }
 
   /**
@@ -300,6 +307,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     buttonPanel.add(cancelButton);
 
     buttonPanel.add(Box.createRigidArea(new Dimension(1, 10)));
+    buttonPanel.add(Box.createGlue());
 
     detailsButton = new JButton(ErrorWindow.SHOW_DETAILS_BUTTON);
     detailsButton.setRequestFocusEnabled(false);
@@ -307,6 +315,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     detailsButton.addActionListener(this);
     // detailsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(detailsButton);
+    buttonPanel.add(Box.createGlue());
 
     errorMessage = new TextArea();
     errorMessage.setText("An error occurs");
@@ -317,8 +326,16 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     errorMessage.setSelectedTextColor(getContentPane().getForeground());
     errorMessage.setFont(okButton.getFont());
     errorMessage.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    errorMessage.setWrapStyleWord(true);
+    errorMessage.setLineWrap(true);
 
-    JTextArea errorDescription = new JTextArea();
+    JScrollPane scrollPane2 = new JScrollPane(errorMessage);
+    scrollPane2.setViewportBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+    scrollPane2.setWheelScrollingEnabled(true);
+    scrollPane2.setPreferredSize(new Dimension(200, 220));
+    scrollPane2.setBorder(BorderFactory.createEmptyBorder());
+
+    errorDescription = new TextArea();
     // errorDescription.setContentType("text/plain");
     errorDescription.setText("If you can see this, something went wrong.");
     errorDescription.setBackground(getContentPane().getBackground());
@@ -326,37 +343,43 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     errorDescription.setEditable(false);
     errorDescription.setMinimumSize(new Dimension(500, 1));
     errorDescription.setLineWrap(false);
-    this.errorDescription = errorDescription;
 
     scrollPane = new JScrollPane(errorDescription);
-    scrollPane.setViewportBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+    // scrollPane.setViewportBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
     scrollPane.setWheelScrollingEnabled(true);
-    scrollPane.setPreferredSize(new Dimension(1, 220));
-    scrollPane.setMinimumSize(new Dimension(1, 50));
+    scrollPane.setPreferredSize(new Dimension(10, 220));
+    scrollPane.setMinimumSize(new Dimension(10, 50));
     scrollPane.setVisible(false);
 
-    getContentPane().setLayout(new GridBagLayout());
-    GridBagConstraints gc =
-        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
-            GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 2, 2);
-    gc.fill = GridBagConstraints.HORIZONTAL;
-    gc.weightx = 1;
-    gc.weighty = 0.1;
-    getContentPane().add(errorMessage, gc);
+    getContentPane().setLayout(new BorderLayout());
+    // GridBagConstraints gc =
+    // new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.FIRST_LINE_START,
+    // GridBagConstraints.NONE, new Insets(1, 1, 1, 1), 2, 2);
+    // gc.fill = GridBagConstraints.HORIZONTAL;
+    // gc.weightx = 1;
+    // gc.weighty = 0.1;
+    // getContentPane().add(scrollPane2, gc);
+    JPanel p = new JPanel(new BorderLayout());
+    p.add(scrollPane2, BorderLayout.CENTER);
+    p.add(buttonPanel, BorderLayout.EAST);
+    getContentPane().add(p, BorderLayout.NORTH);
 
-    errorMessage.setPreferredSize(new Dimension(550, 100));
+    scrollPane2.setPreferredSize(new Dimension(550, 100));
 
-    gc.gridx++;
-    gc.fill = GridBagConstraints.NONE;
-    gc.weightx = 0;
-    getContentPane().add(buttonPanel, gc);
-    gc.gridx = 0;
-    gc.gridy++;
-    gc.gridwidth = 2;
-    gc.fill = GridBagConstraints.BOTH;
-    gc.weighty = 1;
-    gc.weightx = 1;
-    getContentPane().add(scrollPane, gc);
+    // gc.gridx++;
+    // gc.fill = GridBagConstraints.NONE;
+    // gc.weightx = 0;
+    // getContentPane().add(buttonPanel, gc);
+    // getContentPane().add(buttonPanel, BorderLayout.EAST);
+    // gc.gridx = 0;
+    // gc.gridy++;
+    // gc.gridwidth = 2;
+    // gc.fill = GridBagConstraints.BOTH;
+    // gc.weighty = 1;
+    // gc.weightx = 1;
+    //
+    // getContentPane().add(scrollPane, gc);
+    getContentPane().add(scrollPane, BorderLayout.CENTER);
 
     setTitle("Fehler");
   }
@@ -379,16 +402,20 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     }
     case CANCEL: {
       // close window
-      close();
-      // and exit???
-      if (shutdownOnCancel) {
-        if (cleanShutdown) {
-          System.exit(0);
-        } else {
-          System.exit(1);
+      if (JOptionPane.showConfirmDialog(this, Resources.get(
+          "errorwindow.confirmquit.message"), null,
+          JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        close();
+        // and exit???
+        if (shutdownOnCancel) {
+          if (cleanShutdown) {
+            System.exit(0);
+          } else {
+            System.exit(1);
+          }
         }
+        actionPerformed = true;
       }
-      actionPerformed = true;
       break;
     }
     case DETAILS: {
@@ -413,21 +440,34 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     actionPerformed = true;
   }
 
+  static Object lock = null;
+  static int i;
+
   // **********************************************************************
   /**
    */
   public void open() {
-    ErrorWindow.log.debug("Open Window");
-    setVisible(true);
-    toFront();
+    if (lock != null) {
+      synchronized (lock) {
+        ErrorWindow.log.warn("Error Window instance " + ++i);
+        pack();
+        validate();
 
-    LittleObserver observer = new LittleObserver();
-    try {
-      observer.join();
-    } catch (Exception e) {
-      // should not happen, but when it does, we should fail badly
-      throw new RuntimeException(e);
+        setVisible(true);
+        --i;
+      }
+    } else {
+      lock = this;
+      ++i;
+      ErrorWindow.log.debug("Open Window");
+      pack();
+      validate();
+
+      setVisible(true);
+      --i;
+      lock = null;
     }
+
   }
 
   // **********************************************************************
@@ -473,6 +513,8 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
     ErrorWindow.log.debug("Open details panel...");
     detailsButton.setText(ErrorWindow.HIDE_DETAILS_BUTTON);
     scrollPane.setVisible(true);
+    scrollPane.scrollRectToVisible(new Rectangle(0, 0, 0, 0));
+
     pack();
     validate();
   }
@@ -496,6 +538,7 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
 
   public void setShutdownOnCancel(boolean shutdownOnCancel) {
     this.shutdownOnCancel = shutdownOnCancel;
+    cancelButton.setEnabled(shutdownOnCancel);
   }
 
   // **********************************************************************
@@ -511,25 +554,6 @@ public class ErrorWindow extends JDialog implements ActionListener, WindowClosea
       int y = getToolkit().getScreenSize().height;
       setSize(xSize, ySize);
       setLocation(new Point((x / 2 - xSize / 2), (y / 2 - ySize / 2)));
-    }
-  }
-
-  class LittleObserver extends Thread {
-    protected boolean quit = false;
-
-    public LittleObserver() {
-      start();
-    }
-
-    @Override
-    public void run() {
-      while (!quit) {
-        try {
-          Thread.sleep(500);
-        } catch (Exception e) {
-        }
-        quit = actionPerformed;
-      }
     }
   }
 
@@ -695,5 +719,47 @@ class EditorPane extends JEditorPane {
        * setRequestFocusEnabled(false); setEditable(false);
        */
     }
+  }
+
+  public static void main(String[] args) {
+    JFrame frame = new JFrame("Errors");
+    frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    frame.add(new JLabel("a label"));
+    frame.setLocationByPlatform(true);
+    frame.pack();
+    frame.setVisible(true);
+    ErrorWindow e;
+
+    int i[] = { 0 };
+    e = new ErrorWindow(new Random().ints()
+        .takeWhile((x) -> i[0]++ < 100)
+        .map((x) -> x < 0 ? -x : x)
+        .mapToObj((x) -> String.valueOf(x))
+        .reduce("\n", (x, y) -> i[0] % 10 == 0 ? x + y + "  ---- " : x + y),
+        "detail", new NumberFormatException("what is a number?"));
+    e.open();
+
+    e = new ErrorWindow();
+    e.open();
+
+    e = new ErrorWindow("Hello, Message!");
+    e.open();
+
+    e = new ErrorWindow(new RuntimeException("Hello, Exception"));
+    e.open();
+
+    e = new ErrorWindow("Hello, an Exception!", new NullPointerException("an exception"));
+    e.open();
+
+    e = new ErrorWindow("Message", "Description", new Exception("exception"));
+    e.open();
+
+    e = new ErrorWindow(new JDialog(frame.getOwner()), "Message", "Description", new Exception("exception"));
+    e.open();
+
+    e = new ErrorWindow(frame, "Message", "Description", new Exception("exception"));
+    e.open();
+
+    System.exit(0);
   }
 }

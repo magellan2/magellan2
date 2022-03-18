@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.plugin;
 
 import java.awt.Component;
@@ -33,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -44,7 +43,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.MapContextMenuProvider;
 import magellan.client.swing.preferences.PreferencesFactory;
-import magellan.client.utils.ErrorWindow;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -351,6 +349,18 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
 
   }
 
+  private boolean isNameCharacter(Character c) {
+    if (c.equals(' '))
+      return true;
+    switch (Character.getType(c)) {
+    case Character.CONTROL:
+    case Character.SURROGATE:
+    case Character.UNASSIGNED:
+      return false;
+    }
+    return !Character.isWhitespace(c);
+  }
+
   /**
    * Name einer vorhandenen Region setzen
    */
@@ -359,23 +369,33 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn, MapContextMenuProv
       MagellanMapEditPlugIn.log.error("MapEdit runSetName with no region");
       return;
     }
-    String newName = JOptionPane.showInputDialog(client, Resources.get("mapedit.input.newname"));
-    if (newName != null && newName.length() > 0) {
-      // Nur bestimmte Zeichen zulassen (!?)
-      if (Pattern.matches("[a-zA-Z0-9\\s´`']+", newName)) {
-        // alles fein
-        r.setName(newName);
-        updateClient();
+    String newName = r.getName();
+    int offending = -1;
+    do {
+      newName = JOptionPane.showInputDialog(client, Resources.get("mapedit.input.newname"), newName).strip();
+      if (newName != null) {
+        offending = -1;
+        // Nur bestimmte Zeichen zulassen (!?)
+        // if (Pattern.matches("[a-zA-Z0-9 ´`']+", newName)) {
+        for (int i = 0; i < newName.length(); ++i) {
+          if (!isNameCharacter(newName.charAt(i))) {
+            offending = i;
+            break;
+          }
+        }
+
+        if (offending < 0) {
+          // alles fein
+          r.setName(newName);
+          updateClient();
+        } else {
+          // Passte wohl nicht
+          JOptionPane.showMessageDialog(client, Resources.get("mapedit.error.unwantedcharacter.message", offending));
+        }
       } else {
-        // Passte wohl nicht
-        ErrorWindow errorWindow =
-            new ErrorWindow(Resources.get("mapedit.error.unwantedcharacter.message"), Resources
-                .get("mapedit.error.unwantedcharacter.description"), null);
-        errorWindow.setVisible(true);
+        offending = -2;
       }
-    } else {
-      // keine Eingabe
-    }
+    } while (offending > -1);
   }
 
   /**

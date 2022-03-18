@@ -27,9 +27,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.function.Function;
+
 import org.junit.Test;
 
 import magellan.library.AllianceGroup;
+import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -356,4 +359,49 @@ public class GameDataMergerTest extends MagellanTestWithResources {
       }
     }
   }
+
+  @Test
+  public final void testMergeRegion() throws Exception {
+    create("eressea");
+
+    CoordinateID zero = CoordinateID.ZERO;
+    testMerge(gd01, gd02,
+        (gd) -> gd.getRegion(zero),
+        (r) -> r.setDescription("X"), (r) -> r.setDescription("Y"),
+        (r) -> r.getDescription(), "Y");
+
+    testMerge(gd01, gd02,
+        (gd) -> gd.getRegion(zero),
+        (r) -> r.setDescription("X"), (r) -> r.setDescription(null),
+        (r) -> r.getDescription(), "X");
+    testMerge(gd01, gd02,
+        (gd) -> gd.getRegion(zero),
+        (r) -> r.setDescription("X"), (r) -> r.setDescription(""),
+        (r) -> r.getDescription(), "");
+
+    Region r1 = gd01.getRegion(zero);
+    Region r2 = gd02.getRegion(zero);
+    builder.addBuilding(gd01, r1, "bid", "Burg", "aBurg", 1);
+    builder.addBuilding(gd02, r2, "bid", "Burg", "aBurg", 1);
+    EntityID bId = gd01.getRegion(zero).buildings().iterator().next().getID();
+
+    testMerge(gd01, gd02,
+        (gd) -> gd.getBuilding(bId),
+        (b) -> b.setDescription("X"), (b) -> b.setDescription(""),
+        (b) -> b.getDescription(), "");
+  }
+
+  private <O, I, R> void testMerge(GameData gd1, GameData gd2,
+      java.util.function.Function<GameData, O> getObject,
+      java.util.function.Consumer<O> input1, java.util.function.Consumer<O> input2,
+      Function<O, R> output, R expected) {
+    O o1 = getObject.apply(gd1);
+    O o2 = getObject.apply(gd2);
+    input1.accept(o1);
+    input2.accept(o2);
+    GameData gdm = GameDataMerger.merge(gd1, gd2);
+
+    assertEquals(expected, output.apply(getObject.apply(gdm)));
+  }
+
 }

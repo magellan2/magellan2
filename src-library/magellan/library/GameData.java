@@ -1295,11 +1295,7 @@ public abstract class GameData implements Cloneable, Addeable {
     GameData data = this;
 
     // fix unknown stuff
-    for (Region r : data.getRegions()) {
-      if (r.getRegionType() == null) {
-        r.setType(RegionType.unknown);
-      }
-    }
+    fixUnknownRegions(data.getRegions(), data);
 
     // search for the races of the factions in the report.
     for (Faction faction : data.getFactions()) {
@@ -1344,6 +1340,17 @@ public abstract class GameData implements Cloneable, Addeable {
 
     fixUnknown(data.getUnits(), data);
     fixUnknown(data.getOldUnits(), data);
+  }
+
+  private void fixUnknownRegions(Collection<Region> regions, GameData data) {
+    for (Region r : data.getRegions()) {
+      if (r.getRegionType() == null) {
+        r.setType(RegionType.unknown);
+        if (r.getVisibility().equals(Visibility.UNIT) && r.getDescription() == null) {
+          r.setDescription("");
+        }
+      }
+    }
   }
 
   private void fixUnknown(Collection<Unit> units, GameData data) {

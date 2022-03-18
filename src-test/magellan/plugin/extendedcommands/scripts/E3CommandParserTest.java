@@ -958,6 +958,15 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertMessage("braucht 400 mehr Silber", unitB, 5);
   }
 
+  @Test
+  public void testBenoetigeTypo() throws Exception {
+    unit.addOrder("// $cript Benoetige 1 Myrhe");
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertWarning("unknown item Myrhe", unit, 2);
+  }
+
   /**
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */

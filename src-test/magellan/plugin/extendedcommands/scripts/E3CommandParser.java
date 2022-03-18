@@ -245,7 +245,7 @@ class Warning {
 
   public boolean contains(int flag) {
     for (Flag f : flags)
-      if (f.value == flag)
+      if ((f.value & flag) != 0)
         return true;
     return false;
   }
@@ -3370,6 +3370,10 @@ class E3CommandParser {
   protected Need addNeed(String item, Unit unit, int minAmount, int maxAmount, int priority,
       Warning w) {
     Need result;
+    if (world.getRules().getItemType(StringID.create(item)) == null && w.contains(~0)) {
+      addNewWarning("unknown item " + item);
+    }
+
     if (!currentFactions.containsKey(unit.getFaction())) {
       int count;
       if (getSupply(item, unit) == null && (count = getItemCount(unit, item)) > 0) {

@@ -387,11 +387,11 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#getModifiedSkills(magellan.library.Unit)
    */
-  public Map<StringID, Skill> getModifiedSkills(Unit targetUnitt) {
-    if (targetUnitt.getData().getDate().getDate() >= 1256) // actually 1255
-      return mergeSkillWeeeks(targetUnitt);
+  public Map<StringID, Skill> getModifiedSkills(Unit u) {
+    if (u.getData().getDate().getDate() >= 1256) // actually 1255
+      return mergeSkillWeeeks(u);
     else
-      return mergeSkillPoints(targetUnitt);
+      return mergeSkillPoints(u);
   }
 
   /**
@@ -578,7 +578,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
       modifiedSkills = new Hashtable<StringID, Skill>();
 
       for (Skill skill : clone.getSkills()) {
-        skill.setLevel(skill.getLevel() + 1);
+        skill.setLevel(skill.getLevel());
         skill.setPersons(clone.getPersons());
 
         /*
@@ -611,16 +611,16 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   /**
    * More recent version that maintains total skill weeks (used from week 1256 onwards.
    */
-  private Map<StringID, Skill> mergeSkillWeeeks(Unit targetUnitt) {
+  private Map<StringID, Skill> mergeSkillWeeeks(Unit u) {
     Hashtable<StringID, Skill> modifiedSkills = new Hashtable<StringID, Skill>();
-    mergeSkills(modifiedSkills, targetUnitt.getSkillMap(), 0, targetUnitt.getPersons());
-    int persons = targetUnitt.getPersons();
+    mergeSkills(modifiedSkills, u.getSkillMap(), 0, u.getPersons(), u);
+    int persons = u.getPersons();
 
-    for (UnitRelation urel : targetUnitt.getRelations()) {
+    for (UnitRelation urel : u.getRelations()) {
       if (urel instanceof PersonTransferRelation) {
         PersonTransferRelation ptr = (PersonTransferRelation) urel;
-        if (ptr.target == targetUnitt) {
-          mergeSkills(modifiedSkills, ptr.getSkills(), persons, ptr.amount);
+        if (ptr.target == u) {
+          mergeSkills(modifiedSkills, ptr.getSkills(), persons, ptr.amount, u);
           persons += ptr.amount;
         } else {
           persons -= ptr.amount;
@@ -629,42 +629,58 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
           }
         }
       } else if (urel instanceof RecruitmentRelation) {
-        mergeSkills(modifiedSkills, null, persons, ((RecruitmentRelation) urel).amount);
+        mergeSkills(modifiedSkills, null, persons, ((RecruitmentRelation) urel).amount, u);
         persons += ((RecruitmentRelation) urel).amount;
       }
     }
     return modifiedSkills;
   }
 
-  private void mergeSkills(Map<StringID, Skill> modifiedSkills, Map<StringID, Skill> map, int persons, int transfer) {
+  private void mergeSkills(Map<StringID, Skill> modifiedSkills, Map<StringID, Skill> map, int persons, int transfer,
+      Unit u) {
     if (map != null) {
       for (Skill sk : map.values()) {
         SkillType type = sk.getSkillType();
-        mergeSkill(modifiedSkills, type, map.get(type.getID()).getLevel(), persons, transfer);
+        mergeSkill(modifiedSkills, type, map.get(type.getID()).getLevel(), persons, transfer, u);
       }
     }
     for (Skill sk : modifiedSkills.values()) {
       SkillType type = sk.getSkillType();
       if (map == null || !map.containsKey(type.getID())) {
-        mergeSkill(modifiedSkills, type, 0, persons, transfer);
+        mergeSkill(modifiedSkills, type, 0, persons, transfer, u);
       }
     }
   }
 
-  private void mergeSkill(Map<StringID, Skill> modifiedSkills, SkillType skt, int level, int persons, int transfer) {
+  private void mergeSkill(Map<StringID, Skill> modifiedSkills, SkillType skt, int level, int persons, int transfer,
+      Unit u) {
     Skill skill = modifiedSkills.get(skt.getID());
+
     if (skill == null) {
+      if (transfer == 0)
+        return;
       skill = new Skill(skt, 0, 0, persons, true);
       modifiedSkills.put(skt.getID(), skill);
     }
-    mergeSkill(skill, level, persons, transfer);
+    int modifier = skill.getModifier(u);
+
+    mergeSkill(skill, level, persons, transfer, modifier);
 
   }
 
   @SuppressWarnings("deprecation")
-  private void mergeSkill(Skill skill, int svl, int n, int add) {
-    int snl = skill.getLevel();
+  private void mergeSkill(Skill skill, int svl, int n, int add, int modifier) {
+    int snl = skill.getLevel() - modifier;
+    if (snl < 0) {
+      snl = 0;
+    }
+    svl = svl - modifier;
+    if (svl < 0) {
+      svl = 0;
+    }
     int total = add + n;
+    if (total == 0)
+      return;
     int weeks = weeks_from_level(snl) * n + weeks_from_level(svl) * add;
     // level that combined unit should be at:
     int level = level_from_weeks(weeks, total);
@@ -684,7 +700,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     }
 
     skill.setPersons(n + add);
-    skill.setLevel(newLevel);
+    skill.setLevel(newLevel + modifier);
   }
 
   private int weeks_from_level(int level) {

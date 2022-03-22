@@ -101,6 +101,7 @@ public class EresseaGameSpecificRulesTest {
     data.getDate().setDate(1256);
 
     Skill sk = builder.addSkill(other, "Ausdauer", 2);
+    assertEquals(0, sk.getModifier(unit));
 
     unit.clearOrders();
     unit.addOrder("GIB oth 1 PERSONEN");
@@ -112,6 +113,7 @@ public class EresseaGameSpecificRulesTest {
     assertEquals(2, other.getModifiedPersons());
     assertEquals(1, other.getModifiedSkill(sk.getSkillType()).getLevel());
 
+    // T2 + T0 = 2xT1
     testMerge(1, 2, 1, 0, 2, 1);
 
     // /* 1xT2 merges with 2xT0 to become 3xT1 */
@@ -120,45 +122,52 @@ public class EresseaGameSpecificRulesTest {
     testMerge(1, 2, 2, 0, 3, 1);
 
     // /* 1xT2 merges with 3xT0, skill goes poof */
-    testMerge(1, 2, 3, 0, 4, 0); // 1 -- 0
+    testMerge(1, 2, 3, 0, 4, 0); // -1 -- 0
 
     // /* two units with the same skills are merged: no change */
     // src.level = 2;
     // src.weeks = 3;
-    testMerge(1, 2, 1, 2, 2, 2); // 3 -- 2
+    testMerge(1, 2, 1, 2, 2, 2);
 
     // /* T4 + T6 always makes T5 */
     // src.level = 4;
     // dst.level = 6;
-    testMerge(1, 4, 1, 6, 2, 5); // 6 -- 5
+    testMerge(1, 4, 1, 6, 2, 5);
 
-    testMerge(1, 99, 1, 1, 2, 69); // 51 -- 70
+    // T1 + T11 = T7
+    testMerge(1, 1, 1, 11, 2, 7); // 6 -- 7
+
+    testMerge(1, 99, 1, 1, 2, 69); // 50 -- 69
   }
 
   @Test
   public void testSkillMergeOld() {
     data.getDate().setDate(1255);
-    testMerge(1, 2, 1, 0, 2, 2); // 2 -- 1
+    // T2 + T0 = 2xT1
+    testMerge(1, 2, 1, 0, 2, 1);
 
     // /* 1xT2 merges with 2xT0 to become 3xT1 */
     // dst.level = 2;
     // dst.weeks = 3;
-    testMerge(1, 2, 2, 0, 3, 1);
+    testMerge(1, 2, 2, 0, 3, -1);
 
     // /* 1xT2 merges with 3xT0, skill goes poof */
-    testMerge(1, 2, 3, 0, 4, 1); // 1 -- 0
+    testMerge(1, 2, 3, 0, 4, -1); // -1 -- 0
 
     // /* two units with the same skills are merged: no change */
     // src.level = 2;
     // src.weeks = 3;
-    testMerge(1, 2, 1, 2, 2, 3); // 3 -- 2
+    testMerge(1, 2, 1, 2, 2, 2);
 
     // /* T4 + T6 always makes T5 */
     // src.level = 4;
     // dst.level = 6;
-    testMerge(1, 4, 1, 6, 2, 6); // 6 -- 5
+    testMerge(1, 4, 1, 6, 2, 5);
 
-    testMerge(1, 99, 1, 1, 2, 51); // 51 -- 70
+    // T1 + T11 = T6
+    testMerge(1, 1, 1, 11, 2, 6); // 6 -- 7
+
+    testMerge(1, 99, 1, 1, 2, 50); // 50 -- 69
   }
 
   private Unit merge1, merge2;
@@ -196,7 +205,11 @@ public class EresseaGameSpecificRulesTest {
 
     assertEquals("giver not empty", 0, merge1.getModifiedPersons());
     assertEquals("wrong number of people", nEx, merge2.getModifiedPersons());
-    assertEquals("wrong level", lEx, merge2.getModifiedSkills().iterator().next().getLevel());
+    if (lEx < 0) {
+      assertEquals("wrong level", true, merge2.getModifiedSkills().isEmpty());
+    } else {
+      assertEquals("wrong level", lEx, merge2.getModifiedSkills().iterator().next().getLevel());
+    }
   }
 
   @Test

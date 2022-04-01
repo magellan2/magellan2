@@ -44,7 +44,7 @@ public class HelpAction extends MenuAction {
     // SG: had a lot of fun when I implemented this :-)
     try {
       if (help == null) {
-        help = new Help(client.getProperties());
+        help = Help.getInstance(client.getProperties());
       }
 
       help.show();

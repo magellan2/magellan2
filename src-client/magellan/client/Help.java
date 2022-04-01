@@ -23,14 +23,23 @@
 //
 package magellan.client;
 
+import java.awt.BorderLayout;
+import java.awt.Dialog.ModalExclusionType;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Window;
 import java.net.URL;
 import java.util.Properties;
 
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import javax.help.JHelpContentViewer;
+import javax.help.JHelpNavigator;
 import javax.help.UnsupportedOperationException;
+import javax.swing.JDialog;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 
 import magellan.library.utils.ResourcePathClassLoader;
 import magellan.library.utils.logging.Logger;
@@ -62,7 +71,9 @@ public class Help {
   }
 
   private static final Logger log = Logger.getInstance(Help.class);
+  private static Help help;
   private HelpBroker hb;
+  private HelpSet hs;
 
   /**
    * Opens the help dialog.
@@ -96,11 +107,15 @@ public class Help {
         throw new HelpException("Could not find the magellan-help.jar");
       }
 
-      HelpSet hs = new HelpSet(loader, hsURL);
+      hs = new HelpSet(loader, hsURL);
 
       hb = hs.createHelpBroker();
 
       hb.initPresentation();
+
+      if (help == null) {
+        help = this;
+      }
 
     } catch (Exception e) {
       throw new HelpException("Could not initialize the Java Help environment.", e);
@@ -112,6 +127,73 @@ public class Help {
    */
   public void show() {
     hb.setDisplayed(true);
+
+    // new CSH.DisplayHelpAfterTracking(hb).actionPerformed(new ActionEvent(Client.INSTANCE, 0, "HELP"));
+
+    // try {
+    // hb.showID("intro", "javax.help.MainWindow", "main window");
+    // } catch (Exception ee) {
+    // System.err.println("trouble with visiting id; " + ee);
+    // }
+  }
+
+  /**
+   * Creates a JDialog showing the given topic and a navigation
+   * 
+   */
+  public JDialog getHelpDialog(Window parent, String topic) {
+    JHelpContentViewer cv = new JHelpContentViewer(hs);
+
+    JHelpNavigator mnav = (JHelpNavigator) hs.getNavigatorView("TOC").createNavigator(cv.getModel());
+    JHelpNavigator enav = (JHelpNavigator) hs.getNavigatorView("ETOC").createNavigator(cv.getModel());
+    JHelpNavigator snav = (JHelpNavigator) hs.getNavigatorView("Search").createNavigator(cv.getModel());
+
+    cv.setCurrentID(topic);
+
+    JDialog jd = new JDialog(parent);
+    jd.setModalityType(ModalityType.MODELESS);
+    jd.setModalExclusionType(ModalExclusionType.TOOLKIT_EXCLUDE);
+
+    jd.setLayout(new BorderLayout());
+
+    JTabbedPane tabs = new JTabbedPane();
+    // Icon chap = new ImageIcon("help/de/images/chapTopic.gif");
+    tabs.addTab("\uD83D\uDD6E", null, mnav, mnav.getNavigatorLabel());
+    tabs.addTab("\uD83D\uDD6E", null, enav, enav.getNavigatorLabel());
+    tabs.addTab("\uD83D\uDD0D", null, snav, snav.getNavigatorLabel());
+
+    JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, tabs, cv);
+    split.setOneTouchExpandable(true);
+    split.setDividerLocation(.1);
+    jd.add(split, BorderLayout.CENTER);
+
+    jd.pack();
+    jd.setSize(800, 450);
+    return jd;
+  }
+
+  public static void main(String[] args) {
+    // Demo
+    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        try {
+          Properties settings = new Properties();
+          Help h = new Help(settings);
+          JDialog d = h.getHelpDialog(null, "intro");
+          d.setVisible(true);
+        } catch (Exception ex) {
+          ex.printStackTrace();
+        }
+      }
+    });
+  }
+
+  /**
+   * Displays the topic with the given ID.
+   */
+  public void showTopic(String id) {
+    hb.setDisplayed(true);
+    hb.setCurrentID(id);
   }
 
   /**
@@ -132,7 +214,6 @@ public class Help {
         System.exit(0);
       }
     }).start();
-
   }
 
   /**
@@ -167,6 +248,19 @@ public class Help {
    */
   public void setSize(Dimension arg0) throws UnsupportedOperationException {
     hb.setSize(arg0);
+  }
+
+  /**
+   * Returns a (weakly) unique instance.
+   * 
+   * @param settings
+   * @throws HelpException
+   */
+  public static Help getInstance(Properties settings) throws HelpException {
+    if (help == null) {
+      help = new Help(settings);
+    }
+    return help;
   }
 
 }

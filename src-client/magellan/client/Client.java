@@ -10,6 +10,7 @@ package magellan.client;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -335,7 +336,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param binDir The directory where magellan files are situated
    * @param resourceDir The directory where magellan configuration files are situated
    * @param settingsDir The directory where the settings are situated
-   * @param ask show the ask password dialog, used for testing only
+   * @param ask show the ask locale dialog, used for testing only
    */
   @SuppressWarnings("deprecation")
   protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask,
@@ -1288,7 +1289,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
               String lastVersion = c.getProperties().getProperty("Client.LastVersion");
               if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-                UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
+                UpdateDialog dlg = new UpdateDialog(startWindow, lastVersion, currentVersion);
+                dlg.setModalityType(ModalityType.TOOLKIT_MODAL);
                 dlg.setVisible(true);
                 if (!dlg.getResult()) {
                   c.quit(false);

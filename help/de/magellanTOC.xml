@@ -96,7 +96,7 @@
 		<tocitem text="Objektname/-beschreibung" image="topic" target="windows_name"/>
 		<tocitem text="Details" image="topic" target="windows_details"/>
 		<tocitem text="Befehle" image="topic" target="windows_orders"/>
-		<tocitem text="E Check" image="topic" target="windows_echeck"/>
+		<tocitem text="ECheck" image="topic" target="windows_echeck"/>
 		<tocitem text="Offene Probleme" image="topic" target="windows_problems"/>
 		<tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/>
 	</tocitem>

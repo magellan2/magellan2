@@ -502,8 +502,28 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(closeButton);
+    // JButton helpButton = new JButton(Resources.get("orderwriterdialog.btn.help.caption"));
+    // String helpId = "menu_file_saveorders";
+    // try {
+    // Help help = Help.getInstance(settings);
+    // helpButton.addActionListener(new ActionListener() {
+    // public void actionPerformed(ActionEvent ae) {
+    // try {
+    // help.showTopic(helpId);
+    // } catch (Exception ex) {
+    // log.error(ex);
+    // }
+    // }
+    // });
+    // } catch (Exception ee) {
+    // log.error("trouble with visiting help id", ee);
+    // }
+    //
+    // buttonPanel.add(cancelButton);
+    // buttonPanel.add(closeButton);
+    //
+    // buttonPanel.add(Box.createVerticalStrut(18));
+    // buttonPanel.add(helpButton);
 
     c.gridx = 1;
     c.gridy = 0;

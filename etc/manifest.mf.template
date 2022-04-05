@@ -21,6 +21,7 @@ Class-Path: magellan-client.jar
             lib/javahelp-2.0.05.jar
             lib/javax.mail.jar
             lib/jfreechart.jar
+            lib/multiline-label-1.18.jar
             lib/skins/kunststoff-2_0_2.jar
             lib/skins/liquidlnf-2.9.1.jar
             lib/skins/looks-1.3b1.jar

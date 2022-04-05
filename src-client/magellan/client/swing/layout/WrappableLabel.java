@@ -25,13 +25,17 @@ package magellan.client.swing.layout;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.UIDefaults;
+
+import io.github.parubok.text.multiline.MultilineLabel;
 
 /**
  * Provides a component that looks like a label, but behaves like a TextPane, so that it can wrap lines.
@@ -39,7 +43,14 @@ import javax.swing.UIDefaults;
  * @author stm
  * @version 1.0, Jul 14, 2021
  */
-public class WrappableLabel extends JPanel {
+public class WrappableLabel {
+  // so we have three implementations here and I'm not quite happy with any of them. They are all kind of imperfect in
+  // some way and sometimes ugly.
+
+  private static final int TEXTAREA_IMPL = 0;
+  private static final int MULTILINE_IMPL = 1;
+  private static final int HTML_IMPL = 2;
+  private static int IMPL = TEXTAREA_IMPL;
 
   /**
    * Factory method.
@@ -48,29 +59,58 @@ public class WrappableLabel extends JPanel {
    * @return A label that represents the given text
    */
   public static WrappableLabel getLabel(String text) {
-    return new WrappableLabel(text);
+    return new WrappableLabel(text, IMPL);
+  }
+
+  private WrappableLabel(String text, int mode) {
+    if (mode == HTML_IMPL) {
+      initHtml(text);
+    } else if (mode == TEXTAREA_IMPL) {
+      initTextArea(text);
+    } else if (mode == MULTILINE_IMPL) {
+      initMultiline(text);
+    } else
+      throw new Error("implementation error");// initTextarea(text);
   }
 
   private JTextArea label;
 
-  // private WrappableLabel(String text) {
-  // super(new BorderLayout());
-  // JComponent comment = new JLabel(
-  // String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
-  // text));
-  //
-  // comment.setPreferredSize(new Dimension(300, 100));
-  // add(comment, BorderLayout.CENTER);
-  // // setMinimumSize(new Dimension(300, 100));
-  // }
+  private MultilineLabel textComponent;
 
-  private WrappableLabel(String text) {
-    super();
-    setLayout(new BorderLayout());
+  private JLabel comment;
+  private JComponent panel;
+
+  private void initHtml(String text) {
+    JPanel pp = new JPanel(new BorderLayout());
+    panel = pp;
+    comment = new JLabel(
+        String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
+            text));
+
+    comment.setPreferredSize(new Dimension(300, 100));
+    pp.add(comment, BorderLayout.CENTER);
+    // setMinimumSize(new Dimension(300, 100));
+  }
+
+  private void initMultiline(String text) {
+    textComponent = new MultilineLabel(text);
+    textComponent.setPreferredWidthLimit(300);
+  }
+
+  void initTextArea(String text) {
     label = new JTextArea(text);
-    JScrollPane sPane = new JScrollPane(label);
+
+    JScrollPane sPane = new JScrollPane(label) {
+      @Override
+      public Dimension getMinimumSize() {
+        Dimension dim = label.getMinimumSize();
+        dim.height += 10;
+        return dim;
+      }
+    };
     // label.setMinimumSize(new Dimension(200, 50));
-    add(sPane, BorderLayout.CENTER);
+    panel = sPane;
+    // panel.add(sPane, BorderLayout.CENTER);
     sPane.setViewportView(label);
     sPane.setBorder(null);
     label.setBorder(null);
@@ -100,10 +140,10 @@ public class WrappableLabel extends JPanel {
     label.setSelectedTextColor(parent.getForeground());
     label.setFont(parent.getFont());
     // label.setBorder(null);
-    putClientProperty("Nimbus.Overrides", defaults);
-    putClientProperty("Nimbus.Overrides.InheritDefaults", true);
-    setBackground(c);
-    setFont(parent.getFont());
+    panel.putClientProperty("Nimbus.Overrides", defaults);
+    panel.putClientProperty("Nimbus.Overrides.InheritDefaults", true);
+    panel.setBackground(c);
+    panel.setFont(parent.getFont());
   }
 
   /**
@@ -112,18 +152,38 @@ public class WrappableLabel extends JPanel {
    * @param t
    */
   public void setText(String t) {
-    label.setText(t);
+    if (t == null) {
+      t = "";
+    }
+    if (label != null) {
+      label.setText(t);
+    } else if (textComponent != null) {
+      textComponent.setText(t);
+    } else if (comment != null) {
+      comment.setText(String.format(
+          "<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>", t));
+    }
+  }
+
+  public JComponent getComponent() {
+    if (textComponent != null)
+      return textComponent;
+    else
+      return panel;
+  }
+
+  public void setPreferredWidth(int w) {
+    if (textComponent != null) {
+      textComponent.setPreferredWidthLimit(w);
+    }
+    // TODO
+  }
+
+  public void setPreferredLines(int c) {
+    if (textComponent != null) {
+      textComponent.setPreferredViewportLineCount(c);
+    }
+    // TODO
   }
 
 }
-
-//
-// // public WrappableLabel(String string) {
-// // super(String.format(
-// // "<html><body style=\"text-align: justify; text-justify: inter-word;\">%s</body></html>",
-// // string));
-// // setPreferredSize(new Dimension(300, 30));
-// //
-// // }
-//
-// }

@@ -1,37 +1,38 @@
 Libraries, their versions and location
 
-Library				Version		License style 			Location						Used for
+Library				 	Version		License style 			Location						Used for
 --------------------------------------------------------------------------------------------------------------------------------------------------------------
 ant-1.7.0.jar			1.7.0		???				apache?						Various locations...
--ant-launcher-1.7.0.jar		1.7.0		???				apache?						???
+-ant-launcher-1.7.0.jar	1.7.0		???				apache?						???
 -bsh-2.0b4.jar			2.0b4		???				http://www.beanshell.org			ExtendedCommands
-commons-email-1.5.jar		1.5		Apache				http://commons.apache.org/email/		Email orders
+commons-email-1.5.jar	1.5		Apache				http://commons.apache.org/email/		Email orders
 -mailapi.jar			?? TODO		??				Sun???						Email orders
--imap.jar			?? TODO		??				Sun???						Email orders
--mail.jar			?? TODO		??				Sun???						Email orders
--pop3.jar			?? TODO		??				Sun???						Email orders
--smtp.jar			?? TODO		??				Sun???						Email orders
-activation.jar                  ???		Sun?				Sun???						Email
-commons-http-client-3.1.jar	3.1		Apache				http://hc.apache.org/httpclient-3.x/		Version check
-commons-codec-1.14.jar		1.14		Apache				http://commons.apache.org/codec/		Version check?
-commons-logging-1.2.jar		1.2		Apache				http://commons.apache.org/logging/		Version check?
-idw-gpl.jar			1.6.1		GPL				http://www.infonode.net				Docking Framework
-jfreechart			0.5.6 (reduced) LGPL				http://jfreechart.sourceforge.net		Skillchart
-javahelp.jar				2.0.05		Extended Sun Binary Code License	https://mvnrepository.com/artifact/javax.help/javahelp			Help
+-imap.jar				?? TODO		??				Sun???						Email orders
+-mail.jar				?? TODO		??				Sun???						Email orders
+-pop3.jar				?? TODO		??				Sun???						Email orders
+-smtp.jar				?? TODO		??				Sun???						Email orders
+activation.jar			???			Sun?			Sun???						Email
+commons-http-client-3.1.jar	3.1		Apache			http://hc.apache.org/httpclient-3.x/		Version check
+commons-codec-1.14.jar	1.14		Apache			http://commons.apache.org/codec/		Version check?
+commons-logging-1.2.jar	1.2			Apache			http://commons.apache.org/logging/		Version check?
+idw-gpl.jar				1.6.1		GPL				http://www.infonode.net				Docking Framework
+jfreechart				0.5.6		(reduced) LGPL	http://jfreechart.sourceforge.net		Skillchart
+javahelp.jar			2.0.05		Extended Sun Binary Code License	https://mvnrepository.com/artifact/javax.help/javahelp			Help
 -jaxp-api.jar			?? TODO		AFS 1.1/W3C Software License	?? TODO						Look&Feel
--RadixTree_0.1.jar		0.1		Berkeley			http://code.google.com/p/radixtree/	        OrderParser
+-RadixTree_0.1.jar		0.1			Berkeley		http://code.google.com/p/radixtree/	        OrderParser
+multiline-label			1.18		Apache			https://github.com/parubok/multiline-label	(Preferences) Dialogs
 
-kunststoff-2_0_2.jar	    	2.0.2		LGPL				http://kunstoff.incors.com/archive/		Look&Feel
-liquidlnf-2.9.1.jar		2.9.1		LGPL				https://liquidlnf.dev.java.net			Look&Feel
-looks-1.3b1.jar			1.3 beta1	Revised BSD 			http://jgoodies.dev.java.net			???
-skinsCollected.jar		?? TODO		LGPL				?? TODO						Look&Feel
-xplookandfeel.jar		?? TODO		Extended LGPL			http://www.stefan-krause.com/java/		Look&Feel
+kunststoff-2_0_2.jar   	2.0.2		LGPL			http://kunstoff.incors.com/archive/		Look&Feel
+liquidlnf-2.9.1.jar		2.9.1		LGPL			https://liquidlnf.dev.java.net			Look&Feel
+looks-1.3b1.jar			1.3 beta1	Revised BSD 	http://jgoodies.dev.java.net			???
+skinsCollected.jar		?? TODO		LGPL			?? TODO						Look&Feel
+xplookandfeel.jar		?? TODO		Extended LGPL	http://www.stefan-krause.com/java/		Look&Feel
 -metouia.jar			??		LGPL				??  						removed
 
 
--jflap4_0b7.jar			4.0b7		Revised BSD/public domain		http://www.cs.duke.edu/~rodger/tools/jflaptmp/	??? formal languages ???
--forms-1.0.4.jar			1.0.4		Revised BSD 			http://jgoodies.dev.java.net			???
--saxon6_5_2.jar			6.5.2		Mozilla Public License 1.0		http://saxon.sourceforge.net			--- removed ---
+-jflap4_0b7.jar			4.0b7		Revised BSD/public domain	http://www.cs.duke.edu/~rodger/tools/jflaptmp/	??? formal languages ???
+-forms-1.0.4.jar		1.0.4		Revised BSD 				http://jgoodies.dev.java.net			???
+-saxon6_5_2.jar			6.5.2		Mozilla Public License 1.0	http://saxon.sourceforge.net			--- removed ---
 -winlaf-0.4.1.jar		0.4.1		Sun Public License 1.0		http://winlaf.dev.java.net				--- removed ---
 
 

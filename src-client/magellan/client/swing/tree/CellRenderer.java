@@ -58,7 +58,7 @@ import magellan.library.utils.Umlaut;
  * @author Sebastian
  * @version 1.0
  */
-public class CellRenderer extends JPanel implements TreeCellRenderer {
+public class CellRenderer implements TreeCellRenderer {
   // private static final Logger log = Logger.getInstance(CellRenderer.class);
 
   public static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
@@ -119,12 +119,46 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
   private MagellanContext context;
 
+  private JPanel component;
+
+  protected static class CRPanel extends JPanel {
+    /**
+     * Overrides JComponent.getToolTipText to return the tooltip of the underlying label or null, if
+     * no label found.
+     */
+    @Override
+    public String getToolTipText(MouseEvent e) {
+      if (e != null) {
+        // reprocess layout to have the sizes that were displayed
+        doLayout();
+
+        Point p = e.getPoint();
+        Rectangle rect = new Rectangle();
+
+        for (int i = 0; i < getComponentCount(); i++) {
+          Component c = getComponent(i);
+          rect = c.getBounds(rect);
+
+          if (rect.contains(p.x, p.y)) {
+            if (c instanceof JComponent)
+              return ((JComponent) c).getToolTipText();
+
+            return null;
+          }
+        }
+      }
+
+      return null;
+    }
+  }
+
   /**
    * Creates new CellRenderer
    */
   public CellRenderer(MagellanContext context) {
     CellRenderer.settings = context.getProperties();
     this.context = context;
+    component = new CRPanel();
 
     if (!initialized) {
       emptyBorder = new EmptyBorder(0, 0, 0, 1);
@@ -155,7 +189,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
     javax.swing.UIManager.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
       public void propertyChange(java.beans.PropertyChangeEvent evt) {
-        removeAll();
+        component.removeAll();
         applyUIDefaults();
       }
     });
@@ -383,16 +417,16 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
         new MatteBorder(1, 1, 1, 1, CellRenderer.typeSets[TALENT_INC_STYLE].getSelectedBackground());
     plainBorder = new EmptyBorder(1, 1, 1, 1);
 
-    setOpaque(false);
-    setLayout(new SameHeightBoxLayout());
-    setBackground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
-    setForeground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
+    component.setOpaque(false);
+    component.setLayout(new SameHeightBoxLayout());
+    component.setBackground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
+    component.setForeground(CellRenderer.typeSets[DEFAULT_STYLE].getBackground());
 
     label = new JLabel();
     label.setOpaque(false);
 
-    removeAll();
-    this.add(label);
+    component.removeAll();
+    component.add(label);
 
     Font plainFont = label.getFont().deriveFont(Font.PLAIN);
     CellRenderer.typeSets[DEFAULT_STYLE].setFont(plainFont);
@@ -422,13 +456,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
     if (cellObj2 != null) {
       layoutComponent2(selected, hasFocus);
 
-      return this;
+      return component;
     }
 
     if (cellObj != null) {
       layoutComponent(selected, hasFocus);
 
-      return this;
+      return component;
     } else
       return defaultRenderer.getTreeCellRendererComponent(tree, value, selected, expanded, leaf,
           row, hasFocus);
@@ -516,9 +550,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
       iconLabels[i].setBorder(emptyBorder);
     }
 
-    removeAll();
+    component.removeAll();
     for (JLabel iconLabel : iconLabels) {
-      this.add(iconLabel);
+      component.add(iconLabel);
     }
 
   }
@@ -1124,35 +1158,6 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
     }
 
     return buf.toString();
-  }
-
-  /**
-   * Overrides JComponent.getToolTipText to return the tooltip of the underlying label or null, if
-   * no label found.
-   */
-  @Override
-  public String getToolTipText(MouseEvent e) {
-    if (e != null) {
-      // reprocess layout to have the sizes that were displayed
-      doLayout();
-
-      Point p = e.getPoint();
-      Rectangle rect = new Rectangle();
-
-      for (int i = 0; i < getComponentCount(); i++) {
-        Component c = getComponent(i);
-        rect = c.getBounds(rect);
-
-        if (rect.contains(p.x, p.y)) {
-          if (c instanceof JComponent)
-            return ((JComponent) c).getToolTipText();
-
-          return null;
-        }
-      }
-    }
-
-    return null;
   }
 
   /**

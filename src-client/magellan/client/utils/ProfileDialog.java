@@ -36,7 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -79,25 +78,12 @@ public class ProfileDialog extends JDialog {
   }
 
   private void initGUI() {
-    final JPanel mainPanel = new JPanel();
-    mainPanel.setLayout(new GridBagLayout());
+    final JPanel centerPanel = new JPanel();
+    centerPanel.setLayout(new GridBagLayout());
     // mainPanel.setMinimumSize(new Dimension(300, 1900));
 
-    GridBagConstraints gc =
-        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.FIRST_LINE_START,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
-
-    // JComponent comment = new JLabel(
-    // String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
-    // Resources.get("profiledialog.explanation")));
-
-    JComponent comment = WrappableLabel.getLabel(Resources.get("profiledialog.explanation"));
-    comment.setFont(new JLabel().getFont());
-    comment.setPreferredSize(new Dimension(300, 70));
-    JComponent pcomment = new JPanel(new BorderLayout());
-    pcomment.add(comment, BorderLayout.CENTER);
-    pcomment.setMinimumSize(new Dimension(300, 70));
-    // JComponent pcomment = comment;
+    WrappableLabel comment = WrappableLabel.getLabel(Resources.get("profiledialog.explanation"));
+    JComponent pcomment = comment.getComponent();
     profiles = initProfiles();
     profileList = new JList<String>(profiles);
     profileList.setSelectedIndex(profiles.indexOf(ProfileManager.getCurrentProfile()));
@@ -149,7 +135,12 @@ public class ProfileDialog extends JDialog {
       }
     });
 
+    GridBagConstraints gc =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
+            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
+
     gc.fill = GridBagConstraints.HORIZONTAL;
+    gc.weighty = 0;
     buttonPanel.add(btnOK, gc);
     gc.gridy++;
     buttonPanel.add(btnQuit, gc);
@@ -161,29 +152,46 @@ public class ProfileDialog extends JDialog {
     buttonPanel.add(btnCopy, gc);
     gc.gridy++;
     buttonPanel.add(btnRemove, gc);
+    gc.gridy++;
+    gc.fill = GridBagConstraints.BOTH;
+    gc.weighty = 1;
+    buttonPanel.add(new JPanel(), gc);
 
     gc.gridy = 0;
     gc.gridwidth = 2;
     gc.weightx = 1.0;
     gc.weighty = 1.0;
     gc.fill = GridBagConstraints.HORIZONTAL;
-    mainPanel.add(pcomment, gc);
+    // centerPanel.add(pcomment, gc);
+
+    profileList.setPreferredSize(new Dimension(200, 300));
+    JScrollPane psp = new JScrollPane(profileList);
+    psp.setMinimumSize(new Dimension(100, 100));
+    profileList.setMinimumSize(new Dimension(100, 100));
+    setMinimumSize(new Dimension(200, 200));
     gc.gridwidth = 1;
-    gc.gridy++;
+    // gc.gridy++;
     gc.fill = GridBagConstraints.BOTH;
-    gc.weightx = 1.0;
-    gc.weighty = 0.0;
-    mainPanel.add(new JScrollPane(profileList), gc);
-    gc.fill = GridBagConstraints.BOTH;
+    gc.weightx = 1;
+    gc.weighty = 0.1;
+    centerPanel.add(psp, gc);
+
+    gc.fill = GridBagConstraints.VERTICAL;
     gc.weightx = 0.0;
+    gc.weighty = 0.0;
     gc.gridx++;
-    mainPanel.add(buttonPanel, gc);
+    centerPanel.add(buttonPanel, gc);
+
     gc.fill = GridBagConstraints.BOTH;
     gc.weighty = 0.0;
     gc.gridx = 0;
     gc.gridy++;
     gc.gridwidth = 2;
-    mainPanel.add(bAlwaysAsk, gc);
+    centerPanel.add(bAlwaysAsk, gc);
+
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(centerPanel, BorderLayout.CENTER);
+    mainPanel.add(pcomment, BorderLayout.NORTH);
 
     getContentPane().add(mainPanel);
 
@@ -278,4 +286,9 @@ public class ProfileDialog extends JDialog {
     return !abort;
   }
 
+  @Override
+  public void setVisible(boolean b) {
+    pack();
+    super.setVisible(b);
+  }
 }

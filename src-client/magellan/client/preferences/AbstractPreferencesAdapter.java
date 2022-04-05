@@ -10,21 +10,22 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -34,6 +35,8 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+
+import magellan.client.swing.preferences.PreferencesAdapter;
 
 /**
  * This class is a helper class for creating PreferencesAdapters or ExtendedPreferencesAdapters. It
@@ -84,7 +87,11 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
             GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
     initialized = true;
+    JPanel strut = new JPanel();
+    strut.setPreferredSize(new Dimension(PreferencesAdapter.PREFERRED_WIDTH, 0));
+    content.add(strut, gridBagConstraints);
     this.add(content, BorderLayout.NORTH);
+
   }
 
   /**

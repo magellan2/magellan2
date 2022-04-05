@@ -25,6 +25,7 @@ package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -73,7 +74,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   /**
    * A tree that displays problem types
    */
-  public class TypeTree extends JTree {
+  class TypeTree extends JTree {
 
     DefaultMutableTreeNode root;
     DefaultTreeModel model;
@@ -264,9 +265,6 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     inspectorsPanel.add(pane, BorderLayout.CENTER);
 
     WrappableLabel description = WrappableLabel.getLabel(Resources.get("tasks.prefs.inspectors.help"));
-    JPanel descPanel = new JPanel(new BorderLayout());
-    descPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("tasks.prefs.inspectors.description")));
 
     inspectorsList.addTreeSelectionListener(new TreeSelectionListener() {
       public void valueChanged(TreeSelectionEvent e) {
@@ -355,6 +353,9 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.weightx = 0;
     ignorePanel.add(new JPanel(), c);
 
+    inspectorsPanel.setPreferredSize(new Dimension(PREFERRED_WIDTH / 2, 400));
+    ignorePanel.setPreferredSize(new Dimension(PREFERRED_WIDTH / 2, 400));
+    pnlSelection.setPreferredSize(new Dimension(PREFERRED_WIDTH, 400));
     c.gridx = 0;
     c.gridy = 0;
     c.gridheight = 4;
@@ -389,7 +390,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.gridwidth = 3;
     c.weightx = 0.5;
     c.weighty = 1;
-    pnlSelection.add(description, c);
+    pnlSelection.add(description.getComponent(), c);
 
     return pnlSelection;
   }

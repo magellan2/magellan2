@@ -47,6 +47,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -1629,7 +1630,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       modePanel.add(modeBox);
 
       setLayout(new GridBagLayout());
-      Component description =
+      JComponent description =
           HexCellRenderer.createDescriptionPanel(Resources.get("map.regionshapecellrenderer.description"), this);
       GridBagConstraints con =
           new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,

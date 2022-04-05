@@ -23,6 +23,8 @@ import java.awt.Component;
  */
 public interface PreferencesAdapter {
 
+  int PREFERRED_WIDTH = 500;
+
   /**
    * This function is called for initializing the preferences. It is recommended to use this method
    * to re-initialize the values that you set within the constructor because it is possible that

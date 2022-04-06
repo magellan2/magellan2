@@ -69,8 +69,8 @@ public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResour
    */
   @Test
   public void testInitCommands() {
-    assertSame(63, getParser().getCommands().size());
-    assertSame(63, getParser().getHandlers().size());
+    assertSame(62, getParser().getCommands().size());
+    assertSame(62, getParser().getHandlers().size());
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_WORK));
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_DESTROY));
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));

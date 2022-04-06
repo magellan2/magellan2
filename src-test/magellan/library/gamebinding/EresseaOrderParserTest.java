@@ -100,8 +100,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
         new EresseaOrderParser(data, getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
-    assertSame(63, localParser.getCommands().size());
-    assertSame(63, localParser.getHandlers().size());
+    assertSame(62, localParser.getCommands().size());
+    assertSame(62, localParser.getHandlers().size());
   }
 
   @Test
@@ -261,14 +261,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    */
   @Test
   public void testBelagereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.OC_SIEGE) + " burg");
-    checkOrder("BELAGERE burg");
-    checkOrder("BELAGERE abc", false);
-    checkOrder("BELAGERUNG burg", false);
-    checkOrder("BELAGERE TEMP burg", false);
-    checkOrder("BELAGERE burg 123", false);
-    checkOrder("BELAGERE 2 burg", false);
-    checkOrder("BELAGERE \"burg\"", false);
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SIEGE) + " burg", false);
   }
 
   /**

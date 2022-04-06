@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Order;
@@ -75,7 +74,6 @@ public class EresseaOrderParser extends AbstractOrderParser {
     addCheckedCommand(EresseaConstants.OC_PROMOTION, new BefoerderungReader(this));
 
     addCheckedCommand(EresseaConstants.OC_STEAL, new BeklaueReader(this));
-    addCheckedCommand(EresseaConstants.OC_SIEGE, new BelagereReader(this));
     addCheckedCommand(EresseaConstants.OC_NAME, new BenenneReader(this));
     addCheckedCommand(EresseaConstants.OC_USE, new BenutzeReader(this));
     addCheckedCommand(EresseaConstants.OC_DESCRIBE, new BeschreibeReader(this));
@@ -281,44 +279,6 @@ public class EresseaOrderParser extends AbstractOrderParser {
       target = UnitID.createUnitID(token.getText(), getData().base);
 
       return checkNextFinal();
-    }
-  }
-
-  // ************* BELAGERE
-  protected class BelagereReader extends BuildingOrderHandler {
-    public BelagereReader(OrderParser parser) {
-      super(parser);
-    }
-
-    @Override
-    protected boolean readIt(OrderToken token) {
-      boolean retVal = false;
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      getOrder().setLong(true);
-      OrderToken t = getNextToken();
-
-      if (isID(t.getText(), false) == true) {
-        retVal = readBelagereBID(t);
-      } else {
-        unexpected(t);
-      }
-
-      if (shallComplete(token, t)) {
-        getCompleter().cmpltBelagere();
-      }
-
-      return retVal;
-    }
-
-    protected boolean readBelagereBID(OrderToken token) {
-      token.ttype = OrderToken.TT_ID;
-      target = EntityID.createEntityID(token.getText(), getData().base);
-      Building tBuilding = getData().getBuilding(target);
-
-      return tBuilding != null
-          && getData().getRules().getCastleType(tBuilding.getType().getID()) != null
-          && checkNextFinal();
     }
   }
 

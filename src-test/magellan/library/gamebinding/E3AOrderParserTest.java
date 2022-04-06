@@ -83,8 +83,8 @@ public class E3AOrderParserTest extends EresseaOrderParserTest {
   @Override
   @Test
   public void testInitCommands() {
-    assertSame(54, getParser().getCommands().size());
-    assertSame(54, getParser().getHandlers().size());
+    assertSame(53, getParser().getCommands().size());
+    assertSame(53, getParser().getHandlers().size());
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_WORK));
     assertTrue(getParser().getCommands().contains(EresseaConstants.OC_DESTROY));
     assertTrue(!getParser().getCommands().contains(EresseaConstants.OC_SABOTAGE));

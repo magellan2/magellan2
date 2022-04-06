@@ -33,6 +33,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.StringID;
@@ -314,7 +315,12 @@ public class EresseaRelationFactory implements RelationFactory {
     // count orders
     int count = 0; // two for maintenance orders
     for (Unit u : r.units()) {
-      count += u.getOrders2().size();
+      Orders uo = u.getOrders2();
+      if (uo.isEmpty()) {
+        // ++count;
+      } else {
+        count += u.getOrders2().size();
+      }
       if (u.getNewRegion() != null) {
         affected.add(data.getRegion(u.getNewRegion()));
         // for (Order o : u.getOrders2()) {
@@ -334,13 +340,19 @@ public class EresseaRelationFactory implements RelationFactory {
 
     for (Unit u : r.units()) {
       int line = 0;
-      for (Order o : u.getOrders2()) {
-        // FIXME create TEMP unit!!
-        // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
-        // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
-        // } else {
-        orders.add(o, getPriority(o), u, ++line);
-        // }
+      Orders uo = u.getOrders2();
+      if (uo.isEmpty()) {
+        // FIXME this is expensive, but we need it for the ENTER order
+        // orders.add(new SimpleOrder(new OrderToken(OrderToken.TT_EOC), ""), P_FIRST, u, 0);
+      } else {
+        for (Order o : uo) {
+          // FIXME create TEMP unit!!
+          // if (u.getOrders2().isToken(o, 0, EresseaConstants.OC_MAKE)
+          // && (u.getOrders2().isToken(o, 1, EresseaConstants.OC_TEMP))) {
+          // } else {
+          orders.add(o, getPriority(o), u, ++line);
+          // }
+        }
       }
 
       u.clearRelations();
@@ -855,6 +867,8 @@ public class EresseaRelationFactory implements RelationFactory {
         throw new NullPointerException();
 
       Unit lastUnit = null;
+      // FIXME it can't be right to go in this order, as this may not be the current order any more; should use
+      // unitordering?
       for (Unit u : data.getUnits()) {
         if (u.getModifiedUnitContainer() == newUC) {
           lastUnit = u;

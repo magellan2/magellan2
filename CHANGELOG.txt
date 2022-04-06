@@ -1,5 +1,6 @@
-2022-04-05 / Build 776 - stm (stm2@users.sourceforge.net)
+2022-04-06 / Build 777 - stm (stm2@users.sourceforge.net)
     * Preferences and other dialog polishing
+    * Removed SIEGE command
 
 2022-04-01 / Build 774 - stm (stm2@users.sourceforge.net)
     * OrderWriterDialog includes presets for common mail providers

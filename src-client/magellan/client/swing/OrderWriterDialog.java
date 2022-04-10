@@ -64,6 +64,7 @@ import javax.crypto.spec.DESedeKeySpec;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -87,6 +88,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
+import magellan.client.Help;
 import magellan.client.swing.layout.GridLayout2;
 import magellan.client.utils.FileNameGenerator;
 import magellan.client.utils.SwingUtils;
@@ -502,28 +504,28 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
-    // JButton helpButton = new JButton(Resources.get("orderwriterdialog.btn.help.caption"));
-    // String helpId = "menu_file_saveorders";
-    // try {
-    // Help help = Help.getInstance(settings);
-    // helpButton.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent ae) {
-    // try {
-    // help.showTopic(helpId);
-    // } catch (Exception ex) {
-    // log.error(ex);
-    // }
-    // }
-    // });
-    // } catch (Exception ee) {
-    // log.error("trouble with visiting help id", ee);
-    // }
-    //
-    // buttonPanel.add(cancelButton);
-    // buttonPanel.add(closeButton);
-    //
-    // buttonPanel.add(Box.createVerticalStrut(18));
-    // buttonPanel.add(helpButton);
+    JButton helpButton = new JButton(Resources.get("orderwriterdialog.btn.help.caption"));
+    String helpId = "menu_file_saveorders";
+    try {
+      Help help = Help.getInstance(settings);
+      helpButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent ae) {
+          try {
+            help.showTopic(helpId);
+          } catch (Exception ex) {
+            log.error(ex);
+          }
+        }
+      });
+    } catch (Exception ee) {
+      log.error("trouble with visiting help id", ee);
+    }
+
+    buttonPanel.add(cancelButton);
+    buttonPanel.add(closeButton);
+
+    buttonPanel.add(Box.createVerticalStrut(18));
+    buttonPanel.add(helpButton);
 
     c.gridx = 1;
     c.gridy = 0;

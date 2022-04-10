@@ -2354,6 +2354,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("weight")) {
         unit.setWeight(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if (isBookmark()) {
+        parseBookmark(unit);
       } else if ((sc.argc == 1) && sc.argv[0].equals("COMMANDS")) {
         // there can be only one order block for a unit, replace existing ones
         unit.setOrders(parseStringSequence(null), false);

@@ -4,14 +4,19 @@ Eine ganze Menge eher kleinerer, aber merkbarer Änderungen macht diese Version a
 
 Die wichtigsten Änderungen:
 
-  * Magellan braucht jetzt Java 11. Dies ist derzeit die einzige Javaversion, die noch ausreichend mit Updates versorgt wird
-  * Die ARR und ATR-Eigenschaften wurden poliert. Eine Erklärung zum ATR und ARR gibt es bald im Eresseawiki (https://wiki.eressea.de/index.php/Magellan).
-  * Unterstützung für Konvois (GIB xyz 1 SCHIFF)
-  * E3CommandParser benutzt jetzt die JShell und ist dadurch viel, viel schneller. Der E3CommandParser erlaubt es, Befehle weitgehend zu programmieren.
+  * Magellan braucht jetzt mindestens Java 11. Der Installer bringt jetzt aber eine eigene Javaversion mit, sodass sich die meisten Anwender darum nicht mehr kümmern müssen. Neue Versionen können jetzt automatisch heruntergeladen werden.
+  * Verbesserte MacOS-Kompatibilität 
+  * Die ARR und ATR-Eigenschaften wurden poliert. Eine aktualisierte Erklärung zum ATR und ARR gibt es in der Hilfe.
   * Die Befehlserkennung und -verarbeitung wurde in vielen Punkten verbessert. ECheck ist praktisch überflüssig und durch "Offene Probleme" ersetzt.
-  * Weitere Regelupdates (Galeonen, Drachenschiffe, !@Befehle, BEZAHLE, BEFÖRDERE...) wurden implementiert
-  * Das Plugin "BattleAnalyzer" stellt schlachten etwas übersichtlicher dar.
+  * Unterstützung für Konvois (GIB xyz 1 SCHIFF)
+  * Weitere Regelupdates (Galeonen, Drachenschiffe, !@Befehle, BEZAHLE, BEFÖRDERE, kein BEWACHE mehr, Helden, LERNE AUTO, STIRB, Talentmischung, Trolle und Pferde, ...) wurden implementiert.
+  * Einstellungen für gängige Mailprovider werden jetzt (halb-)automatisch vorgenommen.
+  * Verbesserter Quickfind-Dialog (STRG+G)
+  * "Erweiterte Befehle" benutzt jetzt die JShell und ist dadurch viel, viel schneller. Die Erweiterten Befehle erlauben es, Befehle weitgehend zu programmieren.
+  * Das Plugin "BattleAnalyzer" stellt Schlachten etwas übersichtlicher dar.
   * Die Talentstatistik in der Parteienstatistik wurde verbessert.
+  * Karte kann mit der Maus vergrößert und verschoben werden.
+  * Die Hilfe wurde überarbeitet. Die Eressea-Hilfe ist jetzt wieder auf dem neuesten (Wiki-)Stand.
   * Unterstützung für andere Spiele (E3, Atlantis, Drachensgrab, ...)
   * Viele, viele weitere Bugfixes und Verbesserungen an der Bedienbarkeit ...
 
@@ -23,13 +28,17 @@ There were a bunch of mostly minor, but notable changes leading up to this versi
 
 The most important changes (for a complete list of changes see CHANGELOG.txt):
 
-  * Magellan now requires Java 11. This is currently the only version that is going to provide regular updates.
-  * The ARR and ARR proerties were polished. For an explanation visit the Magellan page in the Eressea wiki (https://wiki.eressea.de/index.php/Magellan).
+  * Magellan now requires Java 11. The installer now comes with its own Java version, so no need for most users to worry about Java. New versions can be downloaded automatically.
+  * Better MacOS compatibility.
+  * The ARR and ARR properties were polished. An updated explanation can be found in the Help dialog.
+  * Order detection and processing was improved in many parts. ECheck ist practically unnecessary and replaced by the "Open Tasks" dock.
   * Support for convoys (GIVE xyz 1 SHIP).
-  * E3CommandParser uses JShell now, making it much faster. E3CommandParser allows you to automate your orders.
-  * Order detection and processing was improved in many parts. ECheck ist practically unnecessary and replaced by the "Open Tasks".
-  * Further rules updates implemented (galleons, dragon ships, !@ orders, PAY NOT, PROMOTE, ...).
-  * The "BattleAnalyzer" plugin displays battles a bit more comprehensively.
+  * Further rules updates implemented (galleons, dragon ships, !@ orders, PAY NOT, PROMOTE, no more SIEGE, heroes, LEARN AUTO, QUIT, mixing skills, trolls and horses, ...).
+  * Improved quick find dialog (CTRL+G)
+  * ExtendedCommands use JShell now, making it much faster. ExtendedCommands allow you to automate your orders.
+  * The "BattleAnalyzer" plugin displays battles a bit more detailed.
   * The skill statistics of the faction statistics has been improved.
+  * Map zooming and panning with the mouse.
+  * Improved Help, including the Eressea Help (updated from the Wiki). English help is, unfortunately, still a TODO. 
   * Support for other games (E3, Atlantis, Drachensgrab, ...)
   * Many, many further bug fixes and improvements ...

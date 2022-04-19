@@ -1092,7 +1092,9 @@ public class BattleInfo {
           hosts.put(currentHost.getIndex(), currentHost);
           currentRow = -1;
           break;
-        case 1803906635: // string
+        case 1803906635: // "Verdammte der Nacht (w4op), 16 Zombies, aggressiv, bewacht die Region, hat: 16 Schartige
+                         // Schwerter.";rendered
+        case 2144337409: // with unit attribute (neu 12xx)
           currentSpellInfo = null;
           addMisc(m);
           break;

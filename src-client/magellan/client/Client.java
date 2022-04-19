@@ -131,6 +131,7 @@ import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.extern.MainMenuProvider;
 import magellan.client.preferences.ClientPreferences;
 import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
+import magellan.client.preferences.Install4J;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
@@ -1266,39 +1267,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            try {
-              String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
-                  Client.startWindow);
-              String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
-              if (!Utils.isEmpty(newestVersion)) {
-                Client.log.info("Newest Version on server: " + newestVersion);
-                Client.log.info("Current Version: " + currentVersion);
-                if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-                  String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-                      .getGUILocale().getLanguage());
-                  if (url == null) {
-                    url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
-                  }
-
-                  JOptionPane.showMessageDialog(Client.startWindow,
-                      new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
-                      "",
-                      JOptionPane.INFORMATION_MESSAGE);
-                }
-              }
-
-              String lastVersion = c.getProperties().getProperty("Client.LastVersion");
-              if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-                UpdateDialog dlg = new UpdateDialog(startWindow, lastVersion, currentVersion);
-                dlg.setModalityType(ModalityType.TOOLKIT_MODAL);
-                dlg.setVisible(true);
-                if (!dlg.getResult()) {
-                  c.quit(false);
-                }
-              }
-            } catch (Throwable e) {
-              log.error("Could not check version.", e);
-            }
+            versionCheck(c, tBinDir, tResourceDir);
 
             c.macify();
 
@@ -1353,6 +1322,52 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       });
     } catch (Throwable exc) { // any fatal error
       bailOut(exc);
+    }
+  }
+
+  private static void versionCheck(Client c, File tBinDir, File tResourceDir) {
+    try {
+      Install4J.init(tBinDir);
+      boolean silent = false;
+      Boolean nightly = Install4J.isNightlyCheck();
+      if (nightly != null) {
+        log.fine("updated nightly check to " + nightly);
+        PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
+      }
+      if (Install4J.lastUpdateCheck() != null && Install4J.lastUpdateCheck() - System.currentTimeMillis() < 3600) {
+        silent = true;
+      }
+
+      String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), silent ? null : Client.startWindow);
+      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
+      if (!Utils.isEmpty(newestVersion)) {
+        Client.log.info("Newest Version on server: " + newestVersion);
+        Client.log.info("Current Version: " + currentVersion);
+        if (!silent && VersionInfo.isNewer(newestVersion, currentVersion)) {
+          String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+              .getGUILocale().getLanguage());
+          if (url == null) {
+            url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+          }
+
+          JOptionPane.showMessageDialog(Client.startWindow,
+              new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
+              "",
+              JOptionPane.INFORMATION_MESSAGE);
+        }
+      }
+
+      String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+      if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+        UpdateDialog dlg = new UpdateDialog(startWindow, lastVersion, currentVersion);
+        dlg.setModalityType(ModalityType.TOOLKIT_MODAL);
+        dlg.setVisible(true);
+        if (!dlg.getResult()) {
+          c.quit(false);
+        }
+      }
+    } catch (Throwable e) {
+      log.error("Could not check version.", e);
     }
   }
 

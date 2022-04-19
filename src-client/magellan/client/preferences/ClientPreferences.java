@@ -82,6 +82,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private JCheckBox loadlastreport;
   protected List<PreferencesAdapter> subAdapters;
   private JComboBox<String> logLevel;
+  private JLabel stableLabel;
+  private JLabel nightlyLabel;
 
   /**
    * Creates a new ClientPreferences object.
@@ -141,8 +143,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     c.weightx = 0.0;
     c.gridwidth = 2;
     checkForUpdates =
-        new JCheckBox(Resources.get("clientpreferences.misc.checkforupdates.caption"),
-            PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, true));
+        new JCheckBox(Resources.get("clientpreferences.misc.checkforupdates.caption"));
     checkForUpdates.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(checkForUpdates, c);
     c.gridx = 2;
@@ -150,24 +151,35 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
-    line++;
+    stableLabel = new JLabel("1.2.3");
+    stableLabel.setEnabled(false);
 
+    panel.add(stableLabel, c);
+    line++;
     // check for nightly updates
     c.gridx = 0;
     c.gridy = line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    checkForNightlyUpdates =
-        new JCheckBox(Resources.get("clientpreferences.misc.checkfornightlyupdates.caption"),
-            PropertiesHelper.getBoolean(settings,
-                VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false));
+    checkForNightlyUpdates = new JCheckBox(Resources.get("clientpreferences.misc.checkfornightlyupdates.caption"));
+
     checkForNightlyUpdates.setHorizontalAlignment(SwingConstants.LEFT);
-    checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
     panel.add(checkForNightlyUpdates, c);
+
+    c.gridx = 2;
+    c.gridy = line;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.EAST;
+    c.weightx = 0.1;
+    nightlyLabel = new JLabel("1.2.4");
+    nightlyLabel.setEnabled(false);
+    panel.add(nightlyLabel, c);
+
     line++;
 
+    checkForNightlyUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK);
+    checkForNightlyUpdates.addActionListener(this);
     checkForUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK);
     checkForUpdates.addActionListener(this);
 
@@ -374,10 +386,32 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
    * 
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
-  @Deprecated
   public void initPreferences() {
     // TODO: implement it
     initLogLevel();
+    initVersion();
+  }
+
+  private void initVersion() {
+    checkForUpdates.setSelected(PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,
+        true));
+    checkForNightlyUpdates.setSelected(PropertiesHelper.getBoolean(settings,
+        VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false));
+    checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
+
+    Properties sCopy = new Properties(settings);
+    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, "true");
+    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, "true");
+    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, "0");
+    String nightlyVersion = VersionInfo.getNewestVersion(sCopy, null);
+    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, "false");
+    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, "0");
+    String stableVersion = VersionInfo.getNewestVersion(sCopy, null);
+    String version = settings.getProperty(PropertiesHelper.SEMANTIC_VERSION);
+    stableLabel.setText(version.equals(stableVersion) ? (version + " = " + stableVersion) : (version + " \u2260 "
+        + stableVersion));
+    nightlyLabel.setText(version.equals(nightlyVersion) ? (version + " = " + nightlyVersion) : (version + " \u2260 "
+        + nightlyVersion));
   }
 
   private void initLogLevel() {
@@ -446,6 +480,11 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     settings.setProperty("map.creating.void", String.valueOf(createVoidRegions.isSelected()));
 
+    boolean nightlyChanged = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
+        false) != checkForNightlyUpdates.isSelected();
+    if (nightlyChanged) {
+      Install4J.setNightlyCheck(checkForNightlyUpdates.isSelected());
+    }
     settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String.valueOf(checkForUpdates
         .isSelected()));
     settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, String
@@ -528,6 +567,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
       if (!checkForUpdates.isSelected()) {
         checkForNightlyUpdates.setSelected(false);
       }
+    } else if (e.getActionCommand().equals(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK)) {
+      // nothing
     }
 
   }

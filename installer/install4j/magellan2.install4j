@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.4" transformSequenceNumber="9">
-  <directoryPresets config="../echeck/echeck.macos" />
-  <application name="Magellan 2" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" compression="9" lzmaCompression="true" commonExternalFiles="true" shortName="Magellan" publisher="Magellan Development Team" publisherWeb="https://magellan2.github.io" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="11">
+  <directoryPresets config="../../release" />
+  <application name="${compiler:magellan.name}" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" compression="9" lzmaCompression="true" commonExternalFiles="true" shortName="${compiler:magellan.shortname}" publisher="${compiler:magellan.developer}" publisherWeb="${compiler:magellan.website}" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="${compiler:java.version.min}">
     <languages>
       <principalLanguage id="en" customLocalizationFile="./magellan2.utf8" />
       <additionalLanguages>
@@ -16,59 +16,55 @@
       <variable name="version.sub" value="0" />
       <variable name="version.build" value="003" />
       <variable name="version.post" value="test" />
+      <variable name="magellan.name" value="Magellan 2" />
+      <variable name="magellan.shortname" value="Magellan" />
+      <variable name="magellan.developer" value="Magellan Development Team" />
+      <variable name="magellan.website" value="https://magellan2.github.io" />
+      <variable name="java.version.min" value="11" />
+      <variable name="java.version.max" value="99" />
+      <variable name="magellan.launcher" value="magellan_launcher" />
+      <variable name="magellan.update_url" value="https://github.com/magellan2/magellan2/releases/download/v2.1-latest/updates.xml" />
     </variables>
     <jreBundles jdkProviderId="AdoptOpenJDK" release="11/latest" />
   </application>
   <files missingFilesStrategy="error">
     <filesets>
       <fileset name="Skins" id="62" />
+      <fileset name="echeck" id="202" />
+      <fileset name="javadoc" id="205" />
     </filesets>
     <roots>
       <root id="63" fileset="62" />
+      <root id="203" fileset="202" />
+      <root id="206" fileset="205" />
     </roots>
     <mountPoints>
-      <mountPoint id="145" location="echeck" />
       <mountPoint id="25" />
       <mountPoint id="69" root="63" location="lib" />
+      <mountPoint id="209" root="203" location="echeck" />
+      <mountPoint id="208" root="206" location="doc" />
     </mountPoints>
     <entries>
-      <fileEntry mountPoint="145" file="../echeck/echeck.macos" fileMode="744" overrideFileMode="true" />
-      <fileEntry mountPoint="145" file="../echeck/echeck" fileMode="744" overrideFileMode="true" />
       <fileEntry mountPoint="25" file="../../release/help.sh" fileMode="744" overrideFileMode="true" />
       <fileEntry mountPoint="25" file="../../release/magellan.sh" fileMode="744" overrideFileMode="true" />
-      <dirEntry mountPoint="25" file="../../installer/echeck" entryMode="subdir" subDirectory="echeck" />
       <dirEntry mountPoint="25" file="../../release" subDirectory="release">
         <exclude>
           <entry location="lib/internal" />
           <entry location="lib/skins" />
+          <entry location="doc/api" />
         </exclude>
       </dirEntry>
       <dirEntry mountPoint="69" file="../../lib/skins" entryMode="subdir" subDirectory="skins" />
+      <fileEntry mountPoint="209" file="../echeck/echeck" fileMode="744" overrideFileMode="true" />
+      <fileEntry mountPoint="209" file="../echeck/echeck.macos" fileMode="744" overrideFileMode="true" />
+      <dirEntry mountPoint="209" file="../echeck" subDirectory="echeck" />
+      <dirEntry mountPoint="208" file="../../doc/api" entryMode="subdir" subDirectory="api" />
     </entries>
     <components>
       <component name="Magellan" id="47" changeable="false">
         <description>${i18n:components.magellan.description}</description>
         <include>
-          <entry location="New Folder" />
-          <entry location="magellan.bat" />
-          <entry location="magellan-help.jar" />
-          <entry location="help.sh" />
-          <entry location="magellan-plugins.jar" />
-          <entry location="COPYING.txt" />
-          <entry location="README.md" />
-          <entry location="plugins" />
-          <entry location="RELEASENOTES.txt" />
-          <entry location="UnInstall.bat" />
-          <entry location="help.bat" />
-          <entry location="magellan-library.jar" />
-          <entry location="lib" />
-          <entry location="etc" />
-          <entry location="UnInstall.sh" />
-          <entry location="magellan-client.jar" />
-          <entry location="magellan.sh" />
-          <entry location="LICENSE.txt" />
-          <entry location="CHANGELOG.txt" />
-          <entry location="magellan_launcher" fileType="launcher" />
+          <entry defaultFileset="true" />
         </include>
       </component>
       <component name="Additional Skins" id="34">
@@ -80,21 +76,21 @@
       <component name="ECheck" id="33">
         <description>${i18n:components.echeck.description}</description>
         <include>
-          <entry location="echeck" />
+          <entry filesetId="202" />
         </include>
       </component>
       <component name="Javadoc Documentation" id="26" selected="false">
         <description>${i18n:components.javadoc.description}</description>
         <include>
-          <entry location="doc" />
+          <entry filesetId="205" />
         </include>
       </component>
     </components>
   </files>
   <launchers>
-    <launcher name="magellan_launcher" id="27" menuName="Magellan">
-      <executable name="magellan_launcher" iconSet="true" redirectStdout="true" executableMode="gui">
-        <versionInfo include="true" fileDescription="Magellan Launcher" legalCopyright="Magellan Project Team ${compiler:sys.date}" internalName="magellan_v${compiler:sys.version}" productName="Magellan PbEM Client" />
+    <launcher name="magellan_launcher" id="27" menuName="${compiler:magellan.shortname}">
+      <executable name="${compiler:magellan.launcher}" iconSet="true" redirectStdout="true" executableMode="gui">
+        <versionInfo include="true" fileDescription="Magellan Launcher" legalCopyright="${compiler:magellan.developer} ${compiler:sys.date}" internalName="magellan_v${compiler:sys.version}" />
       </executable>
       <splashScreen width="400" height="200" bitmapFile="../../etc/images/about/magellan.gif">
         <text>
@@ -116,7 +112,7 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://github.com/magellan2/magellan2/releases/download/v2.1-latest/updates.xml">
+  <installerGui autoUpdateDescriptorUrl="${compiler:magellan.update_url}">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>
@@ -252,11 +248,31 @@ return console.askOkCancel(message, true);
             <serializedBean>
               <property name="title" type="string">${i18n:updater.CheckForUpdateTitle}</property>
             </serializedBean>
+            <actions>
+              <action id="297" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">UpdateScheduleRegistry.getUpdateSchedule().name()</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">updateSchedule</property>
+                </serializedBean>
+              </action>
+            </actions>
             <formComponents>
-              <formComponent id="201" beanClass="com.install4j.runtime.beans.formcomponents.UpdateScheduleSelectorComponent">
+              <formComponent id="201" beanClass="com.install4j.runtime.beans.formcomponents.UpdateScheduleSelectorComponent" externalParametrizationName="Update">
                 <serializedBean>
                   <property name="initialUpdateSchedule" type="enum" class="com.install4j.api.update.UpdateSchedule" value="WEEKLY" />
                   <property name="requestFocus" type="boolean" value="true" />
+                </serializedBean>
+              </formComponent>
+              <formComponent id="218" beanClass="com.install4j.runtime.beans.formcomponents.CheckboxComponent">
+                <serializedBean>
+                  <property name="checkboxText" type="string">${i18n:screens.update.nightly.title}</property>
+                  <property name="helpText" type="string">${i18n:screens.update.nightly.help}</property>
+                  <property name="variableName" type="string">updateMagellanNightly</property>
                 </serializedBean>
               </formComponent>
             </formComponents>
@@ -465,19 +481,111 @@ return console.askYesNo(message, true);
           <property name="useCustomIcon" type="boolean" value="true" />
           <property name="windowTitle" type="string">${i18n:updater.WindowTitle("${compiler:sys.fullName}")}</property>
         </serializedBean>
+        <variables>
+          <variable name="localUpdateUrl" value="${installer:updatesUrl?:${compiler:sys.updatesUrl}}" description="Our url, depending if you select nightly or stable build" valueClass="string" />
+        </variables>
         <startup>
           <screen id="147" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
-              <action id="190" beanClass="com.install4j.runtime.beans.actions.update.CheckForUpdateAction" actionElevationType="none" failureStrategy="quit">
+              <action id="291" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction" rollbackBarrierExitCode="0" />
+              <action id="304" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" rollbackBarrierExitCode="0">
                 <serializedBean>
-                  <property name="showError" type="boolean" value="false" />
-                  <property name="url" type="string">${installer:updatesUrl?:${compiler:sys.updatesUrl}}</property>
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">context.registerResponseFileVariable("updateChecked");
+context.registerResponseFileVariable("encodingTest");
+return true;</property>
+                    </object>
+                  </property>
+                </serializedBean>
+              </action>
+              <action id="219" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0" failureStrategy="askQuit">
+                <serializedBean>
+                  <property name="failIfNull" type="boolean" value="true" />
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">String url=context.getCompilerVariable("sys.updatesUrl");
+// Util.showMessage("sys.updatesUrl: "+url+", nightly "+context.getBooleanVariable("updateMagellanNightly"));
+if (context.getBooleanVariable("updateMagellanNightly")) {
+  url = url.replace("-stable", "-latest");
+} else {
+  url = url.replace("-latest", "-stable");
+}
+// Util.showMessage("sys.updatesUrl: "+url+", nightly "+context.getBooleanVariable("updateMagellanNightly"));
+return url;</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">localUpdateUrl</property>
+                </serializedBean>
+              </action>
+              <action id="190" beanClass="com.install4j.runtime.beans.actions.update.CheckForUpdateAction" actionElevationType="none">
+                <serializedBean>
+                  <property name="url" type="string">${installer:localUpdateUrl}</property>
                   <property name="variable" type="string">updateDescriptor</property>
+                </serializedBean>
+              </action>
+              <action id="286" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" commentSet="true" rollbackBarrierExitCode="0" failureStrategy="askQuit">
+                <serializedBean>
+                  <property name="failIfNull" type="boolean" value="true" />
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">// inverse!
+String url=context.getCompilerVariable("sys.updatesUrl");
+if (context.getBooleanVariable("updateMagellanNightly")) {
+  url = url.replace("-latest", "-stable");
+} else {
+  // url = url.replace("-stable", "-latest");
+}
+return url;</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">localUpdateUrl</property>
+                </serializedBean>
+                <condition>context.getVariable("updateDescriptor")==null</condition>
+              </action>
+              <action id="300" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" enabled="false" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">"Testing #how is $this, \\löng, ⩩long, !long, :long, =long, \nlong, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long, long long"</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">encoding=T est</property>
+                </serializedBean>
+              </action>
+              <action id="288" beanClass="com.install4j.runtime.beans.actions.update.CheckForUpdateAction" actionElevationType="none" failureStrategy="quit">
+                <serializedBean>
+                  <property name="url" type="string">${installer:localUpdateUrl}</property>
+                  <property name="variable" type="string">updateDescriptor</property>
+                </serializedBean>
+                <condition>context.getVariable("updateDescriptor")==null</condition>
+              </action>
+              <action id="299" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">Long.valueOf(System.currentTimeMillis())</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">updateChecked</property>
+                </serializedBean>
+              </action>
+              <action id="301" beanClass="com.install4j.runtime.beans.actions.misc.ModifyResponseFileAction" actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="askQuit">
+                <serializedBean>
+                  <property name="addVariables" type="boolean" value="true" />
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.contentDir}/.install4j/response.varfile</string>
+                    </object>
+                  </property>
                 </serializedBean>
               </action>
               <action name="Update descriptor entry" id="191" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" failureStrategy="quit">
                 <serializedBean>
-                  <property name="failIfNull" type="boolean" value="true" />
                   <property name="script">
                     <object class="com.install4j.api.beans.ScriptProperty">
                       <property name="value" type="string">((UpdateDescriptor)context.getVariable("updateDescriptor")).getPossibleUpdateEntry()</property>
@@ -797,7 +905,11 @@ if (context.isUnattended()) {
                               <property name="variableName" type="string">installerArguments</property>
                             </serializedBean>
                           </action>
-                          <action id="171" beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction" actionElevationType="none" />
+                          <action id="171" beanClass="com.install4j.runtime.beans.actions.update.ShutdownCallingLauncherAction" actionElevationType="none" failureStrategy="askQuit">
+                            <serializedBean>
+                              <property name="timeout" type="int" value="0" />
+                            </serializedBean>
+                          </action>
                           <action id="172" beanClass="com.install4j.runtime.beans.actions.misc.RunExecutableAction" actionElevationType="elevated" failureStrategy="quit" errorMessage="${i18n:updater.LaunchError}">
                             <serializedBean>
                               <property name="arguments" type="array" elementType="string" length="1">
@@ -1196,8 +1308,8 @@ return true;</property>
   <mediaSets>
     <windows name="Windows" id="28">
       <exclude>
-        <entry location="echeck/echeck" />
-        <entry location="echeck/echeck.macos" />
+        <entry rootId="203" location="echeck/echeck" />
+        <entry rootId="203" location="echeck/echeck.macos" />
       </exclude>
       <jreBundle installOnlyIfNecessary="true">
         <modules>
@@ -1207,8 +1319,8 @@ return true;</property>
     </windows>
     <macos name="macOS Single Bundle" id="29" launcherId="27">
       <exclude>
-        <entry location="echeck/echeck.exe" />
-        <entry location="echeck/echeck" />
+        <entry rootId="203" location="echeck/echeck.exe" />
+        <entry rootId="203" location="echeck/echeck" />
       </exclude>
       <jreBundle>
         <modules>
@@ -1218,10 +1330,10 @@ return true;</property>
     </macos>
     <unixInstaller name="Unix Installer" id="30">
       <exclude>
-        <entry location="echeck/echeck.exe" />
-        <entry location="echeck/echeck.macos" />
+        <entry rootId="203" location="echeck/echeck.exe" />
+        <entry rootId="203" location="echeck/echeck.macos" />
       </exclude>
-      <jreBundle installOnlyIfNecessary="true">
+      <jreBundle jreBundleSource="none" installOnlyIfNecessary="true">
         <modules>
           <module name="jdk.jshell" />
         </modules>
@@ -1309,7 +1421,12 @@ return true;</property>
     </unixInstaller>
     <windowsArchive name="Windows Archive" id="128" />
     <windows name="Fallback - Windows  zip" id="132" jreBitType="32" />
-    <macosArchive name="macOS Single Bundle Archive" id="139" mediaFileName="${compiler:sys.shortName}_installer_archive_${compiler:sys.platform}_v${compiler:sys.version}" launcherId="27" />
+    <macosArchive name="macOS Single Bundle Archive" id="139" mediaFileName="${compiler:sys.shortName}_installer_archive_${compiler:sys.platform}_v${compiler:sys.version}" launcherId="27">
+      <exclude>
+        <entry rootId="203" location="echeck/echeck.exe" />
+        <entry rootId="203" location="echeck/echeck" />
+      </exclude>
+    </macosArchive>
   </mediaSets>
   <buildIds buildAll="false">
     <mediaSet refId="28" />

@@ -25,8 +25,12 @@ package magellan.library.merge;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.LineNumberReader;
+import java.io.StringReader;
 import java.util.function.Function;
 
 import org.junit.Test;
@@ -374,6 +378,7 @@ public class GameDataMergerTest extends MagellanTestWithResources {
         (gd) -> gd.getRegion(zero),
         (r) -> r.setDescription("X"), (r) -> r.setDescription(null),
         (r) -> r.getDescription(), "X");
+
     testMerge(gd01, gd02,
         (gd) -> gd.getRegion(zero),
         (r) -> r.setDescription("X"), (r) -> r.setDescription(""),
@@ -404,4 +409,14 @@ public class GameDataMergerTest extends MagellanTestWithResources {
     assertEquals(expected, output.apply(getObject.apply(gdm)));
   }
 
+  @Test
+  public final void testString() throws Exception {
+    LineNumberReader r = new LineNumberReader(new StringReader("Hodor\nHodor"));
+    String l1 = r.readLine();
+    String l2 = r.readLine();
+    assertEquals(l1, l2);
+    assertNotSame(l1, l2);
+    assertSame(magellan.library.utils.StringFactory.getFactory().intern(l1),
+        magellan.library.utils.StringFactory.getFactory().intern(l2));
+  }
 }

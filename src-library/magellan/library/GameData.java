@@ -1346,9 +1346,9 @@ public abstract class GameData implements Cloneable, Addeable {
     for (Region r : data.getRegions()) {
       if (r.getRegionType() == null) {
         r.setType(RegionType.unknown);
-        if (r.getVisibility().equals(Visibility.UNIT) && r.getDescription() == null) {
-          r.setDescription("");
-        }
+      }
+      if (r.getVisibility().equals(Visibility.UNIT) && r.getDescription() == null) {
+        r.setDescription("");
       }
     }
   }

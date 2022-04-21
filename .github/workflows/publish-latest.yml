@@ -66,7 +66,7 @@ jobs:
         fi
 
         # most recent tag has older build number
-        LASTTAG=$(git tag -l v* --sort='-committerdate' | head -1)
+        LASTTAG=$(git tag -l "v*" --sort='-committerdate' | head -1)
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
           if (( BUILD == OLDBUILD )); then
@@ -89,7 +89,7 @@ jobs:
         fi
 
     - name: Build with ant
-      env: 
+      env:
         INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
         ant -noinput -buildfile build.xml distribute_install4j
@@ -167,4 +167,3 @@ jobs:
               "tag" : "${{ steps.get-version.outputs.TAG }}",
               "version" : "${{ steps.get-version.outputs.VERSION }}",
               "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
-

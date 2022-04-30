@@ -188,6 +188,10 @@ public class NullContainer implements UnitContainer {
     return null;
   }
 
+  public int unitsCount() {
+    return 0;
+  }
+
   public Map<? extends ID, Unit> getUnits() {
     return null;
   }
@@ -206,6 +210,10 @@ public class NullContainer implements UnitContainer {
 
   public Collection<Unit> modifiedUnits() {
     return null;
+  }
+
+  public int modifiedUnitsCount() {
+    return 0;
   }
 
   public Unit getModifiedUnit(ID key) {
@@ -277,4 +285,5 @@ public class NullContainer implements UnitContainer {
   public String toString() {
     return "NullContainer";
   }
+
 }

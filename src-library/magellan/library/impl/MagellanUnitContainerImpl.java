@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import magellan.library.Building;
 import magellan.library.EntityID;
@@ -234,6 +235,21 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     return unitCollection;
   }
 
+  public int unitsCount() {
+    if (units == null)
+      return 0;
+
+    if (unitCollection == null) {
+      if (units != null && units.values() != null) {
+        unitCollection = Collections.unmodifiableCollection(units.values());
+      } else {
+        unitCollection = Collections.emptyList();
+      }
+    }
+
+    return unitCollection.stream().collect(Collectors.summingInt(Unit::getPersons));
+  }
+
   /**
    * Retrieve a unit in this container by id.
    */
@@ -293,6 +309,21 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return Collections.unmodifiableCollection(units());
   }
 
+  public int modifiedUnitsCount() {
+    Collection<Unit> modifiedUnitCollection = null;
+    if (hasCache() && (getCache().modifiedContainerUnits != null)) {
+      if (getCache().modifiedContainerUnits.values() != null) {
+        modifiedUnitCollection = Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
+      } else {
+        modifiedUnitCollection = Collections.emptyList();
+      }
+    } else {
+      modifiedUnitCollection = Collections.unmodifiableCollection(units());
+    }
+
+    return modifiedUnitCollection.stream().collect(Collectors.summingInt(Unit::getPersons));
+  }
+
   /**
    * @see magellan.library.impl.MagellanRelatedImpl#getRelations()
    */
@@ -327,6 +358,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     return getCache().modifiedContainerUnits.get(key);
   }
 
+  @SuppressWarnings("unused")
   private void refreshModifiedUnits() {
     Cache cache1 = getCache();
 

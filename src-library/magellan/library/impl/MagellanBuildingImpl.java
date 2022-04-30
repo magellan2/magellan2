@@ -166,10 +166,10 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
       myName = getBuildingType().toString() + " " + getID();
     }
     if (trueBuildingType == null)
-      return getName() + " (" + id + "), " + getType() + " (" + getSize() + ")";
+      return getName() + " (" + id + "), " + getType() + ": " + modifiedUnitsCount() + "/" + getSize();
     else
-      return trueBuildingType + ": " + getName() + " (" + id + "), " + getType() + " (" + getSize()
-          + ")";
+      return trueBuildingType + ": " + getName() + " (" + id + "), " + getType() + ": " + modifiedUnitsCount()
+          + "/" + getSize();
   }
 
   /**

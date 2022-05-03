@@ -309,6 +309,42 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private Macifier macifier;
 
   /**
+   * Dummy implementation, for testing.
+   */
+  protected Client() {
+    Client.INSTANCE = this;
+    Client.binDirectory = MagellanFinder.findMagellanDirectory();
+    Client.resourceDirectory = new File(".");
+    Client.settingsDirectory = Client.resourceDirectory;
+
+    // get new dispatcher
+    EventDispatcher dispatcher = new EventDispatcher();
+
+    Properties settings = initNewSettings();
+
+    context = new MagellanContext(this);
+    context.setEventDispatcher(dispatcher);
+    context.setProperties(settings);
+    context.init();
+
+    // context.setGameData(gd);
+
+    // List<Container> topLevelComponents = new LinkedList<Container>();
+    // Map<String, Component> components = initComponents(topLevelComponents);
+
+    // desktop = MagellanDesktop.getInstance();
+    // desktop.init(this, context, settings, components, Client.getSettingsDirectory());
+
+    // setContentPane(desktop);
+
+    // do it here because we need the desktop menu
+    // setJMenuBar(createMenuBar(topLevelComponents));
+
+    // disable log messages that are only good for console mode
+    // NullUserInterface.setLogLevel(Logger.WARN);
+  }
+
+  /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
    * <p>
    * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually

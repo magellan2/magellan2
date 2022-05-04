@@ -1,3 +1,8 @@
+2022-05-10 / Build 782 - stm (stm2@users.sourceforge.net)
+    * fixed a bug were Magellan froze while zooming out of map with ARR active
+    * implemented server upload (experimental)
+    * show building space in region tree (by gvd)
+
 2022-04-06 / Build 777 - stm (stm2@users.sourceforge.net)
     * Preferences and other dialog polishing
     * Removed SIEGE command

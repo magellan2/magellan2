@@ -217,9 +217,9 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_OUTPUT_FILE = "OrderWriter.outputFile";
 
-  public static String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
+  public static final String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
 
-  public static String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
+  public static final String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
 
   public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";
 

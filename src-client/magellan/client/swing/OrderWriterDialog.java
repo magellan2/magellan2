@@ -85,6 +85,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
@@ -185,6 +187,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private static final int CLIPBOARD_PANEL = 1;
   private static final int EMAIL_PANEL = 2;
   private static final int SERVER_PANEL = 3;
+  private static final int NUM_PANELS = 4;
 
   protected static final int DEFAULT_MAILSERVER_PORT = 25;
   protected static final int DEFAULT_FIXED_WIDTH = 76;
@@ -192,7 +195,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   protected static final String DEFAULT_EMAIL = "eressea-server@eressea.kn-bremen.de";
   protected static final String DEFAULT_SUBJECT = "Eressea Befehle";
 
-  protected static final String DEFAULT_SERVER_ADDRESS = "https://eressea.kn-bremen.de/upload/game-2";
+  protected static final String DEFAULT_SERVER_ADDRESS =
+      "https://www.eressea.kn-bremen.de/eressea/orders-php/upload.php";
 
   protected static Color errorColor = new Color(255, 125, 125);
 
@@ -908,6 +912,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         "orderwriterdialog.border.output2server")));
 
     pnlFile.add(cmbServerURLs, BorderLayout.CENTER);
+    addServerURL(DEFAULT_SERVER_ADDRESS);
     cmbServerURLs.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
         if ("comboBoxEdited".equals(arg0.getActionCommand())) {
@@ -1449,6 +1454,25 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       updateAutoFileName();
     }
 
+    if (type == SERVER_PANEL) {
+      List<String> files = PropertiesHelper.getList(localSettings, PropertiesHelper.ORDERWRITER_SERVER_URL + suffix);
+      while (cmbServerURLs.getItemCount() > 0) {
+        cmbServerURLs.removeItemAt(0);
+      }
+      boolean hasDefault = false;
+      if (files != null) {
+        for (String file : files) {
+          if (!file.isEmpty()) {
+            hasDefault |= file.equals(DEFAULT_SERVER_ADDRESS);
+            cmbServerURLs.addItem(file);
+          }
+        }
+      }
+      if (!hasDefault) {
+        addServerURL(DEFAULT_SERVER_ADDRESS);
+      }
+    }
+
     setGroups(faction);
   }
 
@@ -1526,7 +1550,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void storeSettings() {
-    for (int type = 0; type < 3; ++type) {
+    for (int type = 0; type < NUM_PANELS; ++type) {
       Faction f = getFaction();
       if (f != null) {
         storeSettings(localSettings, f, type);
@@ -1639,7 +1663,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
 
     if (type == SERVER_PANEL) {
-      PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_SERVER_URL, getNewOutputFiles(cmbServerURLs));
+      PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_SERVER_URL + suffix, getNewOutputFiles(
+          cmbServerURLs));
     }
   }
 
@@ -1959,37 +1984,53 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void sendToServerImpl(URI uri, Faction faction) {
+    try {
+      File orderFile = File.createTempFile("orders", null);
 
-    String contentType = "text/plain";
-    String charset = "" + Encoding.DEFAULT;
-    if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.ISOsaveOrders", false)) {
-      charset = "" + Encoding.ISO;
-    } else if (PropertiesHelper.getBoolean(localSettings, "TextEncoding.UTF8saveOrders", true)) {
-      charset = "" + Encoding.UTF8;
-    } else {
-      charset = "" + System.getProperty("file.encoding");
-    }
+      FileWriter cmds = new FileWriter(orderFile);
 
-    StringWriter cmds = new StringWriter();
-    final Object[] parameters = write(cmds, false, false, true, faction, SERVER_PANEL);
+      final Object[] parameters = write(cmds, false, false, true, faction, SERVER_PANEL);
 
-    HTTPClient client = new HTTPClient(localSettings);
-    OrderWriterDialog.log.info("sending...");
-    HTTPResult result = client.put(uri, cmds.toString(), contentType, charset, null);
+      HTTPClient client = new HTTPClient(localSettings);
+      OrderWriterDialog.log.info("sending...");
+      client.setAuthentication(faction.getID().toString(), faction.getPassword(), uri.getHost(), -1, null, null);
 
-    if (result == null || result.getStatus() != 200) {
-      if (result == null) {
-        log.warn("No response from server");
+      Part[] parts = {
+          new FilePart("input", orderFile)
+      };
+      HTTPResult result = client.post(uri, parts);
+
+      int status = result == null ? -1 : result.getStatus();
+
+      if (status == 401) {
+        JOptionPane.showMessageDialog(ancestor,
+            Resources.get("orderwriterdialog.msg.passworderror.text"),
+            Resources.get("orderwriterdialog.msg.servererror.title"),
+            JOptionPane.ERROR_MESSAGE);
+      } else if (status < 200 || status >= 300 || result == null) {
+        if (status < 0 || result == null) {
+          log.warn("No response from server");
+        } else {
+          log.warn("Response from server: " + status);
+          log.warn("Response from server: " + result.getResultAsString());
+        }
+        JOptionPane.showMessageDialog(ancestor,
+            Resources.get("orderwriterdialog.msg.servererror.text", status),
+            Resources.get("orderwriterdialog.msg.servererror.title"), JOptionPane.ERROR_MESSAGE);
       } else {
-        log.warn("Response from server: " + result.getStatus());
-        log.warn("Response from server: " + result.getResultAsString());
+        String answer = result.getResultAsString();
+
+        JOptionPane.showMessageDialog(ancestor, (new java.text.MessageFormat(Resources.get(
+            "orderwriterdialog.msg.writtenunits.text.server"))).format(
+                new Object[] { parameters[0], parameters[1], parameters[2], answer }),
+            Resources.get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
       }
-      JOptionPane.showMessageDialog(ancestor, Resources.get("orderwriterdialog.msg.servererror.text"), Resources.get(
-          "orderwriterdialog.msg.servererror.title"), JOptionPane.ERROR_MESSAGE);
-    } else {
-      JOptionPane.showMessageDialog(ancestor, (new java.text.MessageFormat(Resources.get(
-          "orderwriterdialog.msg.writtenunits.text"))).format(parameters), Resources.get(
-              "orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (Exception e) {
+      log.warn(e);
+      JOptionPane.showMessageDialog(ancestor,
+          Resources.get("orderwriterdialog.msg.servererror.text", -2),
+          Resources.get("orderwriterdialog.msg.servererror.title"), JOptionPane.ERROR_MESSAGE);
     }
 
   }

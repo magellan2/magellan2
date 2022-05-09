@@ -73,7 +73,7 @@ public class MagellanUnitContainerImplTest extends MagellanTestWithResources {
     building.addUnit(unit2);
     building.addUnit(unit3);
     building.addUnit(unit4);
-    assertEquals(10, building.unitsCount());
+    assertEquals(10, building.personCount());
   }
 
   /**
@@ -86,12 +86,12 @@ public class MagellanUnitContainerImplTest extends MagellanTestWithResources {
     building.addUnit(unit2);
     building.addUnit(unit3);
     building.addUnit(unit4);
-    assertEquals(10, building.modifiedUnitsCount());
+    assertEquals(10, building.modifiedPersonCount());
     MagellanUnitImpl unit5 = new MagellanUnitImpl(UnitID.createUnitID(45, 36), data);
     unit5.setPersons(5);
     building.enter(unit5);
-    assertEquals(15, building.modifiedUnitsCount());
-    assertEquals(10, building.unitsCount());
+    assertEquals(15, building.modifiedPersonCount());
+    assertEquals(10, building.personCount());
   }
 
 }

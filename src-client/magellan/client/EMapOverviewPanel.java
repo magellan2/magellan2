@@ -2181,6 +2181,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       for (Ship tempShip : parent.getTempShips()) {
         tempShipCreated(parent, tempShip);
       }
+      TreeNode n = shipNodes.get(parent.getID());
+      if (n != null) {
+        treeModel.nodeChanged(n);
+      }
+    }
+    for (Building building : u.getRegion().buildings()) {
+      TreeNode n = buildingNodes.get(building.getID());
+      if (n != null) {
+        treeModel.nodeChanged(n);
+      }
     }
     updateTree(this);
 

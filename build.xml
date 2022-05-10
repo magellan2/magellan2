@@ -432,6 +432,7 @@
 		</junit>
 		<junit fork="yes"
 		       failureProperty="test.failure"
+		       haltonfailure="true"
 		       printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
 				<!-- E3CommandParser is not part of the release -->

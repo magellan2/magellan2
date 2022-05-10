@@ -39,10 +39,16 @@ jobs:
            cat $fails
            exit 1
          fi
+         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
+         if [ -n "$skips" ]; then
+           echo "Skipped tests: "
+           echo $skips
+         fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
 
     - name: Sanity check
+      id: sanity_check
       run: |
         # env
         BUILD=${{ steps.get-version.outputs.BUILD }}

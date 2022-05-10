@@ -26,9 +26,11 @@ package magellan.client.swing.map;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,6 +50,9 @@ public class AdvancedTextCellRendererTest {
 
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
+    // run only when not in headless mode because of Client dependency
+    System.setProperty("java.awt.headless", "true");
+    Assume.assumeFalse(GraphicsEnvironment.isHeadless());
     cg = new CellGeometry() {
 
       @Override

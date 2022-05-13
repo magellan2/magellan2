@@ -43,6 +43,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
@@ -1984,54 +1985,59 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void sendToServerImpl(URI uri, Faction faction) {
-    try {
-      File orderFile = File.createTempFile("orders", null);
+    ProgressBarUI progress = new ProgressBarUI(this);
+    progress.setTitle(Resources.get("orderwriterdialog.btn.server.caption"));
+    progress.show();
 
-      FileWriter cmds = new FileWriter(orderFile);
+    new Thread(() -> {
+      try {
+        progress.setProgress("creating orders", -1);
+        File orderFile = File.createTempFile("orders", null);
 
-      final Object[] parameters = write(cmds, false, false, true, faction, SERVER_PANEL);
+        FileWriter cmds = new FileWriter(orderFile, Charset.forName("UTF-8"));
 
-      HTTPClient client = new HTTPClient(localSettings);
-      OrderWriterDialog.log.info("sending...");
-      client.setAuthentication(faction.getID().toString(), faction.getPassword(), uri.getHost(), -1, null, null);
+        final Object[] parameters = write(cmds, false, false, true, faction, SERVER_PANEL);
 
-      Part[] parts = {
-          new FilePart("input", orderFile)
-      };
-      HTTPResult result = client.post(uri, parts);
+        progress.setProgress("Sending ...", -1);
+        HTTPClient client = new HTTPClient(localSettings);
+        OrderWriterDialog.log.info("sending...");
+        client.setAuthentication(faction.getID().toString(), faction.getPassword(), uri.getHost(), -1, null, null);
 
-      int status = result == null ? -1 : result.getStatus();
+        Part[] parts = {
+            new FilePart("input", orderFile)
+        };
+        HTTPResult result = client.post(uri, parts);
 
-      if (status == 401) {
-        JOptionPane.showMessageDialog(ancestor,
-            Resources.get("orderwriterdialog.msg.passworderror.text"),
-            Resources.get("orderwriterdialog.msg.servererror.title"),
-            JOptionPane.ERROR_MESSAGE);
-      } else if (status < 200 || status >= 300 || result == null) {
-        if (status < 0 || result == null) {
-          log.warn("No response from server");
+        int status = result == null ? -1 : result.getStatus();
+
+        if (status == 401) {
+          log.warn("Authentication failed");
+          progress.showMessageDialog(Resources.get("orderwriterdialog.msg.passworderror.text"));
+        } else if (status < 200 || status >= 300 || result == null) {
+          if (status < 0 || result == null) {
+            log.warn("No response from server");
+          } else {
+            log.warn("Response from server: " + status);
+            log.warn("Response from server: " + result.getResultAsString());
+          }
+          progress.showMessageDialog(Resources.get("orderwriterdialog.msg.servererror.text", status));
         } else {
-          log.warn("Response from server: " + status);
-          log.warn("Response from server: " + result.getResultAsString());
+          String answer = result.getResultAsString();
+          log.info(Resources.get("orderwriterdialog.msg.writtenunits.text.server",
+              parameters[0], parameters[1], parameters[2], answer));
+          progress.showMessageDialog(Resources.get("orderwriterdialog.msg.writtenunits.text.server",
+              parameters[0], parameters[1], parameters[2], answer));
         }
+
+      } catch (Exception e) {
+        log.warn(e);
         JOptionPane.showMessageDialog(ancestor,
-            Resources.get("orderwriterdialog.msg.servererror.text", status),
+            Resources.get("orderwriterdialog.msg.servererror.text", -2),
             Resources.get("orderwriterdialog.msg.servererror.title"), JOptionPane.ERROR_MESSAGE);
-      } else {
-        String answer = result.getResultAsString();
-
-        JOptionPane.showMessageDialog(ancestor, (new java.text.MessageFormat(Resources.get(
-            "orderwriterdialog.msg.writtenunits.text.server"))).format(
-                new Object[] { parameters[0], parameters[1], parameters[2], answer }),
-            Resources.get("orderwriterdialog.msg.writtenunits.title"), JOptionPane.INFORMATION_MESSAGE);
+      } finally {
+        progress.ready();
       }
-
-    } catch (Exception e) {
-      log.warn(e);
-      JOptionPane.showMessageDialog(ancestor,
-          Resources.get("orderwriterdialog.msg.servererror.text", -2),
-          Resources.get("orderwriterdialog.msg.servererror.title"), JOptionPane.ERROR_MESSAGE);
-    }
+    }).start();
 
   }
 

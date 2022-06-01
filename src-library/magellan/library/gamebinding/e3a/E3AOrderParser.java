@@ -62,6 +62,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     // only TARNE PARTEI!
     removeCommand(EresseaConstants.OC_HIDE);
     addCheckedCommand(EresseaConstants.OC_HIDE, new TarneReader(this));
+    // FIXME whatabout steal, sell, spy, research, ...?
   }
 
   @Override

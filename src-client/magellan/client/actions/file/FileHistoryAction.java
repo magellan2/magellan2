@@ -74,7 +74,7 @@ public class FileHistoryAction extends AbstractAction {
     try {
       history.loadFile(file);
     } catch (Throwable t) {
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t);
       errorWindow.setVisible(true);
     }
   }

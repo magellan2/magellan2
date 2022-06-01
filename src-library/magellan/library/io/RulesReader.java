@@ -77,12 +77,12 @@ public class RulesReader {
 
     RulesReader.log.fine("loading rules for \"" + name + "\" (ending: " + ending + ")");
 
-    File ruleFile = new File(Resources.getResourceDirectory(), "etc/rules/" + name.toLowerCase() + ending);
+    File ruleFile = new File(Resources.getResourceDirectory(), "etc/rules/" + name + ending);
     // workaround for working with eclipse...
     if (!ruleFile.exists()) {
       RulesReader.log.warn("Rule file '" + ruleFile.getAbsolutePath()
           + "' could not be found. Switching to local.");
-      ruleFile = new File("etc/rules/" + name.toLowerCase() + ending);
+      ruleFile = new File("etc/rules/" + name + ending);
 
       if (!ruleFile.exists()) {
         RulesReader.log.error("Cannot find rule files in '" + ruleFile.getAbsolutePath()

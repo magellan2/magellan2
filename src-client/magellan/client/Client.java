@@ -10,9 +10,11 @@ package magellan.client;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
@@ -129,6 +131,7 @@ import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.extern.MainMenuProvider;
 import magellan.client.preferences.ClientPreferences;
 import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
+import magellan.client.preferences.Install4J;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
@@ -185,7 +188,6 @@ import magellan.library.tasks.GameDataInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.InspectorInterceptor;
 import magellan.library.tasks.Problem;
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
@@ -307,6 +309,42 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private Macifier macifier;
 
   /**
+   * Dummy implementation, for testing.
+   */
+  protected Client() {
+    Client.INSTANCE = this;
+    Client.binDirectory = MagellanFinder.findMagellanDirectory();
+    Client.resourceDirectory = new File(".");
+    Client.settingsDirectory = Client.resourceDirectory;
+
+    // get new dispatcher
+    EventDispatcher dispatcher = new EventDispatcher();
+
+    Properties settings = initNewSettings();
+
+    context = new MagellanContext(this);
+    context.setEventDispatcher(dispatcher);
+    context.setProperties(settings);
+    context.init();
+
+    // context.setGameData(gd);
+
+    // List<Container> topLevelComponents = new LinkedList<Container>();
+    // Map<String, Component> components = initComponents(topLevelComponents);
+
+    // desktop = MagellanDesktop.getInstance();
+    // desktop.init(this, context, settings, components, Client.getSettingsDirectory());
+
+    // setContentPane(desktop);
+
+    // do it here because we need the desktop menu
+    // setJMenuBar(createMenuBar(topLevelComponents));
+
+    // disable log messages that are only good for console mode
+    // NullUserInterface.setLogLevel(Logger.WARN);
+  }
+
+  /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
    * <p>
    * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
@@ -335,7 +373,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param binDir The directory where magellan files are situated
    * @param resourceDir The directory where magellan configuration files are situated
    * @param settingsDir The directory where the settings are situated
-   * @param ask show the ask password dialog, used for testing only
+   * @param ask show the ask locale dialog, used for testing only
    */
   @SuppressWarnings("deprecation")
   protected Client(GameData gd, File binDir, File resourceDir, File settingsDir, boolean ask,
@@ -1265,38 +1303,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            try {
-              String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),
-                  Client.startWindow);
-              String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
-              if (!Utils.isEmpty(newestVersion)) {
-                Client.log.info("Newest Version on server: " + newestVersion);
-                Client.log.info("Current Version: " + currentVersion);
-                if (VersionInfo.isNewer(newestVersion, currentVersion)) {
-                  String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-                      .getGUILocale().getLanguage());
-                  if (url == null) {
-                    url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
-                  }
-
-                  JOptionPane.showMessageDialog(Client.startWindow,
-                      new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
-                      "",
-                      JOptionPane.INFORMATION_MESSAGE);
-                }
-              }
-
-              String lastVersion = c.getProperties().getProperty("Client.LastVersion");
-              if (lastVersion == null || !lastVersion.equals(currentVersion)) {
-                UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
-                dlg.setVisible(true);
-                if (!dlg.getResult()) {
-                  c.quit(false);
-                }
-              }
-            } catch (Throwable e) {
-              log.error("Could not check version.", e);
-            }
+            versionCheck(c, tBinDir, tResourceDir);
 
             c.macify();
 
@@ -1351,6 +1358,52 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       });
     } catch (Throwable exc) { // any fatal error
       bailOut(exc);
+    }
+  }
+
+  private static void versionCheck(Client c, File tBinDir, File tResourceDir) {
+    try {
+      Install4J.init(tBinDir);
+      boolean silent = false;
+      Boolean nightly = Install4J.isNightlyCheck();
+      if (nightly != null) {
+        log.fine("updated nightly check to " + nightly);
+        PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
+      }
+      if (Install4J.lastUpdateCheck() != null && Install4J.lastUpdateCheck() - System.currentTimeMillis() < 3600) {
+        silent = true;
+      }
+
+      String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), silent ? null : Client.startWindow);
+      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
+      if (!Utils.isEmpty(newestVersion)) {
+        Client.log.info("Newest Version on server: " + newestVersion);
+        Client.log.info("Current Version: " + currentVersion);
+        if (!silent && VersionInfo.isNewer(newestVersion, currentVersion)) {
+          String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+              .getGUILocale().getLanguage());
+          if (url == null) {
+            url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+          }
+
+          JOptionPane.showMessageDialog(Client.startWindow,
+              new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
+              "",
+              JOptionPane.INFORMATION_MESSAGE);
+        }
+      }
+
+      String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+      if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+        UpdateDialog dlg = new UpdateDialog(startWindow, lastVersion, currentVersion);
+        dlg.setModalityType(ModalityType.TOOLKIT_MODAL);
+        dlg.setVisible(true);
+        if (!dlg.getResult()) {
+          c.quit(false);
+        }
+      }
+    } catch (Throwable e) {
+      log.error("Could not check version.", e);
     }
   }
 
@@ -2676,15 +2729,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void saveExtendedState() {
     if (getProperties() == null)
       return;
-    getProperties().setProperty("Client.extendedState", String.valueOf(JVMUtilities
-        .getExtendedState(this)));
+    getProperties().setProperty("Client.extendedState", String.valueOf(getExtendedState()));
   }
 
   private void resetExtendedState() {
     int state = PropertiesHelper.getInteger(getProperties(), "Client.extendedState", -1);
 
     if (state != -1) {
-      JVMUtilities.setExtendedState(this, state);
+      if (!getToolkit().isFrameStateSupported(state)) {
+        log.warn("unsupported state " + state);
+        getProperties().setProperty("Client.extendedState", String.valueOf(Frame.NORMAL));
+        state = Frame.NORMAL;
+      } else {
+        setExtendedState(state);
+      }
     }
 
   }
@@ -2948,7 +3006,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         plugIn.init(this, properties);
         plugIns.add(plugIn);
       } catch (Throwable t) {
-        ErrorWindow errorWindow = new ErrorWindow(this, t.getMessage(), "", t);
+        ErrorWindow errorWindow = new ErrorWindow(this, t);
         errorWindow.setVisible(true);
       }
     }

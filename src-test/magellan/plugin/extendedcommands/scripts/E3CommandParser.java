@@ -245,7 +245,7 @@ class Warning {
 
   public boolean contains(int flag) {
     for (Flag f : flags)
-      if (f.value == flag)
+      if ((f.value & flag) != 0)
         return true;
     return false;
   }
@@ -462,12 +462,25 @@ class E3CommandParser {
   /** If this is true, some more hints will be added to the orders if expected units are missing */
   public static boolean ADD_NOT_THERE_INFO = false;
 
+  /** Set to something in order to use TeachPlugin */
   public static String TEACH_PREFIX = null;
-  public static String LEARN_HELMSMAN = null;
+  /** The skills learned by helmspeople, see {@link #commandHelmsman(String[])}. */
+  public static String LEARN_HELMSMAN = "$tm$ 100.0 Segeln 25 12 Schiffbau 8 4 Unterhaltung 6 5";
+
+  /**
+   * soldier parameters for helmspeople, see {@link #commandHelmsman(String[])} and {@link #commandSoldier(String[])}
+   */
   public static String SOLDIER_HELMSMAN = "best best null null";
-  public static String LEARN_CREW = null;
+  /** The skills learned by crew, see {@link #commandCrew(String[])}. */
+  public static String LEARN_CREW =
+      "$tm$ 100.0 Segeln 25 12 Schiffbau 10 4 Unterhaltung 9 5 Reiten 4 2 Holzfällen 4 2 Pferdedressur 4 2";
+  /** soldier parameters for crew, see {@link #commandCrew(String[])} and {@link #commandSoldier(String[])} */
   public static String SOLDIER_CREW = "best best null null";
+  /** the learn level set by commands like soldier */
   public static final int DEFAULT_LEARNLEVEL = 20;
+
+  /** preferred level for quartermasters */
+  public static final int QM_TACTICS = 5;
 
   /**
    * If this is &gt; 0, all units are suppliers, otherwise suppliers must be set with Versorge (the
@@ -1302,14 +1315,18 @@ class E3CommandParser {
       if (part.equals(PCOMMENTOrder) || part.equals(COMMENTOrder)) {
         if (tokenizer.hasMoreTokens()) {
           part = tokenizer.nextToken();
-          if (part.equals(scriptMarker)) {
-            List<String> result = new ArrayList<String>();
-            while (tokenizer.hasMoreTokens()) {
-              result.add(tokenizer.nextToken());
+          if (part.startsWith(scriptMarker)) {
+            if (!part.equals(scriptMarker)) {
+              addNewWarning("lines starting with '" + part + "' not allowed");
+            } else {
+              List<String> result = new ArrayList<String>();
+              while (tokenizer.hasMoreTokens()) {
+                result.add(tokenizer.nextToken());
+              }
+              if (result.size() == 0)
+                return null;
+              return result.toArray(new String[] {});
             }
-            if (result.size() == 0)
-              return null;
-            return result.toArray(new String[] {});
           }
         }
       }
@@ -2263,11 +2280,13 @@ class E3CommandParser {
   }
 
   /**
-   * <code>// $cript Ernaehre [amount]</code> -- Earn as much money as possible (or the specified
+   * <code>// $cript Ernaehre [amount] [nie]</code> -- Earn as much money as possible (or the specified
    * amount), Versorge {@value #DEFAULT_EARN_PRIORITY}
    */
   protected void commandEarn(String[] tokens) {
     int amount = -1;
+    Warning warning = new Warning(true);
+    tokens = warning.parse(tokens);
     if (tokens.length > 1) {
       try {
         amount = Integer.parseInt(tokens[1]);
@@ -2314,22 +2333,30 @@ class E3CommandParser {
         addNewWarning("Bauern verhungern");
       }
       if (tax2 * 2 > tax * 3) {
-        addNewWarning("Treiber unterbeschäftigt " + tax2 + ">" + tax);
+        if (warning.contains(Warning.W_AMOUNT)) {
+          addNewWarning("Treiber unterbeschäftigt " + tax2 + ">" + tax);
+        }
         entertain = currentRegion.maxEntertain();
       }
     } else if (entertain > 0) {
       addNewOrder(ENTERTAINOrder + " " + (amount > 0 ? amount : "") + COMMENTOrder + " "
           + entertain + ">" + tax, true);
       if (amount > currentRegion.maxEntertain() * 1.1) {
-        addNewWarning("zu viele Arbeiter");
+        if (warning.contains(Warning.W_NEVER)) {
+          addNewWarning("zu viele Arbeiter");
+        }
       } else if (entertain2 * 2 > entertain * 3) {
-        addNewWarning("Unterhalter unterbeschäftigt " + entertain2 + ">" + entertain);
+        if (warning.contains(Warning.W_AMOUNT)) {
+          addNewWarning("Unterhalter unterbeschäftigt " + entertain2 + ">" + entertain);
+        }
         entertain = currentRegion.maxEntertain();
       }
     } else {
       addNewOrder(WORKOrder + " " + (amount > 0 ? amount : ""), true);
       if ((maxWorkers - workers) * 10 < Math.min(amount, currentUnit.getModifiedPersons() * 10)) {
-        addNewWarning("zu viele Arbeiter");
+        if (warning.contains(Warning.W_AMOUNT)) {
+          addNewWarning("zu viele Arbeiter");
+        }
       }
     }
     setConfirm(currentUnit, true);
@@ -2656,14 +2683,15 @@ class E3CommandParser {
    * amount of goods. If other goods are detected, do not confirm orders.
    */
   protected void commandQuartermaster(String[] tokens) {
-    learn(currentUnit, Collections.singleton(new SkillSpec(world.getRules().getSkillType(
-        EresseaConstants.S_WAHRNEHMUNG), 10, 99)));
+    int silver = 0;
     try {
       for (Item item : currentUnit.getItems()) {
         boolean okay = false;
-        if (item.getItemType().getID().equals(EresseaConstants.I_USILVER)
-            && item.getAmount() < 1000) {
-          okay = true;
+        if (item.getItemType().getID().equals(EresseaConstants.I_USILVER)) {
+          silver = item.getAmount();
+          if (silver < 2000) {
+            okay = true;
+          }
         }
         for (int i = 1; !okay && i < tokens.length - 1; i += 2) {
           if (item.getName().equals(tokens[i + 1]) || item.getOrderName().equals(tokens[i + 1])) {
@@ -2678,6 +2706,19 @@ class E3CommandParser {
     } catch (NumberFormatException e) {
       addNewError("ungültige Zahl ");
     }
+
+    ArrayList<SkillSpec> qskills = new ArrayList<SkillSpec>(2);
+    qskills.add(new SkillSpec(world.getRules().getSkillType(EresseaConstants.S_WAHRNEHMUNG), 10, 99));
+    SkillType tactics = world.getRules().getSkillType(EresseaConstants.S_TAKTIK);
+    if (tactics != null) {
+      Skill utactics = currentUnit.getSkill(tactics);
+      if ((utactics == null || utactics.getLevel() < QM_TACTICS) && silver > tactics.getCost(utactics == null ? 0
+          : utactics.getLevel())) {
+        qskills.add(new SkillSpec(tactics, QM_TACTICS * 2, QM_TACTICS));
+      }
+    }
+    learn(currentUnit, qskills);
+
     setConfirm(currentUnit, true);
   }
 
@@ -3329,6 +3370,10 @@ class E3CommandParser {
   protected Need addNeed(String item, Unit unit, int minAmount, int maxAmount, int priority,
       Warning w) {
     Need result;
+    if (world.getRules().getItemType(StringID.create(item)) == null && w.contains(~0)) {
+      addNewWarning("unknown item " + item);
+    }
+
     if (!currentFactions.containsKey(unit.getFaction())) {
       int count;
       if (getSupply(item, unit) == null && (count = getItemCount(unit, item)) > 0) {
@@ -3472,6 +3517,11 @@ class E3CommandParser {
       return;
     }
 
+    if (findLongOrder(u)) {
+      addOrder(u, "; langer Befehl gefunden, Einheit wird nicht gelehrt", false);
+      return;
+    }
+
     // find skill with maximum priority
     double maxWeight = 0;
     SkillSpec maxSkill = null;
@@ -3522,24 +3572,26 @@ class E3CommandParser {
 
   private void teachUnits() {
     for (Unit u : skills.keySet()) {
-      boolean teach = true;
-      for (Order order : u.getOrders2()) {
-        if (order.isLong() && !order.getText().startsWith(TEACHOrder) && !order.getText().startsWith(LEARNOrder)) {
-          addOrder(u, "; langer Befehl gefunden, Einheit wird nicht gelehrt", false);
-          teach = false;
-          break;
-        }
-      }
-
-      if (teach) {
+      if (!findLongOrder(u)) {
         StringBuilder learnOrder = new StringBuilder(String.format("; $%s$L 100.0", TEACH_PREFIX));
         for (SkillSpec s : skills.get(u)) {
           learnOrder.append(String.format(" %s %d %d", s.skill.getName(), s.level, s.max));
         }
         addOrder(u, String.format("; $%s$T ALLES 0", TEACH_PREFIX), true);
         addOrder(u, learnOrder.toString(), true);
+      } else {
+        addOrder(u, "; langer Befehl gefunden, Einheit wird nicht gelehrt", false);
       }
     }
+  }
+
+  private boolean findLongOrder(Unit u) {
+    boolean teach = true;
+    for (Order order : u.getOrders2()) {
+      if (order.isLong() && !order.getText().startsWith(TEACHOrder) && !order.getText().startsWith(LEARNOrder))
+        return true;
+    }
+    return false;
   }
 
   /**

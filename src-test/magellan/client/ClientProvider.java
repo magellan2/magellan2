@@ -33,4 +33,12 @@ public class ClientProvider {
     return new Client(data, parameters.binDir, parameters.resourceDir, parameters.settingsDir,
         false, new File(parameters.settingsDir, "errors.txt"));
   }
+
+  /**
+   * Creates a mock client.
+   */
+  public static Client getClient() {
+    return new Client() {
+    };
+  }
 }

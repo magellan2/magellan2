@@ -13,7 +13,6 @@
 
 package magellan.client.swing;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -25,8 +24,7 @@ import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -66,8 +64,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
   private JCheckBox considerShipRange;
   private JCheckBox createVorlageOrders;
   private JCheckBox replaceOrdersBox;
-  private List<Region> regionList;
-  private JComboBox regions;
+
+  private JComboBox<Region> regions;
   private JTextField regionName;
   private JTextField xCor;
   private JTextField yCor;
@@ -123,38 +121,41 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridwidth = 1;
     destSelect.add(new JLabel(Resources.get("routingdialog.xcoor")), c);
 
-    c.gridx = 1;
+    ++c.gridx;
     c.weightx = 0.2;
     xCor = new JTextField();
-    xCor.setPreferredSize(new Dimension(40, 20));
+    // xCor.setPreferredSize(new Dimension(40, 20));
     destSelect.add(xCor, c);
 
-    c.gridx = 2;
+    ++c.gridx;
     c.weightx = 0;
     destSelect.add(new JLabel(Resources.get("routingdialog.ycoor")), c);
 
-    c.gridx = 3;
+    ++c.gridx;
     c.weightx = 0.2;
     yCor = new JTextField();
-    yCor.setPreferredSize(new Dimension(40, 20));
+    // yCor.setPreferredSize(new Dimension(40, 20));
     destSelect.add(yCor, c);
 
-    c.gridy = 1;
+    ++c.gridy;
     c.gridx = 0;
     c.gridwidth = 4;
-    destSelect.add(new JSeparator(SwingConstants.HORIZONTAL));
+    destSelect.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
     if (destRegions != null) {
-      c.gridy = 2;
+      ++c.gridy;
+      c.gridx = 0;
+      c.gridwidth = 1;
+      c.weightx = 0;
 
-      JPanel temp = new JPanel();
-      temp.setLayout(new BorderLayout(6, 6));
-      destSelect.add(temp, c);
-
-      temp.add(new JLabel(Resources.get("routingdialog.regionname")), BorderLayout.WEST);
+      destSelect.add(new JLabel(Resources.get("routingdialog.regionname")), c);
 
       regionName = new JTextField();
-      temp.add(regionName, BorderLayout.CENTER);
+      ++c.gridx;
+      c.weightx = 0.2;
+      c.gridwidth = 3;
+      final Vector<Region> regionList = new Vector<Region>();
+      destSelect.add(regionName, c);
       regionName.getDocument().addDocumentListener(new DocumentListener() {
         public void insertUpdate(DocumentEvent e) {
           int i =
@@ -193,11 +194,6 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
         }
       });
 
-      c.gridx = 0;
-      c.gridwidth = 4;
-      c.gridy = 3;
-      regionList = new LinkedList<Region>();
-
       for (Region r : destRegions) {
         if (!excludeUnnamed || ((r.getName() != null) && (!"".equals(r.getName())))) {
           regionList.add(r);
@@ -205,7 +201,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       }
 
       Collections.sort(regionList, new RegionNameComparator());
-      regions = new JComboBox(regionList.toArray());
+      regions = new JComboBox<Region>(regionList);
       regions.setPreferredSize(new Dimension(300, 25));
       regions.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -215,6 +211,9 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
           yCor.setText(co.getY() + "");
         }
       });
+      c.gridx = 0;
+      c.gridwidth = 4;
+      ++c.gridy;
       destSelect.add(regions, c);
     }
 

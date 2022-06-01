@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -95,7 +94,6 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 
   protected static final String BLANK = "";
   protected boolean breakLines; // Line break style
-  protected List<String> buffer; // breaking buffer
   protected float lastScale = -1; // last scale factor, for broken lines cache
   protected ATRSet currentSet;
   protected ATRPreferencesAdapter adapter;
@@ -110,8 +108,6 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
   public AdvancedTextCellRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
     context.getEventDispatcher().addGameDataListener(this);
-
-    buffer = new LinkedList<String>();
 
     ATRPreferences atrPref = new ATRPreferences(settings);
     atrSets = atrPref.loadSets();
@@ -345,63 +341,129 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
     return AdvancedTextCellRenderer.BLANK;
   }
 
+  ArrayList<String> parts = new ArrayList<String>();
+
   protected String[] breakString(String s, CellGeometry geo) {
     int maxWidth = (int) (geo.getCellSize().width * 0.9);
-    buffer.clear();
 
     // create "defined" line breaks
-    StringTokenizer st = new StringTokenizer(s, "\n");
+    String[] lines = s.split(" *[\\n\\r]");
 
-    while (st.hasMoreTokens()) {
-      buffer.add(st.nextToken());
-    }
+    int i = 0;
+    parts.clear();
 
     boolean changed = false;
+    for (String line : lines) {
+      if (getWidth(line) <= maxWidth) {
+        parts.add(line);
+      } else {
+        changed = true;
+        if (breakLines) {
+          char chr[] = line.stripTrailing().toCharArray();
+          for (int pos = chr.length, start = 0; start < chr.length;) {
+            if (getWidth(chr, start, pos) <= maxWidth) {
+              if (pos == start)
+                // part does not fit, delete all
+                return new String[0];
 
-    do {
-      changed = false;
+              parts.add(new String(chr, start, pos - start));
+              start = pos;
+              while (start < chr.length && chr[start] == ' ') {
+                ++start;
+              }
+              pos = chr.length;
+            } else {
+              --pos;
+              while (pos > start && chr[pos - 1] == ' ') {
+                --pos;
+              }
+            }
+          }
 
-      ListIterator<String> it = buffer.listIterator();
-
-      while (it.hasNext() && !changed) {
-        String part = it.next();
-
-        if (getWidth(part) > maxWidth) {
-          breakStringImpl(part, maxWidth, it);
-          changed = true;
+        } else {
+          if (line.length() <= 3) {
+            int len = 3;
+            for (len = line.length();; --len) {
+              String part = line.substring(0, len);
+              if (getWidth(part) <= maxWidth) {
+                parts.add(part);
+                break;
+              }
+            }
+          } else {
+            char chr[] = line.toCharArray();
+            chr[chr.length - 1] = '.';
+            chr[chr.length - 2] = '.';
+            chr[chr.length - 3] = '.';
+            int len = chr.length;
+            while (getWidth(chr, 0, len) > maxWidth) {
+              --len;
+              if (len > 3) {
+                chr[len - 3] = '.';
+              }
+            }
+            parts.add(new String(chr, 0, len));
+          }
         }
       }
-    } while (changed);
-
-    String strbuf[] = new String[buffer.size()];
-
-    for (int i = 0; i < strbuf.length; i++) {
-      strbuf[i] = buffer.get(i);
     }
-
-    return strbuf;
+    String[] display;
+    if (!changed) {
+      display = lines;
+    } else {
+      display = parts.toArray(lines);
+    }
+    int h = getMaxHeight(display);
+    if (h * display.length > geo.getCellSize().height) {
+      double r = h * display.length / (double) geo.getCellSize().height;
+      int l = (int) (display.length / r);
+      if (l < 1) {
+        l = 1;
+      }
+      display = Arrays.copyOf(display, l);
+    }
+    return display;
   }
 
   private void breakStringImpl(String part, int mw, ListIterator<String> it) {
     char chr[] = part.toCharArray();
     int len = chr.length;
 
-    while (getWidth(chr, 0, len) > mw) {
-      len--;
-    }
-
     if (breakLines) {
-      String first = new String(chr, 0, len);
-      String rest = new String(chr, len, chr.length - len);
-      it.set(first);
-      it.add(rest);
+      while (getWidth(chr, 0, len) > mw) {
+        --len;
+      }
+
+      if (len == 0) {
+        it.set(new String(chr, 0, 1));
+        it.add(new String(chr, 1, chr.length - 1).trim());
+      } else if (chr.length > len) {
+        String first = new String(chr, 0, len).stripTrailing();
+        String rest = new String(chr, len, chr.length - len).strip();
+        if (first.isEmpty()) {
+          it.set(rest);
+        } else {
+          it.set(first);
+          if (!rest.isEmpty()) {
+            it.add(rest);
+          }
+        }
+      }
     } else {
-      try {
-        chr[len - 1] = '.';
-        chr[len - 2] = '.';
-        chr[len - 3] = '.';
-      } catch (Exception exc) {
-        // trivial
+      if (chr.length <= 3) {
+        while (getWidth(chr, 0, len) > mw) {
+          --len;
+        }
+      } else {
+        chr[chr.length - 1] = '.';
+        chr[chr.length - 2] = '.';
+        chr[chr.length - 3] = '.';
+        while (getWidth(chr, 0, len) > mw) {
+          --len;
+          if (len > 3) {
+            chr[len - 3] = '.';
+          }
+        }
       }
 
       part = new String(chr, 0, len);

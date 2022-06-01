@@ -891,7 +891,6 @@ public class BattleInfo {
   private Map<Integer, HostInfo> hosts; // index
   private Map<UnitID, UnitInfo> allUnits; // ID
   private List<String> errors;
-  private int maxRound;
 
   private HostInfo currentHost;
   private int currentRow;
@@ -909,6 +908,9 @@ public class BattleInfo {
   protected Locale lastLocale;
   private Battle battle;
   private Map<String, ItemType> itemTypes;
+
+  private int maxRound = 5;
+  private int heroFactor = 5;
 
   /**
    * Initializes an empty battle info.
@@ -1090,7 +1092,9 @@ public class BattleInfo {
           hosts.put(currentHost.getIndex(), currentHost);
           currentRow = -1;
           break;
-        case 1803906635: // string
+        case 1803906635: // "Verdammte der Nacht (w4op), 16 Zombies, aggressiv, bewacht die Region, hat: 16 Schartige
+                         // Schwerter.";rendered
+        case 2144337409: // with unit attribute (neu 12xx)
           currentSpellInfo = null;
           addMisc(m);
           break;
@@ -1695,6 +1699,20 @@ public class BattleInfo {
   }
 
   /**
+   * Number of attacks per round for heroes
+   */
+  public int getHeroFactor() {
+    return heroFactor;
+  }
+
+  /**
+   * Number of attacks per round for heroes
+   */
+  public void setHeroFactor(int heroFactor) {
+    this.heroFactor = heroFactor;
+  }
+
+  /**
    * Returns the value of locale.
    *
    * @return Returns locale.
@@ -1974,8 +1992,6 @@ public class BattleInfo {
 
     Map<ItemType, Item> loot[];
 
-    private int heroFactor;
-
     private boolean[] killedAll;
 
     @SuppressWarnings("unchecked")
@@ -2028,9 +2044,6 @@ public class BattleInfo {
      */
     public Evaluator evaluate() {
       init();
-
-      // FIXME configure? get from rules?
-      heroFactor = 5;
 
       int sideNum = 0;
       for (Set<Integer> side : sides) {

@@ -64,7 +64,7 @@ import magellan.library.utils.TrustLevels;
  */
 public class AskForPasswordDialog extends JDialog implements ActionListener {
 
-  private JComboBox factionBox = null;
+  private JComboBox<FactionItem> factionBox = null;
   private JPasswordField passwordField = null;
   private Client client;
   private GameData data;
@@ -143,7 +143,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
      * (what for?) if (first!=null) items.add(1, first);
      */
 
-    factionBox = new JComboBox(items);
+    factionBox = new JComboBox<FactionItem>(items);
     c.gridx = 1;
     c.gridy = 1;
     c.gridwidth = 1;
@@ -173,6 +173,8 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
 
     getContentPane().add(panel);
     pack();
+    factionBox.requestFocusInWindow();
+    getRootPane().setDefaultButton(okButton);
   }
 
   /**

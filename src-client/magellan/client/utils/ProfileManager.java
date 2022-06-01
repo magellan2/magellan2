@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -259,7 +260,7 @@ public class ProfileManager {
           result.add(settings.getProperty(key));
         }
     }
-
+    Collections.sort(result);
     return result;
   }
 

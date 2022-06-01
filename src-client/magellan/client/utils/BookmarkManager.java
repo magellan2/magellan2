@@ -90,8 +90,8 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
     dispatcher.addGameDataListener(this);
 
     shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_DOWN_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_DOWN_MASK));
     DesktopEnvironment.registerShortcutListener(this);
 
     dialog = BookmarkDock.getInstance();
@@ -99,21 +99,21 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public Iterator<KeyStroke> getShortCuts() {
     return shortCuts.iterator();
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public void shortCut(KeyStroke shortCut) {
     if (shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0))) {
       jumpForward();
-    } else if (shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK))) {
+    } else if (shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_DOWN_MASK))) {
       jumpBackward();
-    } else if (shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK))) {
+    } else if (shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_DOWN_MASK))) {
       toggleBookmark();
     }
   }

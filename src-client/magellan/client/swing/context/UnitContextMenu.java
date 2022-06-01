@@ -22,11 +22,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -534,10 +534,9 @@ public class UnitContextMenu extends JPopupMenu {
     }
 
     // present key selection
-    List<String> sortedKeys = new ArrayList<String>(keys);
-    Collections.sort(sortedKeys);
     key =
-        showInputDialog(Resources.get("context.unitcontextmenu.addtag.tagname.message"), sortedKeys);
+        showInputDialog(dispatcher.getMagellanContext().getClient(),
+            Resources.get("context.unitcontextmenu.addtag.tagname.message"), sort(keys));
 
     if ((key != null) && (key.length() > 0)) {
       String value = null;
@@ -550,17 +549,9 @@ public class UnitContextMenu extends JPopupMenu {
         }
       }
 
-      List<String> sortedKeyValues = new ArrayList<String>(keyValues);
-      Collections.sort(sortedKeyValues);
-
-      // values.removeAll(keyValues);
-      // List sortedValues = CollectionFactory.createArrayList(values);
-      // Collections.sort(sortedValues);
-      // sortedKeyValues.addAll(sortedValues);
-
       value =
-          showInputDialog(Resources.get("context.unitcontextmenu.addtag.tagvalue.message"),
-              sortedKeyValues);
+          showInputDialog(dispatcher.getMagellanContext().getClient(), Resources.get(
+              "context.unitcontextmenu.addtag.tagvalue.message"), sort(keyValues));
 
       if (value != null) {
         for (Unit u : selectedUnits) {
@@ -575,12 +566,20 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits.clear();
   }
 
+  static String[] sort(Collection<String> keys) {
+    if (keys == null)
+      return new String[] {};
+    String[] sortedKeys = keys.toArray(new String[] {});
+    Arrays.sort(sortedKeys);
+    return sortedKeys;
+  }
+
   /**
    * Lets user select one of the given values or enter a new one.
    */
-  private String showInputDialog(String message, List<String> values) {
+  static String showInputDialog(Frame owner, String message, String[] values) {
     // the combo box (add/modify items if you like to)
-    JComboBox comboBox = new JComboBox(values.toArray());
+    JComboBox<String> comboBox = new JComboBox<String>(values);
     // has to be editable
     comboBox.setEditable(true);
     comboBox.getEditor().selectAll();
@@ -588,9 +587,8 @@ public class UnitContextMenu extends JPopupMenu {
     // new JComboBoxCompletion(comboBox,true);
 
     // create and show a window containing the combo box
-    Frame parent = dispatcher.getMagellanContext().getClient();
-    JDialog frame = new JDialog(parent, message, true);
-    frame.setLocationRelativeTo(parent);
+    JDialog frame = new JDialog(owner, message, true);
+    frame.setLocationRelativeTo(owner);
     frame.getContentPane().setLayout(new BorderLayout());
     frame.setResizable(false);
     frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

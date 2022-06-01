@@ -16,7 +16,6 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -72,8 +71,6 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderWriter;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
-import magellan.library.utils.comparator.LinearUnitTempUnitComparator;
-import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
@@ -1125,7 +1122,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /**
    * Resets the cache of this unit to its uninitialized state.
    */
-  private void invalidateCache(boolean reset) {
+  protected void invalidateCache(boolean reset) {
     if (hasCache()) {
       final Cache cache1 = getCache();
       cache1.modifiedName = null;
@@ -1322,7 +1319,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   private synchronized void refreshModifiedSkills() {
     final Cache cache1 = getCache();
-
     // clear existing modified skills
     // there is special case: to reduce memory consumption
     // cache.modifiedSkills can point to the real skills and
@@ -1340,220 +1336,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
       return;
     }
-
-    // get all related units (as set) and sort it in a list afterwards
-    final Set<Unit> relatedUnits = new HashSet<Unit>();
-    final Set<UnitRelation.ID> relationTypes = new HashSet<UnitRelation.ID>();
-    relationTypes.add(UnitRelation.getClassID(PersonTransferRelation.class));
-    relationTypes.add(UnitRelation.getClassID(RecruitmentRelation.class));
-    this.getRelatedUnits(relatedUnits, relationTypes);
-
-    /* sort related units according to report order */
-    final List<Unit> sortedUnits = new ArrayList<Unit>(relatedUnits);
-    Collections.sort(sortedUnits, new LinearUnitTempUnitComparator(new SortIndexComparator<Unit>(
-        null)));
-
-    /* clone units with all aspects relevant for skills */
-    final Map<ID, MagellanUnitImpl> clones = new Hashtable<ID, MagellanUnitImpl>();
-
-    for (Unit unit : relatedUnits) {
-      final MagellanUnitImpl u = (MagellanUnitImpl) unit;
-      MagellanUnitImpl clone = null;
-
-      clone = new MagellanUnitImpl(u.getID().clone(), getData());
-      clone.persons = u.getPersons();
-      clone.race = u.race;
-      clone.realRace = u.realRace;
-      clone.region = u.region;
-      clone.isStarving = u.isStarving;
-      clone.isHero = u.isHero;
-
-      for (Skill s : u.getSkills()) {
-        clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(), clone.persons, s
-            .noSkillPoints()));
-      }
-      clones.put(clone.getID(), clone);
-      // } catch (final CloneNotSupportedException e) {
-      // // won't fail
-      // }
-
-    }
-
-    // now modify the skills according to changes introduced by the relations
-
-    /*
-     * indicates that a skill is lost through person transfers or recruiting. May not be
-     * Integer.MIN_VALUE to avoid wrap- around effects but should also be fairly negative so no
-     * modifier can push it up to positive values.
-     */
-    final int lostSkillLevel = Skill.SPECIAL_LEVEL;
-
-    for (Unit unit : sortedUnits) {
-      final MagellanUnitImpl srcUnit = (MagellanUnitImpl) unit;
-
-      for (UnitRelation unitRel : srcUnit.getRelations()) {
-        if ((unitRel.source != null && !(unitRel.source.equals(srcUnit)))
-            || !(unitRel instanceof PersonTransferRelation)) {
-          continue;
-        }
-
-        final PersonTransferRelation rel = (PersonTransferRelation) unitRel;
-        final Unit srcClone = clones.get(srcUnit.getID());
-        final Unit targetUnit = rel.target;
-        final Unit targetClone = clones.get(targetUnit.getID());
-        /*
-         * NOTE: maybe we respect rel.amount instead of reducing it here; we produce a warning message if transfer
-         * amount is illegal
-         */
-        final int transferredPersons = Math.max(0, Math.min(srcClone.getPersons(), rel.amount));
-
-        if (transferredPersons == 0) {
-          continue;
-        }
-
-        /* modify the target clone */
-        /*
-         * first modify all skills that are available in the target clone
-         */
-        for (Skill targetSkill : targetClone.getSkills()) {
-          Skill srcSkill = srcClone.getSkill(targetSkill.getSkillType());
-          final int skillModifier = targetSkill.getModifier(targetClone);
-
-          if (srcSkill == null) {
-            /*
-             * skill exists only in the target clone, this is equivalent to a target skill at 0.
-             * Level is set to lostSkillLevel to avoid confusion about level modifiers in case of
-             * noSkillPoints. If skill points are relevant this value is ignored anyway.
-             */
-            srcSkill =
-                new Skill(targetSkill.getSkillType(), 0, lostSkillLevel, srcClone.getPersons(),
-                    targetSkill.noSkillPoints());
-          }
-
-          if (targetSkill.noSkillPoints()) {
-            /*
-             * Math.max(0, ...) guarantees that the true skill level cannot drop below 0. This also
-             * important to handle the Integer.MIN_VALUE case below
-             */
-            final int transferredSkillFactor =
-                Math.max(0, srcSkill.getLevel() - skillModifier) * transferredPersons;
-            final int targetSkillFactor =
-                Math.max(0, targetSkill.getLevel() - skillModifier) * targetClone.getPersons();
-            final int newSkillLevel =
-                (int) (((float) (transferredSkillFactor + targetSkillFactor))
-                    / (float) (transferredPersons + targetClone
-                        .getPersons()));
-
-            /*
-             * newSkillLevel == 0 means that that the skill is lost by this transfer but we may not
-             * set the skill level to 0 + skillModifier since this would indicate an existing skill
-             * depending on the modifier. Thus lostSkillLevel is used to distinctly mark the
-             * staleness of this skill.
-             */
-            targetSkill.setLevel((newSkillLevel > 0) ? (newSkillLevel + skillModifier)
-                : lostSkillLevel);
-          } else {
-            targetSkill.setPoints(targetSkill.getPoints()
-                + (int) ((srcSkill.getPoints() * transferredPersons) / (float) srcClone
-                    .getPersons()));
-          }
-        }
-
-        /*
-         * now modify the skills that only exist in the source clone
-         */
-        for (Skill srcSkill : srcClone.getSkills()) {
-          Skill targetSkill = targetClone.getSkill(srcSkill.getSkillType());
-
-          if (targetSkill == null) {
-            /*
-             * skill exists only in the source clone, this is equivalent to a source skill at 0.
-             * Level is set to lostSkillLevel to avoid confusion about level modifiers in case of
-             * noSkillPoints. If skill points are relevant this value is ignored anyway.
-             */
-            targetSkill =
-                new Skill(srcSkill.getSkillType(), 0, lostSkillLevel, targetClone.getPersons(),
-                    srcSkill.noSkillPoints());
-            targetClone.addSkill(targetSkill);
-
-            if (srcSkill.noSkillPoints()) {
-              /*
-               * Math.max(0, ...) guarantees that the true skill level cannot drop below 0. This
-               * also important to handle the lostSkillLevel case below
-               */
-              final int skillModifier = srcSkill.getModifier(srcClone);
-              final int transferredSkillFactor =
-                  Math.max(0, srcSkill.getLevel() - skillModifier) * transferredPersons;
-              final int newSkillLevel =
-                  (int) (((float) transferredSkillFactor) / (float) (transferredPersons
-                      + targetClone
-                          .getPersons()));
-
-              /*
-               * newSkillLevel == 0 means that that the skill is lost by this transfer but we may
-               * not set the skill level to 0 + skillModifier since this would indicate an existing
-               * skill depending on the modifier. Thus lostSkillLevel is used to distinctly mark the
-               * staleness of this skill.
-               */
-              targetSkill.setLevel((newSkillLevel > 0) ? (newSkillLevel + skillModifier)
-                  : lostSkillLevel);
-            } else {
-              final int newSkillPoints =
-                  (int) (srcSkill.getPoints() * (transferredPersons / (float) srcClone
-                      .getPersons()));
-              targetSkill.setPoints(newSkillPoints);
-            }
-          }
-
-          /*
-           * modify the skills in the source clone (no extra loop for this)
-           */
-          if (!srcSkill.noSkillPoints()) {
-            final int transferredSkillPoints =
-                (int) ((srcSkill.getPoints() * transferredPersons) / (float) srcClone.getPersons());
-            srcSkill.setPoints(srcSkill.getPoints() - transferredSkillPoints);
-          }
-        }
-
-        srcClone.setPersons(srcClone.getPersons() - transferredPersons);
-        targetClone.setPersons(targetClone.getPersons() + transferredPersons);
-      }
-    }
-
-    /* modify the skills according to recruitment */
-    final MagellanUnitImpl clone = clones.get(getID());
-
-    /* update the person and level information in all clone skills */
-    if (clone.getSkills().size() > 0) {
-      cache1.modifiedSkills = new Hashtable<StringID, Skill>();
-
-      for (Skill skill : clone.getSkills()) {
-        skill.setPersons(clone.persons);
-
-        /*
-         * When skill points are relevant, all we did up to now, was to keep track of these while
-         * the skill level was ignored - update it now
-         */
-        if (!skill.noSkillPoints()) {
-          skill.setLevel(skill.getLevel(clone, false));
-        } else {
-          /*
-           * If skill points are not relevant we always take skill modifiers into account but we
-           * marked 'lost' skills by Integer.MIN_VALUE which has to be fixed here
-           */
-          if (skill.getLevel() == lostSkillLevel) {
-            skill.setLevel(0);
-          }
-        }
-
-        /*
-         * inject clone skills into real unit (no extra loop for this
-         */
-        if ((skill.getPoints() > 0) || (skill.getLevel() > 0)) {
-          cache1.modifiedSkills.put(skill.getSkillType().getID(), skill);
-        }
-      }
-    }
+    cache1.modifiedSkills = getData().getGameSpecificRules().getModifiedSkills(this);
   }
 
   /**

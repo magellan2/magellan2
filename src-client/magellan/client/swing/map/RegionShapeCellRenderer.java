@@ -47,6 +47,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -1545,17 +1546,21 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
           list.repaint();
         } else if (e.getSource() == removeButton) {
           ListElement element = list.getSelectedValue();
-          if (element != null
-              && JOptionPane.showConfirmDialog(this, Resources.get(
-                  "map.regionshapecellrenderer.dialog.confirmdelete.message", element.name, list
-                      .getSelectedIndices().length), Resources
-                          .get("map.regionshapecellrenderer.dialog.confirmdelete.title"),
-                  JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            for (ListElement element2 : list.getSelectedValuesList()) {
-              if (!oceanLabel.equals(element2.name) && !unknownLabel.equals(element2.name)) {
-                removeColor(element2);
+          if (element != null) {
+            if (JOptionPane.showConfirmDialog(this, Resources.get(
+                "map.regionshapecellrenderer.dialog.confirmdelete.message", element.name, list
+                    .getSelectedIndices().length), Resources
+                        .get("map.regionshapecellrenderer.dialog.confirmdelete.title"),
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+              for (ListElement element2 : list.getSelectedValuesList()) {
+                if (!oceanLabel.equals(element2.name) && !unknownLabel.equals(element2.name)) {
+                  removeColor(element2);
+                }
               }
             }
+          } else {
+            JOptionPane.showMessageDialog(this, Resources.get(
+                "map.regionshapecellrenderer.dialog.noselection.message"));
           }
         }
       }
@@ -1629,7 +1634,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
       modePanel.add(modeBox);
 
       setLayout(new GridBagLayout());
-      Component description =
+      JComponent description =
           HexCellRenderer.createDescriptionPanel(Resources.get("map.regionshapecellrenderer.description"), this);
       GridBagConstraints con =
           new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,

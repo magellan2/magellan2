@@ -23,10 +23,13 @@
 //
 package magellan.library.gamebinding;
 
+import java.util.Map;
+
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.rules.ItemType;
@@ -158,5 +161,7 @@ public interface GameSpecificRules {
    * @return if there is no such building or the owner is not paying
    */
   public Unit getMaintainer(Building b);
+
+  public Map<StringID, Skill> getModifiedSkills(Unit unit);
 
 }

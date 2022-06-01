@@ -96,23 +96,15 @@ public class Scanner {
       return;
     }
 
-    // skip empty lines
-    if (line == "") {
-      getNextToken();
-
-      return;
-    }
-
-    buf = line.toCharArray();
     len = line.length();
 
-    // System.out.println(lnr + ": " + line);
     // skip empty lines
     if (line.length() == 0) {
       getNextToken();
 
       return;
     }
+    buf = line.toCharArray();
 
     if (('A' <= buf[0]) && (buf[0] <= 'Z')) {
       isBlock = true;

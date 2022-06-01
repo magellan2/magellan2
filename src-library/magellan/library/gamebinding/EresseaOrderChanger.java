@@ -438,7 +438,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
   /**
    * list of long orders in Eressea. <br />
-   * ARBEITE, ATTACKIERE, BEKLAUE, BELAGERE, FAHRE, FOLGE, FORSCHE, KAUFE, LEHRE, LERNE, MACHE
+   * ARBEITE, ATTACKIERE, BEKLAUE, FAHRE, FOLGE, FORSCHE, KAUFE, LEHRE, LERNE, MACHE
    * (Ausnahme: MACHE TEMP), NACH, PFLANZE, PIRATERIE, ROUTE, SABOTIERE SCHIFF, SPIONIERE, TREIBE,
    * UNTERHALTE, VERKAUFE, ZAUBERE, ZÜCHTE, ZERSTÖRE.
    */
@@ -448,7 +448,6 @@ public class EresseaOrderChanger implements OrderChanger {
       longOrderTokens.add(EresseaConstants.OC_WORK);
       longOrderTokens.add(EresseaConstants.OC_ATTACK);
       longOrderTokens.add(EresseaConstants.OC_STEAL);
-      longOrderTokens.add(EresseaConstants.OC_SIEGE);
       longOrderTokens.add(EresseaConstants.OC_RIDE);
       // longOrderTokens.add(EresseaConstants.OC_FOLLOW);
       longOrderTokens.add(EresseaConstants.OC_RESEARCH);

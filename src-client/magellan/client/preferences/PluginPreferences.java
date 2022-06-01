@@ -10,23 +10,22 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -58,6 +57,7 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
   }
 
   public void applyPreferences() {
+    // nothing to apply
   }
 
   /**
@@ -84,7 +84,7 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
    * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
-    JPanel pnl = new JPanel(new GridBagLayout());
+    JPanel pnl = new JPanel(new BorderLayout());
     pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("plugins.pluginsettings.modulelist.title")));
 
@@ -95,23 +95,17 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
       model.addElement(plugin.getName());
     }
 
-    GridBagConstraints c =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-            GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
+    WrappableLabel comment = WrappableLabel.getLabel(Resources.get("plugins.pluginsettings.comment"));
+    comment.setPreferredWidth(PreferencesAdapter.PREFERRED_WIDTH);
 
-    Component comment = WrappableLabel.getLabel(Resources.get("plugins.pluginsettings.comment"));
+    pnl.add(comment.getComponent(), BorderLayout.NORTH);
 
-    pnl.add(comment, c);
+    pluginList.setPreferredSize(new Dimension(500, 500));
+    pnl.setPreferredSize(new Dimension(500, 500));
 
-    c.gridy = 2;
-    pnl.add(new JPanel());
-
-    c.gridy = 3;
-    c.weighty = 1;
-    pnl.add(pluginList, c);
+    pnl.add(pluginList, BorderLayout.CENTER);
 
     return pnl;
-
   }
 
   /**

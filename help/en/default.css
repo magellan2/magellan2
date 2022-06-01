@@ -2,13 +2,13 @@ body {
   background: url(images/background.jpg);
   background-repeat: repeat-x;
   background-color: #D5A983;
-  font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;
+  font-family: Roboto, Lato, Arial, sans-serif;
 }
 
 #mh-content {
   padding-left: 10px;
   padding-right: 10px;
-  line-height: 18px;
+  padding-bottom: 10px;
   text-align: left;
 }
 
@@ -18,13 +18,15 @@ p, blockquote, li, input, td, th, select {
 }
 
 p, h1, h2, h3, h4 {
-  font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;
+  /*font-family: Cabin, Tahoma, Open Sans, "Lucida Grande", Verdana, Helvetica, sans-serif;*/
 }
 
 #center p, li {
+  
 }
 
 p, blockquote, li, h1, h2, h3, h4 {
+  
 }
 
 blockquote {
@@ -157,7 +159,30 @@ p.caps {
   color: #cc0000;
 }
 
+ul {
+  padding-left: 8px;
+  margin-left: 8px;
+}
+
 li {
   padding-left: 2px;
   padding-right: 2px;
+}
+
+h3.faq {
+  font-size: 100%;
+  font-weight: bold;
+  margin-bottom: 0pt;
+}
+
+h3.faq+p {
+  margin-top: 0pt;
+}
+
+kbd.short {
+  font-weight: bold;
+}
+
+kbd.orders {
+  
 }

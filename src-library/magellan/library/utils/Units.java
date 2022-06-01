@@ -357,8 +357,7 @@ public class Units {
   protected static UnitFilter privFilter = new UnitFilter() {
     @Override
     public boolean acceptUnit(Unit u) {
-      return u.getFaction() != null && u.getFaction().hasGiveAlliance()
-          || u.getFaction().isPrivileged();
+      return u.getFaction() != null && (u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged());
     }
   };
   protected static UnitFilter allFilter = new UnitFilter() {

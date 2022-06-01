@@ -272,9 +272,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         if ((cellGeometry == null) || (mapToScreenBounds == null))
           return;
 
-        CoordinateID c =
-            cellGeometry.getCoordinate(me.getPoint().x + mapToScreenBounds.x, me.getPoint().y
-                + mapToScreenBounds.y, showLevel);
+        CoordinateID c = getCoordinate(me.getPoint().x, me.getPoint().y);
         Region region = getGameData().getRegion(c);
         Region voidRegion = getGameData().voids().get(c);
         Region wrapper = null;
@@ -296,8 +294,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         if (me.isPopupTrigger()) {
           showContextMenu(region, c, me.getX(), me.getY());
         } else if ((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-          if (((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0 ||
-              (me.getModifiersEx() & InputEvent.ALT_DOWN_MASK) != 0) && !me.isPopupTrigger()) {
+          if ((me.isControlDown() || me.isAltDown()) && !me.isPopupTrigger()) {
             if (region != null) {
               // add region to selection -- do not add wrappers or voids
               if (selectedRegions.containsKey(region.getID()) == false) {
@@ -340,7 +337,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       @Override
       public void mouseDragged(MouseEvent me) {
         if (((me.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) != 0)
-            && ((me.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)) {
+            && (me.isControlDown() || me.isAltDown())) {
           if (!pathPersistence) {
             pathRegions.clear();
           }
@@ -987,11 +984,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     try {
       paintMapperComponent(g);
     } catch (Throwable t) {
-      Mapper.log.error("", t);
-      ErrorWindow errorWindow =
-          new ErrorWindow(Client.INSTANCE, ErrorWindow.UNKNOWN_ERROR_MESSAGE, "", t);
+      Mapper.log.error("error during paint", t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, null, null, t);
       errorWindow.setShutdownOnCancel(true);
-      errorWindow.setVisible(true);
+      // we should normally call this synchronously, but in this case this leads to the error window not being painted,
+      // so we call it later.
+      SwingUtilities.invokeLater(() -> errorWindow.open());
+      throw t;
     }
   }
 
@@ -1477,19 +1476,19 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   /**
-   * Returns the location (upper left corner) of the drawing area so that a certain region is at the
-   * center of the view port.
+   * Returns the location (upper left corner) of the drawing area so that a certain region is at a certain
+   * position of the view port.
    *
-   * @param viewSize the size of the mappers viewport, i.e. the size of the part of the mappers
+   * @param viewOffset desired position of center in mapper's viewport, i.e. in the part of the mapper's
    *          drawing area that is actually visible.
    * @param center the coordinate to center on.
    * @return a Point with x and y so that a view port of size viewSize is centered over the
    *         specified region center.
    */
-  public Point getCenteredViewPosition(Dimension viewSize, CoordinateID center) {
+  public Point getViewPosition(Point viewOffset, CoordinateID center) {
     Point viewPos = null;
 
-    if ((cellGeometry != null) && (viewSize != null) && (center != null)) {
+    if ((cellGeometry != null) && (center != null)) {
       // get the cell position as relative screen coordinates
       Rectangle cellPos = cellGeometry.getCellRect(center.getX(), center.getY());
 
@@ -1502,12 +1501,20 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           .translate(cellGeometry.getCellSize().width / 2, cellGeometry.getCellSize().height / 2);
 
       // now get the view port
-      viewPos = new Point(cellPos.x - (viewSize.width / 2), cellPos.y - (viewSize.height / 2));
+      viewPos = new Point(cellPos.x - viewOffset.x, cellPos.y - viewOffset.y);
     } else {
       Mapper.log.warn("Mapper.getCenteredViewPosition(): Unable to determine drawing area!");
     }
 
     return viewPos;
+  }
+
+  /**
+   * Returns the region coordinate that would be at the screen position x,y.
+   * 
+   */
+  public CoordinateID getCoordinate(int x, int y) {
+    return cellGeometry.getCoordinate(x + mapToScreenBounds.x, y + mapToScreenBounds.y, showLevel);
   }
 
   /**

@@ -212,7 +212,6 @@ public class CellGeometry {
   private boolean validateScaleFactor(float scaleFactor2, boolean apply) {
     if (scaleFactor2 <= 0 || Float.isInfinite(scaleFactor2))
       throw new IllegalArgumentException("factor < 0: " + scaleFactor2);
-
     boolean valid;
     synchronized (this) {
       scale(scaleFactor2);

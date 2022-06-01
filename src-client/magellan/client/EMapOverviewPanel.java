@@ -328,18 +328,18 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     shortcuts = new ArrayList<KeyStroke>(8);
 
     // 0-1: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.ALT_DOWN_MASK));
 
     // 2-4: Other CTRL shortcuts
-    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_N,KeyEvent.CTRL_MASK));
-    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_B,KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.CTRL_MASK));
+    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_N,KeyEvent.CTRL_DOWN_MASK));
+    // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_B,KeyEvent.CTRL_DOWN_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_DOWN_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.CTRL_DOWN_MASK));
 
     // 5-6: Other ALT shortcuts
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
@@ -1650,7 +1650,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     case 0:
     case 1:
       DesktopEnvironment.requestFocus(MagellanDesktop.OVERVIEW_IDENTIFIER);
-      tree.requestFocus(); // activate the tree, not the scrollpane
+      tree.requestFocusInWindow(); // activate the tree, not the scrollpane
 
       break;
 
@@ -2031,7 +2031,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);
 
-    return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index));
+    return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index), false);
   }
 
   /**
@@ -2180,6 +2180,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       tempShipCreated(parent, null);
       for (Ship tempShip : parent.getTempShips()) {
         tempShipCreated(parent, tempShip);
+      }
+      TreeNode n = shipNodes.get(parent.getID());
+      if (n != null) {
+        treeModel.nodeChanged(n);
+      }
+    }
+    for (Building building : u.getRegion().buildings()) {
+      TreeNode n = buildingNodes.get(building.getID());
+      if (n != null) {
+        treeModel.nodeChanged(n);
       }
     }
     updateTree(this);

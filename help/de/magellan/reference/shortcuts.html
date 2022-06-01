@@ -17,67 +17,104 @@
     <a id="top"></a>
 
     <h1>Tastenkürzel</h1>
+    <p>Die Tastenkürzel können in den Optionen eingesehen und geändert
+      werden. Plugins können weitere Kürzel definieren. Einige der weniger
+      offensichtlichen in der Voreinstellung:</p>
+
+    <h2>Einheitenauswahl</h2>
     <ul>
-      <li><b>STRG-o</b>: Report öffnen</li>
-      <li><b>STRG-d</b>: Report hinzufügen</li>
-      <li><b>STRG-s</b>: Report speichern</li>
-      <li><b>STRG-Umschalt-s</b>: Report unter anderem Namen speichern</li>
-    </ul>
-    <ul>
-      <li><b>STRG-z</b>: Undo im Befehlseditor</li>
-      <li><b>STRG-y</b>: Redo im Befehlseditor</li>
-      <li><b>STRG-Pfeil-nach-oben/unten</b>: Zwischen Einheiten bzw. deren
+      <li><kbd class="short">Strg+N</kbd>: Zur nächsten Einheit ohne bestätigte Befehle
+        wechseln
+      <li><kbd class="short">Strg+Shift+N</kbd>: Zur vorherigen Einheit ohne bestätigte
+        Befehle wechseln
+      <li><kbd class="short">Strg+Pfeil-nach-oben/unten</kbd>: Zwischen Einheiten bzw. deren
         Befehlseditoren wechseln</li>
-    </ul>
-    <ul>
-      <li><b>STRG-b</b>: Befehle der ausgewählten Einheit oder aller
-        Einheiten in der ausgewählten Region bestätigen bzw. nicht bestätigen</li>
-      <li><b>STRG-n</b>: Zu einer Einheit ohne bestätigte Befehle wechseln
-      </li>
-    </ul>
-    <ul>
-      <li><b>STRG-t</b>: Erzeugt eine Temp-Einheit unterhalb der gerade
-        aktiven Einheit</li>
-      <li><b>STRG-Umschalt-t</b>: Löscht eine gerade ausgewählte
-        Temp-Einheit</li>
-    </ul>
-    <ul>
-      <li><b>STRG-Komma</b> und <b>Alt-Pfeil-links</b>: Das zuletzt
+      <li><kbd class="short">Strg+Komma</kbd> und <kbd class="short">Alt+Pfeil-links</kbd>: Das zuletzt
         ausgewählte Objekt wieder anspringen</li>
-      <li><b>STRG-Punkt</b> und <b>Alt-Pfeil-rechts</b>: Nach STRG-, oder
-        Alt-Pfeil-links zum usprünglich ausgewählten Objekt zurückspringen</li>
+      <li><kbd class="short">Strg+Punkt</kbd> und <kbd class="short">Alt+Pfeil-rechts</kbd>: Nach <kbd class="short">Strg+,</kbd> oder
+        <kbd class="short">Alt+Pfeil links</kbd> zum ursprünglich ausgewählten Objekt zurückspringen</li>
+      <li><kbd class="short">Strg+B</kbd>: Befehle der ausgewählten Einheit oder aller
+        Einheiten in der ausgewählten Region bestätigen bzw. nicht bestätigen</li>
     </ul>
+    <h2>Lesezeichen</h2>
     <ul>
-      <li><b>STRG-F2</b>: Setzt ein Lesezeichen auf das aktuelle Objekt
+      <li><kbd class="short">Strg+F2</kbd>: Setzt ein Lesezeichen auf das aktuelle Objekt
         oder entfernt es</li>
-      <li><b>F2</b>: Springt zum nächsten Objekt mit Lesezeichen</li>
-      <li><b>Umschalt-F2</b>: Springt zum letzten Objekt mit Lesezeichen
+      <li><kbd class="short">F2</kbd>: Springt zum nächsten Objekt mit Lesezeichen</li>
+      <li><kbd class="short">Umschalt-F2</kbd>: Springt zum letzten Objekt mit Lesezeichen
         zurück</li>
     </ul>
+    <h2>Fensterauswahl</h2>
     <ul>
-      <li><b>STRG-h</b>: Setzt ein Lesezeichen auf die Region, die sich in
-        der Mitte der Karte befindet</li>
-      <li><b>STRG-Umschalt-h</b>: Löscht das gerade ausgewählte
-        Lesezeichen</li>
+      <li><kbd class="short">Strg+1</kbd> oder <kbd class="short">Alt+1</kbd>: Gibt der <a
+        href="../docks/regions.html">Regionsübersicht</a> den Eingabefokus</li>
+      <li><kbd class="short">Strg+2</kbd> oder <kbd class="short">Alt+2</kbd>: Gibt der <a
+        href="../docks/map.html">Karte</a> den Eingabefokus</li>
+      <li><kbd class="short">Strg+3</kbd> oder <kbd class="short">Alt+3</kbd>: Gibt der <a
+        href="../docks/details.html">Detailanzeige</a> den Eingabefokus</li>
+      <li><kbd class="short">Strg+4</kbd> oder <kbd class="short">Alt+4</kbd>: Gibt der Bibliothek der
+        Erweiterten Befehle den Eingabefokus</li>
+      <li><kbd class="short">Strg+Umschalt-4</kbd>: Gibt den Erweiterten Befehlen des
+        aktuell ausgewählten Objekts den Eingabefokus</li>
+      <li><kbd class="short">Strg+P</kbd>: Gibt dem <a href="../docks/problems.html">Offene-Probleme-Dock</a>
+        den Eingabefokus</li>
+      <li><kbd class="short">Strg+E</kbd>: Gibt dem <a href="../docks/echeck.html">ECheck-Dock</a>
+        den Eingabefokus</li>
     </ul>
+
+    <h2>Karte</h2>
     <ul>
-      <li><b>STRG-1</b>: Gibt der Regionsübersicht den Eingabefokus</li>
-      <li><b>STRG-2</b>: Gibt der Karte den Eingabefokus</li>
-      <li><b>STRG-3</b>: Gibt der Detailanzeige den Eingabefokus</li>
-    </ul>
-    <ul>
-      <li><b>STRG-w</b>: Fog of War an/aus</li>
-      <li><b>STRG-r</b>: Befehlsergänzung von "MACHEN" zeigt nur
-        Gegenstände für die die nötigen Resourcen vorhanden sind.</li>
-    </ul>
-    <ul>
-      <li><b>STRG+Umschalt+C</b>: Im Befehlseditor die aktuelle Zeile in
-        die Zwischenablage kopieren</li>
+      <li><kbd class="short">Strg+Umschalt-A</kbd>: Wähle zwischen <a
+        href="../menus/extras/options_map.html#Beschriftungen">ATR-Einstellungen</a></li>
+      <li><kbd class="short">Strg+Umschalt-P</kbd>: Wähle zwischen Tooltip-Einstellungen</li>
+      <li><kbd class="short">Strg+Umschalt-R</kbd>: Wähle zwischen ARR-Einstellungen</li>
+      <li><kbd class="short">Strg+W</kbd>: "Fog of War" an/aus</li>
+      <li><kbd class="short">Alt+Plus</kbd>: In die Karte hineinzoomen</li>
+      <li><kbd class="short">Alt+Minus</kbd>: Aus der Karte hinauszoomen</li>
     </ul>
     <p>Wenn die Karte den Eingabefokus besitzt, kann man mit Hilfe der
       Pfeiltasten und der Tasten auf dem Ziffernblock zwischen den Regionen
-      wechseln.</p>
-    <!-- Inhalt - Ende -->
+      wechseln und mit der Leertaste Regionen aus- und wieder abwählen.</p>
+
+    <h2>Befehlseditor</h2>
+    <ul>
+      <li><kbd class="short">Strg+Leertaste</kbd>: Vorschläge zur Befehlsvervollständigung
+        anzeigen</li>
+      <li><kbd class="short">Strg+Pfeil-nach-unten</kbd>: In der Liste nach unten</li>
+      <li><kbd class="short">Strg+Pfeil-nach-oben</kbd>: In der Liste nach oben</li>
+      <li><kbd class="short">Tab</kbd>: Aktuellen vorschlag einfügen</li>
+      <li><kbd class="short">Esc</kbd>: Liste ausblenden</li>
+      <li><kbd class="short">Strg+T</kbd>: Erzeugt eine TEMP-Einheit unterhalb der gerade
+        aktiven Einheit</li>
+      <li><kbd class="short">Strg+Umschalt-T</kbd>: Löscht eine gerade ausgewählte
+        TEMP-Einheit</li>
+    </ul>
+
+    <h2>Offene Probleme</h2>
+    <ul>
+      <li><kbd class="short">Kontextmenü</kbd>: Aktionsmenü</li>
+      <li><kbd class="short">Leertaste</kbd>: Zum Objekt der aktuell ausgewählten Zeile
+        springen</li>
+      <li><kbd class="short">Enter</kbd>: Details der aktuell ausgewählten Zeile anzeigen</li>
+      <li><kbd class="short">Entf</kbd>: Aktuell ausgewählte Probleme ausblenden</li>
+      <li><kbd class="short">Strg+Entf</kbd>: Aktuell ausgewählte Problemtypen dauerhaft
+        ausblenden</li>
+    </ul>
+
+    <h2>Verschiedenes</h2>
+    <ul>
+      <li><kbd class="short">Strg+C</kbd>: In der Regionsübersicht: Derzeit ausgewählte
+        Zeilen in die Zwischenablage kopieren.</li>
+      <li><kbd class="short">Strg+R</kbd>: Befehlsergänzung von "MACHEN" zeigt nur
+        Gegenstände, für die die nötigen Ressourcen vorhanden sind.</li>
+      <li><kbd class="short">Strg+Umschalt-B</kbd> Dialog zur Umrechnung von Basis 36 nach
+        Basis 10</li>
+      <li><kbd class="short">Strg+F</kbd> Suchen</li>
+      <li><kbd class="short">Strg+G</kbd> Schnellsuche nach Einheiten, Schiffen und Gebäuden
+        anhand der Nummern</li>
+      <li><kbd class="short">Umschalt-F5</kbd>: Grafiken neu laden</li>
+      <li><kbd class="short">F5</kbd>: Alles neu zeichnen</li>
+    </ul>
   </div>
 </body>
 </html>

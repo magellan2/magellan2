@@ -188,7 +188,7 @@ public class NullContainer implements UnitContainer {
     return null;
   }
 
-  public int unitsCount() {
+  public int personCount() {
     return 0;
   }
 
@@ -212,7 +212,7 @@ public class NullContainer implements UnitContainer {
     return null;
   }
 
-  public int modifiedUnitsCount() {
+  public int modifiedPersonCount() {
     return 0;
   }
 

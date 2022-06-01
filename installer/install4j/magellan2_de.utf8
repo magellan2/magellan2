@@ -1,6 +1,8 @@
 test=Teste
 components.magellan.description=Das eigentliche Magellan mit allen Bibliotheken und Icons.
-components.skins.description=Einige Skins("Look & Feel"), die das Aussehen von Magellan verändern.
+components.skins.description=Einige Skins ("Look & Feel"), die das Aussehen von Magellan verändern.
 components.echeck.description=Ein Eressea-Befehlsprüfer. Durch die Möglichkeiten, die das Dock "Offene Probleme" von Magellan bietet, ist er weitgehend überflüssig. 
 components.javadoc.description=Dokumentation for Programmierer. Für die meisten Benutzer uninteressant, jedoch sehr nützlich für Anwender der "Extended Commands". 
 programgroup.magellan.web.site=Magellan Webseiten
+screens.update.nightly.title=Nach "nightly builds" suchen (aktuell aber unstabil)
+screens.update.nightly.help=Nightly builds sind aktueller, enthalten aber potentiell häufiger Fehler. Speichern Sie öfter!

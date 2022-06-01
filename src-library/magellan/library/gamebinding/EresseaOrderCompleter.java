@@ -92,10 +92,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
       completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_STEAL), " "));
     }
 
-    if (!region.buildings().isEmpty()) {
-      completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_SIEGE), " "));
-    }
-
     completions.add(new Completion(getOrderTranslation(EresseaConstants.OC_NAME), " "));
 
     if (unit.getItems().size() > 0) {
@@ -356,24 +352,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
   /** Add completions for command Beklaue. */
   public void cmpltBeklaue() {
     addEnemyUnits("");
-  }
-
-  /** Add completions for command Belagere. */
-  public void cmpltBelagere() {
-    if ((getData() != null) && (unit != null) && (region != null)) {
-      final Faction ownerFaction = unit.getFaction();
-      final Iterator<Building> buildings = region.buildings().iterator();
-
-      while (buildings.hasNext()) {
-        final Building b = buildings.next();
-
-        if (getData().getGameSpecificRules().isCastle(b.getType())
-            && (b.getModifiedOwnerUnit() == null || b.getModifiedOwnerUnit().getFaction().equals(
-                ownerFaction) == false)) {
-          addNamed(b, "", 0, true);
-        }
-      }
-    }
   }
 
   /** Add completions for command Benenne. */

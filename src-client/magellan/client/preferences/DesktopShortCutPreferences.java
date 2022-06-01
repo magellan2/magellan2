@@ -36,10 +36,8 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -59,7 +57,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
@@ -81,7 +78,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -91,6 +87,8 @@ import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.preferences.DesktopShortCutPreferences.ShortcutModel.StrokeInfo;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.KeyTextField;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -132,7 +130,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
           category = sl.toString();
         }
         try {
-          description = sl.getShortcutDescription(stroke);
+          description = sl.getShortcutDescription(strokeId);
           if (description == null) {
             description = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
           }
@@ -577,23 +575,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
   }
 
   protected static String getKeyStroke(KeyStroke stroke) {
-    return getKeyStroke(stroke.getModifiers(), stroke.getKeyCode());
+    return SwingUtils.getKeyStroke(stroke);
   }
 
-  protected static String getKeyStroke(int modifiers, int keyCode) {
-
-    if (keyCode == KeyEvent.VK_UNDEFINED || isModifier(keyCode))
-      return InputEvent.getModifiersExText(modifiers);
-    else if (modifiers != 0)
-      return InputEvent.getModifiersExText(modifiers) + " + "
-          + KeyEvent.getKeyText(keyCode);
-    else
-      return KeyEvent.getKeyText(keyCode);
-  }
-
-  private static boolean isModifier(int key) {
-    return ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
-        || (key == KeyEvent.VK_ALT_GRAPH));
+  public static String getKeyStroke(int modifiers, int keyCode) {
+    return SwingUtils.getKeyStroke(modifiers, keyCode);
   }
 
   protected MouseListener getMousePressedMouseListener() {
@@ -675,7 +661,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         return doIt;
       }
     }
-    return false;
+    return newStroke != null;
   }
 
   protected class InformDialog extends JDialog implements ActionListener {
@@ -709,7 +695,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       Iterator<KeyStroke> it = otherShortcuts.iterator();
 
       while (it.hasNext()) {
-        buf.append(getKeyStroke(it.next()));
+        buf.append(SwingUtils.getKeyStroke(it.next()));
 
         if (it.hasNext()) {
           buf.append(", ");
@@ -776,8 +762,11 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       JLabel label = new JLabel(
           Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label"));
       con.add(label, BorderLayout.NORTH);
-      text = new KeyTextField();
-      text.setText(stroke);
+
+      this.stroke = stroke;
+      text = new KeyTextField(20);
+      text.setIgnoreEnter(true);
+      text.init(stroke);
       text.addKeyListener(new KeyAdapter() {
         @Override
         public void keyPressed(KeyEvent e) {
@@ -811,8 +800,10 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
     protected void terminate(boolean success) {
       if (success) {
-        if (text.getKeyCode() != KeyEvent.VK_UNDEFINED) {
-          stroke = KeyStroke.getKeyStroke(text.getKeyCode(), text.getModifiers());
+        KeyStroke old = stroke;
+        stroke = text.getKeyStroke();
+        if (stroke.getKeyCode() == KeyEvent.VK_UNDEFINED) {
+          stroke = old;
         }
       } else {
         stroke = null;
@@ -841,161 +832,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
 
   }
 
-  private static class KeyTextField extends JTextField implements KeyListener {
-    protected int modifiers = 0;
-    protected int key = 0;
-
-    /**
-     * Creates a new KeyTextField object.
-     */
-    public KeyTextField() {
-      super(20);
-      addKeyListener(this);
-    }
-
-    public void setText(KeyStroke stroke) {
-      setText(stroke.getModifiers(), stroke.getKeyCode());
-    }
-
-    /**
-     * 
-     */
-    public void init(KeyStroke stroke) {
-      key = stroke.getKeyCode();
-      modifiers = stroke.getModifiers();
-
-      setText(modifiers, key);
-    }
-
-    private void setText(int modifiers, int key) {
-      String s = DesktopShortCutPreferences.getKeyStroke(modifiers, key);
-      setText(s);
-    }
-
-    /**
-     * 
-     */
-    public void keyReleased(KeyEvent p1) {
-      // delete any input if there's no "stable"(non-modifying) key
-      if (isModifier(key)) {
-        modifiers = KeyEvent.VK_UNDEFINED;
-        key = KeyEvent.VK_UNDEFINED;
-        setText(modifiers, key);
-      }
-    }
-
-    /**
-     * 
-     */
-    public void keyPressed(KeyEvent p1) {
-      if (p1.getModifiersEx() == 0 &&
-          (p1.getKeyCode() == KeyEvent.VK_ENTER || p1.getKeyCode() == KeyEvent.VK_ESCAPE))
-        // ignore ENTER
-        return;
-      modifiers = p1.getModifiersEx();
-      key = p1.getKeyCode();
-
-      setText(modifiers, key);
-      p1.consume();
-    }
-
-    /**
-     * 
-     */
-    public void keyTyped(KeyEvent p1) {
-      p1.consume();
-    }
-
-    /**
-     * To allow "tab" as a key.
-     */
-    @Override
-    public boolean isManagingFocus() {
-      return true;
-    }
-
-    /**
-     * 
-     */
-    public int getKeyCode() {
-      return key;
-    }
-
-    /**
-     * 
-     */
-    public int getModifiers() {
-      return modifiers;
-    }
-
-    public KeyStroke getKeyStroke() {
-      return KeyStroke.getKeyStroke(getKeyCode(), getModifiers());
-    }
-  }
-
-  /**
-   * A CellEditor component for editing key strokes in JTable cells.
-   */
-  protected class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor {
-
-    private KeyTextField textField;
-    private Object oldValue;
-    private JTextField dummy = new JTextField();
-
-    public KeyStrokeCellEditor() {
-      textField = new KeyTextField();
-    }
-
-    @Override
-    public void cancelCellEditing() {
-      if (oldValue instanceof KeyStroke) {
-        textField.init((KeyStroke) oldValue);
-      }
-      super.cancelCellEditing();
-    }
-
-    @Override
-    public boolean stopCellEditing() {
-      if (oldValue instanceof KeyStroke)
-        if (!changeStroke((KeyStroke) getCellEditorValue(), (KeyStroke) oldValue, -1)) {
-          textField.init((KeyStroke) oldValue);
-        }
-
-      return super.stopCellEditing();
-    }
-
-    @Override
-    public boolean isCellEditable(EventObject anEvent) {
-      return super.isCellEditable(anEvent);
-    }
-
-    /**
-     * @see javax.swing.DefaultCellEditor#getCellEditorValue()
-     */
-    public Object getCellEditorValue() {
-      if (oldValue instanceof KeyStroke)
-        return textField.getKeyStroke();
-      else
-        return oldValue;
-    }
-
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-        int row, int column) {
-      if (value instanceof KeyStroke) {
-        oldValue = value;
-        textField.init((KeyStroke) value);
-        return textField;
-      } else {
-        oldValue = value;
-        dummy.setEditable(false);
-        dummy.setText(oldValue.toString());
-        return dummy;
-      }
-    }
-
-  }
-
-  protected class StrokeRenderer extends DefaultTableCellRenderer {
+  class StrokeRenderer extends DefaultTableCellRenderer {
     protected Font bold;
     protected Font norm;
 
@@ -1025,7 +862,7 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
         } else {
           setForeground(Color.BLACK);
         }
-        setText(getKeyStroke((KeyStroke) value));
+        setText(SwingUtils.getKeyStroke((KeyStroke) value));
       } else if (modelColumn == 0) {
         setFont(bold);
       }

@@ -21,6 +21,7 @@ import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Resources;
 import magellan.library.utils.guiwrapper.EventDispatcherInterface;
 
 /**
@@ -30,6 +31,11 @@ import magellan.library.utils.guiwrapper.EventDispatcherInterface;
  * @version 1.0
  */
 public class ReplacerHelp implements GameDataListener {
+  protected static final String NEWLINE = "\n";
+  private static final String CMD = "§";
+
+  Object args[] = new Object[2];
+
   protected static DefaultReplacerFactory defaultFactory;
 
   /**
@@ -39,9 +45,14 @@ public class ReplacerHelp implements GameDataListener {
 
     DefaultReplacerFactory drf = new DefaultReplacerFactory();
 
-    drf.putReplacer("newline", NewLineReplacer.class);
-
     Object args[] = new Object[2];
+    args[0] = NEWLINE;
+    args[1] = Resources.get("util.replacers.newlinereplacer.description");
+    drf.putReplacer("newline", ConstantReplacer.class, args);
+    args[0] = CMD;
+    args[1] = Resources.get("util.replacers.cmdreplacer.description");
+    drf.putReplacer("cmd", ConstantReplacer.class, args);
+
     args[0] = "getName";
     args[1] = Integer.valueOf(0);
 
@@ -103,7 +114,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("entertain", regionMethod, args);
     args[0] = "getPeasantWage";
     drf.putReplacer("peasantWage", regionMethod, args);
-    args[0] = "morale";
+    args[0] = "getMorale";
     drf.putReplacer("morale", regionMethod, args);
 
     // Fiete 20061222 coords
@@ -112,6 +123,8 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("posX", regionMethod, args);
     args[0] = "getCoordY";
     drf.putReplacer("posY", regionMethod, args);
+    args[0] = "getCoordY";
+    drf.putReplacer("posZ", regionMethod, args);
 
     drf.putReplacer("herb", HerbReplacer.class);
 
@@ -151,6 +164,7 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("tagblank", TagReplacer.class, Boolean.TRUE);
 
     // description
+    drf.putReplacer("name", NameReplacer.class);
     drf.putReplacer("description", DescriptionReplacer.class);
     drf.putReplacer("privDesc", PrivDescReplacer.class);
 
@@ -171,6 +185,8 @@ public class ReplacerHelp implements GameDataListener {
     drf.putReplacer("-", SubtractionOperator.class);
     drf.putReplacer("*", MultiplicationOperator.class);
     drf.putReplacer("/", DivisionOperator.class);
+
+    drf.putReplacer("substr", SubstrOperator.class);
 
     // op switch
     drf.putReplacer("op", OperationSwitch.class);
@@ -277,7 +293,7 @@ public class ReplacerHelp implements GameDataListener {
    * result "-?".
    */
   public static ReplacerSystem createReplacer(String def) {
-    return ReplacerHelp.createReplacer(def, "§", "-?-");
+    return ReplacerHelp.createReplacer(def, CMD, "-?-");
   }
 
   /**
@@ -285,7 +301,7 @@ public class ReplacerHelp implements GameDataListener {
    * unknown result.
    */
   public static ReplacerSystem createReplacer(String def, String unknown) {
-    return ReplacerHelp.createReplacer(def, "§", unknown);
+    return ReplacerHelp.createReplacer(def, CMD, unknown);
   }
 
   /**

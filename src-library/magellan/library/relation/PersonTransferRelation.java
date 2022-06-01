@@ -13,6 +13,12 @@
 
 package magellan.library.relation;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.rules.Race;
 
@@ -22,6 +28,7 @@ import magellan.library.rules.Race;
 public class PersonTransferRelation extends TransferRelation {
   /** The source unit's race */
   public final Race race;
+  private Map<StringID, Skill> skills;
 
   /**
    * Creates a new PersonTransferRelation object.
@@ -35,15 +42,27 @@ public class PersonTransferRelation extends TransferRelation {
   public PersonTransferRelation(Unit source, Unit target, int amount, Race race, int line) {
     super(source, target, amount, line);
     this.race = race;
+    setSkills(source);
   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.eressea.relation.TransferRelation#toString()
-   */
   @Override
   public String toString() {
     return super.toString() + "@RACE=" + race;
+  }
+
+  protected void setSkills(Unit unit) {
+    if (unit.getModifiedSkills().isEmpty()) {
+      skills = Collections.emptyMap();
+    }
+    skills = new HashMap<StringID, Skill>(unit.getModifiedSkills().size());
+    for (Skill sk : unit.getModifiedSkills()) {
+      skills.put(sk.getSkillType().getID(),
+          new Skill(sk.getSkillType(), sk.getPoints(), sk.getLevel(), amount, sk.noSkillPoints()));
+    }
+  }
+
+  public Map<StringID, Skill> getSkills() {
+    return skills;
   }
 
 }

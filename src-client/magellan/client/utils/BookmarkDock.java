@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.utils;
 
 import java.awt.BorderLayout;
@@ -100,11 +100,11 @@ public class BookmarkDock extends JPanel implements SelectionListener {
         @Override
         public void keyReleased(KeyEvent e) {
           if (e.getKeyCode() == KeyEvent.VK_F2) {
-            if (e.getModifiers() == InputEvent.CTRL_MASK) {
+            if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
               manager.toggleBookmark();
-            } else if (e.getModifiers() == 0) {
+            } else if (e.getModifiersEx() == 0) {
               manager.jumpForward();
-            } else if (e.getModifiers() == InputEvent.SHIFT_MASK) {
+            } else if (e.getModifiersEx() == InputEvent.SHIFT_DOWN_MASK) {
               manager.jumpBackward();
             }
           } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {

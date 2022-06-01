@@ -13,6 +13,7 @@
 
 package magellan.library.utils.logging;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
@@ -116,25 +117,25 @@ public class SwingInspector {
     StringBuffer sb = new StringBuffer();
 
     for (KeyStroke keystroke : keystrokes) {
-      if ((keystroke.getModifiers() & java.awt.Event.CTRL_MASK) != 0) {
+      if ((keystroke.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0) {
         sb.append("Ctrl  ");
       } else {
         sb.append("      ");
       }
 
-      if ((keystroke.getModifiers() & java.awt.Event.SHIFT_MASK) != 0) {
+      if ((keystroke.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
         sb.append("Shift ");
       } else {
         sb.append("      ");
       }
 
-      if ((keystroke.getModifiers() & java.awt.Event.META_MASK) != 0) {
+      if ((keystroke.getModifiers() & InputEvent.META_DOWN_MASK) != 0) {
         sb.append("Meta  ");
       } else {
         sb.append("      ");
       }
 
-      if ((keystroke.getModifiers() & java.awt.Event.ALT_MASK) != 0) {
+      if ((keystroke.getModifiers() & InputEvent.ALT_DOWN_MASK) != 0) {
         sb.append("Alt   ");
       } else {
         sb.append("      ");

@@ -512,7 +512,7 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testGetLongOrdersTranslated() throws Exception {
     ArrayList<String> orders = changer.getLongOrders(DE_LOCALE);
-    assertEquals(22, orders.size());
+    assertEquals(21, orders.size());
     assertEquals("ARBEITE", orders.get(0));
   }
 
@@ -522,9 +522,9 @@ public class EresseaOrderChangerTest extends MagellanTestWithResources {
   @Test
   public void testGetLongOrderTokens() throws Exception {
     ArrayList<StringID> tokens = changer.getLongOrderTokens();
-    assertEquals(22, tokens.size());
+    assertEquals(21, tokens.size());
     assertEquals(EresseaConstants.OC_WORK, tokens.get(0));
-    assertEquals(EresseaConstants.OC_GROW, tokens.get(20));
+    assertEquals(EresseaConstants.OC_DESTROY, tokens.get(20));
   }
 
   /**

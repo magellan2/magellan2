@@ -88,7 +88,7 @@ public abstract class MenuAction extends AbstractAction {
       menuActionPerformed(e);
     } catch (Throwable t) {
       MenuAction.log.error(t.getMessage(), t);
-      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t.getMessage(), "", t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, t);
       errorWindow.setVisible(true);
     }
   }

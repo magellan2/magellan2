@@ -1,0 +1,41 @@
+<html>
+<body>
+        <table width="100%" cellpadding="0">
+          <tr>
+            <td>Bauern</td>
+            <td>§peasants§</td>
+            <td>Rekruten</td>
+            <td>§recruit§priv§100§</td>
+          </tr>
+          <tr>
+            <td>Max.Steuern</td>
+            <td>§if§<§peasants§maxWorkers§*§peasants§-§peasantWage§10§else§-§*§maxWorkers§peasantWage§*§10§peasants§end§</td>
+            <td>Poolsilber</td>
+            <td>§item§Silber§</td>
+          </tr>
+          <tr>
+            <td>mögl. Verdienst</td>
+            <td>§*§20§+§skillsum§Unterhaltung§skillsum§Steuereintreiben§</td>
+            <td>Holz</td>
+            <td>§item§Holz§</td>
+          </tr>
+          <tr>
+            <td>Waffen</td>
+            <td>§+§item§Speer§+§item§Mallornspeer§+§item§Hellebarde§+§item§Schwert§+§item§Bihänder§+§item§Kriegsaxt§+§item§Lanze§item§Mallornlanze§
+              / §+§item§Armbrust§+§item§Mallornarmbrust§+§item§Bogen§+§item§Mallornbogen§+§item§Katapult§item§Elfenbogen§</td>
+            <td>Wagen / Pferd</td>
+            <td>§item§Wagen§ / §item§Pferd§</td>
+          </tr>
+          <tr>
+            <td>Rüstung / Schild</td>
+            <td>§+§item§Kettenhemd§+§item§Laenkettenhemd§item§Plattenpanzer§ / §item§Schild§</td>
+            <td>Eisen / Stein</td>
+            <td>§item§Eisen§ / §item§Stein§</td>
+          </tr>
+          <tr>
+            <td>Kämpfer</td>
+            <td>§+§skill§Stangenwaffen§skill§Hiebwaffen§ /
+              §+§skill§Armbrustschießen§+§skill§Bogenschießen§skill§Katapultbedienung§</td>
+          </tr>
+        </table></body>
+</html>

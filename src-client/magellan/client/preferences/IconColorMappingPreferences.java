@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
@@ -56,6 +56,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -66,6 +67,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -611,25 +613,28 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
       super(owner, true);
 
       Container con = getContentPane();
+      JPanel cont = new JPanel();
+      cont.setBorder(new EmptyBorder(6, 6, 6, 6));
+      con.add(cont);
 
-      con.setLayout(new BorderLayout());
+      cont.setLayout(new BorderLayout());
 
-      java.awt.Component expl = WrappableLabel.getLabel(text);
+      JComponent expl = WrappableLabel.getLabel(text).getComponent();
 
       JScrollPane tScroll = new JScrollPane(expl);
       tScroll.setBorder(null);
-      con.add(tScroll, BorderLayout.CENTER);
+      cont.add(tScroll, BorderLayout.CENTER);
 
       JButton button = new JButton(buttonText);
       button.addActionListener(this);
 
       JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
       panel.add(button);
-      con.add(panel, BorderLayout.SOUTH);
+      cont.add(panel, BorderLayout.SOUTH);
 
       Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-      dim.width = 400;
-      dim.height = 300;
+      dim.width = PREFERRED_WIDTH;
+      dim.height = PREFERRED_WIDTH * 3 / 4;
       this.setSize(dim);
       setLocationRelativeTo(owner);
     }

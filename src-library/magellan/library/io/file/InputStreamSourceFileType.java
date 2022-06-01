@@ -33,7 +33,7 @@ public class InputStreamSourceFileType extends FileType {
 
   @Override
   protected InputStream createInputStream() throws IOException {
-    URL url = Resources.getResourceURL(filename.getPath().toLowerCase());
+    URL url = Resources.getResourceURL(filename.getPath());
 
     if (url == null) {
 

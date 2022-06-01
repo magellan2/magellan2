@@ -110,8 +110,7 @@ import magellan.library.utils.logging.Logger;
  * A panel holding one or more {@link OrderEditor}s.
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel implements
-    OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
-    MouseListener, CacheHandler {
+    OrderEditorList, SelectionListener, TempUnitListener, MouseListener, CacheHandler {
   private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
 
   private boolean multiEditorLayout = false;
@@ -208,6 +207,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     // ClearLook suggests to remove the border
     scpContent.setBorder(null);
+
+    addFocusListener(new FocusListener() {
+      public void focusLost(FocusEvent e) {
+        //
+      }
+
+      public void focusGained(FocusEvent e) {
+        requestEditorFocus();
+      }
+    });
 
     redrawPane();
 
@@ -376,7 +385,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // current editor
     // gets the focus.
     if (restoreFocus) {
-      requestFocus();
+      requestEditorFocus();
     }
 
     // update button state
@@ -590,7 +599,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * Processes CTRL+UP/DOWN keys.
    */
   public void keyPressed(KeyEvent e) {
-    if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+    if (e.isControlDown()) {
       if (e.getKeyCode() == KeyEvent.VK_SPACE) {
         getCompleter().offerCompletion(getCurrentEditor());
       }
@@ -646,26 +655,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    */
   public void keyTyped(KeyEvent e) {
     // do not react
-  }
-
-  /**
-   *
-   */
-  public void focusGained(FocusEvent e) {
-    // log.info("fcg: "+((OrderEditor)e.getSource()).getUnit());
-    // if(multiEditorLayout && e.getSource() instanceof OrderEditor) {
-    // if((currentUnit == null) || (getEditor(currentUnit) != e.getSource())) {
-    // dispatcher.fire(new SelectionEvent(this, null,
-    // ((OrderEditor) e.getSource()).getUnit()));
-    // }
-    // }
-  }
-
-  /**
-   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
-   */
-  public void focusLost(FocusEvent e) {
-    // getCompleter().focusLost(e)
   }
 
   /**
@@ -1439,19 +1428,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // });
   }
 
-  /**
-   * Ensures that the right order editor gets the focus.
-   */
-  @Override
-  public void requestFocus() {
+  private boolean requestEditorFocus() {
     if (multiEditorLayout) {
       if (getEditor(currentUnit) != null) {
         requestFocus(getEditor(currentUnit));
-      } else {
-        super.requestFocus();
-      }
+        return true;
+      } else
+        return false;
     } else {
       editorSingelton.requestFocus();
+      return true;
     }
   }
 
@@ -1632,7 +1618,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void focusGained(FocusEvent e) {
       // first the source (maybe selection event!)
-      source.focusGained(e);
+      // source.focusGained(e);
 
       // then external listeners
       for (FocusListener focusListener2 : source.focusListeners) {
@@ -1651,7 +1637,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       }
 
       // now the source
-      source.focusLost(e);
+      // source.focusLost(e);
     }
   }
 
@@ -1807,9 +1793,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         public Iterator<KeyStroke> getShortCuts() {
           if (shortcuts == null) {
             shortcuts = new LinkedList<KeyStroke>();
-            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK));
-            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK
-                | InputEvent.SHIFT_MASK));
+            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
+            shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK
+                | InputEvent.SHIFT_DOWN_MASK));
           }
 
           return shortcuts.iterator();

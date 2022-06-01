@@ -73,8 +73,6 @@
 			<tocitem text="Heeresstatistik" image="topic" target="menu_extras_armystatistics"/>
 			<tocitem text="Handelsstatistik" image="topic" target="menu_extras_tradestatistics"/>
 			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
-			<tocitem text="Neuzeichnen" image="topic" target="menu_extras_redraw"/>
-			<tocitem text="Grafikset neuladen" image="topic" target="menu_extras_reload"/>
 			<tocitem text="Optionen" image="chapter" target="menu_extras_options">
 				<tocitem text="System" image="topic" target="menu_extras_options_system"/>
 				<tocitem text="Desktop" image="topic" target="menu_extras_options_desktop"/>
@@ -85,10 +83,7 @@
 				<tocitem text="Ressourcen" image="topic" target="menu_extras_options_resources"/>
 				<tocitem text="Plugins" image="topic" target="menu_extras_options_plugins"/>
 			</tocitem>
-			<!--<tocitem text="Eressea Optionen" image="topic" target="menu_extras_eresseaoptions"/> -->
-			<tocitem text="Hilfe" image="topic" target="menu_extras_help"/>
 			<tocitem text="Tip des Tages" image="topic" target="menu_extras_tips"/>
-			<tocitem text="Info" image="topic" target="menu_extras_info"/>
 		</tocitem>
 	</tocitem>
 
@@ -101,9 +96,9 @@
 		<tocitem text="Objektname/-beschreibung" image="topic" target="windows_name"/>
 		<tocitem text="Details" image="topic" target="windows_details"/>
 		<tocitem text="Befehle" image="topic" target="windows_orders"/>
-		<tocitem text="E Check" image="topic" target="windows_echeck"/>
+		<tocitem text="ECheck" image="topic" target="windows_echeck"/>
 		<tocitem text="Offene Probleme" image="topic" target="windows_problems"/>
-		<!-- <tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/> -->
+		<tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/>
 	</tocitem>
 
 	<tocitem text="Referenz" image="chapter" target="reference">
@@ -115,6 +110,7 @@
 		<tocitem text="Ressourcen" image="topic" target="reference_ressources"></tocitem>
 		<tocitem text="Computerreporte" image="topic" target="reference_cr"></tocitem>
 		<tocitem text="Tastaturkürzel" image="topic" target="reference_shortcuts"></tocitem>
+		<tocitem text="ATR, ARR, Tooltips, Regionsinfo" image="topic" target="reference_atr"></tocitem>
 		<tocitem text="Kommandozeilen-Parameter" image="topic" target="reference_commandline"></tocitem>
 	</tocitem>
 	<tocitem text="FAQ" image="topic" target="faq"></tocitem>

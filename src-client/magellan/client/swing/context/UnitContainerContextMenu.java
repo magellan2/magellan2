@@ -27,8 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -49,8 +52,10 @@ import magellan.client.swing.FactionStatsDialog;
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.RoutingDialog;
+import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.HasRegion;
 import magellan.library.Identifiable;
 import magellan.library.IntegerID;
 import magellan.library.Island;
@@ -64,6 +69,7 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
+import magellan.library.utils.Taggable;
 
 /**
  * A context menu for UnitContainers like ships or buildings. Providing copy ID and copy ID+name.
@@ -244,6 +250,15 @@ public class UnitContainerContextMenu extends JPopupMenu {
       add(shipList);
     }
 
+    // add tag menu
+    JMenuItem addTag = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.addtag.caption"));
+    addTag.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        event_addTag();
+      }
+    });
+    add(addTag);
+
     initContextMenuProviders(uc);
   }
 
@@ -267,8 +282,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     private JButton ok;
     private JButton cancel;
 
-    private class IslandComperator implements Comparator<Island>
-    {
+    private class IslandComperator implements Comparator<Island> {
       public int compare(Island o1, Island o2) {
         return o1.getName().compareTo(o2.getName());
       }
@@ -601,4 +615,97 @@ public class UnitContainerContextMenu extends JPopupMenu {
     cb.setContents(strSel, null);
   }
 
+  /**
+   * Adds a tag to selected objects.
+   */
+  private void event_addTag() {
+    Map<String, Collection<String>> keys = new HashMap<String, Collection<String>>();
+    Collection<Region> regions = new HashSet<Region>();
+
+    boolean unitsSelected = false;
+    boolean regionsSelected = false;
+    boolean buildingsSelected = false;
+    boolean shipsSelected = false;
+    for (Object o : selectedObjects) {
+      if (o instanceof Taggable) {
+        for (String tag : ((Taggable) o).getTagMap().keySet()) {
+          keys.put(tag, new HashSet<String>());
+        }
+      }
+      if (o instanceof HasRegion) {
+        regions.add(((HasRegion) o).getRegion());
+      }
+      if (o instanceof Unit) {
+        unitsSelected = true;
+      } else if (o instanceof Region) {
+        regionsSelected = true;
+      } else if (o instanceof Building) {
+        buildingsSelected = true;
+      } else if (o instanceof Ship) {
+        shipsSelected = true;
+      }
+    }
+
+    for (Region r : regions) {
+      if (unitsSelected) {
+        for (Unit u : r.units()) {
+          addTags(keys, u);
+        }
+      }
+      if (regionsSelected) {
+        for (Region r2 : data.getRegions()) {
+          addTags(keys, r2);
+        }
+      }
+      if (shipsSelected) {
+        for (Ship s : r.ships()) {
+          addTags(keys, s);
+        }
+      }
+      if (buildingsSelected) {
+        for (Building b : r.buildings()) {
+          addTags(keys, b);
+        }
+      }
+    }
+
+    // present key selection
+    String key = UnitContextMenu.showInputDialog(dispatcher.getMagellanContext().getClient(),
+        Resources.get("context.unitcontextmenu.addtag.tagname.message"), UnitContextMenu.sort(keys.keySet()));
+
+    if ((key != null) && (key.length() > 0)) {
+      String value = null;
+
+      Collection<String> vs = keys.get(key);
+
+      value =
+          UnitContextMenu.showInputDialog(dispatcher.getMagellanContext().getClient(),
+              Resources.get("context.unitcontextmenu.addtag.tagvalue.message"), UnitContextMenu.sort(vs));
+
+      if (value != null) {
+        for (Object o : selectedObjects) {
+          if (o instanceof Taggable) {
+            ((Taggable) o).putTag(key, value);
+            // TODO: Coalesce unitordersevent
+            if (o instanceof Unit) {
+              dispatcher.fire(new UnitOrdersEvent(this, (Unit) o));
+            }
+          }
+        }
+      }
+
+      selectedObjects.clear();
+      uc = null;
+    }
+  }
+
+  private void addTags(Map<String, Collection<String>> keys, Taggable taggable) {
+    for (String tag : taggable.getTagMap().keySet()) {
+      Collection<String> values = keys.get(tag);
+      if (values == null) {
+        keys.put(tag, values = new HashSet<String>());
+      }
+      values.add(taggable.getTag(tag));
+    }
+  }
 }

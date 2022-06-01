@@ -39,10 +39,16 @@ jobs:
            cat $fails
            exit 1
          fi
+         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
+         if [ -n "$skips" ]; then
+           echo "Skipped tests: "
+           echo $skips
+         fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
 
     - name: Sanity check
+      id: sanity_check
       run: |
         # env
         BUILD=${{ steps.get-version.outputs.BUILD }}
@@ -66,7 +72,7 @@ jobs:
         fi
 
         # most recent tag has older build number
-        LASTTAG=$(git tag -l v* --sort='-committerdate' | head -1)
+        LASTTAG=$(git tag -l "v*" --sort='-committerdate' | head -1)
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
           if (( BUILD == OLDBUILD )); then
@@ -154,17 +160,25 @@ jobs:
 
     - name: trigger meta action
       run: |
-        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
+        curl -sS -o meta.log \
+          -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
           -H 'Accept: application/vnd.github.everst-preview+json' \
           -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
-              "ref" : "${{ github.ref }}",
+              "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
               "caller_repository" : "${{ github.repository }}",
               "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
               "tag" : "${{ steps.get-version.outputs.TAG }}",
               "version" : "${{ steps.get-version.outputs.VERSION }}",
               "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
-
+        if [ -s meta.log ]; then
+          cat meta.log
+          rm meta.log
+          exit -1
+        else
+          echo "meta action apparently successful"
+          rm meta.log
+        fi

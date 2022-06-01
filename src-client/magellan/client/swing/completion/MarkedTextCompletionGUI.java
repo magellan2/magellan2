@@ -42,13 +42,14 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
   protected AutoCompletion ac;
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(java.awt.event.KeyEvent p1) {
+    //
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
    */
   public void keyPressed(java.awt.event.KeyEvent e) {
     if (lastEditor == null) { // forget to remove listener?
@@ -64,17 +65,17 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
       return;
 
     int code = e.getKeyCode();
-    int modifiers = e.getModifiers();
 
     // no "real" key
+    if (e.isActionKey())
+      return;
+
     if ((code == KeyEvent.VK_CONTROL) || (code == KeyEvent.VK_SHIFT) || (code == KeyEvent.VK_ALT)
         || (code == KeyEvent.VK_TAB))
       return;
 
-    int sp[][] = ac.getCompleterKeys();
-
-    for (int i = 0; i < 4; i++) {
-      if ((modifiers == sp[i][0]) && (code == sp[i][1]))
+    for (int i = 0; i < AutoCompletion.CK_START; i++) {
+      if (ac.isCompleterKey(e, i))
         return;
     }
 
@@ -83,17 +84,17 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
   }
 
   /**
-   * DOCUMENT-ME
    */
   public void keyTyped(java.awt.event.KeyEvent p1) {
+    //
   }
 
   /**
    * Initialize this GUI for use with the given AutoCompletion. This method is called by
    * AutoCompletion when the GUI is added to it.
    */
-  public void init(AutoCompletion ac) {
-    this.ac = ac;
+  public void init(AutoCompletion aac) {
+    ac = aac;
     selectedArea = new int[2];
     selectedArea[0] = -1;
   }
@@ -146,6 +147,7 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
         selectedArea[1] = editor.getSelectionEnd();
         lastCompletion = cmp;
       } catch (Exception exc) {
+        // skip
       }
     }
   }
@@ -161,7 +163,8 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.completion.CompletionGUI#cycleCompletion(javax.swing.text.JTextComponent,
+   *      java.util.Collection, java.lang.String, int)
    */
   public void cycleCompletion(JTextComponent editor, Collection<Completion> completions,
       String stub, int index) {
@@ -226,10 +229,11 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
     markedText = false;
   }
 
-  /*
+  /**
    * checks if the selected text is still ours(same as in selectedArea). May clear markedText flag.
    */
   protected void checkMarkedText() {
+    //
   }
 
   /**
@@ -244,6 +248,7 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
    * the key found.
    */
   public void specialKeyPressed(int key) {
+    // no keys
   }
 
   /**

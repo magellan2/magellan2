@@ -95,10 +95,10 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(2);
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK));
     // 1: open current
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK
-        | InputEvent.SHIFT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK
+        | InputEvent.SHIFT_DOWN_MASK));
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
   }
@@ -221,7 +221,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     JMenuItem editMenu =
         new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[] {
             unit.getName(), unit.getID().toString(),
-            KeyEvent.getKeyModifiersText(shortcuts.get(1).getModifiers()),
+            InputEvent.getModifiersExText(shortcuts.get(1).getModifiers()),
             KeyEvent.getKeyText(shortcuts.get(1).getKeyCode()) }));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -261,7 +261,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     JMenuItem editMenu =
         new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[] {
             container.getName(), container.getID().toString(),
-            KeyEvent.getKeyModifiersText(shortcuts.get(1).getModifiers()),
+            InputEvent.getModifiersExText(shortcuts.get(1).getModifiers()),
             KeyEvent.getKeyText(shortcuts.get(1).getKeyCode()) }));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {

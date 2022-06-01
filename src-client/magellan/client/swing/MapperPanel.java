@@ -33,14 +33,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -111,24 +111,21 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private static final Logger log = Logger.getInstance(MapperPanel.class);
 
   /** for 3 step zoom in and zoom out our 3 scalings */
-  private final float level3Scale1 = 0.3f;
-  private final float level3Scale2 = 1.3f;
-  private final float level3Scale3 = 2.3f;
+  private final float[] level3Scale = { 0.3f, 1.3f, 2.3f, 3f };
 
   /** fixed min and max factors for scaling */
-  private final float minScale = 0.1f;
-  private final float maxScale = 3.3f;
+  private float speedup = 2;
+  private float minScale = 0.1f;
+  private float maxScale = 3.34f;
 
   /** The map component in this panel. */
   private Mapper mapper;
   private JScrollPane scpMapper;
   private JLabel lblLevel;
   private JLabel lblScaling;
-  /** contains JComboBox<Integer> */
-  private JComboBox cmbLevel;
+  private JComboBox<Integer> cmbLevel;
   private JSlider sldScaling;
-  /** JComboBox<Bookmark> */
-  private JComboBox cmbHotSpots;
+  private JComboBox<Bookmark> cmbHotSpots;
   private Timer timer;
   private Point dragStart;
   private boolean dragValidated;
@@ -190,14 +187,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private void fillComboHotSpots() {
     cmbHotSpots.removeAllItems();
 
-    if ((getGameData() != null) && (getGameData().getBookmarks() != null)) {
-      List<Bookmark> hotSpots = new LinkedList<Bookmark>(getGameData().getBookmarks());
-      Collections.sort(hotSpots, new Comparator<Bookmark>() {
+    Collection<Bookmark> bm = getGameData().getBookmarks();
+    if ((getGameData() != null) && (bm != null)) {
+      Bookmark[] hotSpots = bm.toArray(new Bookmark[] {});
+      Arrays.sort(hotSpots, new Comparator<Bookmark>() {
         public int compare(Bookmark o1, Bookmark o2) {
           return o1.toString().compareTo(o2.toString());
         }
       });
-      cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
+      cmbHotSpots.setModel(new DefaultComboBoxModel<Bookmark>(hotSpots));
     }
   }
 
@@ -361,9 +359,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.setCursor(waitCursor);
 
     CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
-    mapper.setScaleFactor(sldScaling2Scale(sldScaling.getValue()));
-    setCenter(center);
-    this.repaint();
+    float fScale = sldScaling2Scale(sldScaling.getValue());
+    float fScale2 = mapper.getScaleFactor();
+    if (fScale != fScale2) {
+      mapper.setScaleFactor(fScale);
+
+      setCenter(center);
+      this.repaint();
+    }
     setCursor(defaultCursor);
     mapper.setCursor(defaultCursor);
   }
@@ -384,67 +387,92 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     setLayout(new BorderLayout());
     add(getMainPane(customRenderers, geo), BorderLayout.CENTER);
 
-    // register own mouse listener for letting the user drag the
-    // map
+    // for ctrl-mouse wheel zooming
+    mapper.addMouseWheelListener(new MouseWheelListener() {
+
+      public void mouseWheelMoved(MouseWheelEvent e) {
+        if (e.getModifiersEx() == InputEvent.CTRL_DOWN_MASK) {
+          CoordinateID cOld = getMapper().getCoordinate(e.getPoint().x, e.getPoint().y);
+          int clicks = e.getWheelRotation();
+          if (clicks < 0) {
+            while (clicks++ < 0) {
+              if (getScaleFactor() < maxScale) {
+                setNewScaleFactor(getNextTickValue(1f), cOld, e.getPoint());
+              }
+            }
+          } else {
+            while (clicks-- > 0) {
+              if (getScaleFactor() > minScale) {
+                setNewScaleFactor(getPreviousTickValue(1f));
+              }
+            }
+          }
+
+          e.consume();
+        } else {
+          for (MouseWheelListener l : scpMapper.getMouseWheelListeners()) {
+            l.mouseWheelMoved(e);
+          }
+        }
+      }
+    });
+
+    // use mousepressed to record start of the drag
     mapper.addMouseListener(new MouseAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
         dragStart = e.getPoint();
         dragValidated = false;
       }
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
-        if (((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) || !dragValidated
-            || ((e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0))
-          return;
-
-        Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
-
-        if (bounds.contains(e.getPoint()))
-          return;
-
-        JViewport viewport = scpMapper.getViewport();
-        Point viewPos = viewport.getViewPosition();
-        dragStart.translate(-e.getPoint().x, -e.getPoint().y);
-        dragStart.translate(viewPos.x, viewPos.y);
-
-        if (dragStart.x < 0) {
-          dragStart.x = 0;
-        } else {
-          int maxX = mapper.getWidth() - viewport.getWidth();
-
-          if (dragStart.x > maxX) {
-            dragStart.x = maxX;
-          }
-        }
-
-        if (dragStart.y < 0) {
-          dragStart.y = 0;
-        } else {
-          int maxY = mapper.getHeight() - viewport.getHeight();
-
-          if (dragStart.y > maxY) {
-            dragStart.y = maxY;
-          }
-        }
-
-        viewport.setViewPosition(dragStart);
-      }
     });
 
-    // use a mouse motion listener to confirm that the user actually moved the
-    // mouse while dragging
-    // to avoid unintended drag effects
-    mapper.addMouseMotionListener(new MouseMotionAdapter() {
+    mapper.addMouseMotionListener(new MouseAdapter() {
       @Override
       public void mouseDragged(MouseEvent e) {
-        if (!dragValidated) {
-          Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
+        if (e.isControlDown() || e.isAltDown()
+            || (e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == 0
+            || (e.getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0
+            || (e.getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0)
+          return;
 
+        // confirm that the user actually moved the
+        // mouse while dragging to avoid unintended drag effects
+        Rectangle bounds = new Rectangle(dragStart.x - 3, dragStart.y - 3, 6, 6);
+        if (!dragValidated) {
           if (!bounds.contains(e.getPoint())) {
             dragValidated = true;
           }
+        } else {
+          if (bounds.contains(e.getPoint()))
+            return;
+
+          JViewport viewport = scpMapper.getViewport();
+          Point viewPos = viewport.getViewPosition();
+          Point target = (Point) dragStart.clone();
+          target.translate(-e.getPoint().x, -e.getPoint().y);
+          target.translate(viewPos.x, viewPos.y);
+
+          if (target.x < 0) {
+            target.x = 0;
+          } else {
+            int maxX = mapper.getWidth() - viewport.getWidth();
+
+            if (target.x > maxX) {
+              target.x = maxX;
+            }
+          }
+
+          if (target.y < 0) {
+            target.y = 0;
+          } else {
+            int maxY = mapper.getHeight() - viewport.getHeight();
+
+            if (target.y > maxY) {
+              target.y = maxY;
+            }
+          }
+
+          viewport.setViewPosition(target);
         }
       }
     });
@@ -561,7 +589,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
    */
   public int getMinimapScale() {
     return minimapGeometry.getCellSize().width;
@@ -621,18 +648,34 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     fScale = Math.max(minScale, fScale);
     fScale = Math.min(fScale, maxScale);
     sldScaling.setValue(scale2sldScaling(fScale));
+    fScale = sldScaling2Scale(sldScaling.getValue());
     mapper.setScaleFactor(fScale);
   }
 
   /**
-   * sets new scale factor for map, centers on same position and repaints
-   *
-   * @param fScale
+   * Sets new scale factor for map, centers on same position and repaints.
    */
   public void setNewScaleFactor(float fScale) {
-    CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+    setNewScaleFactor(fScale, null, null);
+  }
+
+  /**
+   * Sets new scale factor for map and position center at screenPos.
+   *
+   */
+  public void setNewScaleFactor(float fScale, CoordinateID center, Point screenPos) {
+    if (center == null) {
+      center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+    }
+
     setScaleFactor(fScale);
-    setCenter(center);
+
+    if (screenPos != null) {
+      Point offset = scpMapper.getViewport().getViewPosition();
+      screenPos.translate(-offset.x, -offset.y);
+    }
+
+    setCenter(center, screenPos);
     this.repaint();
   }
 
@@ -717,12 +760,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Centers the map on a certain region.
+   * Positions the map so that center is at screenPos
    *
-   * @param center the coordinate of the region to center the map on.
+   * @param center the coordinate of the region to position
+   * @param screenPos
    */
-  public void setCenter(CoordinateID center) {
-    Point newViewPosition = mapper.getCenteredViewPosition(scpMapper.getSize(), center);
+  public void setCenter(CoordinateID center, Point screenPos) {
+    if (screenPos == null) {
+      Dimension size = scpMapper.getSize();
+      screenPos = new Point(size.width / 2, size.height / 2);
+    }
+    Point newViewPosition = mapper.getViewPosition(screenPos, center);
 
     if (newViewPosition != null) {
       Dimension size = scpMapper.getViewport().getSize();
@@ -736,15 +784,26 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
+   * Positions the map so that center is at the center of the viewport.
+   *
+   * @param center the coordinate of the region to position
+   */
+  public void setCenter(CoordinateID center) {
+    setCenter(center, null);
+  }
+
+  /**
    * Centers the minimap on a certain region.
    *
    * @param center the coordinate of the region to center the map on.
    */
   public void setMinimapCenter(CoordinateID center) {
-    Point newViewPosition = minimap.getCenteredViewPosition(minimapPane.getSize(), center);
+    Dimension size = minimapPane.getSize();
+
+    Point newViewPosition = minimap.getViewPosition(new Point(size.width / 2, size.height / 2), center);
 
     if (newViewPosition != null) {
-      Dimension size = minimapPane.getViewport().getSize();
+      size = minimapPane.getViewport().getSize();
       newViewPosition.x = Math.max(0, newViewPosition.x);
       newViewPosition.x = Math.min(Math.max(0, minimap.getWidth() - size.width), newViewPosition.x);
       newViewPosition.y = Math.max(0, newViewPosition.y);
@@ -789,12 +848,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private Region findRegion(CoordinateID center, int maxDist) {
+    final int z = center.getZ();
     final GameData data = getGameData();
     return Utils.spiralPattern(center, maxDist, new Utils.SpiralVisitor<Region>() {
       Region result = null;
 
       public boolean visit(CoordinateID c, int distance) {
-        Region r = data.getRegion(CoordinateID.create(c.getX(), c.getY()));
+        Region r = data.getRegion(CoordinateID.create(c.getX(), c.getY(), z));
         if (r != null) {
           result = r;
           return true;
@@ -880,23 +940,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return mapper;
   }
 
-  // /**
-  // * Creates random integer values until one is not already used as a key in the game data's hot
-  // * spot map.
-  // *
-  // * @return an integer the Integer representation of which is not already used as a key in the
-  // * current game data's hot spot map.
-  // */
-  // private IntegerID getNewHotSpotID() {
-  // IntegerID i = null;
-  //
-  // do {
-  // i = IntegerID.create(random.nextInt());
-  // } while (getGameData().getHotSpot(i) != null);
-  //
-  // return i;
-  // }
-
   private Container getMainPane(Collection<MapCellRenderer> renderers, CellGeometry geo) {
     mapper = new Mapper(context, renderers, geo, "Mapper");
     scpMapper = new JScrollPane(mapper);
@@ -947,7 +990,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblScaling.setLabelFor(sldScaling);
 
     lblLevel = new JLabel(Resources.get("mapperpanel.lbl.level.caption"));
-    cmbLevel = new JComboBox(mapper.getLevels().toArray(new Integer[] {}));
+    cmbLevel = new JComboBox<Integer>(mapper.getLevels().toArray(new Integer[] {}));
 
     if (cmbLevel.getItemCount() > 0) {
       cmbLevel.setSelectedIndex(0);
@@ -956,7 +999,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbLevel.setMinimumSize(new Dimension(50, 25));
     cmbLevel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Integer level = (Integer) ((JComboBox) ae.getSource()).getSelectedItem();
+        Integer level = (Integer) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (level != null) {
           setLevel(level);
@@ -967,7 +1010,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     lblLevel.setVisible(cmbLevel.getItemCount() > 1);
     cmbLevel.setVisible(cmbLevel.getItemCount() > 1);
 
-    cmbHotSpots = new JComboBox();
+    cmbHotSpots = new JComboBox<Bookmark>();
 
     fillComboHotSpots();
 
@@ -975,7 +1018,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbHotSpots.setVisible(cmbHotSpots.getItemCount() != 0);
     cmbHotSpots.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        Bookmark h = (Bookmark) ((JComboBox) ae.getSource()).getSelectedItem();
+        Bookmark h = (Bookmark) ((JComboBox<?>) ae.getSource()).getSelectedItem();
 
         if (h != null) {
           showHotSpot(h);
@@ -1058,11 +1101,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private int scale2sldScaling(float fScale) {
-    return (int) ((fScale - minScale) * 50.0);
+    if (fScale > minScale)
+      return (int) (Math.exp(Math.log(fScale - minScale) / speedup) * 50);
+    else
+      return sldScaling.getMinimum();
   }
 
   private float sldScaling2Scale(int value) {
-    return (float) ((value / 50.0) + minScale);
+    return (float) (Math.pow(value / 50.0, speedup) + minScale);
   }
 
   /**
@@ -1106,7 +1152,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 1:
       // request FOcus CTRL + 2 or ALT + 2
       magellan.client.desktop.DesktopEnvironment.requestFocus(MagellanDesktop.MAP_IDENTIFIER);
-      mapper.requestFocus(); // activate the mapper, not the scrollpane
+      mapper.requestFocusInWindow(); // activate the mapper, not the scrollpane
 
       break;
 
@@ -1116,17 +1162,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           JOptionPane.showInputDialog(Resources.get("mapperpanel.msg.enterhotspotname.text"));
 
       if ((input != null) && !input.equals("")) {
-        assignHotSpot(input); // just CTRL
+        assignHotSpot(input);
       }
 
       break;
 
     case 3:
-      // remove HotSpot CTRL + ALT + H
+      // remove HotSpot SIFT + CTRL + H
       Bookmark h = (Bookmark) cmbHotSpots.getSelectedItem();
 
       if (h != null) {
-        removeHotSpot(h); // SHIFT + CTRL
+        removeHotSpot(h);
       }
 
       break;
@@ -1157,36 +1203,44 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 7:
       // Zoom in CTRL + "+"
       if (getScaleFactor() < maxScale) {
-        setNewScaleFactor(getNextTickValue());
+        setNewScaleFactor(getNextTickValue(1));
       }
       break;
     case 8:
     case 9:
       // Zoom out CTRL + "-"
       if (getScaleFactor() > minScale) {
-        setNewScaleFactor(getPreviousTickValue());
+        setNewScaleFactor(getPreviousTickValue(1));
       }
       break;
 
     case 10:
     case 11:
       // 3 Step Zoom in ALT + "+"
-      if (getScaleFactor() < level3Scale3) {
-        float newScale = level3Scale3;
-        if (getScaleFactor() < (level3Scale2 - 0.2f)) {
-          newScale = level3Scale2;
+      float oldScale = getScaleFactor();
+      float newScale = level3Scale[level3Scale.length - 1];
+      for (float element : level3Scale) {
+        if (oldScale < element - .3f) {
+          newScale = element;
+          break;
         }
+      }
+      if (oldScale < newScale) {
         setNewScaleFactor(newScale);
       }
       break;
     case 12:
     case 13:
       // 3 Step Zoom out ALT + "-"
-      if (getScaleFactor() > level3Scale1) {
-        float newScale = level3Scale1;
-        if (getScaleFactor() > level3Scale2 + 0.2f) {
-          newScale = level3Scale2;
+      oldScale = getScaleFactor();
+      newScale = level3Scale[0];
+      for (int f = level3Scale.length - 1; f >= 0; --f) {
+        if (oldScale > level3Scale[f] + .3f) {
+          newScale = level3Scale[f];
+          break;
         }
+      }
+      if (oldScale > newScale) {
         setNewScaleFactor(newScale);
       }
       break;
@@ -1352,12 +1406,20 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return item;
   }
 
-  private float getNextTickValue() {
-    return sldScaling2Scale(sldScaling.getValue() + 2 * sldScaling.getMajorTickSpacing());
+  private float getNextTickValue(float multiplier) {
+    int nextTick = sldScaling.getValue() + (int) (multiplier * sldScaling.getMajorTickSpacing());
+    if (nextTick > sldScaling.getMaximum()) {
+      nextTick = sldScaling.getMaximum();
+    }
+    return sldScaling2Scale(nextTick);
   }
 
-  private float getPreviousTickValue() {
-    return sldScaling2Scale(sldScaling.getValue() - 2 * sldScaling.getMajorTickSpacing());
+  private float getPreviousTickValue(float multiplier) {
+    int nextTick = sldScaling.getValue() - (int) (multiplier * sldScaling.getMajorTickSpacing());
+    if (nextTick < sldScaling.getMinimum()) {
+      nextTick = sldScaling.getMinimum();
+    }
+    return sldScaling2Scale(nextTick);
   }
 
   /**

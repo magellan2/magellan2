@@ -184,7 +184,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 
       shortenStrings(display, rect.width);
 
-      int height = getHeight(display);
+      int height = getMaxHeight(display);
       int middleX = (rect.x + (rect.width / 2)) - offset.x;
       int middleY = (rect.y + (rect.height / 2) + 1) - offset.y;
       int upperY = middleY;
@@ -192,7 +192,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
       if (display.length == 1) {
         upperY += (height / 4);
       } else {
-        upperY -= (((display.length - 1) * height) / 4);
+        upperY -= (((display.length - 1) * height) / 2) - height / 4;
       }
 
       switch (hAlign) {
@@ -240,7 +240,15 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
         .getWidth();
   }
 
-  private int getHeight(String[] display) {
+  protected int getHeight(String[] display) {
+    double h = 0;
+    for (String text : display) {
+      h += font.getStringBounds(text, graphics.getFontRenderContext()).getWidth();
+    }
+    return (int) h;
+  }
+
+  protected int getMaxHeight(String[] display) {
     float height = 1;
     for (String text : display) {
       height =

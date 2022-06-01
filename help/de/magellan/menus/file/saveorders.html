@@ -18,73 +18,117 @@
 
     <h1>Befehle speichern</h1>
     <p>
-      <img src="../../images/menu_file_saveorders.gif" alt="" border="0" />
+      <img src="../../images/menu_file_saveorders.gif" alt="Befehle speichern"
+        border="0" />
     </p>
-    <p>Zum Speichern/Verschicken der Befehle stehen folgende Optionen zur
-      Verfügung:</p>
+    <p>Zum Speichern oder Verschicken der Befehle stehen folgende Optionen
+      (Reiter) zur Verfügung:</p>
     <ul>
-      <li><b>Speichern</b>:<br /> speichert die Befehlsdatei am
-        angegebenen Ort.<br /></li>
-      <li><b>Zwischenablage</b>:<br /> kopiert die Befehlsdatei in die
+      <li><b>E-Mail</b><br /> Verschickt die Befehle direkt per Mail.
+        Magellan kann für einige populäre Mailprovider die nötigen
+        Einstellungen erraten. Dann müssen Sie nur noch das Passwort eingeben.
+        Sollte dies nicht möglich sein können Sie die restlichen Einstellungen
+        selber ausfüllen. Falls Sie die Einstellungen nicht kennen, hilft
+        häufig eine einfache Internetsuche nach "SMTP-Einstellungen für
+        Providername". Bei manchen Providern muss man diese Funktion erst in
+        den Emaileinstellungen freischalten. Besuchen Sie dazu die
+        Internetseite Ihres Providers. Diese Einstellungen haben nichts mit
+        Eressea zu tun, aber die Eressea-Community hilft in solchen Fragen
+        gerne weiter, wenn man nett fragt. <br /> <img
+        src="../../images/menu_file_saveorders_email.gif"
+        alt="Befehle speichern" border="0" />
+        <ul>
+          <li><b>Einstellungen erraten</b><br /> Versucht die
+            Servereinstellungen aus der Absenderadresse zu erraten oder bietet
+            die Möglichkeit, aus einer Liste populärer Anbieter auszuwählen.
+          <li><b>Absenderadresse</b><br /> Ihre Emailadresse, von der aus
+            die Befehle verschickt werden sollen.</li>
+          <li><b>SMTP-Server</b><br /> Hier trägt man den Mailserver
+            seines Internetproviders ein (zum Beispiel <kbd>smtp.provider.de</kbd>).</li>
+          <li><b>Port</b><br /> Diese Einstellungen müssen Sie über ihren
+            Provider in Erfahrung bringen. Gängige Werte sind 25, 465 oder 587.</li>
+          <li><b>Verwende SSL / Verwende TLS</b><br /> Diese
+            Einstellungen hängen vom Protokoll ab, die ihr Provider verwendet.
+            Versuchen Sie im Zweifel, beide auszuwählen.</li>
+          <li><b>Authentifizierung verwenden</b><br /> Für die meisten
+            Provider muss dieses Kästchen heutzutage aktiviert sein.</li>
+          <li><b>Benutzername</b><br /> Häufig identisch mit der
+            Absenderadresse, aber auch dies hängt vom Provider ab.</li>
+          <li><b>Passwort</b><br /> Magellan kann ihr Passwort speichern.
+            Dies bedeutet ein gewisses Risiko, falls jemand mit unlauteren
+            Absichten Zugriff auf ihren Computer erlangt. Sie können das
+            Häkchen bei "immer nachfragen" setzen, dann müssen Sie das Passwort
+            jedes Mal neu eingeben, dafür ist es sicherer.</li>
+          <li><b>Empfängeradresse</b><br /> Hier wird die Mail-Adresse
+            des Eressea-Servers angegeben. Magellan kann sie normalerweise aus
+            dem Report auslesen, aber sollte dies nicht gelingen, können Sie
+            sie hier eingeben (zum Beispiel <kbd>eressea-server@eressea.kn-bremen.de</kbd>).</li>
+          <li><b>Betreff</b><br /> Der Betreff der Mail (zum Beispiel <kbd>Eressea
+              Befehle</kbd>).</li>
+          <li><b>CC</b><br /> Hier können sie eine oder mehrere Adressen
+            (getrennt durch Kommas) eingeben, an die der Report ebenfalls
+            geschickt werden soll.</li>
+        </ul></li>
+      <li><b>Datei</b><br /> Speichert die Befehle in eine Datei mit dem
+        angegebenen Namen. Wählen Sie die Box Auto-Dateiname um spezielle
+        Kürzel als Teil des Dateinamens zu verwenden. So bewirkt etwa '<kbd>befehle-{round}.txt</kbd>',
+        dass der Name die aktuelle Runde enthält, zum Beispiel <kbd>befehle-123.txt</kbd>.<br /></li>
+      <li><b>Zwischenablage</b><br /> Kopiert die Befehlsdatei in die
         Zwischenablage. Von dort kann sie z.B. sehr einfach in ein Mailprogramm
         übernommen werden.<br /></li>
-      <li><b>Mail</b>:<br /> verschickt die Befehle direkt per Mail.
-        Dabei werden die Einstellungen im unteren Teil des Dialoges verwendet:
-        <ul>
-          <li><b>SMTP-Server:</b><br /> Hier trägt man den Mailserver
-            seines Internetproviders ein. Im Zweifel dort nachfragen.</li>
-          <li><b>Authentifizierung:</b><br /> Mittlerweile benötigen die
-            meisten Mailserver eine Authentifizierung. Hier kann man diese
-            Einstellungen setzen. Magellan versucht dann, sich am SMTP Server
-            mit ASMTP anzumelden (TLS supported).</li>
-          <li><b>Empfängeradresse:</b><br /> Hier wird die Mail-Adresse
-            des Eressea-Servers angegeben. (default wird aus der Reportdatei
-            geladen bzw. "eressea-server@eressea.kn-bremen.de").</li>
-          <li><b>Absenderadresse:</b><br /> Hier trägt man die eigene
-            Mailadresse ein.</li>
-          <li><b>Subject:</b><br /> Der Betreff der Mail (default:
-            "Eressea Befehle").</li>
-        </ul></li>
-      <li><b>Auto-Dateiname</b>:<br /> generiert einen Dateinamen zur
-        Speicherung der Befehle als Datei.<br /> Als Vorlage dient der in den
-        Optionen <a href="../extras/options_system.html">(System)</a>
-        definierte Text.</li>
-      <li><b>Schließen</b>:<br /> schließt den Dialog.</li>
+      <li><b>Serverupload</b><br /> Lädt die Befehle direkt auf den
+        Server, ohne Umweg über Email. Die Befehle werden nicht (durch ECheck)
+        überprüft. Die voreingestellte Adresse funktionert für Eressea, aber möglicherweise nicht für
+        andere Spiele. Sie ist, falls vorgesehen, bei der Spielleitung zu erfragen.
+    </ul>
+    <ul>
+      <li><b>Schließen</b><br /> Schließt den Dialog und speichert alle
+        Einstellungen.</li>
+      <li><b>Abbrechen</b><br /> Schließt den Dialog ohne die
+        Einstellungen zu speichern.</li>
     </ul>
 
     <h2>Ausgabeoptionen</h2>
+
+    <p>Durch Klicken auf "Details" erhalten Sie Zugriff auf weitere
+      Funktionen, die das genaue Aussehen der exportierten Befehle bestimmen.</p>
+
+    <img src="../../images/menu_file_saveorders_details.gif"
+      alt="Ausgabeoptionen" border="0" />
     <ul>
-      <li><b>Automatischer Zeilenumbruch</b><br /> bricht die
+      <li><b>Automatischer Zeilenumbruch</b><br /> Bricht die
         Befehlsdatei nach <i>n</i> Zeichen um. Längere Zeilen (Beschreibungen,
         Botschaften, etc.) werden dabei automatisch mit " \" getrennt.
         Vermeidet Probleme mit dem automatischen Zeilenumbruch von
         Mailprogrammen.</li>
-      <li><b>ECHECK-Kommentare</b><br /> fügt ECHECK-Kommentare (wie
-        Angaben über Silber und Personen) in die Befehlsdatei ein.</li>
-      <li><b>mit ';' beginnende Kommentare entfernen</b>:<br /> entfernt
+      <li><b>ECheck-Kommentare</b><br /> Fügt Kommentare für das
+        Zugcheckerprogramm ECheck (wie Angaben über Silber und Personen) in die
+        Befehlsdatei ein.</li>
+      <li><b>Mit ';' beginnende Kommentare entfernen</b><br /> Entfernt
         nichtpersistente Kommentare aus der Befehlsdatei. Nach Möglichkeit
-        sollte diese Option zum verschicken der Mail an den Eressea-Server
-        angewählt sein um die Befehlsdatei so klein wie möglich zu machen.
+        sollte diese Option zum Verschicken der Mail an den Eressea-Server
+        angewählt sein, um die Befehlsdatei so klein wie möglich zu machen.
         Allerdings gehen hierbei auch die Informationen über die Bestätigung
         der Befehle der Einheiten verloren, da diese in ';'-Kommentaren
         abgelegt werden.</li>
-      <li><b>mit '//' beginnende Kommentare entfernen</b>:<br /> entfernt
+      <li><b>Mit '//' beginnende Kommentare entfernen</b><br /> Entfernt
         persistente Kommentare aus der Befehlsdatei. Vorlage-Benutzer sollten
         diese Option tunlichst nicht benutzen, da so auch alle Metabefehle
         gelöscht werden.</li>
-      <li><b>nur Einheiten mit bestätigten Befehlen</b>:<br /> Nur
-        Befehle bestätigter Einheiten werden geschrieben. Unbestätigte
-        Einheiten werden ignoriert. Diese Option ist sehr praktisch für
-        Spieler, die sich eine Partei teilen.</li>
-      <li><b>Ausgewählte Regionen</b>:<br /> Hiermit kann man festlegen,
-        dass nur Befehle für Einheiten verschickt werden, die gerade ausgewählt
-        (selektiert) sind. So kann man stückweise Befehle an den Server
-        schicken.</li>
-      <li><b>Unbekannte Tags als Vorlage einfügen</b>:<br /> Damit werden
-        unbekannte Tags in die Befehlsdatei geschrieben.</li>
+      <li><b>Nur Einheiten mit bestätigten Befehlen</b><br /> Nur Befehle
+        bestätigter Einheiten werden geschrieben. Unbestätigte Einheiten werden
+        ignoriert. Diese Option ist sehr praktisch für Spieler, die sich eine
+        Partei teilen.</li>
+      <li><b>Ausgewählte Regionen</b><br /> Hiermit kann man festlegen,
+        dass nur Befehle für Einheiten verschickt werden, die gerade in der
+        Karte ausgewählt (selektiert) sind. So kann man stückweise Befehle an
+        den Server schicken.</li>
+      <li><b>Unbekannte Tags als Vorlage einfügen</b><br /> Damit werden
+        unbekannte Tags in die Befehlsdatei geschrieben. Diese Option ergibt
+        wahrscheinlich nur für Benutzer des Zugautomatisierungsprogramms
+        Vorlage einen Sinn.</li>
     </ul>
     <!-- Inhalt - Ende -->
   </div>
 </body>
 </html>
-

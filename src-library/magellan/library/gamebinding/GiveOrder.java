@@ -241,15 +241,14 @@ public class GiveOrder extends UnitArgumentOrder {
   }
 
   private void transferPeople(GameData data, EresseaExecutionState eState, Unit unit, Unit zeroOrTarget, int line) {
-    PersonTransferRelation rel =
-        new PersonTransferRelation(unit, zeroOrTarget, -1, unit.getRace(), line);
-
     if (all) {
-      rel.amount = unit.getModifiedPersons();
+      amount = unit.getModifiedPersons();
     } else {
       // if not, only transfer the minimum amount the unit has
-      rel.amount = Math.min(unit.getModifiedPersons(), amount);
+      amount = Math.min(unit.getModifiedPersons(), amount);
     }
+    PersonTransferRelation rel =
+        new PersonTransferRelation(unit, zeroOrTarget, amount, unit.getRace(), line);
 
     rel.add();
   }

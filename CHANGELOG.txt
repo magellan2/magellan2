@@ -1,3 +1,25 @@
+2022-05-10 / Build 782 - stm (stm2@users.sourceforge.net)
+    * fixed a bug were Magellan froze while zooming out of map with ARR active
+    * implemented server upload (experimental)
+    * show building space in region tree (by gvd)
+
+2022-04-06 / Build 777 - stm (stm2@users.sourceforge.net)
+    * Preferences and other dialog polishing
+    * Removed SIEGE command
+
+2022-04-01 / Build 774 - stm (stm2@users.sourceforge.net)
+    * OrderWriterDialog includes presets for common mail providers
+
+2022-03-18 / Build 773 - stm (stm2@users.sourceforge.net)
+    * added name, cmd, and substring replacer
+    * added keyboard navigation for TaskTablePanel
+    * you can now edit unit container tags
+    * added drag and mouse wheel zoom function to map
+    * implemented new hero rule
+    * implemented new skill mixing rules
+    * removed support for OPTION Silberpool, added Talentverschiebung
+    * delete (region, building) descriptions while merging if region is known and has none
+
 2022-02-21 / Build 765 - stm (stm2@users.sourceforge.net)
     * grabbed Eressea help from wiki
     * allow resetting atr/arr to standard from quick menu

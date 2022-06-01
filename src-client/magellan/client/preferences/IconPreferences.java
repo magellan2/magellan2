@@ -24,18 +24,14 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.MissingResourceException;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,6 +42,7 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This factory makes it possible to configure the layout of icons in the region overview and so on.
@@ -53,27 +50,26 @@ import magellan.library.utils.Resources;
  * @author Andreas
  * @version 1.0
  */
-public class IconPreferences extends JPanel implements ExtendedPreferencesAdapter, ItemListener {
+public class IconPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
   protected List<NodeWrapperFactory> nwfactorys;
   protected List<PreferencesAdapter> nwadapters;
   protected IconStyleSetPreferences styles;
   protected IconColorMappingPreferences cmapping;
   protected EmphasizeStyle eStyle;
   protected JCheckBox toolTipOn;
-  protected JPanel factoryPanel;
   protected CardLayout cards;
-  protected JComboBox factoryBox;
   protected List<PreferencesAdapter> subAdapters;
+  private JComponent content;
 
   /**
    * Creates new IconAdapter
    */
   public IconPreferences(List<NodeWrapperFactory> nw) {
     subAdapters = new ArrayList<PreferencesAdapter>(2);
-
     nwfactorys = nw;
     nwadapters = new ArrayList<PreferencesAdapter>(nw.size());
-    setLayout(new GridBagLayout());
+
+    content = addPanel(null, new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints();
     con.fill = GridBagConstraints.NONE;
@@ -85,7 +81,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
     toolTipOn =
         new JCheckBox(Resources.get("tree.iconadapter.tooltips.show.text"), CellRenderer
             .isShowTooltips());
-    add(toolTipOn, con);
+    content.add(toolTipOn, con);
     con.gridx = 1;
 
     Insets old = con.insets;
@@ -98,19 +94,13 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
 
     con.insets.left += 20;
     eStyle = new EmphasizeStyle();
-    add(eStyle, con);
+    content.add(eStyle, con);
     con.insets = old;
+    ++con.gridx;
+    con.weightx = 1.0;
+    con.fill = GridBagConstraints.HORIZONTAL;
+    content.add(new JPanel(), con);
     con.gridx = 0;
-
-    JPanel p = new JPanel(new GridBagLayout());
-    GridBagConstraints con2 = new GridBagConstraints();
-    con2.gridwidth = 1;
-    con2.gridheight = 1;
-    con2.fill = GridBagConstraints.HORIZONTAL;
-    con2.anchor = GridBagConstraints.WEST;
-    con2.weightx = 1;
-    con2.gridx = 0;
-    con2.gridy = 0;
 
     Iterator<NodeWrapperFactory> it = nw.iterator();
 
@@ -128,21 +118,12 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
         comp.add(c);
       }
 
-      comp.setBorder(BorderFactory.createTitledBorder(pref.getTitle()));
-      p.add(comp, con2);
-      con2.gridy++;
+      JPanel p = addPanel(pref.getTitle(), new GridLayout(1, 1));
+
+      p.add(comp);
     }
 
-    factoryPanel = p;
-
-    con.gridwidth = 2;
-    con.gridy = 1;
-    con.fill = GridBagConstraints.BOTH;
-    con.weightx = 1;
-    add(p, con);
-    con.gridy = 2;
-
-    add(styles = new IconStyleSetPreferences(), con);
+    styles = new IconStyleSetPreferences();
 
     cmapping = new IconColorMappingPreferences();
     subAdapters.add(cmapping);
@@ -202,10 +183,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
     public EmphasizeStyle() {
       JLabel eLabel = new JLabel(Resources.get("tree.iconadapter.emphasize.text"));
 
-      try {
-        eLabel.setToolTipText(Resources.get("tree.iconadapter.emphasize.tooltip"));
-      } catch (MissingResourceException mexc) {
-      }
+      eLabel.setToolTipText(Resources.get("tree.iconadapter.emphasize.tooltip"));
 
       this.add(eLabel);
 
@@ -247,7 +225,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
     }
 
     /**
-     * DOCUMENT-ME
+     * apply input to CellRenderer
      */
     public void apply() {
       try {
@@ -269,22 +247,9 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
 
         CellRenderer.setEmphasizeData(sChange, sColor);
       } catch (Exception exc) {
+        Logger.getInstance(this.getClass()).error(exc);
       }
     }
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public void itemStateChanged(java.awt.event.ItemEvent p1) {
-    int i = Math.max(0, factoryBox.getSelectedIndex());
-    cards.show(factoryPanel, String.valueOf(i));
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public void actionPerformed(java.awt.event.ActionEvent p1) {
   }
 
   /**

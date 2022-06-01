@@ -100,8 +100,8 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
         new EresseaOrderParser(data, getCompleter());
     assertTrue(localParser.getData() == data);
     assertTrue(localParser.getCompleter() == getCompleter());
-    assertSame(63, localParser.getCommands().size());
-    assertSame(63, localParser.getHandlers().size());
+    assertSame(62, localParser.getCommands().size());
+    assertSame(62, localParser.getHandlers().size());
   }
 
   @Test
@@ -261,14 +261,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
    */
   @Test
   public void testBelagereReader() {
-    checkOrder(getOrderTranslation(EresseaConstants.OC_SIEGE) + " burg");
-    checkOrder("BELAGERE burg");
-    checkOrder("BELAGERE abc", false);
-    checkOrder("BELAGERUNG burg", false);
-    checkOrder("BELAGERE TEMP burg", false);
-    checkOrder("BELAGERE burg 123", false);
-    checkOrder("BELAGERE 2 burg", false);
-    checkOrder("BELAGERE \"burg\"", false);
+    checkOrder(getOrderTranslation(EresseaConstants.OC_SIEGE) + " burg", false);
   }
 
   /**
@@ -808,6 +801,9 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("NACH 1", false);
     checkOrder("NACH o PAUSE", false);
     checkOrder("NACH e", false);
+
+    checkOrder("NA o", false);
+    checkOrder("NAC o");
   }
 
   /**
@@ -856,7 +852,18 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   public void testOptionReader() {
     checkOrder(getOrderTranslation(EresseaConstants.OC_OPTION) + " AUSWERTUNG");
     checkOrder("OPTION PUNKTE NICHT");
+    checkOrder("OPTION Computer");
+    checkOrder("OPTION zipped");
+    checkOrder("OPTION bzip2");
+    checkOrder("OPTION Statistik");
+    checkOrder("OPTION Punkte");
+    checkOrder("OPTION Zugvorlage");
+    checkOrder("OPTION Talentverschiebungen");
+    checkOrder("OPTION Adressen");
+    checkOrder("OPTION ZIPped nicht", false);
     checkOrder("OPTION PUNKTE NICHT MEHR", false);
+    checkOrder("OPTION Silberpool", false);
+    checkOrder("OPTION Materialpool", false);
   }
 
   /**

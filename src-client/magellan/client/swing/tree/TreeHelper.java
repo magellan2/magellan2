@@ -26,6 +26,7 @@ import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.EntityID;
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Region;
@@ -275,12 +276,17 @@ public class TreeHelper {
 
       } else {
         if (change(treeStructure[sortCriteria], curUnit, prevUnit)) {
+          Faction faction;
           // change in current sortCriteria?
           switch (treeStructure[sortCriteria]) {
           case FACTION:
-            FactionNodeWrapper factionNodeWrapper =
-                factory.createFactionNodeWrapper(prevUnit.getFaction(), prevUnit.getRegion(),
-                    activeAlliances);
+            if (curUnit.getFaction() == null) {
+              faction = data.getNullFaction();
+            } else {
+              faction = prevUnit.getFaction();
+            }
+            FactionNodeWrapper factionNodeWrapper = factory.createFactionNodeWrapper(
+                faction, prevUnit.getRegion(), activeAlliances);
             DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(factionNodeWrapper);
             mother.add(factionNode);
 
@@ -501,12 +507,17 @@ public class TreeHelper {
     if (!helpList.isEmpty() && curUnit != null) {
       DefaultMutableTreeNode node = null;
       if (sortCriteria <= treeStructure.length) {
+        Faction faction;
         switch (treeStructure[sortCriteria]) {
         case FACTION:
+          if (curUnit.getFaction() == null) {
+            faction = data.getNullFaction();
+          } else {
+            faction = curUnit.getFaction();
+          }
           node =
-              new DefaultMutableTreeNode(factory.createFactionNodeWrapper(curUnit.getFaction(),
+              new DefaultMutableTreeNode(factory.createFactionNodeWrapper(faction,
                   curUnit.getRegion(), activeAlliances));
-
           break;
 
         case GUISE_FACTION:

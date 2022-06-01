@@ -22,6 +22,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
+
+import javax.swing.KeyStroke;
 
 import magellan.library.utils.logging.Logger;
 
@@ -214,9 +217,9 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_OUTPUT_FILE = "OrderWriter.outputFile";
 
-  public static String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
+  public static final String ORDERWRITER_AUTO_FILENAME = "OrderWriter.autoFileName";
 
-  public static String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
+  public static final String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
 
   public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";
 
@@ -398,6 +401,33 @@ public class PropertiesHelper {
     }
 
     return def;
+  }
+
+  /**
+   * Searches the property with the given key and if it exists, it tries to convert it into a KeyStroke and returns that
+   * value. If something goes wrong or the key couldn't be found the default value def is returned.
+   */
+  public static KeyStroke getKeyStroke(Properties p, String key, KeyStroke def) {
+    String val = p.getProperty(key);
+    if (val == null)
+      return def;
+    StringTokenizer st = new StringTokenizer(val, ",");
+    if (st.countTokens() != 2)
+      return def;
+    try {
+      int mod = Integer.parseInt(st.nextToken());
+      int code = Integer.parseInt(st.nextToken());
+      return KeyStroke.getKeyStroke(code, mod);
+    } catch (Exception e) {
+      return def;
+    }
+  }
+
+  /**
+   * Stores the keystroke in the settings with the key. The KeyStroke is stored as 'modifiers,keycode'.
+   */
+  public static void setKeyStroke(Properties settings, String key, KeyStroke ks) {
+    settings.setProperty(key, ks.getModifiers() + "," + ks.getKeyCode());
   }
 
   /**

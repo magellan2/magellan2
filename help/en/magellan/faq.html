@@ -20,11 +20,41 @@
 
     <p>Frequently Asked Questions:</p>
 
-    <h2>1. Questions about installation</h2>
+    <h2>1. Questions about the installation</h2>
+
+    <ol>
+      <li><a href="#Installation">What is required to start Magellan?</a></li>
+      <li><a href="#Speichermangel">Even though I have enough RAM,
+          Magellan reports a lack of memory. Why?</a></li>
+    </ol>
+
+    <h2>2. Questions about Magellan</h2>
+
+    <ol>
+      <li><a href="#ECheck">How to run ECheck?</a></li>
+      <li><a href="#ARR">What is this § stuff in the ARR, ATR, or the
+          tooltips even doing!?</a></li>
+    </ol>
+
+    <h2>2. Questions about Java</h2>
 
     <ol>
       <li><a href="#Java">What is Java and why is it important?</a></li>
+      <li><a href="#Javaversion">What Java version, exactly, should I
+          download?</a></li>
+      <li><a href="#jdk">JRE or JDK?</a></li>
+      <li><a href="#myversion">What version of Java do I have?</a></li>
+      <li><a href="#JNI_ERROR">II get this error message: 'Error: A
+          JNI Error has occured, please check your installation and try again.'</a></li>
+      <li><a href="#java8">But the latest version on java.com is Java
+          8</a></li>
+      <li><a href="#needJava8">But I need Java 8 for a different
+          software. What can I do?</a></li>
+    </ol>
 
+    <h2>4. Questions about older Magellan versions</h2>
+
+    <ol>
       <li><a href="#Installer">What does "Installer JAR" mean?</a></li>
 
       <li><a href="#Dateiname">magellan-client.jar? Shouldn't the file
@@ -37,6 +67,9 @@
       <li><a href="#keinStart">Why doesn't Magellan start when I click
           the file magellan-client.jar?</a></li>
 
+      <li><a href="#Speichermangel_legacy">Even though I have enough
+          RAM, Magellan reports a lack of memory. Why?</a></li>
+
       <li><a href="#CRVerknuepfung">How do I make Magellan the default
           program for CR-files under Windows2000/XP?</a></li>
 
@@ -48,51 +81,227 @@
 
       <li><a href="#Resourcenpfade">How do I handle resource paths?</a></li>
 
-      <li><a href="#Speichermangel">Even though I have enough RAM,
-          Magellan reports a lack of memory. Why?</a></li>
-    </ol>
-
-    <br />
-    <h2>2. Questions about Magellan</h2>
-
-    <ol>
       <li><a href="#base36nummern">Why does Magellan all of a sudden
           not use Base-36 numbers for the units anymore?</a></li>
 
       <li><a href="#VorlageBefehlsbestaetigung">How can I use Vorlage
           to automatically confirm the orders of units?</a></li>
-
-      <li><a href="#ARR">I just don't get the ARR, ATR or the
-          Tooltips!</a></li>
     </ol>
 
-    <a id="Java"></a>
 
-    <p>&nbsp;</p>
+    <h2>Answers</h2>
 
+    <h3 class="faq" id="Installation">Q: What is required to start
+      Magellan?</h3>
     <p>
-      <b>Q: What is Java and why is it important?</b>
+      <b>A:</b> Since version 2.1, only a single file is required to download
+      to install Magellan. You can find the right Version on the <a
+        href="https://magellan2.github.io">Magellan homepage</a> in the
+      download section. You will find versions for different operation systems
+      (Windows, Linux, MacOS). You will likely need administrator rights to
+      install Magellan under Windows. This will install all you need including
+      a <a href="#Java">Java</a> version. Updates from older versions should
+      work without issues, but there may be problems with older Plugins. In
+      this case you must disable those plugins or install a newer version.
     </p>
+    <p>If you have installed Java already, you may also just download and
+      unpack a zip file and start Magellan directly (preferably using
+      magellan.bat or magellan.sh). But this method is not recommended or
+      supported officially.</p>
+
+    <h3 class="faq" id="Java">Q: What is Java and why is it important?</h3>
 
     <p>
       <b>A:</b> Java is the programming language used to write Magellan. The
       special thing about it is that it runs on many platforms (Windows, Linux,
-      Mac, ...). To run Magellan you need to install Java. One of the easiest
-      ways to install Java right now is to download an installer from <a
-        href="https://adoptopenjdk.net/releases.html" class="externalLink">AdoptOpenJDK</a>.
-      There are several Java distributions. We recommend, for example, <a
+      Mac, ...). Since version 2.1, Magellan comes with its own version of
+      java. No need to require any additional thing.
+    </p>
+
+    <h3 class="faq" id="Javaversion">What Java version, exactly, should I
+      download?</h3>
+
+    <p>
+      <b>A:</b> Earlier versions of Magellan required you to install Java
+      first. One of the easiest ways to install Java right now is to download
+      an installer from <a href="https://adoptopenjdk.net/releases.html"
+        class="externalLink">AdoptOpenJDK</a>. There are several Java
+      distributions. We recommend, for example, <a
         href="https://openjdk.java.net/" class="externalLink">Open JDK</a> oder
       <a href="https://www.oracle.com/java/" class="externalLink">Oracle
         Java SE</a>.
     </p>
 
-    <a id="Installer"></a>
+    <p>At this moment (summer 2021) we recommend the following version,
+      that should work for most users:</p>
+    <ul>
+      <li>AdoptOpenJDK</li>
+      <li>You operating, naturally (Windows for most)</li>
+      <li>OpenJDK 11 (LTS), or, by autumn 2021, OpenJDK 17 (LTS)</li>
+      <li>HotSpot JVM</li>
+      <li>usually x64</li>
+    </ul>
 
-    <p>&nbsp;</p>
+    <h3 class="faq" id="jdk">JRE or JDK?</h3>
+    <p>JDK is usually targeted at Java developers, JRE at end users. If you
+      intend to use the ExtendedCommands of Magellan, you will need a JDK! The
+      only disadvantage of getting a JDK is its size. So if you are not running
+      short on disc space, a JDK is recommended.</p>
+
+    <h3 class="faq" id="myversion">What version of Java do I have?</h3>
+    <ol>
+      <li>Open a terminal (command line):
+        <ul>
+          <li><b>On Windows: </b>Press the windows key to open the start
+            menu. Type cmd to open the command line.</li>
+          <li><b>On MacOsX: </b>Open Spotlight (Command + Space or click
+            on the magnifying glass in the upper right), then enter 'terminal'.</li>
+          <li><b>On Linux: </b>Open a terminal (depending on your Linux
+            distribution open the program menu, for example by pressing the
+            windows key and enter "terminal").</li>
+        </ul>
+      </li>
+      <li>In the terminal type <code>java -version</code> und press <code>Enter</code>.
+        An output like <code>'openjdk version "11.0.10" 2021-04-20'</code>
+        means that you are running version 11. An output like "java is not
+        recognized" or "command not found" means that you apparently don't have
+        java.
+      </li>
+    </ol>
+
+    <h3 class="faq" id="JNI_ERROR">Q: I get this error message: 'Error: A
+      JNI Error has occured, please check your installation and try again.'</h3>
 
     <p>
-      <b>Q: What does "Installer JAR" mean?</b>
+      <b>A:</b>You probably have Java 8 instead of Java 11! Install Java 11
+      (see above).
     </p>
+
+    <h3 class="faq" id="java8">But the latest version on java.com is Java
+      8!</h3>
+    <p>
+      Since Oracle acquired Java from Sun Microsystems, there is a new license
+      system that complicated the release of Java implementations for end
+      users. Therefore <a href="https://java.com">java.com</a> is no longer the
+      site of choice. Please get Java from one of the sources mentioned above.
+    </p>
+
+    <h3 class="faq" id="needJava8">I need Java 8 for a different software.</h3>
+
+    <p>You can use several versions of java simultaneously, but this
+      requires some work.</p>
+
+    <p>
+      <b>On Windows: </b>
+    </p>
+    <ol>
+      <li>Install Java 11, then Java 8. Your other software should now
+        work normally.</li>
+      <li>Locate the path of your Java 11 installation (for example
+        C:\Program Files\jdk-11.0.1).</li>
+      <li>Locate the file magellan.bat (usually in C:\Program
+        Files\Magellan\magellan.bat).</li>
+      <li>Edit this file as administrator. This should work roughly as
+        follows: Locate the entry for "notepad" in the start menu. Right click
+        it and choose "More ... Run as administrator".</li>
+      <li>Open the file magellan.bat in the notepad.</li>
+      <li>Add this line at the start of the file (adapt it to your path
+        from step 2):<br /> <code>SET JAVA_HOME=C:\Program
+          Files\jdk-11.0.1</code>
+      </li>
+      <li>Save the file magellan.bat.</li>
+      <li>Magellan should now be started with Java 11.</li>
+    </ol>
+
+    <p>
+      <b>On Linux:</b>
+    </p>
+    <ol>
+      <li>Install sowohl 11 as well as Java 8.</li>
+      <li>Execute this command in a terminal: <code>update-alternatives
+          --config java</code>. Choose the java version you need for your other
+        program.
+      </li>
+      <li>Remember the path to Java 11 displayed by the previous command
+        (for instance, <code>/usr/lib/jvm/java-11-openjkd-amd64</code>).
+      </li>
+      <li>Locate the file magellan.sh (usually at
+        $HOME/Magellan/magellan.sh).</li>
+      <li>Edit this file as follows: Add this line at the start of the
+        file (adapted to the path recorded in step 3 above):<br /> <code>export
+          JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64</code>
+      <li>Change the last line from<br /> <code>java -Xmx1200m
+          -jar "magellan-client.jar" "$@"</code> to<br /> <code>$JAVA_HOME/bin/java
+          -Xmx1200m -jar "magellan-client.jar" "$@"</code>.
+      </li>
+      <li>Save the file magellan.sh.</li>
+
+      <li>Magellan should now be executed with Java 11.</li>
+
+    </ol>
+
+    <h3 class="faq" id="Speichermangel">Q: Even though I have enough RAM,
+      Magellan reports a lack of memory. Why?</h3>
+
+    <p>
+      <b>A:</b> Due to the architecture of Java, Magellan cannot always
+      allocate as much memory as it needs. In the installation directory of
+      Magellan (on Windows this is usually
+      <kbd>C:\Program Files\Magellan</kbd>
+      ) there is a file called
+      <kbd>magellan_launcher.vmoptions</kbd>
+      . You should edit this file (this may require administrative rights) and
+      add a line like
+      <kbd>-Xmx1G</kbd>
+      . This tells Java to allocate up to 1 Gigabyte of memory for Magellan.
+    </p>
+    <p>
+      It should usually be no problem to give up to half of your memory or more
+      to Magellan. Don't worry: Magellan will always only allocate as much
+      memory as it requires. So if your machine has 4 gigabytes of RAM, a
+      setting of
+      <kbd>-Xmx2G</kbd>
+      should be fine. If your whole system freezes on loading a big report, you
+      may want to reduce this value and you can try to reduce the size of your
+      report by not loading the whole map or not adding all your allies'
+      reports. The MemoryWatch plugin from the Magellan homepage may provide
+      further insights.
+    </p>
+
+    <p>
+      For other ways to allocate memory, especially for older versions of
+      Magellan, see <a href="#Speichermangel_legacy">this section</a>.
+    </p>
+
+    <h3 class="faq" id="ECheck">Q: How do i run ECheck?</h3>
+    <p>
+      <b>A:</b>First of all: Why do you think you need ECheck? Virtually all
+      functions of ECheck are fulfilled by Magellan itself. Syntax errors
+      detected by ECheck, and some more, are detected by Magellan and are
+      highlighted in the orders. Additional errors are shown in the <a
+        href="docks/problems.html">open problems</a> dock. You can configure
+      which (potential) problems to show and which you would rather ignore.
+    </p>
+    <p>
+      If you really want to run ECheck, you can do this from the <a
+        href="docks/echeck.html">ECheck dock</a>. Magellan comes with its own
+      ECheck version and is usually configured to use it, so that you only have
+      to click on "Run". If this should not work, maybe because you are using
+      settings from an earlier version, you can configure this in the <a
+        href="menus/extras/options_resources.html">options dialog</a> under
+      "Resources". Just set the resource path to point to your ECheck
+      installation (something like
+      <kbd>C:\Program Files\Magellan\echeck\echeck.exe</kbd>
+      ).
+    </p>
+    <p>
+      Should you experience funny symbols or messages like "Unknown order:
+      N?CHSTER", there is likely a problem with text encoding. You can adjust
+      the according setting in the <a
+        href="menus/extras/options_system.html#Textkodierung">Options</a>.
+    </p>
+
+    <h3 class="faq" id="Installer">Q: What does "Installer JAR" mean?</h3>
 
     <p>
       <b>A:</b> Starting from Version 2, Magellan does not consist of just one
@@ -106,14 +315,8 @@
       start magellan the next time.
     </p>
 
-    <a id="Dateiname"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: magellan-client.jar? Shouldn't the file be called magellan.exe?</b>
-    </p>
-
+    <h3 class="faq" id="Dateiname">Q: magellan-client.jar? Shouldn't the
+      file be called magellan.exe?</h3>
     <p>
       <b>A:</b> No. To be honest, it is (almost) nothing more than a renamed
       ZIP-file, but one that Java can handle and that you therefore don't need
@@ -122,15 +325,9 @@
       Magellan should start when the JAR-file is double-clicked.
     </p>
 
-    <a id="Verknuepfung"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: Why does another program (e.g. WinZip or PowerArchiver) start,
-        when I try to start Magellan by double-clicking?</b>
-    </p>
-
+    <h3 class="faq" id="Verknuepfung">Q: Why does another program (e.g.
+      WinZip or PowerArchiver) start, when I try to start Magellan by
+      double-clicking?</h3>
     <p>
       <b>A:</b> Because it is set to be the default program for the .jar
       extension instead of Java. In PowerArchiver and WinZip you can undo that
@@ -153,15 +350,8 @@
       <li>Close the regedit program - done.</li>
     </ol>
 
-    <a id="keinStart"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: Why doesn't Magellan start when I click the file
-        magellan-client.jar?</b>
-    </p>
-
+    <h3 class="faq" id="keinStart">Q: Why doesn't Magellan start when I
+      click the file magellan-client.jar?</h3>
     <p>
       <b>A:</b> A possible cause for this is that the file
       <kbd>magellan-client.jar</kbd>
@@ -216,18 +406,11 @@
 
     <p>
       If this didn't help you can try to <a href="#4">start Magellan from
-        the command prompt</a>
+        the command prompt</a> to be able to read possible error messages.
     </p>
 
-    to be able to read possible error messages. <br /> <br /> <a
-      id="CRVerknuepfung"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: How do I make Magellan the default program for CR-files under
-        Windows2000/XP?</b>
-    </p>
+    <h3 class="faq" id="CRVerknuepfung">Q: How do I make Magellan the
+      default program for CR-files under Windows2000/XP?</h3>
 
     <p>
       <b>A:</b> To do this you need to set up a link between Magellan and the
@@ -262,13 +445,8 @@
       <li>Done :-)</li>
     </ol>
 
-    <a id="Kommandozeilenstart"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: How do I start Magellan from the command prompt?</b>
-    </p>
+    <h3 class="faq" id="Kommandozeilenstart">Q: How do I start Magellan
+      from the command prompt?</h3>
 
     <p>
       <b>A:</b> Magellan (or Java) often only gives error messages at the
@@ -293,13 +471,8 @@
         href="reference/commandline.html">Reference</a>.
     </p>
 
-    <a id="MacMagellan"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: How do I get Magellan to run on a Mac?</b>
-    </p>
+    <h3 class="faq" id="MacMagellan">Q: How do I get Magellan to run on a
+      Mac?</h3>
 
     <p>
       <b>A:</b> Unfortunately Apple has only with the Mac OS X just released a
@@ -307,27 +480,16 @@
       console the same as under Windows at the <a href="#4">command prompt</a>.
     </p>
 
-    <a id="Resourcenpfade"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: How do I handle resource paths?</b>
-    </p>
+    <h3 class="faq" id="Ressourcenpfade">Q: How do I handle resource
+      paths?</h3>
 
     <p>
       <b>A:</b> Resource paths are described on <a
-        href="reference/ressources.html">their own site</a>.
+        href="reference/resources.html">their own site</a>.
     </p>
 
-    <a id="Speichermangel"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: Even though I have enough RAM, Magellan reports a lack of
-        memory. Why?</b>
-    </p>
+    <h3 class="faq" id="Speichermangel_legacy">Q: Even though I have
+      enough RAM, Magellan reports a lack of memory. Why?</h3>
 
     <p>
       <b>A:</b> Simply allocate a bit more memory for the Java Virtual Machine
@@ -336,7 +498,18 @@
     </p>
 
     <p>You can allocate memory as follows:</p>
-
+ <p>
+      Edit the text file
+      <kbd>magellan.bat</kbd>
+      (under Windows) or
+      <kbd>magellan.sh</kbd>
+      (Linux and Mac) and change all occurences of the form
+      <kbd>-Xmx000m</kbd>
+      to a larger value, for example
+      <kbd>-Xmx2000M</kbd>
+      , to allocate about 2 Gigabytes for Magellan.
+    </p>
+    <p><em>or</em></p>
     <p>
       Under Windows:<br /> Create an icon for Magellan on your desktop,
       right-click on it and go to "Properties". Under "Target" enter the
@@ -356,17 +529,11 @@
     <p>This tells the Java-VM to allocate a minimum of 128MB and a maximum
       of 512MB. You can change these values according to your own setup.</p>
 
-    <a id="base36nummern"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: Why does Magellan all of a sudden not use Base-36 numbers for
-        the units anymore?</b>
-    </p>
+    <h3 class="faq" id="base36nummern">Q: Why does Magellan all of a
+      sudden not use Base-36 numbers for the units anymore?</h3>
 
     <p>
-      <b>A:</b>Most like the
+      <b>A:</b>Most likely the
       <kbd>36;Basis</kbd>
       tag is missing in the CR. This basic tag defines the number base that
       Magellan uses. For Eressea-CRs this usually is 36, other PBeMs using
@@ -375,34 +542,22 @@
       another number base in the CR.
     </p>
 
-    <a id="VorlageBefehlsbestaetigung"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: How can I use Vorlage to automatically confirm the orders of
-        units?</b>
-    </p>
+    <h3 class="faq" id="VorlageBefehlsbestaetigung">Q: How can I use
+      Vorlage to automatically confirm the orders of units?</h3>
 
     <p>
       <b>A:</b> With
       <kbd>// #tag EINHEIT ejcOrdersConfirmed 1</kbd>
     </p>
 
-    <a id="ARR"></a>
-
-    <p>&nbsp;</p>
-
-    <p>
-      <b>Q: I just don't get the ARR, ATR or the Tooltips!</b>
-    </p>
+    <h3 class="faq" id="ARR">Q: What is this § stuff in the ARR, ATR, or the
+          tooltips even doing!?</h3>
 
     <p>
       <b>A:</b> A good help to ARR, ATR and the Tooltips can be found <a
-        href="http://www.duckstein.net/atranleitung.html"> here.</a>
+        href="reference/atr_arr.html">in the Magellan help.</a>
     </p>
-
-    <!-- Inhalt - Ende -->
   </div>
 </body>
 </html>
+

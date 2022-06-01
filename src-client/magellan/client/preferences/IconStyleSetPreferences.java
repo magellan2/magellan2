@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.Color;
@@ -58,7 +58,6 @@ import javax.swing.JToggleButton;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -77,7 +76,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * Preferences adapter for icon styles (see {@link GraphicsElement}, {@link CellRenderer}).
  */
-public class IconStyleSetPreferences extends JPanel implements ActionListener,
+public class IconStyleSetPreferences extends AbstractPreferencesAdapter implements ActionListener,
     TreeSelectionListener, PreferencesAdapter {
 
   /** For each styleset a mapping of the name to a copy of the styleset (used in the styleSetPanel) */
@@ -95,8 +94,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * Creates a new Stylesets object.
    */
   public IconStyleSetPreferences() {
-    setLayout(new GridBagLayout());
-    setBorder(new TitledBorder(Resources.get("tree.iconadapter.styles.title")));
+    JPanel root = addPanel(Resources.get("tree.iconadapter.styles.title"), new GridBagLayout());
 
     // left: "add" & "remove" buttons + styleset combobox
     JPanel p = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -109,7 +107,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     stylesets.addTreeSelectionListener(this);
 
     JScrollPane pane = new JScrollPane(stylesets);
-    pane.setPreferredSize(new Dimension(150, pane.getPreferredSize().height));
+    pane.setPreferredSize(new Dimension(150, 2 * pane.getPreferredSize().height));
 
     JButton button = new JButton(Resources.get("tree.iconadapter.styles.add"));
     button.addActionListener(this);
@@ -141,17 +139,16 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     GridBagConstraints gbc =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
             new Insets(0, 0, 0, 0), 1, 5);
-    this.add(p2, gbc);
+    root.add(p2, gbc);
     gbc.gridy = 1;
     gbc.gridwidth = 1;
     gbc.weightx = 0.5;
     gbc.weighty = 1;
-    this.add(pane, gbc);
+    root.add(pane, gbc);
 
     gbc.gridx++;
     gbc.weightx = 1;
-    this.add(styleSetPanel, gbc);
-
+    root.add(styleSetPanel, gbc);
   }
 
   /**
@@ -616,7 +613,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           fontNa = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
         } catch (NullPointerException e) {
           // FIXME(pavkovic) 2003.03.17: This is bad!
-          log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
+          log.error(
+              "Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
           fontNa = new String[0];
         }
 

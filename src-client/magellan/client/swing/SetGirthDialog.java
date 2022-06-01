@@ -14,13 +14,13 @@
 package magellan.client.swing;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Point;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -91,7 +91,9 @@ public class SetGirthDialog extends JDialog {
   }
 
   private void initComponents() {
-    getContentPane().setLayout(new java.awt.GridBagLayout());
+    JPanel root;
+    add(root = new JPanel());
+    root.setLayout(new java.awt.GridBagLayout());
     setTitle(Resources.get("setgirthdialog.window.title"));
 
     addWindowListener(new java.awt.event.WindowAdapter() {
@@ -121,46 +123,41 @@ public class SetGirthDialog extends JDialog {
     });
 
     GridBagConstraints gc = new java.awt.GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.FIRST_LINE_START,
-        GridBagConstraints.HORIZONTAL, new Insets(3, 1, 3, 1), 0, 0);
-    gc.gridx = 0;
-    gc.gridy = 0;
-    gc.gridwidth = 2;
-    // gc.fill = GridBagConstraints.HORIZONTAL;
-    gc.weightx = 1.0;
-    gc.weighty = 1.0;
-    gc.anchor = GridBagConstraints.NORTH;
-    getContentPane().add(coordPanel, gc);
+        GridBagConstraints.BOTH, new Insets(3, 1, 3, 1), 0, 0);
 
-    gc.gridwidth = 2;
-    gc.gridx = 0;
-    gc.gridy++;
-    // gc.fill = GridBagConstraints.BOTH;
-    gc.weighty = 1;
-    getContentPane().add(new JPanel());
+    gc.gridwidth = 3;
+    root.add(coordPanel, gc);
 
     gc.gridwidth = 1;
     gc.gridx = 0;
     gc.gridy++;
-    gc.weighty = 0;
-    // gc.insets = new java.awt.Insets(0, 0, 5, 5);
-    getContentPane().add(btnOK, gc);
+    gc.weighty = 1.0;
+    gc.weightx = 1.0;
+    JPanel pp;
+    root.add(pp = new JPanel(), gc);
+    pp.setPreferredSize(new Dimension(350, 1));
 
-    gc.gridx = 1;
-    // gc.insets = new java.awt.Insets(0, 0, 5, 5);
-    getContentPane().add(btnCancel, gc);
+    gc.gridwidth = 1;
+    gc.gridx = 0;
+    gc.gridy++;
+    gc.weighty = 0.0;
+    gc.weightx = 1.0;
+    root.add(new JPanel(), gc);
+
+    gc.weightx = 0.0;
+    gc.fill = GridBagConstraints.NONE;
+    ++gc.gridx;
+    root.add(btnCancel, gc);
+
+    ++gc.gridx;
+    root.add(btnOK, gc);
 
     coordPanel.setLayout(new java.awt.GridBagLayout());
 
-    gc =
-        new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0, GridBagConstraints.FIRST_LINE_START,
-            GridBagConstraints.NONE, new Insets(3, 1, 3, 1), 0, 0);
-    // new java.awt.GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
-    // GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 4, 4);
-
-    Component xmessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgx.caption"));
+    JComponent xmessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgx.caption")).getComponent();
     JLabel xminLabel = new JLabel(Resources.get("setgirthdialog.lbl.xmin.caption") + ":");
     JLabel xmaxLabel = new JLabel(Resources.get("setgirthdialog.lbl.xmax.caption") + ":");
-    Component ymessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgy.caption"));
+    JComponent ymessage = WrappableLabel.getLabel(Resources.get("setgirthdialog.lbl.msgy.caption")).getComponent();
     JLabel yminLabel = new JLabel(Resources.get("setgirthdialog.lbl.ymin.caption") + ":");
     JLabel ymaxLabel = new JLabel(Resources.get("setgirthdialog.lbl.ymax.caption") + ":");
     JLabel levelLabel = new JLabel(Resources.get("setgirthdialog.lbl.level.caption") + ":");
@@ -185,19 +182,26 @@ public class SetGirthDialog extends JDialog {
       editYmax.setText(String.valueOf(defaultBox.getMaxy()));
     }
 
-    gc.gridwidth = 4;
-    gc.anchor = GridBagConstraints.NORTHEAST;
-    gc.fill = GridBagConstraints.BOTH;
-    gc.gridx = 0;
-    gc.gridy = 0;
-    gc.gridx = 0;
-    gc.gridy++;
+    xmessage.setMinimumSize(new Dimension(100, 15));
+    ymessage.setMinimumSize(new Dimension(100, 15));
+
+    gc =
+        new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.FIRST_LINE_START,
+            GridBagConstraints.BOTH, new Insets(3, 1, 3, 1), 0, 0);
+
+    gc.gridwidth = 3;
+    gc.weightx = 1.0;
     coordPanel.add(levelLabel, gc);
-    gc.gridx = 1;
+
+    gc.gridwidth = 1;
+    gc.gridx = 3;
+    gc.weightx = 0.5;
     coordPanel.add(editLevel, gc);
 
     gc.gridx = 0;
     gc.gridy++;
+    gc.gridwidth = 4;
+    gc.weighty = 0.0;
     coordPanel.add(xmessage, gc);
     gc.gridwidth = 1;
     gc.gridy++;
@@ -226,9 +230,12 @@ public class SetGirthDialog extends JDialog {
 
     pack();
     Dimension d = getSize();
-    d.height = d.height * 2;
-    d.width = 400;
-    setPreferredSize(d);
+    if (d.height < d.width * 2 / 3) {
+      d.height = d.width * 2 / 3;
+      root.setPreferredSize(d);
+    }
+
+    getRootPane().setDefaultButton(btnOK);
   }
 
   /**
@@ -309,13 +316,13 @@ public class SetGirthDialog extends JDialog {
     // do not allow xmin=something, xmax = nothing
     if ((xmin != Integer.MAX_VALUE && xmax == Integer.MIN_VALUE)
         || (xmin == Integer.MAX_VALUE && xmax != Integer.MIN_VALUE)) {
-      editXmin.requestFocus();
+      editXmin.requestFocusInWindow();
       editXmin.setBackground(Color.RED);
       return;
     }
     if ((ymin != Integer.MAX_VALUE && ymax == Integer.MIN_VALUE)
         || (ymin == Integer.MAX_VALUE && ymax != Integer.MIN_VALUE)) {
-      editYmin.requestFocus();
+      editYmin.requestFocusInWindow();
       editYmin.setBackground(Color.RED);
       return;
     }
@@ -335,7 +342,7 @@ public class SetGirthDialog extends JDialog {
     try {
       result = Integer.parseInt(edit.getText());
     } catch (NumberFormatException e) {
-      edit.requestFocus();
+      edit.requestFocusInWindow();
       edit.setBackground(Color.RED);
       throw e;
     }

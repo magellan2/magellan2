@@ -39,7 +39,6 @@ import javax.swing.text.JTextComponent;
 
 import magellan.client.completion.AutoCompletion;
 import magellan.library.completion.Completion;
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Resources;
 
 /**
@@ -255,8 +254,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
     public ListPane(Window parent) {
       super(parent);
 
-      // call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
-      JVMUtilities.setFocusableWindowState(this, false);
+      setFocusableWindowState(false);
 
       JScrollPane scrollPane = new JScrollPane();
 

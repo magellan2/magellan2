@@ -25,6 +25,7 @@ package magellan.client;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -64,8 +65,6 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
   private final String lastVersion;
   private final String currentVersion;
   private boolean abort = true;
-  @SuppressWarnings("unused")
-  private final Client client;
 
   private JTextArea releaseText;
 
@@ -76,13 +75,12 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
   /**
    * The constructor of the dialogs sets some variables and initializes the GUI.
    *
-   * @param c The Magellan Client instance
+   * @param parent The Magellan Client instance
    * @param lastVersion latest version
    * @param currentVersion current Magellan version
    */
-  public UpdateDialog(Client c, String lastVersion, String currentVersion) {
-    super(c, true);
-    client = c;
+  public UpdateDialog(Frame parent, String lastVersion, String currentVersion) {
+    super(parent, true);
     this.lastVersion = lastVersion;
     this.currentVersion = currentVersion;
 
@@ -238,6 +236,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     getContentPane().add(mainPanel);
 
     pack();
+    getRootPane().setDefaultButton(btn_OK);
     btn_OK.requestFocusInWindow();
   }
 

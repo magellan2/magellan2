@@ -28,6 +28,28 @@ jobs:
         REFTAG="$(echo "$GITHUB_REF" | awk -F/ '{print $NF}')"
         echo "::set-output name=REFTAG::$REFTAG"
 
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Test with ant
+      run: |
+         ant -noinput -buildfile build.xml run_tests
+         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+         if [ -n "$fails" ]; then
+           echo Errors in $fails
+           cat $fails
+           exit 1
+         fi
+         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
+         if [ -n "$skips" ]; then
+           echo "Skipped tests: "
+           echo $skips
+         fi
+      # do not exit before all commands are executed
+      shell: bash --noprofile --norc -o pipefail {0}
+
     - name: Sanity check
       id: sanity_check
       run: |
@@ -64,32 +86,15 @@ jobs:
         echo "::set-output name=TAG::$TAG"
 
         # most recent tag has older build number
-        LASTTAG=$(git tag -l v* --sort='-committerdate')
+        LASTTAG=$(git tag -l "v*" --sort='-committerdate')
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ $BUILD == $OLDBUILD ]]; then
           echo "build.number $BUILD has not changed since most recent tag ${LASTTAG}, please update by running ant build locally!"
           exit 1
         fi
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-
-    - name: Test with ant
-      run: |
-         ant -noinput -buildfile build.xml run_tests
-         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-         if [ -n "$fails" ]; then
-           echo Errors in $fails
-           cat $fails
-           exit 1
-         fi
-      # do not exit before all commands are executed
-      shell: bash --noprofile --norc -o pipefail {0}
-
     - name: Build with ant
-      env: 
+      env:
         INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
         ant -noinput -buildfile build.xml distribute_install4j
@@ -155,4 +160,3 @@ jobs:
 #              "tag" : "${{ steps.sanity_check.outputs.TAG }}",
 #              "version" : "${{ steps.get-version.outputs.VERSION }}",
 #              "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
-

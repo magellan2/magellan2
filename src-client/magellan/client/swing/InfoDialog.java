@@ -17,6 +17,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -81,7 +82,8 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     String text =
         Resources.get("infodlg.infotext", getVersionString(), MagellanUrl.getRootUrl(), MagellanUrl
             .getMagellanUrl("www.fernando"), MagellanUrl.getMagellanUrl(MagellanUrl.WWW_BUGS),
-            Client.getLogFile().toURI().toASCIIString(), Client.getLogFile().getName());
+            Client.getLogFile().toURI().toASCIIString(), Client.getLogFile().getName(), new File(Client
+                .getResourceDirectory(), "doc/license").toURI().toASCIIString());
 
     jTextArea1 = new JEditorPane();
     jTextArea1.setContentType("text/html");
@@ -134,6 +136,9 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
         Macifier.browse(uri);
       } catch (URISyntaxException e1) {
         Logger.getInstance(this.getClass()).error(e1);
+        if (e != null) {
+          Logger.getInstance("URL: " + this.getClass()).error(e.getURL());
+        }
       }
     }
 

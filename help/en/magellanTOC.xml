@@ -73,8 +73,6 @@
 			<tocitem text="Army statistics" image="topic" target="menu_extras_armystatistics"/>
 			<tocitem text="Trade organizer" image="topic" target="menu_extras_tradestatistics"/>
 			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
-			<tocitem text="Repaint" image="topic" target="menu_extras_redraw"/>
-			<tocitem text="Reload graphic-set" image="topic" target="menu_extras_reload"/>
 			<tocitem text="Options" image="chapter" target="menu_extras_options">
 				<tocitem text="System" image="topic" target="menu_extras_options_system"/>
 				<tocitem text="Desktop" image="topic" target="menu_extras_options_desktop"/>
@@ -85,9 +83,7 @@
 				<tocitem text="Resources" image="topic" target="menu_extras_options_resources"/>
 				<tocitem text="Plugins" image="topic" target="menu_extras_options_plugins"/>
 			</tocitem>
-			<tocitem text="Help" image="topic" target="menu_extras_help"/>
 			<tocitem text="Tip of the Day" image="topic" target="menu_extras_tips"/>
-			<tocitem text="Info" image="topic" target="menu_extras_info"/>
 		</tocitem>
 	</tocitem>
 
@@ -102,7 +98,7 @@
 		<tocitem text="Orders" image="topic" target="windows_orders"/>
 		<tocitem text="ECheck" image="topic" target="windows_echeck"/>
 		<tocitem text="Open Tasks" image="topic" target="windows_problems"/>
-		<!-- <tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/> -->
+		<tocitem text="Bookmarks" image="topic" target="windows_bookmarks"/>
 	</tocitem>
 
 	<tocitem text="Reference" image="chapter" target="reference">
@@ -114,6 +110,7 @@
 		<tocitem text="Resources" image="topic" target="reference_ressources"></tocitem>
 		<tocitem text="Computerreports" image="topic" target="reference_cr"></tocitem>
 		<tocitem text="Shortcuts" image="topic" target="reference_shortcuts"></tocitem>
+		<tocitem text="ATR, ARR, Tooltips, Region Info" image="topic" target="reference_atr"></tocitem>
 		<tocitem text="Commandline-Parameters" image="topic" target="reference_commandline"></tocitem>
 	</tocitem>
 	<tocitem text="FAQ" image="topic" target="faq"></tocitem>

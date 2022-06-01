@@ -15,6 +15,7 @@ package magellan.client.swing;
 
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -50,6 +51,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import magellan.client.Client;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -71,6 +73,7 @@ public class JVorlage extends InternationalizedDialog {
   private JCheckBox chkOptionCR = null;
   private JTextField txtOptions = null;
   private JTextArea txtOutput = null;
+  private Container txtInfo;
 
   /**
    * Create a stand-alone instance of JVorlage.
@@ -78,8 +81,6 @@ public class JVorlage extends InternationalizedDialog {
   public JVorlage() {
     super((Frame) null, false);
     standAlone = true;
-
-    settings = new Properties();
 
     try {
       settings.load(new FileInputStream(new File(System.getProperty("user.home"), "JVorlage.ini")));
@@ -103,9 +104,12 @@ public class JVorlage extends InternationalizedDialog {
     setContentPane(getMainPane());
     setTitle(Resources.get("jvorlage.window.title"));
 
-    int width = Math.max(Integer.parseInt(settings.getProperty("JVorlage.width", "450")), 450);
-    int height = Math.max(Integer.parseInt(settings.getProperty("JVorlage.height", "310")), 310);
-    setSize(width, height);
+    pack();
+    if (settings.getProperty("JVorlage.width") != null) {
+      int width = Integer.parseInt(settings.getProperty("JVorlage.width", "450"));
+      int height = Integer.parseInt(settings.getProperty("JVorlage.height", "310"));
+      setSize(width, height);
+    }
 
     SwingUtils.setLocation(this, settings, "JVorlage.x", "JVorlage.y");
   }
@@ -115,14 +119,14 @@ public class JVorlage extends InternationalizedDialog {
     GridBagConstraints c = new GridBagConstraints();
     mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
-    c.anchor = GridBagConstraints.NORTH;
+    c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
     c.gridy = 0;
     c.gridwidth = 1;
     c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 0.0;
-    c.weighty = 0.0;
+    c.fill = GridBagConstraints.BOTH;
+    c.weightx = 0.01;
+    c.weighty = 0.1;
     c.insets = new Insets(5, 5, 5, 5);
     mainPanel.add(getInfoPanel(), c);
 
@@ -174,11 +178,7 @@ public class JVorlage extends InternationalizedDialog {
   }
 
   private Container getInfoPanel() {
-    JTextArea txtInfo = new JTextArea(Resources.get("jvorlage.txt.info.text"));
-    txtInfo.setOpaque(false);
-    txtInfo.setEditable(false);
-    txtInfo.setLineWrap(true);
-    txtInfo.setWrapStyleWord(true);
+    txtInfo = WrappableLabel.getLabel(Resources.get("jvorlage.txt.info.text")).getComponent();
 
     return txtInfo;
   }
@@ -188,6 +188,7 @@ public class JVorlage extends InternationalizedDialog {
     okButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         execUsersVorlage();
+
       }
     });
 
@@ -467,15 +468,6 @@ public class JVorlage extends InternationalizedDialog {
     c.weightx = 0.1;
     c.weighty = 0.0;
     pnlFiles.add(txtVorlageFile, c);
-    // c.anchor = GridBagConstraints.CENTER;
-    // c.gridx = 2;
-    // c.gridy = 3;
-    // c.gridwidth = 1;
-    // c.gridheight = 1;
-    // c.fill = GridBagConstraints.NONE;
-    // c.weightx = 0.0;
-    // c.weighty = 0.0;
-    // pnlFiles.add(btnVorlageFile, c);
 
     return pnlFiles;
   }
@@ -536,7 +528,7 @@ public class JVorlage extends InternationalizedDialog {
      * actionPerformed(ActionEvent e) { StringBuffer sb = execVorlage("-?"); if (sb != null) {
      * txtOutput.setText(sb.toString()); } } });
      */
-    txtOutput = new JTextArea();
+    txtOutput = new JTextArea("\n\n");
     txtOutput.setBorder(BorderFactory.createEtchedBorder());
 
     JPanel pnlOutput = new JPanel(new GridBagLayout());
@@ -545,13 +537,6 @@ public class JVorlage extends InternationalizedDialog {
 
     GridBagConstraints c = new GridBagConstraints();
 
-    /*
-     * c.anchor = c.CENTER; c.gridx = 0; c.gridy = 0; c.gridwidth = 1; c.gridheight = 1; c.fill =
-     * c.NONE; c.weightx = 0.0; c.weighty = 0.0; c.insets = new Insets(1, 1, 1, 1);
-     * pnlOutput.add(lblVersion, c); c.anchor = c.EAST; c.gridx = 1; c.gridy = 0; c.gridwidth = 1;
-     * c.gridheight = 1; c.fill = c.NONE; c.weightx = 0.0; c.weighty = 0.0; c.insets = new Insets(1,
-     * 1, 5, 1); pnlOutput.add(btnShowArgs, c);
-     */
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
     c.gridy = 0;
@@ -562,6 +547,7 @@ public class JVorlage extends InternationalizedDialog {
     c.weighty = 0.1;
     c.insets = new Insets(1, 1, 1, 1);
     pnlOutput.add(new JScrollPane(txtOutput), c);
+    pnlOutput.setPreferredSize(new Dimension(200, 200));
 
     return pnlOutput;
   }
@@ -677,7 +663,7 @@ public class JVorlage extends InternationalizedDialog {
               Object msgArgs[] = { Integer.valueOf(p.exitValue()) };
               JOptionPane.showMessageDialog(this, (new java.text.MessageFormat(Resources
                   .get("jvorlage.msg.execerror.text"))).format(msgArgs), Resources
-                  .get("jvorlage.msg.execerror.title"), JOptionPane.WARNING_MESSAGE);
+                      .get("jvorlage.msg.execerror.title"), JOptionPane.WARNING_MESSAGE);
             }
 
             break;

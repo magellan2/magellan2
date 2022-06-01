@@ -31,6 +31,7 @@ import java.util.Properties;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -75,7 +76,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
    */
   private void initComponents() {
 
-    Component comment = WrappableLabel.getLabel(Resources.get("resource.resourcesettings.comment"));
+    JComponent comment = WrappableLabel.getLabel(Resources.get("resource.resourcesettings.comment")).getComponent();
 
     addComponent(comment);
 

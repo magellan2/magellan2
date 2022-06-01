@@ -1,0 +1,5 @@
+#ATR exported settings
+#Thu Jun 27 19:33:50 GMT+02:00 2002
+ATR.Handel.Def=if\u00A7not\u00A7isOzean\u00A7soldname\u00A7newline\u00A7W\u00A7price\u00A7Weihrauch\u00A7 S\u00A7price\u00A7Seide\u00A7 \u00D6\u00A7price\u00A7\u00D6l\u00A7newline\u00A7M\u00A7price\u00A7Myrrhe\u00A7 J\u00A7price\u00A7Juwel\u00A7 B\u00A7price\u00A7Balsam\u00A7newline\u00A7G\u00A7price\u00A7Gew\u00FCrz
+ATR.Sets=;Handel
+ATR.Handel.Unknown=

@@ -86,8 +86,8 @@ public class EresseaOrderWriter extends OrderWriter implements GameSpecificOrder
   @Override
   protected boolean check(Order cmd) {
     for (String token : getForbiddenTokens())
-      if (cmd.getToken(0).equalsToken(token)) {
-        addError(Resources.get("orderwriter.invalid", cmd.getText()));
+      if (cmd.getToken(0).equalsCompletedToken(token)) {
+        addError(Resources.get("orderwriter.invalid", cmd.getText(), token));
       }
     return true;
   }

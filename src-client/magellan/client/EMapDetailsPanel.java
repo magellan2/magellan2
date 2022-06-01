@@ -8,6 +8,7 @@
 package magellan.client;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -63,6 +64,7 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.ToolTipManager;
+import javax.swing.border.LineBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
@@ -508,9 +510,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         new JScrollPane(description, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-    // ClearLook suggests to remove border
-    descScrollPane.setBorder(null);
-
+    descScrollPane.setBorder(new LineBorder(Color.GRAY));
+    name.setBorder(new LineBorder(Color.GRAY));
+    description.setBorder(null);
     // panel combining name and description
     nameDescPanel = new JPanel(new BorderLayout(0, 2));
     nameDescPanel.add(name, BorderLayout.NORTH);
@@ -704,11 +706,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     orders.attachEditorManager(editor);
     editor.setCompleter(orders);
     shortCuts = new ArrayList<KeyStroke>(3);
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_MASK));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.ALT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, InputEvent.ALT_DOWN_MASK));
 
     // toggle "limit make completion"
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 
     // split pane combining top split pane and orders
 
@@ -3863,7 +3865,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         long amount = 0;
 
         if (ingredient.getItemType().equals(
-            getGameData().getRules().getItemType(StringID.create("Bauer")))) {
+            getGameData().getRules().getItemType(EresseaConstants.I_UPEASANT))) {
           amount = region.getPeasants();
         } else {
           magellan.library.utils.Units.StatItem item =

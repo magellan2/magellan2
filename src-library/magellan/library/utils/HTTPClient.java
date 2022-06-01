@@ -55,6 +55,8 @@ import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpClientError;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -65,6 +67,7 @@ import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.SecureProtocolSocketFactory;
 
 import magellan.library.utils.logging.Logger;
@@ -90,7 +93,8 @@ public class HTTPClient {
    */
   public HTTPClient(Properties properties) {
 
-    Protocol.registerProtocol("https", new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
+    Protocol.registerProtocol("https",
+        new Protocol("https", new EasySSLProtocolSocketFactory(), 443));
 
     client = new HttpClient();
 
@@ -137,6 +141,12 @@ public class HTTPClient {
       break;
     }
     }
+  }
+
+  public void setAuthentication(String username, String password, String host, int port, String realm, String scheme) {
+    client.getState().setCredentials(
+        new AuthScope(host, port, realm, scheme),
+        new UsernamePasswordCredentials(username, password));
   }
 
   /**
@@ -194,6 +204,7 @@ public class HTTPClient {
 
     PostMethod method = new PostMethod(uri.toString());
     method.setRequestBody(parameters);
+    method.setRequestHeader("Content-type", "text/plain; charset=UTF-8");
 
     try {
       client.executeMethod(method);
@@ -241,7 +252,7 @@ public class HTTPClient {
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'. " + exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'. ", exception);
     } catch (Exception exception) {
       HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'.", exception);
     }
@@ -256,20 +267,18 @@ public class HTTPClient {
   protected HTTPResult post(URI uri, String content, Part[] parts) {
     PostMethod method = new PostMethod(uri.toString());
 
-    method.setRequestEntity(new StringRequestEntity(content));
-    method.setRequestHeader("Content-type", "text/xml; charset=" + Encoding.DEFAULT);
-
-    if (parts != null) {
-      method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
-    }
-
     try {
+      method.setRequestEntity(new StringRequestEntity(content, "text/xml", Encoding.DEFAULT.toString()));
+      method.setRequestHeader("Content-type", "text/xml; charset=" + Encoding.DEFAULT);
+
+      if (parts != null) {
+        method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
+      }
+
       client.executeMethod(method);
       return new HTTPResult(method);
-    } catch (SocketTimeoutException exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'. " + exception.getMessage());
-    } catch (Exception exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'.", exception);
+    } catch (Exception e) {
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '" + uri + "'.", e);
     }
 
     return null;
@@ -402,7 +411,7 @@ public class HTTPClient {
 
 }
 
-class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
+class EasySSLProtocolSocketFactory implements ProtocolSocketFactory {
 
   private SSLContext sslcontext = null;
 
@@ -431,7 +440,7 @@ class EasySSLProtocolSocketFactory implements SecureProtocolSocketFactory {
   }
 
   /**
-   * @see SecureProtocolSocketFactory#createSocket(java.lang.String,int,java.net.InetAddress,int)
+   * @see ProtocolSocketFactory#createSocket(java.lang.String,int,java.net.InetAddress,int)
    */
   public Socket createSocket(String host, int port, InetAddress clientHost, int clientPort) throws IOException,
       UnknownHostException {

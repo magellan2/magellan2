@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
@@ -91,6 +90,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     data = builder.createSimpleGameData(350);
     unit = data.getUnits().iterator().next();
     unit.getFaction().setLocale(Locale.GERMAN);
+    unit.clearOrders();
     // client.setData(data);
     parser = new E3CommandParser(data, // helper =
         ExtendedCommandsProvider.createHelper(null, data, null, null));
@@ -310,6 +310,14 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertTrue("should accept foreign unit", parser.testUnit("f", unitF, warning, true));
     parser.updateCurrentOrders();
     assertEquals(0, unit.getOrders2().size());
+  }
+
+  @Test
+  public final void testCommandAlmost() {
+    unit.addOrder("// $cript2 LERNE Hiebwaffen");
+    parser.execute(unit.getFaction());
+    assertWarning("lines starting with", unit, 1);
+    assertEquals(3, unit.getOrders2().size());
   }
 
   /**
@@ -948,6 +956,15 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("RESERVIERE 100 Silber", unitB, 3);
     assertMessage("braucht 19020 mehr Silber", unitB, 4);
     assertMessage("braucht 400 mehr Silber", unitB, 5);
+  }
+
+  @Test
+  public void testBenoetigeTypo() throws Exception {
+    unit.addOrder("// $cript Benoetige 1 Myrhe");
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertWarning("unknown item Myrhe", unit, 2);
   }
 
   /**
@@ -2861,7 +2878,7 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    */
   @Test
   public final void testCollectStatsRegion() {
-    assertOrder("", unit, 0);
+    unit.addOrder("XYZ");
     parser.execute(unit.getFaction());
     // parser.collectStats(unit.getRegion());
     E3CommandParser.notifyMagellan(unit);
@@ -3149,6 +3166,14 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertEquals(4, unit.getOrders2().size());
     assertOrder("UNTERHALTE ", unit, 2);
     assertWarning("unterbeschäftigt", unit, 3);
+
+    // no amount warning
+    unit.clearOrders();
+    unit.addOrder("// $cript Ernaehre Talent");
+
+    parser.execute(unit.getFaction());
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("UNTERHALTE ", unit, 2);
   }
 
   /**
@@ -3210,8 +3235,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addFaction(data, "otto", "Others", "Menschen", 0);
     unit.addOrder("// $cript Erlaube otto 1 vwxyzabc");
     parser.execute(unit.getFaction());
-    assertEquals(4, unit.getOrders2().size());
-    assertError("Ungültige Einheitennummer", unit, 3);
+    assertEquals(3, unit.getOrders2().size());
+    assertError("Ungültige Einheitennummer", unit, 2);
   }
 
   /**
@@ -3330,6 +3355,52 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("; $stm$T ALLES 0", unit, 3);
     assertOrder("; $stm$L 100.0 Hiebwaffen 11 99 Ausdauer 8 99 Schiffbau 4 99 Unterhaltung 4 5", unit, 4);
 
+  }
+
+  @Test
+  public final void testHelmsmanLerne() {
+    E3CommandParser.TEACH_PREFIX = "stm";
+    builder.addSkill(unit, "Hiebwaffen", 1);
+    builder.addItem(data, unit, "Silber", 1000);
+    builder.addItem(data, unit, "Schwert", 1);
+
+    // normal
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann");
+    unit.addOrder("ROUTE no");
+    parser.execute(unit.getFaction());
+
+    assertEquals(6, unit.getOrders2().size());
+    // 0, 1 is comment, $cript
+    assertOrder("ROUTE no", unit, 2);
+    assertComment(unit, 3, true, false);
+    assertOrder("RESERVIERE 300 Silber", unit, 4);
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 5);
+
+    // + manual Lerne order
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann ");
+    unit.addOrder("// $cript Lerne Unterhaltung 99 99");
+    parser.execute(unit.getFaction());
+
+    assertEquals(7, unit.getOrders2().size());
+    // 0-2, is comment, $cript, $cript
+    assertOrder("; $stm$T ALLES 0", unit, 3);
+    assertOrder("; $stm$L 100.0 Unterhaltung 99 99 Hiebwaffen 20 99 Ausdauer 8 99", unit, 4);
+
+    // Lerne does not override long order
+    unit.clearOrders();
+    unit.addOrder("// $cript Steuermann");
+    unit.addOrder("// $cript Lerne Unterhaltung 99 99");
+    unit.addOrder("ROUTE no");
+    parser.execute(unit.getFaction());
+
+    assertEquals(7, unit.getOrders2().size());
+    // 0-2, is comment, $cript, $cript
+    assertOrder("ROUTE no", unit, 3);
+    assertComment(unit, 4, true, false);
+    assertOrder("RESERVIERE 300 Silber", unit, 5);
+    assertOrder("RESERVIERE JE 1 Schwert", unit, 6);
   }
 
   /**
@@ -3474,51 +3545,19 @@ public class E3CommandParserTest extends MagellanTestWithResources {
   }
 
   @Test
-  public final void testGG() {
-    int N = 1000;
-    Random rng = new Random();
-    for (double pC = .5; pC < .9; pC += .1) {
-      for (double pJ = pC; pJ < 1; pJ += .05) {
-        int[] scoreC = new int[] { 0, 0, 0 };
-        int[] scoreJ = new int[] { 0, 0, 0 };
-        for (int i = 0; i < N; ++i) {
-          int q[] = new int[] { 4, 5, 6 };
-          int d[] = new int[] { 4, 3, 2 };
-          int done = q.length;
-          while (done > 0) {
-            boolean aC = rng.nextDouble() <= pC, aJ = rng.nextDouble() <= pJ;
-            for (int v = 0; v < q.length; ++v) {
-              if (d[v] > 0 && q[v] > 0) {
-                if (aC) {
-                  q[v]--;
-                  d[v]++;
-                }
-                if (aJ) {
-                  d[v]--;
-                }
-                if (d[v] == 0 || q[v] == 0) {
-                  done--;
-                }
-              }
-            }
-          }
-          for (int v = 0; v < q.length; ++v) {
-            if (q[v] == 0) {
-              ++scoreC[v];
-            }
-            if (d[v] == 0) {
-              ++scoreJ[v];
-            }
-          }
+  public final void testQuartiermeisterWithSilver() {
+    unit.clearOrders();
+    unit.addOrder("// $cript Quartiermeister 1 Schwert 1 Amulett~des~wahren~Sehens");
+    builder.addItem(data, unit, "Amulett des wahren Sehens", 1);
+    builder.addItem(data, unit, "Silber", 1000);
+    builder.addSkill(unit, "Wahrnehmung", 5);
 
-        }
-        System.out.print(String.format("%.3f\t%.3f", pC, pJ));
-        for (int v = 0; v < scoreC.length; ++v) {
-          System.out.print(String.format("\t%.3f\t%.3f", (double) scoreC[v] / N, (double) scoreJ[v] / N));
-        }
-        System.out.println();
-      }
-    }
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("LERNE Taktik", unit, 3);
+    assertTrue(unit.isOrdersConfirmed());
+
   }
 
 }

@@ -235,19 +235,11 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     return unitCollection;
   }
 
-  public int unitsCount() {
+  public int personCount() {
     if (units == null)
       return 0;
 
-    if (unitCollection == null) {
-      if (units != null && units.values() != null) {
-        unitCollection = Collections.unmodifiableCollection(units.values());
-      } else {
-        unitCollection = Collections.emptyList();
-      }
-    }
-
-    return unitCollection.stream().collect(Collectors.summingInt(Unit::getPersons));
+    return units().stream().collect(Collectors.summingInt(Unit::getPersons));
   }
 
   /**
@@ -295,11 +287,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @see magellan.library.UnitContainer#modifiedUnits()
    */
   public Collection<Unit> modifiedUnits() {
-
-    // if (!hasCache() || (getCache().modifiedContainerUnits == null)) {
-    // refreshModifiedUnits();
-    // }
-
     if (hasCache() && (getCache().modifiedContainerUnits != null)) {
       if (getCache().modifiedContainerUnits.values() != null)
         return Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
@@ -309,19 +296,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return Collections.unmodifiableCollection(units());
   }
 
-  public int modifiedUnitsCount() {
-    Collection<Unit> modifiedUnitCollection = null;
-    if (hasCache() && (getCache().modifiedContainerUnits != null)) {
-      if (getCache().modifiedContainerUnits.values() != null) {
-        modifiedUnitCollection = Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
-      } else {
-        modifiedUnitCollection = Collections.emptyList();
-      }
-    } else {
-      modifiedUnitCollection = Collections.unmodifiableCollection(units());
-    }
-
-    return modifiedUnitCollection.stream().collect(Collectors.summingInt(Unit::getPersons));
+  public int modifiedPersonCount() {
+    return modifiedUnits().stream().collect(Collectors.summingInt(Unit::getPersons));
   }
 
   /**

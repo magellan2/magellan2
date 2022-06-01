@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Properties;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import magellan.client.MagellanContext;
@@ -181,8 +182,8 @@ public abstract class HexCellRenderer implements MapCellRenderer {
     }
   }
 
-  protected static Component createDescriptionPanel(String text, Component parent) {
-    java.awt.Component description = WrappableLabel.getLabel(text);
+  protected static JComponent createDescriptionPanel(String text, Component parent) {
+    JComponent description = WrappableLabel.getLabel(text).getComponent();
 
     return description;
   }

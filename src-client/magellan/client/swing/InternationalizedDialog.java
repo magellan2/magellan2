@@ -22,7 +22,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
 
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -62,8 +61,7 @@ public abstract class InternationalizedDialog extends JDialog {
   }
 
   protected void initDialog() {
-    // call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
-    JVMUtilities.setFocusableWindowState(this, true);
+    setFocusableWindowState(true);
 
     addKeyListener(new KeyAdapter() {
       @Override

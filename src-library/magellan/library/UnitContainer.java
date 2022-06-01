@@ -71,7 +71,7 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   /**
    * Returns the number of persons summed over all units.
    */
-  public int unitsCount();
+  public int personCount();
 
   /**
    * Returns a direct view of the units. Preferably use units().
@@ -102,7 +102,7 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   /**
    * Returns the number of persons summed over all units after relations.
    */
-  public int modifiedUnitsCount();
+  public int modifiedPersonCount();
 
   /**
    * Returns the unit with the specified ID if it is in the modified units, <code>null</code>

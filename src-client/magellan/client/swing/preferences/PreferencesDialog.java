@@ -321,6 +321,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 
       JScrollPane pane = new JScrollPane(c);
       pane.setBorder(null);
+      pane.setPreferredSize(dim);
 
       JPanel help = new JPanel(CenterLayout.SPAN_X_LAYOUT);
       help.add(pane);

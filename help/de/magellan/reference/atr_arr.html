@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="keywords"
+  content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
+<meta name="description" content="Magellan Dokumentation" />
+<meta name="author" content="Magellan Development Team">
+
+<title>ATR, ARR und Tooltips</title>
+<link rel=stylesheet href="../../default.css" type="text/css">
+</head>
+<body>
+  <div id='mh-content'>
+    <a id="top"></a>
+
+    <h1>ATR, ARR, Tooltips und Regionsinfo</h1>
+
+    <h2 id="Funktionsweise">Funktionsweise</h2>
+    <p>Das so genannte Ersetzersystem ist letztlich eine Art von
+      Programmiersprache, die es erlaubt, aus den Infos über Regionen bestimmte
+      Werte auszurechnen. Das Ersetzersystem wird für den ATR und ARR
+      verwendet, sowie für die Tooltips der Karte und die Regionskurzinfos in
+      der Detailanzeige. Der ATR dient zur Beschriftung der Karte. Mit dem ARR
+      kann man Regionen anhand eines Zahlenwertes und einer Farbskala
+      einfärben. Natürlich kann man auch ATR, ARR und Tooltip kombinieren. Dann
+      erhält man farbige Regionen und passende Texte auf jeder Region mit
+      optionalen Zusatzinfos. Auch die ersten Zeilen der Detailanzeige können
+      mit Hilfe dieser Sprache konfiguriert werden. Die folgende Abbildung
+      zeigt eine Karte, die anhand der Handelsgüter eingefärbt und beschriftet
+      ist.</p>
+    <p>
+      <img alt="Nach Handel beschriftete Karte" src="../images/atr_trade.gif" />
+    </p>
+
+    <p>Welche Ersetzungsm&ouml;glichkeiten gibt es? Folgende Wörter sind im
+      Zusammenhang mit den Tooltips wichtig. In Klammern ist jeweils ein
+      Beispiel angegeben. Es gibt</p>
+    <ul>
+      <li>Variablen (§herb).</li>
+      <li>zusammengesetzte Variablen (§item§Speer).</li>
+      <li>Bedingungen (§if§not§isOzean§text1§else§text2§end§).</li>
+      <li>zusammengesetzte Schalter (§faction§abcd). Beschränken die
+        Funktion der auf sie folgenden Ersetzer nach festlegbaren Kriterien</li>
+      <li>Rechenoperationen (§+§3§2)</li>
+      <li>Strings (§beliebiger Text)</li>
+    </ul>
+
+    <p>Eine Definitionszeichenkette (Zeile) besteht nun aus mehreren
+      hintereinander geschriebenen Wörtern, denen jeweils das Trennzeichen §
+      vorangestellt ist.</p>
+
+    <h2 id="Beispiele">Einfache Beispiele</h2>
+    <h3>Beispiel: Text mit Variable</h3>
+    <p>
+      <kbd>§Kraut §herb</kbd>
+      führt in einer Region, wo das Kraut Elfenlieb wächst, zur Ausgabe
+      <kbd>Kraut Elfenlieb</kbd>
+      . Wenn Magellan das Wort erkennt (hier "herb"), dann wird es in jeder
+      Region durch den entsprechenden Wert ersetzt (hier "Elfenlieb").
+      Andernfalls wird einfach der Text ausgegeben (hier "Kraut").
+    </p>
+
+    <h3>Beispiel: Zählen von Gegenständen</h3>
+
+    <p>
+      Mit der zusammengesetzten Variable §item§Gegenstand kann man sich die
+      Anzahl von Gegenstand anzeigen lassen.
+      <kbd>§item§Speer</kbd>
+      gibt die Anzahl Speere in dieser Region aus.
+      <kbd>§item§Speer§ §item§Armbrust</kbd>
+      ergibt Anzahl der Speere gefolgt von einem Leerzeichen gefolgt von der
+      Anzahl Armbrüste. Der Gegenstand muss genau so geschrieben werden, wie er
+      in Magellan genannt wird.
+    </p>
+
+    <h3>Beispiel: Anzeige nicht auf Ozeanen</h3>
+    <p>
+      Mit if kann man die Ausgabe einschränken. So sorgt
+      <kbd>§if§not§isOzean§Bäume §trees</kbd>
+      dafür, dass nur in Nicht-Ozeanregionen die Anzahl Bäume angezeigt wird.
+      Das sorgt bei Dingen wie Bäumen für mehr Übersichtlichkeit, da dann nicht
+      in jedem Ozeanfeld das Wort Bäume steht. Das §not kann man auch
+      weglassen. Dann wird nur in Ozeanregionen angezeigt (was mit Bäumen
+      natürlich keinen Sinn ergibt). Die komplette Syntax lautet
+      §if[§not]§{Bedingung}§{wenn Bedingung wahr}§else§{wenn Bedingung
+      falsch}§end.<br /> Dabei ist not optional für die Verneinung. Die
+      geschweiften Klammern inklusive Inhalt sollen durch die gewünschten
+      Ausgaben ersetzt werden.
+    </p>
+
+    <h3>Beispiel: Zählen auf Einheiten von einer Partei beschränken</h3>
+    <p>
+      Der zusammengesetzte Schalter §faction§Parteinummer beschränkt das Zählen
+      von Gegenständen auf die angegebene Partei. In einer Region, wo die
+      Partei abcd 3 Speere hat, führt
+      <kbd>§Speer §faction§abcd§item§Speer</kbd>
+      zur Ausgabe von
+      <kbd>Speer 3</kbd>
+    </p>
+
+    <h3>Beispiel: befreundete und alle Personen</h3>
+    <p>
+      Der zusammengesetzte Schalter §priv§Vertrauenslevel beschränkt das Zählen
+      auf Parteien mit dem angegebenen Vertrauenslevel. §priv§clear hebt diese
+      Einschränkung wieder auf. Parteien, bei denen das Passwort gesetzt ist,
+      haben Vertrauenslevel 100. Ein HELFE ALLES entspricht dem Wert 60. Möchte
+      man eigene und fremde Personen zählen kann man folgendes verwenden:
+      <kbd>§priv§100§Eigene §count§priv§clear§ | Alle §count</kbd>
+      .
+    </p>
+
+    <h3>Beispiel: Addieren</h3>
+    <p>
+      Geschrieben wird nach der polnischen Notation, d.h. die Rechenoperatoren
+      stehen vor den beiden (oder mehr) Operanden.
+      <kbd>§+§item§Speer§item§Armbrust</kbd>
+      addiert Speere und Armbrüste zusammen. Durch diese Schreibweise benötigt
+      man keine Klammern. <br />a * (b + c) ist in polnischer Notation * a + b
+      c, also §*§a§+§b§c oder auch §*§+§b§c§a<br /> a * b + c lautet + * a b
+      c, also §+§*§a§b§c oder auch §+§c§*§a§b.
+    </p>
+
+
+    <h2 id="Hinweise">Hinweise und Stolpersteine</h2>
+    <ul>
+      <li>Man sollte darauf achten, dass am Ende der Zeile keine
+        Leerzeichen sind. Diese verhindern das korrekte Erkennen der Ersetzer.
+        Am besten macht man zu Beginn und Ende der Zeile je ein §. Das
+        verhindert Fehler. Die Syntax erlaubt jedoch auch das Weglassen von §
+        am Anfang und Ende. Nur das Wort herb funktioniert also auch.</li>
+      <li>Bei Tooltips und in den Regionsinfos kann HTML benutzt werden.
+        Dazu muss die ganze Ausgabe in HTML-Tags eingeschlossen sein, also zum
+        Beispiel <kbd>&lt;html&gt;&lt;body&gt;&lt;b&gt;§rname§&lt;/b&gt;
+          &lt;i&gt;§herb§&lt;/i&gt; &lt;/body&gt;&lt;/html&gt;</kbd>.
+      </li>
+      <li>§newline erzeugt einen Zeilenwechsel im ATR. Einen Tooltip
+        schreibt man jedoch besser komplett als HTML oder verwendet ein
+        Leerzeichen, anstelle des newline.</li>
+      <li>Beim ARR muss das Ergebnis des gesamten Ausdrucks eine Zahl
+        sein. Jeder String verhindert eine richtige Ausgabe. Dazu gehören auch
+        Zeilenumbrüche und Leerzeichen.</li>
+      <li>Wenn die Syntax falsch ist, erhält man keine Fehlermeldung,
+        sondern nur eine falsche Ausgabe.</li>
+      <li>Ob die Ausgaben des ARR richtig sind, prüft man am besten mit
+        einem entsprechenden Tooltip.</li>
+      <li>Ein Ersetzer, der etwas zählt (z.B. Speere), tut dies für alle
+        Einheiten in einer Region. Möchte man dies auf z.B. eigene Einheiten
+        einschränken, so müssen einschränkende Ersetzer wie priv oder faction
+        verwendet werden.</li>
+      <li>Ein §clear hinter faction oder priv hebt die Einschränkung
+        wieder auf.</li>
+      <li>Ein Leerzeichen erhält man, indem man hinter § ein Leerzeichen
+        setzt. z.B. §Ersetzer§ §Ersetzer</li>
+      <li>Möchte man zum Beispiel nicht den Ersetzer herb aufrufen,
+        sondern die Zeichenkette 'herb' ausgeben, kann man das so erreichen:
+        §\herb§. Einen Backslash '\' kann man so ausgeben: §\§</li>
+    </ul>
+
+    <h2>Was andere verwenden, Downloads</h2>
+
+    <p>Hier sind einige weiterführende Beispiele von Ersetzern, die von
+      Magellannutzern verwendet werden.</p>
+
+    <h3 id="Tooltip">Tooltip und ATR (Advanced Text Renderer)</h3>
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <th>Name</th>
+        <th>Beschreibung</th>
+        <th>Autor</th>
+      </tr>
+      <tr>
+        <td><a href="atr/Handel.atr">Handelskarte</a></td>
+        <td>ATR zusammen mit Handelskarte des ARR verwenden</td>
+        <td>Lars</td>
+      </tr>
+      <tr>
+        <td><a href="atr/fmzimmer.atr">Überblick Handel und Kräuter,
+            formatiert</a></td>
+        <td>Liefert alle Daten, die ich schnell wissen möchte, ohne extra
+          auf den Provinznamen in der Liste klicken zu müssen.</td>
+        <td>Frank-Michael Zimmer</td>
+      </tr>
+    </table>
+
+
+    <h2 id="arr">AdvancedRegionShapeCellRenderer (ARR)</h2>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <th>Name</th>
+        <th>Beschreibung</th>
+        <th>Autor</th>
+      </tr>
+      <tr>
+        <td><a href="atr/Armbrustverteilung.arr">Armbrustverteilung</a></td>
+        <td>Je dunkler das rot, desto mehr Armbrüste fehlen. Je dunkler
+          das grün, desto mehr Armbrüste sind in der Region über.</td>
+        <td>Lars</td>
+      </tr>
+      <tr>
+        <td><a href="atr/Pestwarnung.arr">Pestwarnung</a></td>
+        <td>Zeigt an, wie viele Arbeitsplätze die Bauern benötigen
+          (arbeitende Einheiten werden nicht berücksichtigt).<br /> gelb:
+          viele Arbeitsplätze frei<br> grün: einige Arbeitsplätze frei<br />
+          rot: kritisch, nicht genügend Arbeitsplätze vorhanden, Gefahr von
+          Pest
+        </td>
+        <td>Jochen Schuh</td>
+      </tr>
+      <tr>
+        <td><a href="atr/Einkaufsgut.arr">Einkaufsgut</a></td>
+        <td>Farbige Karte, wo welches Einkaufsgut zu kaufen ist.<br>Öl
+          - braun<br> Weihrauch - grau<br> Seide - weißblau<br>
+          Myrrhe - grün<br> Juwel - rot<br> Gewürz - gelb<br>
+          Balsam - blau
+        </td>
+        <td>Lars</td>
+      </tr>
+      <tr>
+        <td><a href="atr/Kraeuter.arr">Kraeuter</a></td>
+        <td>Farbige Kräuterkarte. Jedes Terrain hat eine Grundfarbe, die
+          je nach Kraut in 3 Helligkeitsstufen variiert. Weiß für Ozean. Lila,
+          wenn die Region noch nicht erforscht ist. Farben, Kräuter und
+          zurückgegebene Werte für die Farben: <br> <b>Ebene Grüntöne</b>
+          Würziger Wagemut: 1, Eulenauge: 2, Flachwurz: 3, <b>Wüste
+            Gelbtöne</b> Sandfäule: 4, Wasserfinder: 5, Kakteenschwitz:6, <b>Sumpf
+            Orangetöne</b> Gurgelkraut: 7, Blasenmorchel:8, Knotiger Saugwurz: 9, <b>Hochland
+            Rottöne</b> Alraune: 10, Windbeutel: 11, Fjordwuchs: 12, <b>Berge
+            Grautöne</b> Spaltwachs: 13, Höhlenglimm: 14, Steinbeißer: 15, <b>Gletscher
+            Türkistöne</b> Weißer Wüterich: 16, Schneekristall: 17, Eisblume: 18, <b>Wald
+            Blautöne</b> Elfenlieb: 19, Grüner Spinnerich: 20, Blauer Baumringel:
+          21
+        </td>
+        <td>Lars</td>
+      </tr>
+    </table>
+
+
+    <h2 id="Reginfo">Regions-Kurzinfo</h2>
+    <p>Diese ist konfigurierbar unter Optionen - Detailanzeige. Tip: Mann
+      kann zur Übersichtlichkeit auch Enter nach jeder Zeile verwenden</p>
+
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <th>Name</th>
+        <th>Beschreibung</th>
+        <th>String</th>
+        <th>Autor</th>
+      </tr>
+      <tr>
+        <td><a href="atr/reginfoorig.txt">Das Original</a></td>
+        <td>Die Voreinstellung</td>
+        <td>
+          <table>
+            <tr>
+              <td>Bauern</td>
+              <td>§peasants</td>
+              <td>Mallorn/Bäume</td>
+              <td>§if§&gt;§mallorn§0§mallorn§else§trees§end§</td>
+            </tr>
+            <tr>
+              <td>Rekruten:</td>
+              <td>§recruit</td>
+              <td>Schösslinge:</td>
+              <td>§sprouts</td>
+            </tr>
+            <tr>
+              <td>Überschuss:</td>
+              <td style="word-wrap: anywhere;">§if§&lt;§peasants§maxWorkers§*§peasants§-§peasantWage§10§else§-§*§maxWorkers§peasantWage§*§10§peasants§end§</td>
+              <td>Pferde:</td>
+              <td>§horses§</td>
+            </tr>
+            <tr>
+              <td>Unterhaltung:</td>
+              <td>§entertain§</td>
+              <td>Eisen/Laen</td>
+              <td>§if§&lt;§0§laen§if§&lt;§0§iron§iron§ /
+                §laen§else§laen§end§else§if§&lt;§0§iron§iron§else§-?-§end§end§</td>
+            </tr>
+            <tr>
+              <td>Silberpool:</td>
+              <td>§priv§100§item§Silber§priv§clear§</td>
+              <td>Steine:</td>
+              <td>§stones§</td>
+            </tr>
+            <tr>
+              <td>Handel:</td>
+              <td>§maxtrade§</td>
+              <td>Kraut:</td>
+              <td>§herb§</td>
+            </tr>
+          </table>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href="atr/reginfo2.txt">Regions- &amp; Parteiinfo</a></td>
+        <td>Ressourcenpool und Verdienstmöglichkeiten in der Region. Die
+          Angaben sind teilweise unvollständig (zum Beispiel keine
+          Flammenschwerter)</td>
+        <td>
+          <table>
+            <tr>
+              <td>Bauern</td>
+              <td>§peasants§</td>
+              <td>Rekruten</td>
+              <td>§recruit§priv§100§</td>
+            </tr>
+            <tr>
+              <td>Max.Steuern</td>
+              <td style="word-wrap: anywhere;">§if§&lt;§peasants§maxWorkers§*§peasants§-§peasantWage§10§else§-§*§maxWorkers§peasantWage§*§10§peasants§end§</td>
+              <td>Poolsilber</td>
+              <td>§item§Silber§</td>
+            </tr>
+            <tr>
+              <td>mögl. Verdienst</td>
+              <td style="word-wrap: anywhere;">§*§20§+§skillsum§Unterhaltung§skillsum§Steuereintreiben§</td>
+              <td>Holz</td>
+              <td>§item§Holz§</td>
+            </tr>
+            <tr>
+              <td>Waffen</td>
+              <td style="word-wrap: anywhere;">§+§item§Speer§+§item§Hellebarde§+§item§Schwert§+§item§Kriegsaxt§item§Bihänder§
+                /
+                §+§item§Armbrust§+§item§Mallornarmbrust§+§item§Bogen§+§item§Katapult§item§Elfenbogen§</td>
+              <td>Wagen / Pferd</td>
+              <td>§item§Wagen§ / §item§Pferd§</td>
+            </tr>
+            <tr>
+              <td>Rüstung / Schild</td>
+              <td style="word-wrap: anywhere;">§+§item§Kettenhemd§item§Plattenpanzer§
+                / §item§Schild§</td>
+              <td>Eisen / Stein</td>
+              <td>§item§Eisen§ / §item§Stein§</td>
+            </tr>
+            <tr>
+              <td>Kämpfer</td>
+              <td style="word-wrap: anywhere;">§+§skill§Stangenwaffen§skill§Hiebwaffen§
+                /
+                §+§skill§Armbrustschießen§+§skill§Bogenschießen§skill§Katapultbedienung§</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </td>
+        <td>Lars</td>
+      </tr>
+    </table>
+
+
+    <h2 id="Ersetzer">Ersetzerliste und Erklärungen mit Beispielen</h2>
+    <table border="1" style="width: 100%; border-collapse: collapse;">
+      <tr>
+        <th style="width: 10%">Ersetzer</th>
+        <th style="width: 50%">Erläuterung - wenn nichts anderes
+          angegeben, gilt der Ersetzer für eine Region. Parameter müssen genau
+          so angegeben werden, wie sie Magellan anzeigt. Also item§Stein für
+          Steine von Einheiten. Nicht item§stein und auch nicht item§Steine</th>
+        <th>Erläuterndes Beispiel. Wenn keines angegeben ist, reicht der
+          Name des Ersetzers, um eine Ausgabe zu erhalten</th>
+      </tr>
+      <tr>
+        <td>+ - * /</td>
+        <td>Addition, Subtraktion, Multiplikation bzw. Division von
+          Zahlen. Verwendet polnische Notation, also erst der Operator, dann
+          die Argumente.</td>
+        <td><kbd>3 + (Bauern * 3) = §+§3§*§wage§peasants</kbd></td>
+      </tr>
+      <tr>
+        <td>&lt;</td>
+        <td>Liefert <i>true</i>, wenn der Wert des ersten Parameters (wenn
+          möglich als Zahl, sonst als String) kleiner als der zweite ist.
+        </td>
+        <td>Liefert <i>true</i>, falls Bauernzahl größer als 5: <kbd>§&lt;§5§peasants</kbd></td>
+      </tr>
+      <tr>
+        <td>cmd</td>
+        <td>Gibt das §-Zeichen zurück.</td>
+        <td><kbd>§cmd§ 1 des Grundgesetzes</kbd></td>
+      </tr>
+      <tr>
+        <td>contains</td>
+        <td>Prüft, ob das zweite Argument (als String) im ersten (als
+          String) vorkommt. Es wird Groß-/Kleinschreibung beachtet.</td>
+        <td>Liefert <i>true</i> für die Region Lummerland: <kbd>§contains§rname§land§</kbd></td>
+      </tr>
+      <tr>
+        <td>containsIgnoreCase</td>
+        <td>Wie oben, aber Groß-/Kleinschreibung wird ignoriert.</td>
+        <td>Liefert <i>true</i> für die Region Lummerland: <kbd>§contains§rname§Land§</kbd></td>
+      </tr>
+      <tr>
+        <td>coordinate</td>
+        <td>Gibt die Koordinaten der Region zurück. "x, y" in Ebene 0, "x,
+          y, z" in anderen Ebenen</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>count</td>
+        <td>Anzahl Personen aller Einheiten in der Region. Kann durch
+          filter eingegrenzt werden.</td>
+        <td>Anzahl Personen: <kbd>§count</kbd></td>
+      </tr>
+      <tr>
+        <td>countUnits</td>
+        <td>Anzahl Einheiten</td>
+        <td>Anzahl Einheiten: <kbd>§countUnits</kbd></td>
+      </tr>
+      <tr>
+        <td>description</td>
+        <td>Liefert die Beschreibung beschreibbarer Objekte wie Regionen
+          oder Einheiten</td>
+        <td>Zählt "Soldaten" in der Region: <kbd>§filter§contains§description§Soldat§count</kbd></td>
+      </tr>
+      <tr>
+        <td>entertain</td>
+        <td>Maximal mögliche Unterhaltung wie im CR angegeben</td>
+        <td>UnterhaltMax: <kbd>§entertain</kbd></td>
+      </tr>
+      <tr>
+        <td>equals / equalsIgnoreCase</td>
+        <td>Liefert <i>true</i>, wenn die beiden Argumente gleich sind.
+          Die zweite Variante ignoriert dabei Groß-/Kleinschreibung.
+          Funktioniert bei Zahlenwerten und bei Zeichenketten, kann aber nicht
+          unbedingt, wenn diese gemischt sind.
+        </td>
+        <td><kbd> if§equals§herb§Eisblume§Hier wächst Eisblume§keine
+            Eisblume§end </kbd> <br /> <kbd>§equals§5§+§2§3</kbd> liefert <i>false</i>!</td>
+      </tr>
+      <tr>
+        <td>faction</td>
+        <td>Beschränkt folgende Ersetzer auf angegebene Partei.
+          Parteinummer angeben. faction§clear hebt die Einschränkung wieder
+          auf.</td>
+        <td>Zählt Personen für Partei abcd und alle: <kbd>§faction§abcd§abcd:
+            §count§faction§clear§ Alle: §count</kbd></td>
+      </tr>
+      <tr>
+        <td>filter</td>
+        <td>Filtert Einheiten basierend auf einem Ersetzer, der als erstes
+          Argument übergeben wird. Dieser Filter wird auf Ersetzer wie count
+          angewendet. Wird mit §end aufgehoben.</td>
+        <td>Zählt "Soldaten" in der Region: <kbd>§filter§contains§description§Soldat§count§end</kbd></td>
+      </tr>
+      <tr>
+        <td>herb</td>
+        <td>Liefert das in der Region wachsende Kraut.</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>horses</td>
+        <td>Anzahl Pferde</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>if</td>
+        <td>§if§Bedingung§Ersetzer1§end oder
+          §if§Bedingung§Ersetzer1§else§Ersetzer2§end. Wenn Bedingung <i>true</i>
+          ist, führe Ersetzer1 aus. Kann mit else erweitert werden, dann wird
+          Ersetzer2 ausgeführt, wenn die Bedingung <i>false</i> ist.
+          Schachtelung ist möglich
+        </td>
+        <td>Wenn weniger als 100 Pferde, schreibe "weniger als 100",
+          ansonsten schreibe "mehr oder gleich 100": <kbd>if§&lt;§horses§100§weniger
+            als 100§else§mehr oder gleich 100§end</kbd>
+        </td>
+      </tr>
+      <tr>
+        <td>iron</td>
+        <td>noch nicht abgebautes Eisen</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>ironlevel</td>
+        <td>die aktuelle Stufe, auf der Eisen abgebaut werden kann</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>isAktiverVulkan, isBerge etc.</td>
+        <td>liefert <i>true</i>, wenn das Terrain der Region dem
+          angegebenen Typ entspricht
+        </td>
+        <td><kbd>if§isEbene§Region ist Ebene§else§Region ist keine
+            Ebene§end</kbd></td>
+      </tr>
+      <tr>
+        <td>item</td>
+        <td>Anzahl eines Gegenstandes über alle Einheiten. Angabe von
+          Gegenstand exakt wie im Report geschrieben erforderlich. Kann mit
+          Filtern eingeschränkt werden.</td>
+        <td><kbd>item§Speer</kbd></td>
+      </tr>
+      <tr>
+        <td>laen</td>
+        <td>noch nicht abgebautes Laen</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>laenlevel</td>
+        <td>die aktuelle Stufe, auf der Laen abgebaut werden kann</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>mallorn</td>
+        <td>Liefert die Menge des in der Region als Ressource vorhandene
+          Mallorns zurück.</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>mallornregion</td>
+        <td>liefert wahr, wenn die Region eine Mallornregion ist, sonst
+          falsch.</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>maxWorkers</td>
+        <td>max. zur Verfügung stehende Arbeitsplätze, Bäume
+          berücksichtigt.</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>maxtrade</td>
+        <td>Handelsvolumen bevor sich Preise verändern</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>morale</td>
+        <td>Bauernmoral (E3)</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>name</td>
+        <td>Gibt den Namen von benennbaren Objekten zurück. Das sind im
+          Moment Einheiten, Regionen, Gebäude, Schiffe, Inseln, Sprüche und
+          Tränke. Im "normalen" Gebrauch wird dieser Ersetzer den Namen der
+          aktuellen Region zurückliefern. Im Zusammenhang mit Einheitenfiltern
+          liefert er aber den Namen einer Einheit, was zum Ausfiltern mittels
+          Stringvergleich/-inhalt benutzt werden kann.</td>
+        <td>Zählt Personen von Einheiten A-J: §filter§&lt;§name§K§count§</td>
+      </tr>
+      <tr>
+        <td>newline</td>
+        <td>Fügt Zeilenumbruch ein. Funktioniert nicht mit Tooltip; dort
+          HTML verwenden.</td>
+        <td><kbd>erste Zeile§newline§zweite Zeile</kbd></td>
+      </tr>
+      <tr>
+        <td>not</td>
+        <td>Negiert Ersetzer. <i>true</i> wird zu <i>false</i> und <i>false</i>
+          zu <i>true</i></td>
+        <td>Oft gebraucht um Ozean auszuschließen:<br>if§not§isOzean§kein
+          Ozean
+        </td>
+      </tr>
+      <tr>
+        <td>null</td>
+        <td>Gibt <i>true</i> zurück, falls das Argument <i>null</i> ist,
+          sonst <i>false</i>.
+        </td>
+        <td>§if§null§iron§-§else§iron§end</td>
+      </tr>
+      <tr>
+        <td>oldHorses und andere old&hellip;-Werte</td>
+        <td>Liefert den Wert von der vorherigen Runde</td>
+        <td>oldHorses</td>
+      </tr>
+      <tr>
+        <td>op</td>
+        <td>op ist ein parametrischer Ersetzer, der als Parameter <i>true</i>
+          oder <i>false</i> verarbeiten kann. Es steht für OperationSwitch -
+          man schaltet die Arbeitsweise von Operatoren um. Ist der Wert hinter
+          "op" <i>true</i>, werden <i>null</i>-Werte (also beispielsweise
+          Fehler in vorigen Berechnungen oder nicht bekannte Werte) als 0
+          interpretiert, ansonsten als fehlerhaft (und die Rechnung
+          abgebrochen).<br /> Beispiel: Eine Nachbarregion hat eine unbekannte
+          Anzahl Bäume. Das heißt, /§trees§2 ergibt "-?-". Aber
+          §op§true§/§trees§2 liefert 0.
+        </td>
+        <td>§op§true§+§iron§laen§op§false§</td>
+      </tr>
+      <tr>
+        <td>peasantWage</td>
+        <td>Arbeitslohn für Bauern unter Berücksichtigung des Burgenbonus</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>peasants</td>
+        <td>Anzahl Bauern</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>posX, posY, posZ</td>
+        <td>Gibt die x-, y- bzw. z-Koordinate der Region zurück.</td>
+        <td>Koordinaten: <kbd>§posX§,§posY</kbd></td>
+      </tr>
+      <tr>
+        <td>price</td>
+        <td>Preis für ein Luxusgut. Luxusgut wie in Magellan angeben</td>
+        <td><kbd>price§Öl</kbd></td>
+      </tr>
+      <tr>
+        <td>priv</td>
+        <td>Beschränkt folgende Ersetzer auf Parteien mit einer
+          Mindesvertrauensstufe. Vertrauenslevel angeben. Vertrauenslevel wird
+          in der Parteistatistik angezeigt. §priv§clear hebt die Einschränkung
+          wieder auf.</td>
+        <td>Alle Personen denen HELFE ALLES gesetzt ist: <kbd>priv§60§count</kbd></td>
+      </tr>
+      <tr>
+        <td>privminmax</td>
+        <td>Beschränkt folgende Ersetzer auf Parteien deren
+          Vertrauenslevel zwischen den beiden Angaben liegt</td>
+        <td>Anzahl Personen, denen irgendein HELFE gesetzt ist (aber nicht
+          eigene): <kbd>privminmax§1§60§count</kbd>
+        </td>
+      </tr>
+      <tr>
+        <td>recruit</td>
+        <td>Maximale Rekruten der Region</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>rname</td>
+        <td>Regionsname</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>rtype</td>
+        <td>Terrain, z.B. Ebene</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>silver</td>
+        <td>Silber der Bauern</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>skill</td>
+        <td>Anzahl Personen, die das angegebene Talent besitzen.</td>
+        <td><kbd>skill§Unterhaltung</kbd></td>
+      </tr>
+      <tr>
+        <td>skillmin</td>
+        <td>Anzahl Personen, die ein Talent mit angegebener Mindeststufe
+          besitzen. Talent und Stufe angeben</td>
+        <td><kbd>skillmin§Unterhaltung§3</kbd></td>
+      </tr>
+      <tr>
+        <td>skillminsum</td>
+        <td>Talentstufen addiert. Wobei eine Mindesttalentstufe vorhanden
+          sein muss, um dazugezählt zu werden. Z.B. um mögliche
+          Produktionsmenge festzustellen; Talent und Stufe angeben.</td>
+        <td><kbd>skillminsum§Holzfällen§2</kbd></td>
+      </tr>
+      <tr>
+        <td>skillsum</td>
+        <td>Addierte Talentstufen; Talent angeben.</td>
+        <td><kbd>skillsum§Handeln</kbd></td>
+      </tr>
+      <tr>
+        <td>soldchar1</td>
+        <td>Einkaufbares Luxusgut, erster Buchstabe</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>soldchar2</td>
+        <td>Einkaufbares Luxusgut, erste beiden Buchstaben</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>soldname</td>
+        <td>Einkaufbares Luxusgut, voller Name</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>soldprice</td>
+        <td>Einkaufbares Luxusgut, Einkaufspreis; positiver Wert.</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>sprouts</td>
+        <td>Anzahl Schösslinge</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>stones</td>
+        <td>noch nicht abgebaute Steine</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>stoneslevel</td>
+        <td>Die Stufe, auf der aktuell Steine abgebaut werden können</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>substr</td>
+        <td>Liefert einen Teil einer Zeichenkette. Die ersten beiden
+          Argumente sind Start (einschließlich) und Ende (ausschließlich), das
+          dritte Argument ist die Zeichenkette. Negative Werte werden vom Ende
+          der Zeichenkette gerechnet.</td>
+        <td>Letzte und erste zwei Buchstaben des Regionsnamens: <kbd>§substr§0§2§rname§...§substr§-2§-1§rname</kbd></td>
+      </tr>
+      <tr>
+        <td>tag</td>
+        <td>Gibt den Inhalt eines Tags an. Tags können von Tools oder auch
+          über das Einheiten- und Regionskontextmenü gesetzt werden.</td>
+        <td>Wenn der Tag regionicon existiert, kann man ihn so anzeigen
+          lassen: <kbd>tag§regionicon</kbd>
+        </td>
+      </tr>
+      <tr>
+        <td>tagblank</td>
+        <td>Gibt den Inhalt eines Tags an. Tagname angeben. Wenn der
+          Tagname nicht existiert, wird ein leerer String geliefert anstelle
+          des sonst üblichen -?-</td>
+        <td>tagblank§regionicon</td>
+      </tr>
+      <tr>
+        <td>trees</td>
+        <td>Anzahl Bäume</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>wage</td>
+        <td>Arbeitslohn einer Person für Spielereinheiten</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

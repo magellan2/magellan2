@@ -313,9 +313,24 @@ public class DirectionTest extends MagellanTestWithResources {
   @Test
   public void testSpiralPattern() {
     final StringBuilder builder = new StringBuilder();
-    Utils.spiralPattern(CoordinateID.create(0, 0), 2, new Utils.SpiralVisitor<CoordinateID>() {
+    Utils.spiralPattern(CoordinateID.create(0, 0, 1), 2, new Utils.SpiralVisitor<CoordinateID>() {
       public boolean visit(CoordinateID c, int distance) {
         builder.append(c.toString(",")).append(" ");
+        return c.getX() == 0 && c.getY() == 0;
+      }
+
+      public CoordinateID getResult() {
+        return null;
+      }
+    });
+    assertEquals(
+        "0,0,1 ",
+        builder.toString());
+
+    final StringBuilder builder2 = new StringBuilder();
+    Utils.spiralPattern(CoordinateID.create(0, 0), 2, new Utils.SpiralVisitor<CoordinateID>() {
+      public boolean visit(CoordinateID c, int distance) {
+        builder2.append(c.toString(",")).append(" ");
         return false;
       }
 
@@ -325,22 +340,23 @@ public class DirectionTest extends MagellanTestWithResources {
     });
     assertEquals(
         "0,0 1,0 0,1 -1,1 -1,0 0,-1 1,-1 2,0 1,1 0,2 -1,2 -2,2 -2,1 -2,0 -1,-1 0,-2 1,-2 2,-2 2,-1 ",
-        builder.toString());
+        builder2.toString());
 
-    final StringBuilder builder2 = new StringBuilder();
+    final StringBuilder builder3 = new StringBuilder();
     Integer result =
         Utils.spiralPattern(CoordinateID.create(1, 2), 2, new Utils.SpiralVisitor<Integer>() {
           public boolean visit(CoordinateID c, int distance) {
-            builder2.append(c.toString(",")).append(" ");
+            builder3.append(c.toString(",")).append(" ");
             return false;
           }
 
+          @SuppressWarnings("deprecation")
           public Integer getResult() {
             return new Integer(42);
           }
         });
     assertEquals("1,2 2,2 1,3 0,3 0,2 1,1 2,1 3,2 2,3 1,4 0,4 -1,4 -1,3 -1,2 0,1 1,0 2,0 3,0 3,1 ",
-        builder2.toString());
+        builder3.toString());
     assertEquals(Integer.valueOf(42), result);
 
   }

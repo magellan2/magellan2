@@ -44,6 +44,12 @@
 	<property name="install4j" location="${basedir}/installer/install4j" />
 	<property name="macos" location="${basedir}/macos" />
 
+	<property name="MAGELLAN.NAME"  value="Magellan 2" />
+	<property name="MAGELLAN.SHORTNAME"  value="Magellan" />
+	<property name="MAGELLAN.DEVELOPER"  value="Magellan Development Team" />
+	<property name="MAGELLAN.WEBSITE"  value="https://magellan2.github.io" />
+	<property name="MAGELLAN.UPDATE_URL"  value="https://github.com/magellan2/magellan2/releases/download/v2.1-latest/updates.xml" />
+	<property name="MAGELLAN.LAUNCHER"  value="magellan_launcher" />
 
 	<property name="junit.output.dir" value="${basedir}/test/junit" />
 
@@ -67,6 +73,7 @@
 			<exclude name="internal/*" />
 			<exclude name="javadocking.jar" />
 		</fileset>
+		<pathelement location="installer/install4j/install4j9.0.4/resource/i4jruntime.jar" />
 		<pathelement location="${release}/magellan-library.jar" />
 		<pathelement location="${release}/magellan-client.jar" />
 	</path>
@@ -260,6 +267,13 @@
 	<target name="build_help">
 		<echo message="Building Magellan Help JAR file" />
 
+		<antcall target="index_help">
+			<param name="help.lang" value="de" />
+		</antcall>
+		<antcall target="index_help">
+			<param name="help.lang" value="en" />
+		</antcall>
+		
 		<!-- delete old library -->
 		<delete file="${release}/magellan-help.jar" failonerror="false" />
 
@@ -268,6 +282,32 @@
 		     manifest="${help}/META-INF/MANIFEST.MF">
 			<fileset dir="${help}" />
 		</jar>
+	</target>
+
+	<target name="index_help">
+		<echo message="indexing help for '${help.lang}'" />
+		<fileset id="help.set"
+		         dir="${help}/${help.lang}"
+		         casesensitive="yes">
+			<include name="**/*.html" />
+		</fileset>
+		
+		<pathconvert refid="help.set"
+		             property="help.files"
+		             pathsep="' '">
+			<map from="${help}/${help.lang}/" to="" />
+		</pathconvert>
+
+		<java classname="com.sun.java.help.search.Indexer"
+		      dir="${help}/${help.lang}"
+		      fork="true"
+		      failonerror="true"
+		      maxmemory="512m">
+			<arg line="'${help.files}'" />
+			<classpath>
+				<pathelement location="${lib}/javahelp-2.0.05.jar" />
+			</classpath>
+		</java>
 	</target>
 
 	<!-- *************************************************************** -->
@@ -392,6 +432,7 @@
 		</junit>
 		<junit fork="yes"
 		       failureProperty="test.failure"
+		       haltonfailure="true"
 		       printsummary="withOutAndErr">
 			<batchtest todir="${junit.output.dir}">
 				<!-- E3CommandParser is not part of the release -->
@@ -682,6 +723,13 @@
 			<variable name="version.sub" value="${VERSION.SUB}" />
 			<variable name="version.build" value="${build.number}" />
 			<variable name="version.post" value="${VERSION.POST}" />
+			<variable name="magellan.name" value="${MAGELLAN.NAME}" />
+			<variable name="magellan.shortname" value="${MAGELLAN.SHORTNAME}" />
+			<variable name="magellan.launcher" value="${MAGELLAN.LAUNCHER}" />
+			<variable name="magellan.developer" value="${MAGELLAN.DEVELOPER}" />
+			<variable name="magellan.website" value="${MAGELLAN.WEBSITE}" />
+			<variable name="java.version.min" value="${compile.release}" />
+			<variable name="magellan.update_url" value="${MAGELLAN.UPDATE_URL}" />
 		</install4j>
 		<move todir="." overwrite="true">
 			<fileset dir="${install4j}">
@@ -694,7 +742,6 @@
 	<target name="distribute_install4j"
 	        description=" This target compiles, tests and packs the whole magellan application."
 	        depends="prepare_build, checkinstall4j, run_tests, doc, build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data, installer4j, zip_release">
-		<antcall target="clear-all" />
+		<antcall target="clear-all"/>
 	</target>
-
 </project>

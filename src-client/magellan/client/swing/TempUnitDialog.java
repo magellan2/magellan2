@@ -50,7 +50,6 @@ import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.Group;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -156,7 +155,7 @@ public class TempUnitDialog extends InternationalizedDialog {
             }
 
             if (name.isShowing()) {
-              JVMUtilities.requestFocusInWindow(name);
+              name.requestFocusInWindow();
             } else {
               SwingUtilities.invokeLater(this);
             }

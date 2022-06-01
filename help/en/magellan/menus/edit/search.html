@@ -32,7 +32,15 @@
     <p>
       Im Block <b><i>Attribut-Suchbereich</i></b> kann man einstellen welche
       Attribute eines Objekts bei der Suche berücksichtigt werden sollen. Auch
-      kann man hier die Suche auf eine bestimmte Partei einschränken.
+      kann man hier die Suche auf eine bestimmte Partei einschränken. 'Suche
+      Wörter einzeln' sucht nach allen Objekten, die eins der eingegeben Wörter
+      als Teil enthalten. 'Nur ganze Wörter' findet nur Objekte, die das
+      Suchmuster als Ganzes enthalten. 'Reguläre Ausdrücke' sucht nach solchen,
+      zum Beispiel findet '
+      <code>.*bauer</code>
+      ' Bauer, Bergbauer und Vogelbauern und '
+      <code>^B.*auer$</code>
+      ' findet Bauer und Bergbauer, aber nicht Vogelbauern.
     </p>
     <p>
       Der Block <b><i>Objekt-Suchbereich</i></b> erlaubt das Einschränken der

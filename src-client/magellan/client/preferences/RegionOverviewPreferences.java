@@ -77,7 +77,7 @@ import magellan.library.utils.logging.Logger;
  * @author ...
  * @version 1.0, 20.11.2007
  */
-public class RegionOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
+public class RegionOverviewPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
 
   private EMapOverviewPanel overviewPanel;
   private Properties settings;
@@ -135,6 +135,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
   public RegionOverviewPreferences(EMapOverviewPanel parent, Properties settings, GameData data) {
     this.settings = settings;
     overviewPanel = parent;
+
     chkSortRegions = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortregions"));
 
     chkSortShipUnderUnitParent =
@@ -150,10 +151,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     regionSortButtons.add(rdbSortRegionsCoordinates);
     regionSortButtons.add(rdbSortRegionsIslands);
 
-    JPanel pnlRegionSortButtons = new JPanel();
+    // ------------------------------ REGION SORTING
+    String title = Resources.get("emapoverviewpanel.prefs.regionsorting");
+    JPanel pnlRegionSortButtons = addPanel(title);
     pnlRegionSortButtons.setLayout(new BoxLayout(pnlRegionSortButtons, BoxLayout.Y_AXIS));
-    pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("emapoverviewpanel.prefs.regionsorting")));
+
     pnlRegionSortButtons.add(chkSortRegions);
     pnlRegionSortButtons.add(rdbSortRegionsCoordinates);
     pnlRegionSortButtons.add(rdbSortRegionsIslands);
@@ -168,15 +170,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
         new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
     chkShowHomeless = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showhomeless"));
 
-    JPanel pnlTreeStructure = new JPanel();
-    pnlTreeStructure.setLayout(new GridBagLayout());
+    // ------------------------------ TREE STRUCTURE
+    title = Resources.get("emapoverviewpanel.prefs.treeStructure");
+    JPanel pnlTreeStructure = addPanel(title, new GridBagLayout());
 
-    GridBagConstraints c =
-        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
-            GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
-    pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("emapoverviewpanel.prefs.treeStructure")));
-
+    // ------------------------------ available
     JPanel elementsPanel = new JPanel();
     elementsPanel.setLayout(new BorderLayout(0, 0));
     elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
@@ -218,6 +216,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     JScrollPane pane = new JScrollPane(elementsList);
     elementsPanel.add(pane, BorderLayout.CENTER);
 
+    // ------------------------------ used
     JPanel usePanel = new JPanel();
     usePanel.setLayout(new GridBagLayout());
     usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
@@ -225,6 +224,10 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     useList = new JList<String>();
     useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+            GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
 
     pane = new JScrollPane(useList);
     c.gridheight = 4;
@@ -238,6 +241,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.gridy++;
     c.weighty = 0;
 
+    // ------------------------------ buttons
     JButton up = new JButton(Resources.get("emapoverviewpanel.prefs.treeStructure.up"));
     up.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -297,6 +301,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.gridy++;
     c.weighty = 0;
 
+    // ------------------------------ buttons left/right
+
     JButton right = new JButton("  -->  ");
     right.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -329,7 +335,10 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.weighty = 1;
     pnlTreeStructure.add(new JPanel(), c);
 
-    // Unit sorting
+    // ------------------------------ UNIT SORTING
+    title = Resources.get("emapoverviewpanel.prefs.unitsorting");
+    JPanel pnlUnitSort = addPanel(title, new GridBagLayout());
+
     rdbSortUnitsUnsorted = new JRadioButton(Resources.get("emapoverviewpanel.prefs.reportorder"));
     rdbSortUnitsUnsorted.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -362,13 +371,8 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     unitsSortButtons.add(rdbSortUnitsSkills);
     unitsSortButtons.add(rdbSortUnitsNames);
 
-    JPanel pnlUnitSort = new JPanel();
-    pnlUnitSort.setLayout(new GridBagLayout());
-    c =
-        new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST,
-            GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-    pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("emapoverviewpanel.prefs.unitsorting")));
+    c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST,
+        GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
     pnlUnitSort.add(rdbSortUnitsUnsorted, c);
     c.gridy = 1;
     pnlUnitSort.add(rdbSortUnitsSkills, c);
@@ -382,56 +386,43 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     c.insets = new Insets(0, 0, 0, 0);
     pnlUnitSort.add(rdbSortUnitsNames, c);
 
-    setLayout(new GridBagLayout());
-    c.anchor = GridBagConstraints.CENTER;
+    // ------------------------------ SELECTION
+    title = Resources.get("emapoverviewpanel.prefs.select.title");
+    JPanel selectPanel = addPanel(title, new GridBagLayout());
+
     c.gridx = 0;
     c.gridy = 0;
     c.gridwidth = 1;
     c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 1.0;
-    c.weighty = 0.0;
-    this.add(pnlRegionSortButtons, c);
 
     c.anchor = GridBagConstraints.WEST;
-    c.gridy++;
     c.insets.left = 10;
     c.fill = GridBagConstraints.NONE;
-    c.weightx = 0.0;
-    this.add(chkDisplayIslands, c);
+    c.weightx = 0.1;
+    c.weighty = 0.0;
+    selectPanel.add(chkDisplayIslands, c);
 
     c.gridy++;
-    this.add(chkSortShipUnderUnitParent, c);
+    selectPanel.add(chkSortShipUnderUnitParent, c);
 
     c.gridy++;
-    this.add(chkRegionTreeBuilder_withBuildings, c);
+    selectPanel.add(chkRegionTreeBuilder_withBuildings, c);
 
     c.gridy++;
-    this.add(chkRegionTreeBuilder_withShips, c);
+    selectPanel.add(chkRegionTreeBuilder_withShips, c);
 
     c.gridy++;
-    this.add(chkRegionTreeBuilder_withComments, c);
+    selectPanel.add(chkRegionTreeBuilder_withComments, c);
 
     c.gridy++;
-    this.add(chkShowHomeless, c);
+    selectPanel.add(chkShowHomeless, c);
 
-    c.insets.left = 0;
-    c.anchor = GridBagConstraints.CENTER;
-    c.gridy++;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.weightx = 1.0;
-    this.add(pnlTreeStructure, c);
+    // ------------------------------ EXPANSION
+    title = Resources.get("emapoverviewpanel.prefs.expand.title");
+    JPanel help = addPanel(title, new GridLayout(1, 2));
 
-    c.gridy++;
-    this.add(pnlUnitSort, c);
-
-    JPanel help = new JPanel(new GridLayout(1, 2));
-    help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
-        .get("emapoverviewpanel.prefs.expand.title")));
-    help.add(ePanel = new ExpandPanel()); // , BorderLayout.WEST);
-    help.add(cPanel = new CollapsePanel()); // , BorderLayout.EAST);
-    c.gridy++;
-    this.add(help, c);
+    help.add(ePanel = new ExpandPanel());
+    help.add(cPanel = new CollapsePanel());
 
     subAdapters = new ArrayList<PreferencesAdapter>(1);
     subAdapters.add(skillSort =

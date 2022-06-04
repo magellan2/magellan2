@@ -1462,6 +1462,17 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addSkill(unit, "Unterhaltung", 1);
     parser.execute(unit.getFaction());
 
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("UNTERHALTE", unit, 3);
+
+    // with entertain skill and peasant money
+    unit.getRegion().setSilver(20 * 20 * unit.getPersons());
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    parser.execute(unit.getFaction());
+
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("UNTERHALTE", unit, 2);
@@ -1537,11 +1548,75 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
    */
   @Test
+  public final void testCommandEmbassadorNoPeasants() {
+    // with entertain skill
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    unit.getRegion().setPeasants(100);
+    unit.getRegion().setSilver(0);
+    unit.getRegion().setEntertain(0);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("UNTERHALTE", unit, 3);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
+  public final void testCommandEmbassadorForce() {
+    // with entertain skill
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter ARBEITE Segeln");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    unit.getRegion().setPeasants(100);
+    unit.getRegion().setSilver(0);
+    unit.getRegion().setEntertain(0);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter ARBEITE Segeln", unit, 1);
+    assertOrder("ARBEITE", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter ARBEITE Segeln");
+    builder.addItem(data, unit, "Silber", 110);
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter ARBEITE Segeln", unit, 1);
+    assertOrder("LERNE Segeln", unit, 3);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
   public final void testCommandEmbassadorTax() {
     unit.clearOrders();
     unit.addOrder("// $cript BerufBotschafter Segeln");
     unit.addOrder("LERNE Segeln");
     builder.addSkill(unit, "Steuereintreiben", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("TREIBE", unit, 3);
+    assertOrder("; LERNE Segeln", unit, 4);
+
+    // with silver
+    unit.getRegion().setSilver(unit.getPersons() * 20);
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNE Segeln");
     parser.execute(unit.getFaction());
 
     assertEquals(4, unit.getOrders2().size());
@@ -1562,8 +1637,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(5, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
-    assertOrder("TREIBE", unit, 2);
-    assertWarning("Region wird bewacht", unit, 3);
+    assertWarning("Region wird bewacht", unit, 2);
+    assertOrder("TREIBE", unit, 3);
     assertOrder("; LERNE Segeln", unit, 4);
 
     builder.addAlliance(otherFaction, unit.getFaction(), EresseaConstants.A_GUARD);

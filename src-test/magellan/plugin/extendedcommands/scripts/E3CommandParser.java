@@ -2138,6 +2138,19 @@ class E3CommandParser {
         actionToken = 1;
       }
     }
+    String mode = "";
+    if (tokens.length > actionToken) {
+      if (WORKOrder.equals(tokens[actionToken])) {
+        mode = WORKOrder;
+      } else if (ENTERTAINOrder.equals(tokens[actionToken])) {
+        mode = ENTERTAINOrder;
+      } else if (TAXOrder.equals(tokens[actionToken])) {
+        mode = TAXOrder;
+      } else {
+        --actionToken;
+      }
+      ++actionToken;
+    }
     if (tokens.length > actionToken) {
       skill = getSkillType(tokens[actionToken]);
     } else {
@@ -2150,23 +2163,38 @@ class E3CommandParser {
     commandClear(new String[] { "Loeschen" });
 
     if (helper.getSilver(currentUnit) < minimum) {
-      if (hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
-          && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0) {
-        addNewOrder(ENTERTAINOrder, true);
-      } else if (hasTax() && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN) != null
-          && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN).getLevel() > 0) {
-        addNewOrder(TAXOrder, true);
-        for (Unit guard : currentRegion.getGuards()) {
-          if (!Units.isAllied(guard.getFaction(), currentUnit.getFaction(),
-              EresseaConstants.A_GUARD)) {
-            addNewWarning("Region wird bewacht");
-            break;
-          }
+      if (mode == ENTERTAINOrder ||
+          (mode == "" && hasEntertain() && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG) != null
+              && currentUnit.getSkill(EresseaConstants.S_UNTERHALTUNG).getLevel() > 0)) {
+        if (world.getGameSpecificRules().getMaxEntertain(currentRegion) < 20 * currentUnit.getSkill(
+            EresseaConstants.S_UNTERHALTUNG).getLevel() * currentUnit.getPersons()) {
+          addNewWarning("Bauern zu arm");
         }
-      } else if (hasWork()) {
+        if (currentUnit.getShip() != null && isGuarded(currentRegion, currentUnit)) {
+          addNewWarning("Region wird bewacht");
+        }
+        addNewOrder(ENTERTAINOrder, true);
+      } else if (mode == TAXOrder ||
+          (mode == "" && hasTax() && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN) != null
+              && currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN).getLevel() > 0)) {
+        if (currentRegion.getSilver() < 20 * currentUnit.getSkill(EresseaConstants.S_STEUEREINTREIBEN).getLevel()) {
+          addNewWarning("Bauern zu arm");
+        }
+        if (isGuarded(currentRegion, currentUnit)) {
+          addNewWarning("Region wird bewacht");
+        }
+
+        addNewOrder(TAXOrder, true);
+      } else if (mode == WORKOrder || (mode == "" && hasWork())) {
+        if (world.getGameSpecificRules().getMaxWorkers(currentRegion) < currentUnit.getPersons()) {
+          addNewWarning("zu wenig Arbeitsplätze");
+        }
+        if (currentUnit.getShip() != null && isGuarded(currentRegion, currentUnit)) {
+          addNewWarning("Region wird bewacht");
+        }
         addNewOrder(WORKOrder, true);
       } else {
-        addNewWarning("Einheit verhungert");
+        addNewWarning("Einheit kann nichts verdienen");
       }
     } else if (skill == null) {
       // other order
@@ -2186,6 +2214,15 @@ class E3CommandParser {
       }
     }
     return Collections.emptyList();
+  }
+
+  private boolean isGuarded(Region currentRegion2, Unit currentUnit2) {
+    for (Unit guard : currentRegion.getGuards()) {
+      if (!Units.isAllied(guard.getFaction(), currentUnit.getFaction(),
+          EresseaConstants.A_GUARD))
+        return true;
+    }
+    return false;
   }
 
   protected void commandMonitor(String[] tokens) {

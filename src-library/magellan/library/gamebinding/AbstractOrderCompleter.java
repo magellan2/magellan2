@@ -36,6 +36,7 @@ import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.UnitID;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
@@ -227,6 +228,16 @@ public abstract class AbstractOrderCompleter implements Completer {
    */
   public void clear() {
     completions.clear();
+  }
+
+  protected String getIdToken(UnitID uid) {
+    String tounit;
+    try {
+      tounit = getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(), uid);
+    } catch (RulesException e) {
+      tounit = "TEMP " + uid;
+    }
+    return tounit;
   }
 
   /**
@@ -444,7 +455,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds completions for the owner u of UnitContainer c.
    */
   public void addUnitContainerOwner(UnitContainer uc, Unit u, String postfix, int cursorOffset) {
-    final String id = u.getID().toString();
+    final String id = getIdToken(u.getID());
 
     completions.add(new Completion(uc.toString() + " (" + uc.getID() + ")", id, postfix,
         Completion.DEFAULT_PRIORITY + 1, cursorOffset));
@@ -675,16 +686,11 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds a unit to the completions in a standard manner without comments.
    */
   public void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
-    try {
-      if (u instanceof TempUnit) {
-        completions.add(new Completion(omitTemp ? u.getID().toString() : getGameSpecificStuff()
-            .getOrderChanger().getTokenLocalized(getLocale(), u.getID()), postfix,
-            Completion.DEFAULT_PRIORITY - 1, cursorOffset));
-      } else {
-        addNamed(u, postfix, cursorOffset, false);
-      }
-    } catch (RulesException e) {
-      log.warn(e);
+    if (u instanceof TempUnit) {
+      completions.add(new Completion(omitTemp ? u.getID().toString() : getIdToken(u.getID()),
+          postfix, Completion.DEFAULT_PRIORITY - 1, cursorOffset));
+    } else {
+      addNamed(u, postfix, cursorOffset, false);
     }
   }
 

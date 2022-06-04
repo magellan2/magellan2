@@ -742,7 +742,9 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
     addUnitItems(amount, "");
 
     if ((amount != 0) && (uid != null)) {
-      String prefix = getOrderTranslation(EresseaConstants.OC_GIVE) + " " + uid.toString() + " ";
+      String tounit = getIdToken(uid);
+
+      String prefix = getOrderTranslation(EresseaConstants.OC_GIVE) + " " + tounit + " ";
       if (each) {
         prefix += getOrderTranslation(EresseaConstants.OC_EACH) + " ";
       }
@@ -756,13 +758,6 @@ public class EresseaOrderCompleter extends AbstractOrderCompleter {
        * units
        */
       String order = "";
-      String tounit;
-      try {
-        tounit =
-            getData().getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(), uid);
-      } catch (RulesException e) {
-        tounit = "TEMP " + uid;
-      }
       if (!each && (unit.getPersons() >= amount)) {
         order = getOrderTranslation(EresseaConstants.OC_MEN);
       }

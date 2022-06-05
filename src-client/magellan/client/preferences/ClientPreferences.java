@@ -408,10 +408,12 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, "0");
     String stableVersion = VersionInfo.getNewestVersion(sCopy, null);
     String version = settings.getProperty(PropertiesHelper.SEMANTIC_VERSION);
-    stableLabel.setText(version.equals(stableVersion) ? (version + " = " + stableVersion) : (version + " \u2260 "
+    stableLabel.setText(version != null && version.equals(stableVersion) ? (version + " = " + stableVersion) : (version
+        + " \u2260 "
         + stableVersion));
-    nightlyLabel.setText(version.equals(nightlyVersion) ? (version + " = " + nightlyVersion) : (version + " \u2260 "
-        + nightlyVersion));
+    nightlyLabel.setText(version != null && version.equals(nightlyVersion) ? (version + " = " + nightlyVersion)
+        : (version + " \u2260 "
+            + nightlyVersion));
   }
 
   private void initLogLevel() {

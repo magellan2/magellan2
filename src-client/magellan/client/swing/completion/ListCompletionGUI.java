@@ -260,7 +260,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
       scrollPane.setCursor(Cursor.getDefaultCursor());
       choiceList = new CompletionList();
-      choiceList.setFont(new Font("Monospaced", Font.PLAIN, 10));
+      int size = choiceList.getFont().getSize() * 2 / 3;
+      choiceList.setFont(new Font("Monospaced", Font.PLAIN, size));
       choiceList.setBackground(new Color(255, 255, 204));
       choiceList.setMinimumSize(new Dimension(100, 50));
       choiceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

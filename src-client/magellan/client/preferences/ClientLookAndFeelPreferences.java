@@ -26,11 +26,13 @@ package magellan.client.preferences;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.DefaultListModel;
@@ -44,6 +46,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.Client;
@@ -72,6 +77,8 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   private DefaultListModel<String> lafList;
 
   private JButton colorButton;
+
+  private JPanel panelColor;
 
   /**
    * Creates a new LAndF object.
@@ -102,6 +109,12 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     con.gridx = 1;
     con.weightx = 1;
     panel.add(new JScrollPane(jComboBoxLaF), con);
+    jComboBoxLaF.addListSelectionListener(new ListSelectionListener() {
+
+      public void valueChanged(ListSelectionEvent e) {
+        colorButton.setEnabled(isMetal(jComboBoxLaF.getSelectedValue()));
+      }
+    });
 
     colorButton = new JButton(Resources.get("clientpreferences.desktopcolor.button"));
     colorButton.setEnabled(UIManager.getLookAndFeel() instanceof MetalLookAndFeel);
@@ -110,8 +123,25 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     con.gridy = 1;
     con.weightx = 1;
     panel.add(colorButton, con);
+    con.gridx++;
+
+    panelColor = new JPanel();
+    panelColor.setBorder(new LineBorder(Color.black));
+    panelColor.setPreferredSize(new Dimension(20, 20));
+    panelColor.setBackground(MetalLookAndFeel.getWindowBackground());
+
+    panel.add(panelColor, con);
 
     return panel;
+  }
+
+  protected boolean isMetal(String selectedValue) {
+    Map<String, ? extends LookAndFeel> lafs = MagellanLookAndFeel.getLookAndFeels();
+    for (String l : lafs.keySet()) {
+      if (l.equals(selectedValue))
+        return lafs.get(l) instanceof MetalLookAndFeel;
+    }
+    return false;
   }
 
   protected Container createMiscPanel(JPanel panel) {
@@ -153,13 +183,20 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
         Client.DEFAULT_LAF), true);
     chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.treeRootHandles", true));
-    colorButton.setEnabled(UIManager.getLookAndFeel() instanceof javax.swing.plaf.metal.MetalLookAndFeel);
+    colorButton.setEnabled(isMetal(jComboBoxLaF.getSelectedValue()));
+    panelColor.setBackground(MetalLookAndFeel.getWindowBackground());
   }
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
+    if (isMetal(jComboBoxLaF.getSelectedValue())) {
+      if (!MetalLookAndFeel.getWindowBackground().equals(panelColor.getBackground())) {
+        MagellanLookAndFeel.setBackground(panelColor.getBackground(), settings);
+        source.updateLaF();
+      }
+    }
     source.setLookAndFeel(jComboBoxLaF.getSelectedValue());
 
     settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles
@@ -174,15 +211,13 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   }
 
   protected void changeMetalBackground() {
-    LookAndFeel laf = UIManager.getLookAndFeel();
-
-    if (laf instanceof javax.swing.plaf.metal.MetalLookAndFeel) {
+    if (isMetal(jComboBoxLaF.getSelectedValue())) {
       Color col =
           JColorChooser.showDialog(source, Resources.get("clientpreferences.desktopcolor.title"),
               MetalLookAndFeel.getWindowBackground());
 
       if (col != null) {
-        MagellanLookAndFeel.setBackground(col, settings);
+        panelColor.setBackground(col);
       }
     }
   }

@@ -261,11 +261,12 @@ public class MagellanLookAndFeel {
     try {
       UIManager.setLookAndFeel(olaf);
     } catch (Exception e) {
-      MagellanLookAndFeel.log.info("Could not switch look and feel to " + laf + " (" + olaf + ")");
-
       if (MagellanLookAndFeel.log.isDebugEnabled()) {
         MagellanLookAndFeel.log.debug(
             "Could not switch look and feel to " + laf + "(" + olaf + ")", e);
+      } else {
+        MagellanLookAndFeel.log.info(
+            "Could not switch look and feel to " + laf + " (" + olaf + ")");
       }
 
       try {

@@ -38,10 +38,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import javax.swing.Action;
@@ -65,9 +69,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.plaf.FontUIResource;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
@@ -684,6 +691,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     });
 
+    // float fScale = 1.5f; // PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
+    // setFontSize(fScale);
+    // updateLaF();
+
     // select all in textfields on focus gain globally
     KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
         "permanentFocusOwner", new PropertyChangeListener() {
@@ -705,6 +716,131 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // init L&F
     initLookAndFeels();
+  }
+
+  private static void setFontSize(float fScale) {
+    try {
+
+      String[] fonts = { "ArrowButton.font",
+          "Button.font",
+          "CheckBox.font",
+          "CheckBoxMenuItem.acceleratorFont",
+          "CheckBoxMenuItem.font",
+          "ColorChooser.font",
+          "ComboBox.font",
+          "DesktopIcon.font",
+          "DesktopPane.font",
+          "EditorPane.font",
+          "FileChooser.font",
+          "FormattedTextField.font",
+          "InternalFrame.font",
+          "InternalFrame.titleFont",
+          "InternalFrameTitlePane.font",
+          "Label.font",
+          "List.font",
+          "Menu.acceleratorFont",
+          "MenuBar.font",
+          "Menu.font",
+          "MenuItem.acceleratorFont",
+          "MenuItem.font",
+          "OptionPane.buttonFont",
+          "OptionPane.font",
+          "OptionPane.messageFont",
+          "OptionPane.titleFont",
+          "Panel.font",
+          "PasswordField.font",
+          "PopupMenu.font",
+          "PopupMenuSeparator.font",
+          "ProgressBar.font",
+          "RadioButton.font",
+          "RadioButtonMenuItem.acceleratorFont",
+          "RadioButtonMenuItem.font",
+          "RootPane.font",
+          "ScrollBar.font",
+          "ScrollBarThumb.font",
+          "ScrollBarTrack.font",
+          "ScrollPane.font",
+          "Separator.font",
+          "Slider.font",
+          "SliderThumb.font",
+          "SliderTrack.font",
+          "Spinner.font",
+          "SplitPane.font",
+          "TabbedPane.font",
+          "Table.font",
+          "TableHeader.font",
+          "TextArea.font",
+          "TextField.font",
+          "TextPane.font",
+          "TitledBorder.font",
+          "ToggleButton.font",
+          "ToolBar.font",
+          "ToolTip.font",
+          "Tree.font",
+          "Viewport.font",
+          "defaultFont" };
+
+      Set<String> sFonts = new HashSet<String>(Arrays.asList(fonts));
+
+      if (fScale != 1.0f) {
+        // TODO(pavkovic): the following code bloats the fonts in an
+        // undesired way, perhaps
+        // we remove this configuration option?
+        UIDefaults dTable = UIManager.getDefaults();
+        UIDefaults lTable = UIManager.getLookAndFeelDefaults();
+        Enumeration<?> eKeys = lTable.keys();
+        Map<Font, Integer> sizes = new HashMap<Font, Integer>();
+        while (eKeys.hasMoreElements()) {
+          Object key = eKeys.nextElement();
+          Object val = lTable.get(key);
+          Font font;
+          if (val instanceof FontUIResource) {
+            font = (Font) val;
+          } else {
+            font = UIManager.getFont(key);
+          }
+
+          if (font != null) {
+            Integer n = sizes.get(font);
+            if (n == null) {
+              sizes.put(font, 1);
+            } else {
+              sizes.put(font, n + 1);
+            }
+            font = new FontUIResource(font.deriveFont(font.getSize2D() * fScale));
+            UIManager.put(key, font);
+            lTable.put(key, font);
+            if (!sFonts.contains(key)) {
+              log.warn("unknown font key " + key);
+            }
+          }
+        }
+        int max = 0;
+        Font maxS = null;
+        for (Font s : sizes.keySet()) {
+          log.finer("font " + s + ": " + sizes.get(s));
+          if (sizes.get(s) > max) {
+            max = sizes.get(s);
+            maxS = s;
+          }
+        }
+        if (maxS != null) {
+          Font font = new FontUIResource(maxS.deriveFont(maxS.getSize2D() * fScale));
+          log.fine("new default font: " + font);
+          for (String key : fonts) {
+            if (UIManager.get(key) == null) {
+              log.fine("new font " + key);
+              UIManager.put(key, font);
+              lTable.put(key, font);
+            }
+          }
+
+        }
+      }
+    } catch (Throwable e) {
+      Client.log.error(e);
+    }
+
   }
 
   // ////////////////////////////
@@ -1254,6 +1390,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
+
+      float fScale = 1.5f; // PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
+      Client.setFontSize(fScale);
 
       Client.startWindow = new StartWindow(startIcon, 5, parameters.resourceDir);
       Client.startWindow.setVisible(true);
@@ -2493,13 +2632,25 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (!lafSet)
       return;
 
+    setFontSize(1.5f);
     updateLaF();
 
     getProperties().setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, laf);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns current L&F
+   */
+  public String getLookAndFeel() {
+    String laf = getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL);
+    if (laf == null) {
+      laf = Client.FALLBACK_LAF;
+    }
+    return laf;
+  }
+
+  /**
+   * Applies current LaF to main window.
    */
   public void updateLaF() {
     // call updateUI in MagellanDesktop

@@ -42,6 +42,7 @@ import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -138,7 +139,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
     editors.gameDataChanged(event);
     dummyUnit = getDummyUnit();
     editors.selectionChanged(SelectionEvent.create(this, dummyUnit, SelectionEvent.ST_DEFAULT));
-    editors.setPreferredSize(new Dimension(300, 100));
+    SwingUtils.setPreferredSize(editors, 25, 8, true);
     editors.setMinimumSize(new Dimension(100, 100));
 
     JScrollPane helperPane = new JScrollPane(editors);

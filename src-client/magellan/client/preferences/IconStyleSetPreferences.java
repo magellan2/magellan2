@@ -70,6 +70,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.GraphicsElement;
 import magellan.client.swing.tree.GraphicsStyleset;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -107,7 +108,9 @@ public class IconStyleSetPreferences extends AbstractPreferencesAdapter implemen
     stylesets.addTreeSelectionListener(this);
 
     JScrollPane pane = new JScrollPane(stylesets);
-    pane.setPreferredSize(new Dimension(150, 2 * pane.getPreferredSize().height));
+    Dimension dim = SwingUtils.getDimension(12, 10, false);
+    dim.height = 2 * pane.getPreferredSize().height;
+    pane.setPreferredSize(dim);
 
     JButton button = new JButton(Resources.get("tree.iconadapter.styles.add"));
     button.addActionListener(this);

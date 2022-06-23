@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.file.FileType;
@@ -112,6 +113,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener {
 
     fc.setAccessory(new magellan.client.swing.HistoryAccessory(settings, fc));
     fc.setDialogTitle(Resources.get("actions.filesaveasaction.title"));
+    SwingUtils.setPreferredSize(fc, 40, -1, true);
 
     if (fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
       boolean bOpenEqualsSave =

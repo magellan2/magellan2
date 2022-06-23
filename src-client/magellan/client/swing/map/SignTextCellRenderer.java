@@ -16,6 +16,7 @@ package magellan.client.swing.map;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
@@ -42,6 +43,7 @@ import javax.swing.JRadioButton;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.Colors;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -442,7 +444,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
     private void init() {
       pnlFontColor = new JPanel();
-      pnlFontColor.setSize(50, 50);
+      Dimension prefDim = SwingUtils.getDimension(1.5, 1.5, false);
+      pnlFontColor.setPreferredSize(prefDim);
       pnlFontColor.setBackground(source.getFontColor());
       pnlFontColor.addMouseListener(new MouseAdapter() {
         @Override
@@ -461,7 +464,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
       lblFontColor.setLabelFor(pnlFontColor);
 
       pnlBackColor = new JPanel();
-      pnlBackColor.setSize(50, 50);
+      pnlBackColor.setPreferredSize(prefDim);
       pnlBackColor.setBackground(source.getBackColor());
       pnlBackColor.addMouseListener(new MouseAdapter() {
         @Override

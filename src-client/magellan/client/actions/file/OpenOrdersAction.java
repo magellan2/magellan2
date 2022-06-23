@@ -29,6 +29,7 @@ import magellan.client.desktop.MagellanDesktop;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.client.swing.ProgressBarUI;
+import magellan.client.utils.SwingUtils;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.GameSpecificOrderReader;
@@ -72,6 +73,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
     OpenOrdersAccessory acc = new OpenOrdersAccessory(settings, fc);
     fc.setAccessory(acc);
+    SwingUtils.setPreferredSize(fc, 50, -1, true);
 
     if (fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
       loadAsynchronously(acc, fc);

@@ -38,6 +38,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -123,7 +124,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
     ++c.gridx;
     c.weightx = 0.2;
-    xCor = new JTextField();
+    xCor = new JTextField(3);
     // xCor.setPreferredSize(new Dimension(40, 20));
     destSelect.add(xCor, c);
 
@@ -133,7 +134,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
     ++c.gridx;
     c.weightx = 0.2;
-    yCor = new JTextField();
+    yCor = new JTextField(3);
     // yCor.setPreferredSize(new Dimension(40, 20));
     destSelect.add(yCor, c);
 
@@ -202,7 +203,9 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
       Collections.sort(regionList, new RegionNameComparator());
       regions = new JComboBox<Region>(regionList);
-      regions.setPreferredSize(new Dimension(300, 25));
+      Dimension dim = SwingUtils.getDimension(20, 2, false);
+      dim.height = regions.getPreferredSize().height;
+      regions.setPreferredSize(dim);
       regions.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           Region r = (Region) regions.getSelectedItem();

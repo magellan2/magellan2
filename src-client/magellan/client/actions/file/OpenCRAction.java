@@ -20,6 +20,7 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.HistoryAccessory;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
@@ -119,6 +120,7 @@ public class OpenCRAction extends MenuAction {
     fc.setSelectedFile(file);
     fc.setAccessory(new HistoryAccessory(settings, fc));
     fc.setDialogTitle(Resources.get("actions.opencraction.title"));
+    SwingUtils.setPreferredSize(fc, 60, -1, true);
 
     if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
       // find selected FileFilter

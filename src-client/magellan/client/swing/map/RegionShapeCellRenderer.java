@@ -63,6 +63,7 @@ import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.Colors;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -1452,7 +1453,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer imp
 
         JScrollPane scrollPane = new JScrollPane(list);
         // list gets too wide if we have very long faction names so...
-        scrollPane.setPreferredSize(new Dimension(150, 100));
+        SwingUtils.setPreferredSize(scrollPane, 12, -1, true);
         this.add(scrollPane, BorderLayout.CENTER);
 
         if (politicsMode) {

@@ -25,7 +25,6 @@ package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -59,6 +58,7 @@ import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tasks.TaskTablePanel;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.tasks.ProblemType;
 import magellan.library.utils.Resources;
@@ -353,9 +353,9 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.weightx = 0;
     ignorePanel.add(new JPanel(), c);
 
-    inspectorsPanel.setPreferredSize(new Dimension(PREFERRED_WIDTH / 2, 400));
-    ignorePanel.setPreferredSize(new Dimension(PREFERRED_WIDTH / 2, 400));
-    pnlSelection.setPreferredSize(new Dimension(PREFERRED_WIDTH, 400));
+    SwingUtils.setPreferredSize(inspectorsPanel, 25, 20, true);
+    SwingUtils.setPreferredSize(ignorePanel, 25, 20, true);
+    SwingUtils.setPreferredSize(pnlSelection, 50, 20, true);
     c.gridx = 0;
     c.gridy = 0;
     c.gridheight = 4;

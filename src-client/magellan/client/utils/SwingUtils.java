@@ -33,6 +33,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
 
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 
 import magellan.library.utils.PropertiesHelper;
@@ -189,6 +190,41 @@ public class SwingUtils {
     r.x = Math.max(r.x, -r.width / 2 + 10);
     r.y = Math.max(r.y, -r.height / 2 + 10);
     return r;
+  }
+
+  /**
+   * Returns a dimension set to multiples of the current (JLabel) font size.
+   * 
+   * @param d This is a multiple of the current font size
+   * @param e This is a multiple of the current font size. If this is -1, widthUnits * 5 / 8 is used instead.
+   * @param adjustToScreen If this is true, the size is adjustet to the screen size
+   */
+  public static Dimension getDimension(double d, double e, boolean adjustToScreen) {
+    int fontSize = new JLabel().getFont().getSize();
+    int width = (int) (fontSize * d);
+    int height = (int) (e < 0 ? width / 1.618 : fontSize * e);
+    if (adjustToScreen) {
+      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+      if (screen.width < width) {
+        width = screen.width;
+      }
+      if (screen.height < height) {
+        height = screen.height;
+      }
+    }
+    return new Dimension(width, height);
+  }
+
+  /**
+   * Sets the preferred size of the component to multiples of the current (JLabel) font size.
+   * 
+   * @param c
+   * @param widthUnits This is a multiple of the current font size
+   * @param heightUnits This is a multiple of the current font size. If this is -1, widthUnits * 5 / 8 is used instead.
+   * @param adjustToScreen If this is true, the size is adjustet to the screen size
+   */
+  public static void setPreferredSize(Component c, double widthUnits, double heightUnits, boolean adjustToScreen) {
+    c.setPreferredSize(getDimension(widthUnits, heightUnits, adjustToScreen));
   }
 
   public static String getKeyStroke(KeyStroke stroke) {

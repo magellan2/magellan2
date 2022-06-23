@@ -95,13 +95,17 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     // jTextArea1.setEditable(false);
     jTextArea1.setText(text);
     jTextArea1.setCaretPosition(0);
-    jTextArea1.setPreferredSize(new Dimension(400, 400));
+    SwingUtils.setPreferredSize(jTextArea1, 40, 40, true);
     jTextArea1.addHyperlinkListener(this);
 
     JScrollPane scrollPane = new JScrollPane(jTextArea1);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     // scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-    scrollPane.setPreferredSize(new Dimension(400, 400));
+    SwingUtils.setPreferredSize(scrollPane, 40, 40, true);
+    if (magellanImage.getPreferredSize().width > scrollPane.getPreferredSize().getWidth()) {
+      scrollPane.setPreferredSize(new Dimension(magellanImage.getPreferredSize().width,
+          scrollPane.getPreferredSize().height));
+    }
     jPanel.add(scrollPane);
 
     // OK Button

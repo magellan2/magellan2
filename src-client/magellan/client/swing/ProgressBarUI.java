@@ -47,6 +47,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import magellan.client.utils.ErrorWindow;
+import magellan.client.utils.SwingUtils;
 import magellan.library.gamebinding.MapMetric;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
@@ -375,18 +376,20 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      *
      */
     private void initComponents() {
-      labelText = new JLabel();
+      labelText = new JLabel("jLabel1");
       progressBar = new JProgressBar();
       getContentPane().setLayout(new GridBagLayout());
 
       GridBagConstraints gridBagConstraints1;
       setTitle(Resources.get("progressbarui.title.default"));
 
-      labelText.setPreferredSize(new Dimension(250, 16));
-      labelText.setMinimumSize(new Dimension(250, 16));
-      labelText.setText("jLabel1");
+      Dimension dim = SwingUtils.getDimension(20, 2, true);
+      dim.height = labelText.getPreferredSize().height;
+      labelText.setPreferredSize(dim);
+      labelText.setMinimumSize(dim);
       labelText.setHorizontalAlignment(SwingConstants.LEFT);
-      labelText.setMaximumSize(new Dimension(32767, 16));
+
+      labelText.setMaximumSize(SwingUtils.getDimension(200, 4, true));
 
       gridBagConstraints1 = new GridBagConstraints();
       gridBagConstraints1.gridx = 0;
@@ -397,8 +400,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
       gridBagConstraints1.weighty = 0.5;
       getContentPane().add(labelText, gridBagConstraints1);
 
-      progressBar.setPreferredSize(new Dimension(250, 14));
-      progressBar.setMinimumSize(new Dimension(250, 14));
+      progressBar.setPreferredSize(dim);
+      progressBar.setMinimumSize(dim);
 
       gridBagConstraints1 = new GridBagConstraints();
       gridBagConstraints1.fill = GridBagConstraints.BOTH;

@@ -66,6 +66,7 @@ import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.KeyTextField;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -498,7 +499,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     private DefineCompletionDialog(Frame frame) {
       super(frame, true);
       setTitle(Resources.get("completion.autocompletion.DefineCompletionDialog.title"));
-      this.setSize(500, 200);
+
+      this.setSize(SwingUtils.getDimension(30, 15, true));
 
       JPanel cp = new JPanel();
       getContentPane().add(cp);

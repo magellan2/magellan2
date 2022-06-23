@@ -1761,6 +1761,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (defaultFile != null) {
       fc.setSelectedFile(new File(defaultFile));
     }
+    SwingUtils.setPreferredSize(fc, 40, -1, true);
 
     if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       retVal = fc.getSelectedFile().getPath();

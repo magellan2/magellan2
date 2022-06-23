@@ -58,6 +58,7 @@ import magellan.client.Client;
 import magellan.client.swing.MagellanLookAndFeel;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -176,7 +177,7 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
 
     panelColor = new JPanel();
     panelColor.setBorder(new LineBorder(Color.black));
-    panelColor.setPreferredSize(new Dimension(20, 20));
+    SwingUtils.setPreferredSize(panelColor, 1.5, 1.5, false);
     panelColor.setBackground(MetalLookAndFeel.getWindowBackground());
 
     con.gridx++;

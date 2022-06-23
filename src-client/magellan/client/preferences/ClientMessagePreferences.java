@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.Color;
@@ -45,6 +45,7 @@ import magellan.client.Client;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
@@ -59,8 +60,6 @@ public class ClientMessagePreferences extends AbstractPreferencesAdapter impleme
   protected MessagePanel src;
   protected JCheckBox lineWrap;
 
-  private Dimension prefDim = new Dimension(20, 20);
-
   protected JPanel panelColorEvents = null;
   protected JPanel panelColorBattle = null;
   protected JPanel panelColorErrors = null;
@@ -74,6 +73,7 @@ public class ClientMessagePreferences extends AbstractPreferencesAdapter impleme
    * Creates a new Pref object.
    */
   public ClientMessagePreferences(MessagePanel src) {
+    Dimension prefDim = SwingUtils.getDimension(1.5, 1.5, true);
     JPanel help =
         addPanel(Resources.get("messagepanel.prefs.border.title"), new FlowLayout(
             FlowLayout.LEADING));
@@ -266,7 +266,7 @@ public class ClientMessagePreferences extends AbstractPreferencesAdapter impleme
       Color newColor =
           JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(), Resources
               .get("clientpreferences.messagecolors.dialog.title"), ((Component) e.getSource())
-              .getBackground());
+                  .getBackground());
 
       if (newColor != null) {
         ((Component) e.getSource()).setBackground(newColor);

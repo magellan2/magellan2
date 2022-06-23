@@ -25,7 +25,6 @@ package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Properties;
@@ -40,6 +39,7 @@ import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 
 /**
@@ -100,8 +100,8 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
 
     pnl.add(comment.getComponent(), BorderLayout.NORTH);
 
-    pluginList.setPreferredSize(new Dimension(500, 500));
-    pnl.setPreferredSize(new Dimension(500, 500));
+    SwingUtils.setPreferredSize(pluginList, 30, -1, true);
+    SwingUtils.setPreferredSize(pnl, 30, -1, true);
 
     pnl.add(pluginList, BorderLayout.CENTER);
 

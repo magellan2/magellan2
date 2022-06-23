@@ -69,6 +69,7 @@ import magellan.client.desktop.MagellanDesktop;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
@@ -810,7 +811,9 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
       showInfo.addActionListener(this);
 
       JScrollPane scrollPane = new JScrollPane(nameList);
-      scrollPane.setPreferredSize(new Dimension(rename.getPreferredSize().width, 100));
+      Dimension dim = SwingUtils.getDimension(10, 8, true);
+      dim.width = rename.getPreferredSize().width;
+      scrollPane.setPreferredSize(dim);
       nameList.addListSelectionListener(this);
 
       JPanel p = new JPanel(new GridBagLayout());

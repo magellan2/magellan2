@@ -15,7 +15,6 @@ package magellan.client.swing.map;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
@@ -37,6 +36,7 @@ import javax.swing.JPanel;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.Colors;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
@@ -175,7 +175,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 
     private void init() {
       pnlFontColor = new JPanel();
-      pnlFontColor.setSize(50, 50);
+      SwingUtils.setPreferredSize(pnlFontColor, 1.5, 1.5, false);
       pnlFontColor.setBackground(source.getFontColor());
       pnlFontColor.addMouseListener(new MouseAdapter() {
         @Override
@@ -262,7 +262,6 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 
       c.gridx++;
       c.fill = GridBagConstraints.VERTICAL;
-      pnlFontColor.setMaximumSize(new Dimension(15, 15));
       this.add(pnlFontColor, c);
 
       c.gridx = 0;

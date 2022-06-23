@@ -9,7 +9,6 @@ package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -72,6 +71,7 @@ import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.table.TableSorter;
+import magellan.client.utils.SwingUtils;
 import magellan.client.utils.TextAreaDialog;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -739,7 +739,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
         .getRegion(), p.getFaction(), p.getLine(), p.getType(), desc));
     final TextAreaDialog d = (new TextAreaDialog((JFrame) SwingUtilities.getWindowAncestor(this), Resources.get(
         "tasks.showfull.dialog.title"), text.toString()));
-    d.setPreferredSize(new Dimension(400, 200));
+    SwingUtils.setPreferredSize(d, 30, 20, true);
     d.pack();
     d.setVisible(true);
   }

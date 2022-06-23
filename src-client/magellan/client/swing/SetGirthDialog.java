@@ -229,11 +229,6 @@ public class SetGirthDialog extends JDialog {
     coordPanel.add(editYmax, gc);
 
     pack();
-    Dimension d = getSize();
-    if (d.height < d.width * 2 / 3) {
-      d.height = d.width * 2 / 3;
-      root.setPreferredSize(d);
-    }
 
     getRootPane().setDefaultButton(btnOK);
   }

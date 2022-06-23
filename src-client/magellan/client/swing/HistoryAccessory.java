@@ -73,8 +73,8 @@ public class HistoryAccessory extends JPanel {
     });
 
     // set-up GUI
+    setLayout(new GridBagLayout());
     if (history.size() > 1) {
-      setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
 

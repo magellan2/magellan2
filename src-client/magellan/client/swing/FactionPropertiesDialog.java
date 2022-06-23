@@ -15,7 +15,6 @@ package magellan.client.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -130,7 +129,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     txtPassword = new JTextField(faction.getPassword());
     txtPassword.setEditable(true);
     txtPassword.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-    txtPassword.setPreferredSize(new Dimension(100, 25));
+    // txtPassword.setPreferredSize(new Dimension(100, 25));
     txtPassword.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
 
     JLabel l = new JLabel(Resources.get("factionpropertiesdialog.password.label"));
@@ -154,21 +153,15 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
         .get("factionpropertiesdialog.translations.title")));
     translationPanel.setToolTipText(Resources.get("factionpropertiesdialog.translations.tooltip"));
 
-    tx = new JTextField();
-    tx.setPreferredSize(new java.awt.Dimension(55, 20));
-    tx.setMinimumSize(new java.awt.Dimension(50, 20));
+    tx = new JTextField(3);
     JLabel lx = new JLabel("x: ");
     lx.setLabelFor(tx);
 
-    ty = new JTextField();
-    ty.setPreferredSize(new java.awt.Dimension(55, 20));
-    ty.setMinimumSize(new java.awt.Dimension(50, 20));
+    ty = new JTextField(3);
     JLabel ly = new JLabel("y: ");
     ly.setLabelFor(ty);
 
-    tz = new JTextField();
-    tz.setPreferredSize(new java.awt.Dimension(55, 20));
-    tz.setMinimumSize(new java.awt.Dimension(50, 20));
+    tz = new JTextField(3);
     JLabel lz = new JLabel("z: ");
     lz.setLabelFor(tz);
 

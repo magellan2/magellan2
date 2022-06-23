@@ -60,9 +60,9 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     jLabel1 = new javax.swing.JLabel();
     jLabel2 = new javax.swing.JLabel();
     jLabel3 = new javax.swing.JLabel();
-    editX = new javax.swing.JTextField();
-    editY = new javax.swing.JTextField();
-    editLevel = new javax.swing.JTextField();
+    editX = new javax.swing.JTextField(4);
+    editY = new javax.swing.JTextField(4);
+    editLevel = new javax.swing.JTextField(4);
     defaultColor = editX.getBackground();
 
     getContentPane().setLayout(new java.awt.GridBagLayout());
@@ -143,9 +143,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     gridBagConstraints2.anchor = java.awt.GridBagConstraints.EAST;
     jPanel2.add(jLabel3, gridBagConstraints2);
 
-    editX.setPreferredSize(new java.awt.Dimension(55, 20));
     editX.setText("0");
-    editX.setMinimumSize(new java.awt.Dimension(50, 20));
 
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridx = 1;
@@ -154,9 +152,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     gridBagConstraints2.insets = new java.awt.Insets(5, 0, 5, 5);
     jPanel2.add(editX, gridBagConstraints2);
 
-    editY.setPreferredSize(new java.awt.Dimension(55, 20));
     editY.setText("0");
-    editY.setMinimumSize(new java.awt.Dimension(50, 20));
 
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridx = 3;
@@ -165,9 +161,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     gridBagConstraints2.insets = new java.awt.Insets(5, 0, 5, 5);
     jPanel2.add(editY, gridBagConstraints2);
 
-    editLevel.setPreferredSize(new java.awt.Dimension(55, 20));
     editLevel.setText("0");
-    editLevel.setMinimumSize(new java.awt.Dimension(50, 20));
 
     gridBagConstraints2 = new java.awt.GridBagConstraints();
     gridBagConstraints2.gridx = 5;

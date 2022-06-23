@@ -2264,30 +2264,31 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
 
           if (value.size() > 0) {
-            y = Math.max(0, size.height - fm.getAscent() - 1);
+            int h = Math.max(0, size.height - fm.getAscent() - 1);
+            int w = Math.min(size.height, fm.getMaxAdvance());
 
             for (int i = 0; i < value.size(); i++) {
               int x = (int) (size.width * value.get(i).floatValue());
-              paintIcon(g, x, y, mapping.get(i));
+              paintIcon(g, x, h, w, mapping.get(i));
             }
           }
         }
 
-        protected void paintIcon(Graphics g, int x, int h, Color col) {
+        protected void paintIcon(Graphics g, int x, int h, int w, Color col) {
           g.setColor(col);
           poly.xpoints[0] = x;
           poly.ypoints[0] = 2;
 
-          poly.xpoints[4] = x + 4;
+          poly.xpoints[4] = x + w / 2;
           poly.ypoints[4] = h / 3;
 
-          poly.xpoints[3] = x + 4;
+          poly.xpoints[3] = x + w / 2;
           poly.ypoints[3] = h - 1;
 
-          poly.xpoints[2] = x - 4;
+          poly.xpoints[2] = x - w / 2;
           poly.ypoints[2] = h - 1;
 
-          poly.xpoints[1] = x - 4;
+          poly.xpoints[1] = x - w / 2;
           poly.ypoints[1] = h / 3;
           g.fillPolygon(poly);
           g.setColor(Color.black);

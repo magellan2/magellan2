@@ -14,7 +14,6 @@
 package magellan.client.preferences;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -255,8 +254,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     String s = settings.getProperty("ClientPreferences.TempIDsInitialValue", "");
     JLabel initialValueLabel = new JLabel(Resources.get("clientpreferences.tempidsinitialvalue.caption"));
-    tempIDsInitialValue = new JTextField(s);
-    tempIDsInitialValue.setPreferredSize(new Dimension(100, tempIDsInitialValue.getPreferredSize().height));
+    tempIDsInitialValue = new JTextField(s, 5);
     tempIDsInitialValue.setHorizontalAlignment(SwingConstants.CENTER);
 
     tempIDs.add(initialValueLabel, c2);

@@ -180,9 +180,7 @@ public class PreferencesDialog extends InternationalizedDialog {
   }
 
   private Container getMainPane() {
-    Dimension preferredSize = new Dimension(100, 24);
     JButton okButton = new JButton(Resources.get("preferences.preferencesdialog.btn.ok.caption"));
-    okButton.setPreferredSize(preferredSize);
     okButton.setMnemonic(Resources.get("preferences.preferencesdialog.btn.ok.caption.mnemonic")
         .charAt(0));
     okButton.addActionListener(new ActionListener() {
@@ -194,7 +192,6 @@ public class PreferencesDialog extends InternationalizedDialog {
 
     JButton cancelButton =
         new JButton(Resources.get("preferences.preferencesdialog.btn.cancel.caption"));
-    cancelButton.setPreferredSize(preferredSize);
     cancelButton.setMnemonic(Resources.get(
         "preferences.preferencesdialog.btn.cancel.caption.mnemonic").charAt(0));
     cancelButton.addActionListener(new ActionListener() {
@@ -206,7 +203,6 @@ public class PreferencesDialog extends InternationalizedDialog {
 
     JButton applyButton =
         new JButton(Resources.get("preferences.preferencesdialog.btn.apply.caption"));
-    applyButton.setPreferredSize(preferredSize);
     applyButton.setMnemonic(Resources.get(
         "preferences.preferencesdialog.btn.apply.caption.mnemonic").charAt(0));
     applyButton.addActionListener(new ActionListener() {
@@ -218,8 +214,6 @@ public class PreferencesDialog extends InternationalizedDialog {
     JPanel buttonPanel = new JPanel(new FlowLayout());
     buttonPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
     buttonPanel.add(okButton);
-    // TODO removed, does not work
-    // buttonPanel.add(applyButton);
     buttonPanel.add(cancelButton);
 
     dialogtree = new DialogTree();

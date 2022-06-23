@@ -77,6 +77,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
@@ -399,7 +400,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     JComponent mainPane = getMainPane();
     ancestor = mainPane.getTopLevelAncestor();
 
-    setContentPane(mainPane);
+    setContentPane(new JScrollPane(mainPane));
     setTitle(Resources.get("orderwriterdialog.window.title"));
     pack();
 
@@ -635,14 +636,18 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     mainPanel.add(detailsButton = new JButton("Details>>"), c);
     detailsButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent arg0) {
-        if (detailsButton.getText().contains(">>")) {
-          controls.setVisible(true);
-          detailsButton.setText("Details<<");
-          pack();
-        } else {
-          controls.setVisible(false);
-          detailsButton.setText("Details>>");
-          pack();
+        try {
+          if (detailsButton.getText().contains(">>")) {
+            controls.setVisible(true);
+            detailsButton.setText("Details<<");
+            pack();
+          } else {
+            controls.setVisible(false);
+            detailsButton.setText("Details>>");
+            pack();
+          }
+        } catch (Throwable t) {
+          log.error(t);
         }
       }
     });

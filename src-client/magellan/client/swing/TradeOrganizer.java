@@ -8,7 +8,9 @@
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -63,6 +65,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -124,9 +127,16 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   }
 
   protected void init() {
-    int width = Integer.parseInt(settings.getProperty("TradeOrganizer.width", "800"));
-    int height = Integer.parseInt(settings.getProperty("TradeOrganizer.height", "600"));
-    setSize(width, height);
+    Dimension dim;
+    if (settings.getProperty("TradeOrganizer.width") != null) {
+      dim = new Dimension(
+          PropertiesHelper.getInteger(settings, "TradeOrganizer.width", 800),
+          PropertiesHelper.getInteger(settings, "TradeOrganizer.height", 600));
+    } else {
+      dim = SwingUtils.getDimension(50, -1, true);
+    }
+
+    setSize(dim);
 
     SwingUtils.setLocation(this, settings, "TradeOrganizer.xPos", "TradeOrganizer.yPos");
 
@@ -149,7 +159,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
     topPanel.add(new JLabel(Resources.get("tradeorganizer.minsellmultiplier")), c);
     c.gridx++;
-    minSellMultiplierSlider = new JSlider(1, 30, minSellMultiplier);
+    minSellMultiplierSlider = new JSlider(1, 31, minSellMultiplier);
     minSellMultiplierSlider.setMinorTickSpacing(1);
     minSellMultiplierSlider.setMajorTickSpacing(1);
 
@@ -158,6 +168,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     minSellMultiplierSlider.setSnapToTicks(true);
     minSellMultiplierSlider.setPaintTicks(true);
     minSellMultiplierSlider.setPaintLabels(true);
+    dim = SwingUtils.getDimension(20, 3, false);
+    dim.height = minSellMultiplierSlider.getPreferredSize().height;
+    minSellMultiplierSlider.setMinimumSize(dim);
+    dim = SwingUtils.getDimension(30, 3, false);
+    dim.height = minSellMultiplierSlider.getPreferredSize().height;
+    minSellMultiplierSlider.setPreferredSize(dim);
 
     minSellMultiplierSlider.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent ce) {
@@ -165,7 +181,9 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         setSellTableRegions();
       }
     });
+    c.weightx = .1;
     topPanel.add(minSellMultiplierSlider, c);
+    c.weightx = 0;
     c.gridx++;
 
     topPanel.add(new JLabel(Resources.get("tradeorganizer.luxury")), c);
@@ -201,7 +219,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     c.gridx = 0;
     c.gridy = 1;
     c.insets = new Insets(5, 5, 5, 5);
-    c.gridwidth = 2;
+    c.gridwidth = 4;
     topPanel.add(help, c);
 
     Container cp = getContentPane();

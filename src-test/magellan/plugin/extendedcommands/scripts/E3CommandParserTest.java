@@ -1034,6 +1034,27 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
+  public final void testCommandBenoetigeFremdSchild() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
+    // add other unit with shield
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit, "Schild", 6);
+
+    // Warning in Benoetige should not parse
+    unit.clearOrders();
+    unit.addOrder("// $cript BenoetigeFremd v 1 4 Schild Menge");
+    unit2.clearOrders();
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("GIB v 1 Schild", unit, 2);
+    assertOrder("GIB v 3 Schild", unit, 3);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
   public final void testCommandBenoetigeFremdOtherFaction() {
     // add other unit with Silber
     Faction faction2 = builder.addFaction(data, "otto", "Others", "Menschen", 0);

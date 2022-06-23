@@ -105,7 +105,7 @@ class Warning {
   /** The WEAPON warning type token */
   public static String W_WEAPON = "Waffe";
   /** The SHIELD warning type token */
-  public static String W_SHIELD = "Schild";
+  public static String W_SHIELD = "Schilde";
   /** The ARMOR warning type token */
   public static String W_ARMOR = "Rüstung";
   /** The UNIT warning type token */
@@ -1002,7 +1002,7 @@ class E3CommandParser {
       Warning.W_NEVER = "never";
       Warning.W_SKILL = "skill";
       Warning.W_WEAPON = "weapon";
-      Warning.W_SHIELD = "shield";
+      Warning.W_SHIELD = "shields";
       Warning.W_ARMOR = "armor";
       BEST = "best";
       NULL = "null";

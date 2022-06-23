@@ -57,6 +57,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.MagellanDesktop;
@@ -72,6 +73,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.table.TableSorter;
 import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.client.utils.TextAreaDialog;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -182,7 +184,14 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
   private void initGUI() {
     model = new TaskTableModel(getHeaderTitles());
     sorter = new TableSorter(model);
-    table = new JTable(sorter);
+    RenderHelper renderHelper = SwingUtils.prepareTable(model);
+    table = new JTable(sorter) {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
 
     sorter.setTableHeader(table.getTableHeader()); // NEW
 

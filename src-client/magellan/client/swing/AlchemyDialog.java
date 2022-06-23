@@ -104,6 +104,7 @@ import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.table.TableSorter;
 import magellan.client.swing.tree.ContextManager;
 import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -332,8 +333,18 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Creates the main content of the dialog, the production table.
    */
   private JTable createTable() {
+    tableModel = new PlannerModel(getData());
+    RenderHelper renderHelper = SwingUtils.prepareTable(tableModel);
+
     final JTable table =
-        new AlchemyTable(sorter = new TableSorter(tableModel = new PlannerModel(getData())));
+        new AlchemyTable(sorter = new TableSorter(tableModel)) {
+          @Override
+          public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+            return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+                super.prepareRenderer(renderer, row, column));
+          }
+        };
+
     table.getModel().addTableModelListener(new TableModelListener() {
 
       public void tableChanged(TableModelEvent e) {

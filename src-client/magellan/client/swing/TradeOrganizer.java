@@ -48,12 +48,14 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -231,13 +233,29 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     cp = new JPanel();
     cp.setLayout(new BorderLayout());
     tabPane.addTab(Resources.get("tradeorganizer.buy"), cp);
-    buy = new BuyTable();
+    RenderHelper rhb = SwingUtils.prepareTable();
+    buy = new BuyTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rhb.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rhb.prepareTable(buy);
     cp.add(new JScrollPane(buy), BorderLayout.CENTER);
 
     cp = new JPanel();
     cp.setLayout(new BorderLayout());
     tabPane.addTab(Resources.get("tradeorganizer.sell"), cp);
-    sell = new SellTable();
+    RenderHelper rhs = SwingUtils.prepareTable();
+    sell = new SellTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rhs.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rhs.prepareTable(buy);
     cp.add(new JScrollPane(sell), BorderLayout.CENTER);
 
     tabPane.add(Resources.get("tradeorganizer.stocks"), getStocksPanel());
@@ -260,7 +278,15 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     });
 
     JScrollPane factionsScrollPane = new JScrollPane(factionList);
-    stocks = new StocksTable();
+    RenderHelper rh = SwingUtils.prepareTable();
+    stocks = new StocksTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rh.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rh.prepareTable(stocks);
 
     JScrollPane stocksTableScrollPane = new JScrollPane(stocks);
 
@@ -599,7 +625,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     }
 
     /**
-     *  
+     * 
      */
     public void sort(int i) {
       if (i < 0 || i >= getColumnCount())

@@ -34,7 +34,11 @@ import java.awt.event.KeyEvent;
 import java.util.Properties;
 
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 import magellan.library.utils.PropertiesHelper;
 
@@ -245,6 +249,131 @@ public class SwingUtils {
   public static boolean isModifier(int key) {
     return ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
         || (key == KeyEvent.VK_ALT_GRAPH));
+  }
+
+  /**
+   * A class that helps adjusting row heights of tables, see {@link #prepareTable(JTable)}.
+   *
+   */
+  public interface RenderHelper {
+
+    /**
+     * Call this from your overwritten prepareHandler method like this:
+     * <code>
+     * renderHelper.wrapPrepareHandlerRowHeightAdjusted(JTable.this, row,
+     *           super.prepareRenderer(renderer, row, column));
+     * </code>
+     * 
+     * @param jTable
+     * @param row
+     * @param component
+     * @return
+     */
+    Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component);
+
+    /**
+     * Call this after constructing your table.
+     * 
+     * @param jTable
+     */
+    void prepareTable(JTable jTable);
+
+  }
+
+  /**
+   * implementation of RenderHelper
+   */
+  static class RH implements RenderHelper {
+    int invalidate[];
+    int invalidateMarker;
+    private TableModel model;
+
+    void prepareTable(TableModel model) {
+      invalidate = new int[0];
+      this.model = model;
+      model.addTableModelListener((TableModelEvent e) -> {
+        synchronized (model) {
+          ++invalidateMarker;
+        }
+      });
+    }
+
+    public void prepareTable(JTable jTable) {
+      prepareTable(jTable.getModel());
+    }
+
+    /**
+     * @param jTable
+     * @param row
+     * @param component
+     * @return
+     */
+    public Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component) {
+
+      synchronized (model) {
+        if (invalidate == null || invalidate.length != jTable.getRowCount()) {
+          invalidate = new int[jTable.getRowCount()];
+        }
+        if (invalidate[row] != invalidateMarker) {
+          invalidate[row] = invalidateMarker;
+          int height = component.getPreferredSize().height;
+          int old = jTable.getRowHeight();
+          if (height > old) {
+            jTable.setRowHeight(row, height);
+          }
+        }
+        return component;
+      }
+    }
+
+  }
+
+  /**
+   * Use this method to construct a table that adjusts its row heights with the font size of its content.
+   * 
+   * Use like this:
+   * <code>
+   * AbstractTableModel tableModel = new MyModel();
+   * final RenderHelper renderHelper = SwingUtils.prepareTable(tableModel);
+   * JTable table = MyTable(tableModel) {
+   *   &#64;Override
+   *   public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+   *     return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+   *     super.prepareRenderer(renderer, row, column));
+   *   }
+   * };
+   * </code>
+   * 
+   * @param model Your table model, should extend AbstractTableModel
+   * @return A RenderHelper, which you can call in your prepareRenderer method.
+   */
+  public static RenderHelper prepareTable(AbstractTableModel model) {
+    RH rh = new RH();
+    rh.prepareTable(model);
+    return rh;
+  }
+
+  /**
+   * Alternative method to construct a table that adjusts its row heights with the font size of its content.
+   * 
+   * Use like this:
+   * <code>
+   * RenderHelper renderHelper = SwingUtils.prepareTable();
+   * JTable table = MyTable() {
+   *   &#64;Override
+   *   public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+   *     return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+   *     super.prepareRenderer(renderer, row, column));
+   *   }
+   * };
+   * rh.prepareTable(table);
+   * </code>
+   * 
+   * @return A RenderHelper, which you can call in your prepareRenderer method.
+   */
+  public static RenderHelper prepareTable() {
+    RH rh = new RH();
+    return rh;
   }
 
 }

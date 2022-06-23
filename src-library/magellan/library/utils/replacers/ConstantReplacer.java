@@ -13,8 +13,6 @@
 
 package magellan.library.utils.replacers;
 
-import magellan.library.utils.Resources;
-
 /**
  * Evaluates to the newline character.
  * 
@@ -27,16 +25,16 @@ public class ConstantReplacer implements Replacer {
   private String description;
 
   /**
-   * Creates a new RegionMethodReplacer object.
+   * Creates a new ConstantReplacer object.
    * 
-   * @param method A method name of Region
-   * @param mode Defines what is returned for negative values.
-   * @throws RuntimeException if the given field is not accessible
+   * @param constant The replacement
+   * @param description The description for this replacer
    */
   public ConstantReplacer(String constant, String description) {
     this.constant = constant;
     this.description = description;
   }
+
   /**
    * Evaluates to the newline character.
    */

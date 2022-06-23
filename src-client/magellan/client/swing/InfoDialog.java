@@ -117,7 +117,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     getContentPane().add(jPanel);
 
     pack();
-
+    getRootPane().setDefaultButton(btn_OK);
   }
 
   private String getVersionString() {

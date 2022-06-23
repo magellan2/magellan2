@@ -111,14 +111,16 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     btnOK = new javax.swing.JButton();
     btnCancel = new javax.swing.JButton();
 
-    btnOK.setText(Resources.get("setorigindialog.btn.ok.caption"));
+    btnOK.setText(Resources.get("button.ok"));
+    btnOK.setMnemonic(Resources.get("button.ok.mnemonic").charAt(0));
     btnOK.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnOKActionPerformed(evt);
       }
     });
 
-    btnCancel.setText(Resources.get("setorigindialog.btn.cancel.caption"));
+    btnCancel.setText(Resources.get("button.cancel"));
+    btnCancel.setMnemonic(Resources.get("button.cancel.mnemonic").charAt(0));
     btnCancel.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnCancelActionPerformed(evt);
@@ -220,17 +222,18 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     cc.weightx = 0.0;
     cc.weighty = 0.0;
     cc.insets = new Insets(5, 5, 5, 5);
-    translationPanel.add(lx);
+    translationPanel.add(lx, cc);
     cc.gridx++;
-    translationPanel.add(tx);
+    cc.weightx = .5;
+    translationPanel.add(tx, cc);
     cc.gridx++;
-    translationPanel.add(ly);
+    translationPanel.add(ly, cc);
     cc.gridx++;
-    translationPanel.add(ty);
+    translationPanel.add(ty, cc);
     cc.gridx++;
-    translationPanel.add(lz);
+    translationPanel.add(lz, cc);
     cc.gridx++;
-    translationPanel.add(tz);
+    translationPanel.add(tz, cc);
 
     cc.gridx = 0;
     cc.gridy++;
@@ -293,6 +296,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     // c.gridy = 2;
     c.insets = new java.awt.Insets(0, 0, 5, 5);
     main.add(btnCancel, c);
+
+    getRootPane().setDefaultButton(btnOK);
 
     return main;
   }

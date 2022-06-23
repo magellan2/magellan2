@@ -218,7 +218,11 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
   }
 
   protected void writeLocale(BufferedWriter stream) throws IOException {
-    writeln(stream, "LOCALE " + getLocale().getLanguage());
+    if (getLocale() != null) {
+      writeln(stream, "LOCALE " + getLocale().getLanguage());
+    } else {
+      addError("locale unknown");
+    }
   }
 
   protected Locale getLocale() {

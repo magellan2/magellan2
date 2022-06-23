@@ -23,6 +23,3 @@ src/release/lib/jflap.LICENSE.txt).
 
 If you are not satisfied that EVERYTHING is under the GNU GPL 
 License you should not use Magellan.
-
-[![Build Status](https://travis-ci.org/magellan2/magellan2.svg?branch=master)](https://travis-ci.org/magellan2/magellan2)
-[![Language Java](https://img.shields.io/badge/language-java-success)](https://github.com/magellan2/magellan2)

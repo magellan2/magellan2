@@ -1,3 +1,6 @@
+2022-06-28 / Build 785 - stm (stm2@users.sourceforge.net)
+    * fixed font size setting 
+
 2022-05-10 / Build 782 - stm (stm2@users.sourceforge.net)
     * fixed a bug were Magellan froze while zooming out of map with ARR active
     * implemented server upload (experimental)

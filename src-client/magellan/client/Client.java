@@ -68,6 +68,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
@@ -75,6 +76,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
@@ -238,7 +240,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   public static final String DEFAULT_LAF = "Nimbus";
 
-  public static final String FALLBACK_LAF = "Metal";
+  public static final String[] FALLBACK_LAF = { "Metal", "Windows" };
 
   /** This is the instance of this class */
   public static Client INSTANCE;
@@ -691,10 +693,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     });
 
-    // float fScale = 1.5f; // PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
-    // setFontSize(fScale);
-    // updateLaF();
-
     // select all in textfields on focus gain globally
     KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener(
         "permanentFocusOwner", new PropertyChangeListener() {
@@ -718,7 +716,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     initLookAndFeels();
   }
 
-  private static void setFontSize(float fScale) {
+  private void setFontSize(float fScale) {
     try {
 
       String[] fonts = { "ArrowButton.font",
@@ -732,6 +730,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           "DesktopPane.font",
           "EditorPane.font",
           "FileChooser.font",
+          "FileChooser.listFont",
           "FormattedTextField.font",
           "InternalFrame.font",
           "InternalFrame.titleFont",
@@ -780,21 +779,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           "Viewport.font",
           "defaultFont" };
 
-      Set<String> sFonts = new HashSet<String>(Arrays.asList(fonts));
-
-      if (fScale != 1.0f) {
-        // TODO(pavkovic): the following code bloats the fonts in an
-        // undesired way, perhaps
-        // we remove this configuration option?
-        UIDefaults dTable = UIManager.getDefaults();
+      {
+        Set<String> sFonts = new HashSet<String>(Arrays.asList(fonts));
         UIDefaults lTable = UIManager.getLookAndFeelDefaults();
         Enumeration<?> eKeys = lTable.keys();
         Map<Font, Integer> sizes = new HashMap<Font, Integer>();
+        Map<Font, Font> derivatives = new HashMap<Font, Font>();
         while (eKeys.hasMoreElements()) {
           Object key = eKeys.nextElement();
           Object val = lTable.get(key);
           Font font;
-          if (val instanceof FontUIResource) {
+          if (val instanceof Font) {
             font = (Font) val;
           } else {
             font = UIManager.getFont(key);
@@ -802,12 +797,19 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
           if (font != null) {
             Integer n = sizes.get(font);
+            // log.finest(key + ":" + font);
             if (n == null) {
               sizes.put(font, 1);
+              Font scaledFont = font;
+              if (fScale != 1.0f && !derivatives.containsValue(font)) {
+                scaledFont = new FontUIResource(font.deriveFont(font.getSize2D() * fScale));
+                derivatives.put(font, scaledFont);
+                font = scaledFont;
+              }
             } else {
               sizes.put(font, n + 1);
+              font = derivatives.get(font);
             }
-            font = new FontUIResource(font.deriveFont(font.getSize2D() * fScale));
             UIManager.put(key, font);
             lTable.put(key, font);
             if (!sFonts.contains(key)) {
@@ -825,7 +827,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           }
         }
         if (maxS != null) {
-          Font font = new FontUIResource(maxS.deriveFont(maxS.getSize2D() * fScale));
+          Font font = maxS;
+          if (fScale != 1.0f) {
+            font = derivatives.get(font);
+          }
           log.fine("new default font: " + font);
           for (String key : fonts) {
             if (UIManager.get(key) == null) {
@@ -1390,9 +1395,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
-
-      float fScale = 1.5f; // PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
-      Client.setFontSize(fScale);
 
       Client.startWindow = new StartWindow(startIcon, 5, parameters.resourceDir);
       Client.startWindow.setVisible(true);
@@ -2589,19 +2591,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    // // pavkovic 2004.01.04:
-    // // this method behaves at if the gamedata has been loaded by this
-    // // method.
-    // // this is not true at all but true enough for our needs.
-    // // dispatcher.fire(new GameDataEvent(this, data));
-    // // FIXME(stm) duplicate GameDataEvent??
-    // getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
     getDispatcher().fire(SelectionEvent.create(this, getData().getSelectedRegionCoordinates()
         .values()));
-    // getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
-
   }
 
   // ////////////
@@ -2611,42 +2604,55 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param laf
    */
   public void setLookAndFeel(String laf) {
-    boolean lafSet = true;
+    setLookAndFeel(laf, false);
+  }
 
-    if (MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(
+  /**
+   * @param laf
+   * @param force
+   */
+  public void setLookAndFeel(String laf, boolean force) {
+    LookAndFeel lafSet;
+
+    float fScale = PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
+
+    if (!force && MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(
         PropertiesHelper.CLIENT_LOOK_AND_FEEL, ""))) {
-      lafSet = false;
+      lafSet = null;
     } else {
       lafSet = MagellanLookAndFeel.setLookAndFeel(laf);
+      if (lafSet == null) {
+        log.warn("Could not set LaF to " + laf);
+      }
 
-      if (!lafSet) {
-        laf = Client.FALLBACK_LAF;
-        lafSet = MagellanLookAndFeel.setLookAndFeel(Client.FALLBACK_LAF);
+      for (String fLaf : Client.FALLBACK_LAF) {
+        if (lafSet == null) {
+          lafSet = MagellanLookAndFeel.setLookAndFeel(fLaf);
+        }
       }
     }
 
-    if (laf.equals(Client.FALLBACK_LAF)) {
+    if (lafSet == null)
+      return;
+
+    if (lafSet instanceof MetalLookAndFeel) {
       MagellanLookAndFeel.loadBackground(getProperties());
     }
 
-    if (!lafSet)
-      return;
-
-    setFontSize(1.5f);
+    setFontSize(fScale);
+    // FIXME we set laf and font size twice in order to update everything reliably. Seems like a hack.
+    MagellanLookAndFeel.setLookAndFeel(lafSet.getName());
+    setFontSize(fScale);
     updateLaF();
 
     getProperties().setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, laf);
   }
 
   /**
-   * Returns current L&F
+   * Returns current LaF
    */
   public String getLookAndFeel() {
-    String laf = getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL);
-    if (laf == null) {
-      laf = Client.FALLBACK_LAF;
-    }
-    return laf;
+    return getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
   }
 
   /**

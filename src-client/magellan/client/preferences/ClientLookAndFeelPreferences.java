@@ -36,13 +36,16 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.DefaultListModel;
+import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -53,9 +56,11 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.Client;
 import magellan.client.swing.MagellanLookAndFeel;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This component serves the Look'n Feel Preferences
@@ -80,6 +85,8 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
 
   private JPanel panelColor;
 
+  private JTextField editFontSize;
+
   /**
    * Creates a new LAndF object.
    */
@@ -91,7 +98,47 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
 
   private void initGUI() {
     createLAndFPanel(addPanel(Resources.get("clientpreferences.border.lookandfeel")));
+    createFontPanel(addPanel(Resources.get("clientpreferences.border.fontsize")));
     createMiscPanel(addPanel(Resources.get("clientpreferences.border.misc")));
+
+  }
+
+  protected Container createFontPanel(JPanel panel) {
+    panel.setLayout(new GridBagLayout());
+
+    GridBagConstraints con =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+            GridBagConstraints.NONE, new Insets(3, 3, 3, 3), 0, 0);
+
+    panel.add(new JLabel(Resources.get("clientpreferences.lbl.relativefontsize.caption")), con);
+
+    editFontSize = new JTextField(5);
+    editFontSize.setText("100");
+
+    resetFontSize();
+    editFontSize.setInputVerifier(new FontSizeVerifier());
+    editFontSize.setColumns(5);
+
+    con.gridx = 1;
+    panel.add(editFontSize, con);
+
+    con.gridx = 2;
+    JLabel l = new JLabel("%");
+    panel.add(l, con);
+    con.gridx++;
+    con.weightx = 1;
+    con.fill = GridBagConstraints.HORIZONTAL;
+    panel.add(new JPanel(), con);
+
+    JComponent help = WrappableLabel.getLabel(Resources.get("clientpreferences.txt.restartforfontsize.caption"))
+        .getComponent();
+
+    con.gridx = 0;
+    con.gridy = 1;
+    con.gridwidth = 4;
+    panel.add(help, con);
+
+    return panel;
   }
 
   protected Container createLAndFPanel(JPanel panel) {
@@ -108,7 +155,10 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     jComboBoxLaF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     con.gridx = 1;
     con.weightx = 1;
+    con.gridwidth = 3;
+
     panel.add(new JScrollPane(jComboBoxLaF), con);
+    con.gridwidth = 1;
     jComboBoxLaF.addListSelectionListener(new ListSelectionListener() {
 
       public void valueChanged(ListSelectionEvent e) {
@@ -121,15 +171,16 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     colorButton.addActionListener(this);
     con.gridx = 1;
     con.gridy = 1;
-    con.weightx = 1;
+    con.weightx = 0;
     panel.add(colorButton, con);
-    con.gridx++;
 
     panelColor = new JPanel();
     panelColor.setBorder(new LineBorder(Color.black));
     panelColor.setPreferredSize(new Dimension(20, 20));
     panelColor.setBackground(MetalLookAndFeel.getWindowBackground());
 
+    con.gridx++;
+    con.anchor = GridBagConstraints.CENTER;
     panel.add(panelColor, con);
 
     return panel;
@@ -159,6 +210,40 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
     return panel;
   }
 
+  public class FontSizeVerifier extends InputVerifier {
+
+    @Override
+    public boolean verify(JComponent input) {
+      float size = getFontSize();
+      if (Float.isNaN(size) || size <= .01 || size >= 10) {
+        resetFontSize();
+        return false;
+      }
+      return true;
+    }
+
+  }
+
+  protected float getFontSize() {
+    try {
+      float fScale = Float.valueOf(editFontSize.getText()).floatValue();
+      fScale /= 100.0f;
+      return fScale;
+    } catch (NumberFormatException ex) {
+      return Float.NaN;
+    }
+  }
+
+  protected void resetFontSize() {
+    try {
+      float fScale = Float.valueOf(settings.getProperty("Client.FontScale", "1.0")).floatValue();
+      fScale *= 100.0f;
+      editFontSize.setText(Float.toString(fScale));
+    } catch (Exception exc) {
+      editFontSize.setText("100.0");
+    }
+  }
+
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
@@ -179,28 +264,42 @@ public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter imp
   public void initPreferences() {
     lafList.clear();
     lafList.addAll(Arrays.asList(source.getLookAndFeels()));
-    jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,
-        Client.DEFAULT_LAF), true);
+    jComboBoxLaF.setSelectedValue(source.getLookAndFeel(), true);
     chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings,
         "EMapOverviewPanel.treeRootHandles", true));
     colorButton.setEnabled(isMetal(jComboBoxLaF.getSelectedValue()));
     panelColor.setBackground(MetalLookAndFeel.getWindowBackground());
+    resetFontSize();
   }
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
+    settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles
+        .isSelected()));
+
+    float fScale = getFontSize();
+    boolean update = false;
+    if (!Float.isNaN(fScale)) {
+      float oldScale = PropertiesHelper.getFloat(settings, "Client.FontScale", 1.0f);
+      if (oldScale != fScale) {
+        settings.setProperty("Client.FontScale", String.valueOf(fScale));
+        update = true;
+      }
+    } else {
+      Logger.getInstance(this.getClass()).warn("Invalid font size: " + editFontSize.getText());
+    }
+
     if (isMetal(jComboBoxLaF.getSelectedValue())) {
       if (!MetalLookAndFeel.getWindowBackground().equals(panelColor.getBackground())) {
         MagellanLookAndFeel.setBackground(panelColor.getBackground(), settings);
-        source.updateLaF();
+        update = true;
       }
     }
-    source.setLookAndFeel(jComboBoxLaF.getSelectedValue());
-
-    settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles
-        .isSelected()));
+    if (update || !jComboBoxLaF.getSelectedValue().equals(source.getLookAndFeel())) {
+      source.setLookAndFeel(jComboBoxLaF.getSelectedValue(), true);
+    }
   }
 
   /**

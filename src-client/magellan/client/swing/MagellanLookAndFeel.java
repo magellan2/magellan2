@@ -245,9 +245,9 @@ public class MagellanLookAndFeel {
    * @param laf LaF identifier
    * @return true if LaF could be changed
    */
-  public static boolean setLookAndFeel(String laf) {
+  public static LookAndFeel setLookAndFeel(String laf) {
     if (laf == null)
-      return false;
+      return null;
 
     LookAndFeel old = UIManager.getLookAndFeel();
     LookAndFeel olaf = MagellanLookAndFeel.getLookAndFeels().get(laf);
@@ -255,7 +255,7 @@ public class MagellanLookAndFeel {
     if (olaf == null) {
       MagellanLookAndFeel.log.error("Could not switch look and feel to " + laf + " (" + olaf + ")");
 
-      return false;
+      return null;
     }
 
     try {
@@ -276,7 +276,7 @@ public class MagellanLookAndFeel {
             + ")");
       }
 
-      return false;
+      return null;
     }
 
     try {
@@ -287,7 +287,7 @@ public class MagellanLookAndFeel {
       // ignore errors while logging
     }
 
-    return true;
+    return olaf;
   }
 
   /**

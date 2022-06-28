@@ -25,6 +25,8 @@ package magellan.plugin.battleanalyzer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -55,6 +57,7 @@ import magellan.library.Battle;
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Selectable;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.PropertiesHelper;
@@ -138,13 +141,8 @@ public class BattleDock extends JPanel implements ActionListener, GameDataListen
           tree.setSelectionPath(selPath);
           if (e.isPopupTrigger()) {
             popup.setContext(null);
-            Object c = selPath.getLastPathComponent();
-            if (c instanceof DefaultMutableTreeNode) {
-              Object uo = ((DefaultMutableTreeNode) c).getUserObject();
-              if (uo instanceof SimpleNodeWrapper) {
-                popup.setContext(((SimpleNodeWrapper) uo).getObject());
-              }
-            }
+            Object uo = getPathObject(selPath);
+            popup.setContext(uo);
             popup.show(tree, e.getX(), e.getY());
           }
         }
@@ -152,10 +150,36 @@ public class BattleDock extends JPanel implements ActionListener, GameDataListen
     };
     tree.addMouseListener(ml);
 
+    tree.addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+        case KeyEvent.VK_ENTER:
+          Object target = getPathObject(tree.getSelectionPath());
+          if (target instanceof Selectable) {
+            client.getDispatcher().fire(SelectionEvent.create(BattleDock.this, target, SelectionEvent.ST_DEFAULT));
+          }
+          e.consume();
+          break;
+        }
+      }
+    });
+
     JScrollPane treeScrollPane = new JScrollPane(tree);
     treeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     // treeScrollPane.setPreferredSize(new Dimension(400, 400));
     add(treeScrollPane);
+  }
+
+  protected Object getPathObject(TreePath selPath) {
+    Object c = selPath.getLastPathComponent();
+    if (c instanceof DefaultMutableTreeNode) {
+      Object o = ((DefaultMutableTreeNode) c).getUserObject();
+      if (o instanceof SimpleNodeWrapper)
+        return ((SimpleNodeWrapper) o).getObject();
+    }
+    return null;
   }
 
   public static class TreeUtils {

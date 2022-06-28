@@ -674,7 +674,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     for (i = sortedRows.length - 1; i >= 0; --i) {
       model.removeRow(sortedRows[i]);
     }
-    model.fireTableRowsDeleted(sortedRows[0], sortedRows[sortedRows.length - 1]);
+    // model.fireTableRowsDeleted(sortedRows[0], sortedRows[sortedRows.length - 1]);
 
     Collections.sort(problems, new Comparator<Problem>() {
 

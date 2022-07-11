@@ -1043,6 +1043,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.MAIL));
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.FILE));
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.CLIPBOARD));
+    addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.PUT_ON_SERVER));
     file.addSeparator();
     addMenuItem(file, new ExportCRAction(this));
     file.addSeparator();

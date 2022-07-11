@@ -120,7 +120,8 @@ public class OpenCRAction extends MenuAction {
     fc.setSelectedFile(file);
     fc.setAccessory(new HistoryAccessory(settings, fc));
     fc.setDialogTitle(Resources.get("actions.opencraction.title"));
-    SwingUtils.setPreferredSize(fc, 60, -1, true);
+    SwingUtils.setPreferredSize(fc, 50, -1, true);
+    SwingUtils.setPreferredSize(fc, settings, PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
     if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
       // find selected FileFilter
@@ -147,9 +148,11 @@ public class OpenCRAction extends MenuAction {
       if (bOpenEqualsSave) {
         settings.setProperty("Client.lastCRSaved", fc.getSelectedFile().getAbsolutePath());
       }
+      PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
       return fc.getSelectedFile();
     }
+    PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
     return null;
   }
 

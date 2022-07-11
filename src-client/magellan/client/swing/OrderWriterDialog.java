@@ -1797,11 +1797,13 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (defaultFile != null) {
       fc.setSelectedFile(new File(defaultFile));
     }
-    SwingUtils.setPreferredSize(fc, 40, -1, true);
+    SwingUtils.setPreferredSize(fc, 50, -1, true);
+    SwingUtils.setPreferredSize(fc, localSettings, PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
     if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       retVal = fc.getSelectedFile().getPath();
     }
+    PropertiesHelper.saveRectangle(localSettings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
     return retVal;
   }

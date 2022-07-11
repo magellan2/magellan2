@@ -58,6 +58,8 @@ public class SwingUtils {
    */
   public static void center(Component component) {
     GraphicsConfiguration gcc = component.getGraphicsConfiguration();
+    if (gcc == null)
+      return;
     Rectangle b = gcc.getBounds();
     // Dimension ss = getToolkit().getScreenSize();
 
@@ -151,13 +153,7 @@ public class SwingUtils {
       boolean maximize) {
     Rectangle bounds = PropertiesHelper.loadRect(settings, null, rectKey);
     if (bounds != null) {
-      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-      // correct position to be included in the screen
-      bounds.x = Math.max(bounds.x, -bounds.width * 4 / 5 + 10);
-      bounds.y = Math.max(bounds.y, -bounds.height * 4 / 5 + 10);
-      bounds.x = Math.min(bounds.x, screen.width - bounds.width / 10 + 10);
-      bounds.y = Math.min(bounds.y, screen.height - bounds.height / 5 + 10);
-
+      adjustToScreen(bounds);
       component.setBounds(bounds);
     } else {
       if (maximize) {
@@ -166,6 +162,23 @@ public class SwingUtils {
       }
       center(component);
     }
+  }
+
+  public static void setPreferredSize(Component component, Properties settings, String rectKey) {
+    Rectangle bounds = PropertiesHelper.loadRect(settings, null, rectKey);
+    if (bounds != null) {
+      adjustToScreen(bounds);
+      component.setPreferredSize(new Dimension(bounds.width, bounds.height));
+    }
+  }
+
+  private static void adjustToScreen(Rectangle bounds) {
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    // correct position to be included in the screen
+    bounds.x = Math.max(bounds.x, -bounds.width * 4 / 5 + 10);
+    bounds.y = Math.max(bounds.y, -bounds.height * 4 / 5 + 10);
+    bounds.x = Math.min(bounds.x, screen.width - bounds.width / 10 + 10);
+    bounds.y = Math.min(bounds.y, screen.height - bounds.height / 5 + 10);
   }
 
   /**

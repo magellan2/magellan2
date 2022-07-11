@@ -64,6 +64,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
     Properties settings = client.getProperties();
     JFileChooser fc = new JFileChooser();
     SwingUtils.setPreferredSize(fc, 50, -1, true);
+    SwingUtils.setPreferredSize(fc, settings, PropertiesHelper.FILE_CHOOSER_BOUNDS);
     fc.setMultiSelectionEnabled(true);
 
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
@@ -157,6 +158,7 @@ public class AddCRAction extends MenuAction implements GameDataListener {
         client.getDispatcher().fire(selectedObjects);
       }
     }
+    PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
   }
 
   /*

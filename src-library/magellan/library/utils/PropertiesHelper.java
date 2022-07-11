@@ -334,6 +334,12 @@ public class PropertiesHelper {
   /** Property type String (semantic version number): last used version number */
   public static final String LAST_VERSION = "Client.LastVersion";
 
+  /** Property type bounds (x, y, width, height): dialog dimensions */
+  public static final String FILE_CHOOSER_BOUNDS = "Filechooser.bounds";
+
+  /** Property type bounds (x, y, width, height): dialog dimensions */
+  public static final String ALCHEMY_DIALOG_BOUNDS = "AlchemyDialog.bounds";
+
   /**
    * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that
    * value. If something goes wrong or the key couldn't be found the default value def

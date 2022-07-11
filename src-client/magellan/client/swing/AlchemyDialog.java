@@ -121,6 +121,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.impl.MagellanPotionImpl;
 import magellan.library.io.file.FileBackup;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
@@ -190,12 +191,21 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     planner = createTable();
 
     mainPanel.add(createMenuBar(), BorderLayout.NORTH);
-    JScrollPane sp;
-    mainPanel.add(sp = new JScrollPane(planner), BorderLayout.CENTER);
+    mainPanel.add(new JScrollPane(planner), BorderLayout.CENTER);
     this.add(mainPanel);
     SwingUtils.setPreferredSize(mainPanel, 60, -1, true);
 
     pack();
+  }
+
+  @Override
+  public void setVisible(boolean b) {
+    super.setVisible(b);
+    if (b) {
+      SwingUtils.setBounds(this, settings, PropertiesHelper.ALCHEMY_DIALOG_BOUNDS, false);
+    } else {
+      PropertiesHelper.saveRectangle(settings, getBounds(), PropertiesHelper.ALCHEMY_DIALOG_BOUNDS);
+    }
   }
 
   private JMenuBar createMenuBar() {

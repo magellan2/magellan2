@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -266,6 +267,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private JComboBox<Provider> cmbProvider;
 
+  private List<Integer> panels;
+
   static final class MailSettings {
 
     String sender;
@@ -303,13 +306,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     super(null, false, null, data, new Properties());
     standAlone = true;
 
+    localSettings = settings;
     try {
       settings.load(new FileInputStream(new File(System.getProperty("user.home"), "OrderWriterDialog.ini")));
     } catch (IOException e) {
       OrderWriterDialog.log.error("OrderWriterDialog.OrderWriterDialog(),", e);
     }
 
-    init();
+    // init();
   }
 
   /**
@@ -318,7 +322,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   public OrderWriterDialog(Frame owner, boolean modal, GameData initData, Properties p) {
     super(owner, modal, null, initData, p);
     standAlone = false;
-    init();
+    localizeSettings();
+
+    // init();
   }
 
   /**
@@ -329,59 +335,42 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     super(owner, modal, null, initData, p);
     standAlone = false;
     regions = selectedRegions;
-    init();
+    localizeSettings();
+    // init();
+  }
+
+  private void localizeSettings() {
+    localSettings = new Properties();
+    for (Entry<Object, Object> entry : settings.entrySet()) {
+      localSettings.put(entry.getKey(), entry.getValue());
+    }
+    List<String> history = PropertiesHelper.getList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY);
+    PropertiesHelper.setList(localSettings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY, history);
   }
 
   @Override
   public void setVisible(boolean b) {
-    if (focusServer) {
-      txtServerUsername.requestFocusInWindow();
-      focusServer = false;
-    }
-    if (focusPassword) {
-      txtServerPassword.requestFocusInWindow();
-      focusPassword = false;
+    if (b) {
+      init();
+      if (focusServer) {
+        txtServerUsername.requestFocusInWindow();
+        focusServer = false;
+      }
+      if (focusPassword) {
+        txtServerPassword.requestFocusInWindow();
+        focusPassword = false;
+      }
     }
     super.setVisible(b);
   }
 
   private void init() {
+    init(NUM_PANELS);
+  }
+
+  private void init(int type) {
     if (!canShow(data))
       throw new IllegalArgumentException("no faction with password");
-
-    initProviders();
-
-    localSettings = new Properties();
-    for (Entry<Object, Object> entry : settings.entrySet()) {
-      // if (((String) entry.getKey()).startsWith(PropertiesHelper.ORDEREDITOR_PREFIX)) {
-      localSettings.put(entry.getKey(), entry.getValue());
-      // }
-    }
-    List<String> history = PropertiesHelper.getList(settings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY);
-    PropertiesHelper.setList(localSettings, PropertiesHelper.HISTORY_ACCESSORY_DIRECTORY_HISTORY, history);
-
-    try {
-      String myEncryptionKey = "Magellan2!SuperSecretKey";
-      try {
-        myEncryptionKey +=
-            System.getProperty("os.name") + System.getProperty("os.arch") + System.getProperty("os.version");
-      } catch (Throwable t) {
-        // not a big deal
-      }
-      try {
-        myEncryptionKey += GetNetworkAddress.getAddress(GetNetworkAddress.Type.MAC);
-      } catch (Throwable t) {
-        // not a big deal
-      }
-      byte[] keyAsBytes = myEncryptionKey.getBytes("UTF8");
-      DESedeKeySpec myKeySpec = new DESedeKeySpec(keyAsBytes);
-      SecretKeyFactory mySecretKeyFactory = SecretKeyFactory.getInstance(algorithm);
-      cipher = Cipher.getInstance(algorithm);
-      key = mySecretKeyFactory.generateSecret(myKeySpec);
-    } catch (Exception e) {
-      log.error("Could not initialize cipher!", e);
-      cipher = null;
-    }
 
     addKeyListener(new KeyAdapter() {
       @Override
@@ -397,14 +386,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         quit(false);
       }
     });
-    JComponent mainPane = getMainPane();
+    JComponent mainPane = getMainPane(type);
     ancestor = mainPane.getTopLevelAncestor();
 
     setContentPane(new JScrollPane(mainPane));
     setTitle(Resources.get("orderwriterdialog.window.title"));
     pack();
 
-    SwingUtils.setLocation(this, settings, "OrderWriterDialog.x", "OrderWriterDialog.y");
+    SwingUtils.setLocation(this, localSettings, "OrderWriterDialog.x", "OrderWriterDialog.y");
   }
 
   private void initProviders() {
@@ -470,7 +459,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     };
   }
 
-  private JComponent getMainPane() {
+  private JComponent getMainPane(int type) {
 
     JPanel mainPanel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -545,22 +534,62 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     c.gridheight = 1;
 
     JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
+    panels = new LinkedList<Integer>();
 
-    Component panel = getOptionPanel(EMAIL_PANEL);
-    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + EMAIL_PANEL), panel);
+    if (type == NUM_PANELS || type == EMAIL_PANEL) {
+      initProviders();
+      initKey();
+      Component panel = getOptionPanel(EMAIL_PANEL);
+      tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + EMAIL_PANEL), panel);
+      panels.add(EMAIL_PANEL);
+    }
 
-    panel = getOptionPanel(FILE_PANEL);
-    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + FILE_PANEL), panel);
+    if (type == NUM_PANELS || type == FILE_PANEL) {
+      Component panel = getOptionPanel(FILE_PANEL);
+      tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + FILE_PANEL), panel);
+      panels.add(FILE_PANEL);
+    }
 
-    panel = getOptionPanel(CLIPBOARD_PANEL);
-    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + CLIPBOARD_PANEL), panel);
+    if (type == NUM_PANELS || type == CLIPBOARD_PANEL) {
+      Component panel = getOptionPanel(CLIPBOARD_PANEL);
+      tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + CLIPBOARD_PANEL), panel);
+      panels.add(CLIPBOARD_PANEL);
+    }
 
-    panel = getOptionPanel(SERVER_PANEL);
-    tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + SERVER_PANEL), panel);
+    if (type == NUM_PANELS || type == SERVER_PANEL) {
+      Component panel = getOptionPanel(SERVER_PANEL);
+      tabbedPane.addTab(Resources.get("orderwriterdialog.tab.caption." + SERVER_PANEL), panel);
+      panels.add(SERVER_PANEL);
+    }
 
     mainPanel.add(tabbedPane, c);
 
     return mainPanel;
+  }
+
+  private void initKey() {
+    try {
+      String myEncryptionKey = "Magellan2!SuperSecretKey";
+      try {
+        myEncryptionKey +=
+            System.getProperty("os.name") + System.getProperty("os.arch") + System.getProperty("os.version");
+      } catch (Throwable t) {
+        // not a big deal
+      }
+      try {
+        myEncryptionKey += GetNetworkAddress.getAddress(GetNetworkAddress.Type.MAC);
+      } catch (Throwable t) {
+        // not a big deal
+      }
+      byte[] keyAsBytes = myEncryptionKey.getBytes("UTF8");
+      DESedeKeySpec myKeySpec = new DESedeKeySpec(keyAsBytes);
+      SecretKeyFactory mySecretKeyFactory = SecretKeyFactory.getInstance(algorithm);
+      cipher = Cipher.getInstance(algorithm);
+      key = mySecretKeyFactory.generateSecret(myKeySpec);
+    } catch (Exception e) {
+      log.error("Could not initialize cipher!", e);
+      cipher = null;
+    }
   }
 
   private Container getOptionPanel(int type) {
@@ -1557,9 +1586,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private void storeSettings() {
     for (int type = 0; type < NUM_PANELS; ++type) {
-      Faction f = getFaction();
-      if (f != null) {
-        storeSettings(localSettings, f, type);
+      if (panels.contains(type)) {
+        Faction f = getFaction();
+        if (f != null) {
+          storeSettings(localSettings, f, type);
+        }
       }
     }
     settings.putAll(localSettings);
@@ -1887,6 +1918,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * Copies the orders to the clipboard using the settings from the properties.
    */
   public boolean runClipboard() {
+    init(CLIPBOARD_PANEL);
     return copyToClipboard();
   }
 
@@ -1922,7 +1954,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     String pattern = (String) cmbOutputFiles.getSelectedItem();
 
     // this global setting is deprecated, using filename as pattern if appropriate now
-    // settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
+    // localSettings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
 
     if (chkAutoFileName.isSelected()) {
       FileNameGeneratorFeed feed = new FileNameGeneratorFeed(super.getData().getDate().getDate());
@@ -1948,6 +1980,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * Sends the orders using the settings from the properties.
    */
   public boolean runPutOnServer() {
+    init(SERVER_PANEL);
     return saveToServer();
   }
 
@@ -2051,6 +2084,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * Mails the orders using the settings from the properties.
    */
   public boolean runMail() {
+    init(EMAIL_PANEL);
     return sendMail();
   }
 
@@ -2296,6 +2330,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * Saves the orders to a file using the settings from the properties.
    */
   public boolean runSave() {
+    init(FILE_PANEL);
     return saveToFile();
   }
 
@@ -2417,7 +2452,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private boolean isGmEnabled() {
-    return PropertiesHelper.getBoolean(settings, "GM.enabled", false);
+    return PropertiesHelper.getBoolean(localSettings, "GM.enabled", false);
   }
 
 }

@@ -297,7 +297,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   public int modifiedPersonCount() {
-    return modifiedUnits().stream().collect(Collectors.summingInt(Unit::getPersons));
+    return modifiedUnits().stream().collect(Collectors.summingInt(Unit::getModifiedPersons));
   }
 
   /**

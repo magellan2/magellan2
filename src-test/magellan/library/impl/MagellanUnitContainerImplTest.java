@@ -25,12 +25,18 @@ package magellan.library.impl;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import magellan.library.EntityID;
 import magellan.library.GameData;
+import magellan.library.Region;
+import magellan.library.TempUnit;
 import magellan.library.UnitID;
+import magellan.library.relation.PersonTransferRelation;
+import magellan.library.relation.RecruitmentRelation;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
@@ -52,9 +58,12 @@ public class MagellanUnitContainerImplTest extends MagellanTestWithResources {
    */
   @Before
   public void setUp() throws Exception {
-    data = new GameDataBuilder().createSimplestGameData();
+    GameDataBuilder builder = new GameDataBuilder();
+    data = builder.createSimplestGameData();
+    Region r = data.getRegions().iterator().next();
     unit1 = new MagellanUnitImpl(UnitID.createUnitID(41, 36), data);
     unit1.setPersons(1);
+    unit1.setRegion(r);
     unit2 = new MagellanUnitImpl(UnitID.createUnitID(42, 36), data);
     unit2.setPersons(2);
     unit3 = new MagellanUnitImpl(UnitID.createUnitID(43, 36), data);
@@ -92,6 +101,34 @@ public class MagellanUnitContainerImplTest extends MagellanTestWithResources {
     building.enter(unit5);
     assertEquals(15, building.modifiedPersonCount());
     assertEquals(10, building.personCount());
+  }
+
+  /**
+   * Test the modifiedUnitsCount() method.
+   */
+  @Test
+  public final void testModifiedUnitCountsGive() {
+    MagellanBuildingImpl building = new MagellanBuildingImpl(EntityID.createEntityID(99, 36), data);
+    unit1.setBuilding(building);
+    assertEquals(1, building.modifiedPersonCount());
+    PersonTransferRelation rel = new PersonTransferRelation(unit1, unit2, 1, unit1.getRace(), -1);
+    rel.add();
+    assertEquals(0, building.modifiedPersonCount());
+    assertEquals(1, building.personCount());
+  }
+
+  /**
+   * Test the modifiedUnitsCount() method.
+   */
+  @Test
+  public final void testModifiedUnitCountsTemp() {
+    MagellanBuildingImpl building = new MagellanBuildingImpl(EntityID.createEntityID(99, 36), data);
+    unit1.setBuilding(building);
+    assertEquals(1, building.modifiedPersonCount());
+    TempUnit temp = unit1.createTemp(data, UnitID.createTempID(data, new Properties(), unit1));
+    new RecruitmentRelation(temp, 1, 80, 1).add();
+    assertEquals(2, building.modifiedPersonCount());
+    assertEquals(1, building.personCount());
   }
 
 }

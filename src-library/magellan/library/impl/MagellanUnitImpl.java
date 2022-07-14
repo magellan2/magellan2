@@ -506,7 +506,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @see magellan.library.Unit#addOrders2(java.util.Collection, boolean)
    */
   public void addOrders2(Collection<Order> newOrders) {
-    final int newPos = getOrdersObject().size();
     getOrdersObject().addAll(newOrders);
     processOrders();
   }

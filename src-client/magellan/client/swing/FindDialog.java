@@ -360,14 +360,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     JButton findButton = new JButton(Resources.get("finddialog.btn.find"));
     findButton.setDefaultCapable(true);
     findButton.addActionListener(findListener);
-    getRootPane().setDefaultButton(findButton);
 
     JButton cancelButton = new JButton(Resources.get("finddialog.btn.close"));
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
 
     JPanel pnlButtons = new JPanel(new GridLayout(2, 1, 3, 3));
     pnlButtons.add(findButton);
@@ -510,6 +504,42 @@ public class FindDialog extends InternationalizedDataDialog implements
     c.weightx = 0.5;
     c.weighty = 0.5;
     main.add(pnlResults, c);
+
+    setDefaultActions(findButton, cancelButton, findButton, cancelButton,
+        txtPattern,
+        txtPattern.getEditor().getEditorComponent(),
+        chkIDs,
+        chkNames,
+        chkDescs,
+        chkGroups,
+        chkCmds,
+        chkMessages,
+        chkItems,
+        chkResources,
+        chkCase,
+        factionCombo,
+        addUnits,
+        addRegions,
+        addBuildings,
+        addShips,
+        addTraitors,
+        addOnlyUnconfirmedUnits,
+        addFactions,
+        resultList,
+        // private JPanel pnlResults,
+
+        rbtWord,
+        rbtRegexp,
+        rbtList
+
+    );
+
+    getRootPane().setDefaultButton(findButton);
+    cancelButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        quit();
+      }
+    });
 
     return main;
   }

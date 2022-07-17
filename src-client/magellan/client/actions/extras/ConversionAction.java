@@ -10,21 +10,20 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.client.actions.extras;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
@@ -155,9 +154,7 @@ public class ConversionAction extends MenuAction {
       id36.addKeyListener(new KeyAdapter() {
         @Override
         public void keyReleased(KeyEvent e) {
-          checkAction(e);
           try {
-
             id10.setText(convert(id36.getText(), 36, 10));
           } catch (Exception exc) {
             // conversion went wrong
@@ -171,7 +168,6 @@ public class ConversionAction extends MenuAction {
         @Override
         public void keyReleased(KeyEvent e) {
           try {
-            checkAction(e);
             id36.setText(convert(id10.getText(), 10, 36));
           } catch (Exception exc) {
             // conversion went wrong
@@ -182,12 +178,6 @@ public class ConversionAction extends MenuAction {
       });
 
       JButton cancelButton = new JButton(Resources.get("actions.conversionaction.cancel.text"));
-      cancelButton.addActionListener(new ActionListener() {
-
-        public void actionPerformed(ActionEvent e) {
-          setVisible(false);
-        }
-      });
 
       JPanel panel = new JPanel();
       panel.setLayout(new SpringLayout());
@@ -202,6 +192,8 @@ public class ConversionAction extends MenuAction {
       getContentPane().add(panel);
 
       SpringUtilities.makeCompactGrid(panel, 3, 2, 7, 7, 7, 7);
+
+      setDefaultActions(cancelButton, cancelButton, cancelButton, id36, id10);
     }
 
     @Override
@@ -212,17 +204,9 @@ public class ConversionAction extends MenuAction {
       super.setVisible(b);
     }
 
-    /**
-     * Quit on ESC
-     * 
-     * @param e
-     */
-    private void checkAction(KeyEvent e) {
-      switch (e.getKeyCode()) {
-      case KeyEvent.VK_ESCAPE:
-        setVisible(false);
-        break;
-      }
+    @Override
+    protected void quit() {
+      setVisible(false);
     }
 
     /**

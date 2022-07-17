@@ -344,15 +344,11 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
       cancel = new JButton(Resources.get("giveorderdialog.btn.cancel.caption"));
       cancel.setMnemonic(Resources.get("giveorderdialog.btn.cancel.mnemonic").charAt(0));
-      cancel.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          quit();
-        }
-      });
       c.gridx = 1;
       c.anchor = GridBagConstraints.WEST;
       cp.add(cancel, c);
 
+      setDefaultActions(ok, cancel, ok, cancel, islandBox);
     }
 
     public Island showDialog() {
@@ -365,7 +361,6 @@ public class UnitContainerContextMenu extends JPopupMenu {
       };
 
       ok.addActionListener(okButtonAction);
-      // order.addActionListener(okButtonAction);
       pack();
       setLocationRelativeTo(getOwner());
       setVisible(true);

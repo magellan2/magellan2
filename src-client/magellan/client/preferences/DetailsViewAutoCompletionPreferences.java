@@ -545,11 +545,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
               .get("completion.autocompletion.DefineCompletionDialog.cancelButton.caption"));
       cancel.setMnemonic(Resources.get(
           "completion.autocompletion.DefineCompletionDialog.cancelButton.mnemonic").charAt(0));
-      cancel.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          DefineCompletionDialog.this.quit();
-        }
-      });
       c.gridy = 1;
       c.anchor = GridBagConstraints.NORTH;
       cp.add(cancel, c);
@@ -561,11 +556,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       components.add(cancel);
 
       setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
-      //
-      // name.setNextFocusableComponent(value);
-      // value.setNextFocusableComponent(ok);
-      // ok.setNextFocusableComponent(cancel);
-      // cancel.setNextFocusableComponent(name);
+      setDefaultActions(ok, cancel, ok, cancel, name, value);
     }
 
     private String[] getNewCompletionNameAndValue() {

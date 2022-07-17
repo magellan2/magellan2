@@ -201,6 +201,8 @@ public class GiveOrderDialog extends InternationalizedDialog {
     c.gridx = 1;
     c.anchor = GridBagConstraints.WEST;
     cp.add(cancel, c);
+
+    setDefaultActions(ok, cancel, ok, cancel, editors, firstButton, lastButton, replaceOrders, keepComments);
   }
 
   protected MultiEditorOrderEditorList getEditorList(EventDispatcher dispatcher, GameData data,

@@ -69,12 +69,6 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     setTitle(Resources.get("setorigindialog.window.title"));
 
     java.awt.GridBagConstraints gridBagConstraints1;
-    addWindowListener(new java.awt.event.WindowAdapter() {
-      @Override
-      public void windowClosing(java.awt.event.WindowEvent evt) {
-        quit();
-      }
-    });
 
     btnOK.setText(Resources.get("setorigindialog.btn.ok.caption"));
     btnOK.addActionListener(new java.awt.event.ActionListener() {
@@ -90,11 +84,6 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     getContentPane().add(btnOK, gridBagConstraints1);
 
     btnCancel.setText(Resources.get("setorigindialog.btn.cancel.caption"));
-    btnCancel.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        btnCancelActionPerformed(evt);
-      }
-    });
 
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridx = 2;
@@ -177,7 +166,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     gridBagConstraints1.weighty = 1.0;
     getContentPane().add(jPanel2, gridBagConstraints1);
 
-    getRootPane().setDefaultButton(btnOK);
+    setDefaultActions(btnOK, btnCancel, btnOK, btnCancel, editX, editY, editLevel);
   }
 
   /**
@@ -237,9 +226,10 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     return result;
   }
 
-  private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {
-    quit();
+  @Override
+  protected void quit() {
     approved = false;
+    super.quit();
   }
 
   private javax.swing.JButton btnOK;

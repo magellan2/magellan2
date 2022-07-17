@@ -44,8 +44,8 @@ import magellan.library.utils.Resources;
 public class AddSignDialog extends InternationalizedDialog {
   private Properties settings = null;
   private EventDispatcher dispatcher = null;
-  private JTextField Line1 = null;
-  private JTextField Line2 = null;
+  private JTextField line1 = null;
+  private JTextField line2 = null;
   private Region region = null;
 
   /**
@@ -74,14 +74,14 @@ public class AddSignDialog extends InternationalizedDialog {
     aPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
     JLabel label1 = new JLabel(Resources.get("addsigndialog.label.line1"));
-    Line1 = new JTextField(30);
+    line1 = new JTextField(30);
     aPanel.add(label1);
-    aPanel.add(Line1);
+    aPanel.add(line1);
 
     JLabel label2 = new JLabel(Resources.get("addsigndialog.label.line2"));
-    Line2 = new JTextField(30);
+    line2 = new JTextField(30);
     aPanel.add(label2);
-    aPanel.add(Line2);
+    aPanel.add(line2);
     // Lay out the panel.
     SpringUtilities.makeCompactGrid(aPanel, 2, 2, // rows, cols
         6, 6, // initX, initY
@@ -95,12 +95,6 @@ public class AddSignDialog extends InternationalizedDialog {
     });
 
     JButton cancelButton = new JButton(Resources.get("addsigndialog.btn.close.caption"));
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
-
     JPanel buttonPanel = new JPanel(new FlowLayout());
 
     buttonPanel.add(okButton);
@@ -109,6 +103,7 @@ public class AddSignDialog extends InternationalizedDialog {
     mainPanel.add(aPanel, BorderLayout.CENTER);
     mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+    setDefaultActions(okButton, cancelButton, line1, line2);
     return mainPanel;
   }
 
@@ -126,8 +121,8 @@ public class AddSignDialog extends InternationalizedDialog {
    * going to make the change
    */
   private void addSign() {
-    String s1 = Line1.getText();
-    String s2 = Line2.getText();
+    String s1 = line1.getText();
+    String s2 = line2.getText();
 
     if (s1 != null && s1.length() > 0) {
       region.addSign(new Sign(s1));

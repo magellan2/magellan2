@@ -98,14 +98,16 @@
           <versionLine x="156" y="153" text="version ${compiler:sys.version}" />
         </text>
       </splashScreen>
-      <java mainClass="magellan.client.Client" vmParameters="-Xmx1200m">
+      <java mainClass="magellan.client.Client">
         <classPath>
           <scanDirectory location="." failOnError="false" />
           <archive location="magellan-client.jar" failOnError="false" />
           <archive location="magellan-library.jar" failOnError="false" />
         </classPath>
       </java>
-      <vmOptionsFile overwriteMode="4" />
+      <vmOptionsFile overwriteMode="1">
+        <content>-include-options ${installer:sys.localAppdataDir}\${compiler:sys.shortName}\my.vmoptions</content>
+      </vmOptionsFile>
       <iconImageFiles>
         <file path="../../etc/images/about/appicon.png" />
         <file path="../../etc/images/about/appicon128.png" />
@@ -327,6 +329,49 @@ return console.askOkCancel(message, true);
                   <property name="launcherId" type="string">27</property>
                   <property name="macRole" type="enum" class="com.install4j.runtime.beans.actions.desktop.MacAssociationRole" value="EDITOR" />
                 </serializedBean>
+              </action>
+              <action id="310" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">"-Xmx" + Math.round(SystemInfo.getPhysicalMemory() * 0.5 / 1024 / 1024) + "m"</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">xmx</property>
+                </serializedBean>
+              </action>
+              <action id="309" beanClass="com.install4j.runtime.beans.actions.misc.AddVmOptionsAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="launcherId" type="string">27</property>
+                  <property name="vmOptions" type="array" elementType="string" length="3">
+                    <element index="0"># Enter one VM parameter per line</element>
+                    <element index="1">${installer:xmx}</element>
+                    <element index="2">-include-options ${installer:sys.localAppdataDir}${installer:sys.fileSeparator}Magellan${installer:sys.fileSeparator}my.vmoptions</element>
+                  </property>
+                </serializedBean>
+              </action>
+              <action id="311" beanClass="com.install4j.runtime.beans.actions.text.WriteTextFileAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="append" type="boolean" value="true" />
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.localAppdataDir}/${compiler:magellan.shortname}/my.vmoptions</string>
+                    </object>
+                  </property>
+                  <property name="text" type="string"># Enter one VM parameter per line
+# For example, to adjust the maximum memory usage to 512 MB, uncomment the following line:
+# -Xmx512m
+# To include another file, uncomment the following line:
+# -include-options [path to other .vmoption file]
+</property>
+                </serializedBean>
+                <condition>var dir=new File((String)context.getVariable("sys.localAppdataDir"),context.getCompilerVariable("magellan.shortname"));
+if (!dir.exists())
+ dir.mkdir();
+ 
+var file=new File(dir, "my.vmoptions");
+return !file.exists();</condition>
               </action>
             </actions>
             <formComponents>

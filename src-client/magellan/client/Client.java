@@ -166,7 +166,6 @@ import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
 import magellan.client.utils.MagellanFinder;
-import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
 import magellan.client.utils.ProfileManager;
 import magellan.client.utils.RendererLoader;
@@ -202,6 +201,7 @@ import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.MemoryManagment;
+import magellan.library.utils.NameFileNameGenerator;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
@@ -1946,7 +1946,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    NameGenerator.quit();
+    NameFileNameGenerator.quit();
 
     if (fileHistory != null) {
       fileHistory.storeFileHistory();

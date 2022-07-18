@@ -17,9 +17,9 @@ import java.util.Properties;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.utils.ImageFactory;
-import magellan.client.utils.NameGenerator;
 import magellan.library.GameData;
 import magellan.library.utils.IDBaseConverter;
+import magellan.library.utils.NameFileNameGenerator;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerHelp;
 
@@ -113,7 +113,7 @@ public class MagellanContext implements MagellanEnvironment {
     // init the idbaseconverter
     IDBaseConverter.init();
 
-    NameGenerator.init(settings);
+    NameFileNameGenerator.init(settings, Client.getSettingsDirectory());
 
     // inits ImageFactory
     imageFactory = new ImageFactory(getEventDispatcher());

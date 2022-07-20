@@ -46,7 +46,8 @@ import javax.swing.event.DocumentListener;
 import magellan.client.Client;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.library.utils.NameFileNameGenerator;
+import magellan.library.utils.AbstractNameGenerator;
+import magellan.library.utils.NameGenerator;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 
@@ -59,14 +60,14 @@ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter i
   protected JTextField fileField;
   protected Properties settings;
   private JLabel namesLeft;
-  private NameFileNameGenerator namegen;
+  private NameGenerator namegen;
 
   /**
    * Creates a new NameGenPrefAdapter object.
    */
-  public ClientNameGeneratorPreferences(Client client, Properties settings) {
+  public ClientNameGeneratorPreferences(Client client, Properties settings, NameGenerator gen) {
     this.settings = settings;
-    namegen = NameFileNameGenerator.getInstance();
+    namegen = gen;
     initGUI();
   }
 
@@ -117,7 +118,10 @@ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter i
     namesLeft = new JLabel(Resources.get("util.namegenerator.prefs.namesleft", namegen.getNamesCount()));
     parent.add(namesLeft, c);
 
-    namesLeft.setToolTipText(Resources.get("util.namegenerator.prefs.cache", namegen.getCache()));
+    if (namegen instanceof AbstractNameGenerator) {
+      namesLeft.setToolTipText(Resources.get("util.namegenerator.prefs.cache", ((AbstractNameGenerator) namegen)
+          .getCache()));
+    }
 
     fileField.getDocument().addDocumentListener(new DocumentListener() {
       @Override

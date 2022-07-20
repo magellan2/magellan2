@@ -51,7 +51,6 @@ import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.Group;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.utils.NameFileNameGenerator;
 import magellan.library.utils.NameGenerator;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -84,12 +83,13 @@ public class TempUnitDialog extends InternationalizedDialog {
   protected JCheckBox giveMaintainCost;
   protected GridBagConstraints con;
   protected GridBagLayout layout;
-  protected Component posC;
   protected boolean approved = false;
   protected Properties settings;
   protected JButton nameGen;
   protected Container nameCon;
   private TempUnitDialogListener listener;
+
+  private NameGenerator nameGenn;
 
   /** settings key for detailed dialog property */
   public static final String SETTINGS_KEY = "TempUnitDialog.ExtendedDialog";
@@ -101,8 +101,6 @@ public class TempUnitDialog extends InternationalizedDialog {
   public TempUnitDialog(Frame owner, Component parent, Properties settings) {
     super(owner, true);
     this.settings = settings;
-
-    posC = parent;
 
     initGUI();
 
@@ -407,15 +405,23 @@ public class TempUnitDialog extends InternationalizedDialog {
   }
 
   protected void checkNameGen() {
-    NameGenerator gen = NameFileNameGenerator.getInstance();
+    NameGenerator gen = getNameGenerator();
 
-    if (gen.isActive()) {
+    if (gen != null && gen.isActive()) {
       nameCon.add(nameGen, BorderLayout.EAST);
     } else {
       nameCon.remove(nameGen);
     }
 
-    nameGen.setEnabled(gen.isAvailable());
+    nameGen.setEnabled(gen != null && gen.isAvailable());
+  }
+
+  public NameGenerator getNameGenerator() {
+    return nameGenn;
+  }
+
+  public void setNameGenerator(NameGenerator g) {
+    nameGenn = g;
   }
 
   /**
@@ -582,7 +588,7 @@ public class TempUnitDialog extends InternationalizedDialog {
 
         return;
       } else if (p1.getSource() == nameGen) {
-        NameGenerator gen = NameFileNameGenerator.getInstance();
+        NameGenerator gen = getNameGenerator();
         name.setText(gen.getName());
         if (!gen.isAvailable()) {
           JOptionPane.showMessageDialog(new JFrame(), Resources.get("util.namegenerator.nomorenames"));

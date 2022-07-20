@@ -207,7 +207,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
   protected MultiEditorOrderEditorList getEditorList(EventDispatcher dispatcher, GameData data,
       Properties settings) {
-    return new MultiEditorOrderEditorList(getDummyDispatcher(), data, getDummySettings(), null) {
+    return new MultiEditorOrderEditorList(getDummyDispatcher(), data, getDummySettings(), null, null) {
       @Override
       public javax.swing.border.Border getBorder(Unit u, boolean active) {
         TitledBorder border = new TitledBorder(new LineBorder(Color.DARK_GRAY, 2), getCaption());

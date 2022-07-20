@@ -54,4 +54,16 @@ public interface NameGenerator {
    */
   int getNamesCount();
 
+  /**
+   * Initialize this generator from a file.
+   * 
+   * @param filename
+   */
+  void load(String filename);
+
+  /**
+   * Save state.
+   */
+  void quit();
+
 }

@@ -359,7 +359,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
 
   public static void main(String[] args) {
     int MAX = 5;
-    List<String> names = readNames("etc/names/human.txt");
+    List<String> names = readNames("etc/names/insect.txt");
     Collections.shuffle(names);
     System.out.println("Sample size " + names.size());
     log("Original", IntStream.iterate(0, (i) -> i <= MAX, (i) -> i + 1)
@@ -390,6 +390,57 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
       log("" + names.size(), IntStream.iterate(0, (i) -> i <= MAX, (i) -> i + 1)
           .mapToObj((i) -> String.format("%d unique", set[i].size())).toArray());
     }
+
+    Markov<Character> mx = MarkovGenerator.create(names.toArray(new String[0]), 2);
+    create(mx, names, 1000);
+    // createInsect();
+  }
+
+  private static void create(Markov<Character> mx, List<String> names, int amount) {
+    for (int x = 0; x < amount; ++x) {
+      String n = listToString(mx.generate());
+      if (!names.contains(n)) {
+        System.out.println(n);
+      } else {
+        // System.out.println("!!!" + n);
+      }
+    }
+  }
+
+  private static void createInsect() {
+    char[] alphabet = new char[] { 'a', 'c', 'e', 'f', 'h', 'i', 'j', 'k', 'n', 'p', 'q', 's', 't', 'x', 'z' };
+
+    Markov<Character> insect = new Markov<>(new SimpleFactory(1));
+    Scanner sc = new Scanner(System.in);
+    for (Character c1 : alphabet) {
+      State<Character> state = insect.createState();
+      System.out.print("frequency for start with " + c1 + ": ");
+      int occ = sc.nextInt();
+      System.out.print("frequency for end with " + c1 + ": ");
+      int end = sc.nextInt();
+      for (int i = 0; i < occ; ++i) {
+        insect.increase(state, c1);
+      }
+      state.update(c1);
+      for (Character c2 : alphabet) {
+        System.out.print("frequency for " + c1 + c2 + ": ");
+        occ = sc.nextInt();
+        state = insect.createState();
+        for (int l = 1; l < 12; ++l) {
+          for (int i = 0; i < occ; ++i) {
+            insect.increase(state, c2);
+          }
+          if (l > 5) {
+            for (int i = 0; i < end - Math.abs(8 - l); ++i) {
+              insect.increase(state, new SimpleFactory(1).terminator());
+            }
+          }
+          state.update(c1);
+        }
+      }
+    }
+    sc.close();
+    create(insect, Collections.emptyList(), 1000);
   }
 
   private static void log(String name1, Object[] output) {

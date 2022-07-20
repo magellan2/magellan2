@@ -24,6 +24,7 @@
 package magellan.library.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -34,13 +35,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class MarkovNameGenerator implements NameGenerator {
+public class MarkovNameGenerator extends AbstractNameGenerator implements NameGenerator {
+
   /**
    * Thrown on integer overflow.
    */
@@ -425,29 +429,9 @@ public class MarkovNameGenerator implements NameGenerator {
     return names;
   }
 
-  public boolean isActive() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
-  }
-
-  public boolean isAvailable() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
-  }
-
-  public void setEnabled(boolean available) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-
-  }
-
-  public String getName() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return null;
-  }
-
-  public int getNamesCount() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return 0;
+  public MarkovNameGenerator(Properties settings, File settingsDir) {
+    super(settings, settingsDir);
+    // TODO Auto-generated constructor stub
   }
 
 }

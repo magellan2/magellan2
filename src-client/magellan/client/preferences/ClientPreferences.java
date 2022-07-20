@@ -113,7 +113,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     subAdapters.add(new ClientFilePreferences(source, settings));
 
     // add the name generator only as sub adapter
-    subAdapters.add(new ClientNameGeneratorPreferences(source, settings));
+    subAdapters.add(new ClientNameGeneratorPreferences(source, settings, source.getNameGenerator()));
 
     // add the TextEncodingPreferences only as sub adapter
     subAdapters.add(new ClientTextEncodingPreferences(settings));

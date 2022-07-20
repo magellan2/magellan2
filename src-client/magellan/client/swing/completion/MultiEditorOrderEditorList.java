@@ -20,7 +20,6 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -81,6 +80,7 @@ import magellan.client.event.TempUnitEvent;
 import magellan.client.event.TempUnitListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewOrderEditorPreferences;
+import magellan.client.swing.DialogProvider;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.TempUnitDialog;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -169,11 +169,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   private boolean guiInitialized = false;
 
+  public DialogProvider dialogProvider;
+
   /**
    * Creates a new MultiEditorOrderEditorList object.
    */
   public MultiEditorOrderEditorList(EventDispatcher dispatcher, GameData data, Properties settings,
-      UndoManager undoMgr) {
+      UndoManager undoMgr, DialogProvider dp) {
     super(dispatcher, data, settings);
 
     // beware: an OrderParser is likely not thread-safe. so we better call it only from the
@@ -182,6 +184,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     loadListProperty();
 
+    dialogProvider = dp;
     dispatcher.addTempUnitListener(this);
 
     keyAdapter = new MEKeyAdapter(this);
@@ -1938,7 +1941,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     private void createTempImpl(Unit parentUnit, Region parentRegion) {
       UnitID id = UnitID.createTempID(getGameData(), settings, parentUnit);
 
-      if (!settings
+      if (dialogProvider == null || !settings
           .getProperty("MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog", "true")
           .equalsIgnoreCase("true")) {
         // don't show any dialogs, simply create the tempunit and finish.
@@ -1953,7 +1956,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         // do all the tempunit-dialog-stuff
 
         if (dialog == null) {
-          dialog = new TempUnitDialog((Frame) getTopLevelAncestor(), this, settings);
+          dialog = dialogProvider.create();
         }
 
         // ask the user for a valid id repeatedly

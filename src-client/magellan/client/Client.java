@@ -143,6 +143,7 @@ import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
 import magellan.client.preferences.Install4J;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
+import magellan.client.swing.DialogProvider;
 import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InfoDialog;
 import magellan.client.swing.InternationalizedDataPanel;
@@ -152,6 +153,7 @@ import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.StartWindow;
+import magellan.client.swing.TempUnitDialog;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
@@ -202,6 +204,7 @@ import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NameFileNameGenerator;
+import magellan.library.utils.NameGenerator;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
@@ -577,6 +580,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private TitleLine title;
 
+  private NameGenerator generator;
+
   /**
    * Load the file fileName in the given directory into the settings object.
    */
@@ -888,7 +893,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     topLevel.add(messagePanel);
 
     // configure and add details panel
-    detailsPanel = new EMapDetailsPanel(getDispatcher(), getData(), getProperties(), undoMgr);
+    detailsPanel = new EMapDetailsPanel(getDispatcher(), getData(), getProperties(), undoMgr, new DialogProvider() {
+
+      public TempUnitDialog create() {
+        TempUnitDialog d = new TempUnitDialog(Client.this, Client.this, getProperties());
+        d.setNameGenerator(getNameGenerator());
+        return d;
+      }
+    });
     detailsPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(detailsPanel);
     nodeWrapperFactories.add(detailsPanel.getNodeWrapperFactory());
@@ -1946,7 +1958,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    NameFileNameGenerator.quit();
+    if (getNameGenerator() != null) {
+      getNameGenerator().quit();
+    }
 
     if (fileHistory != null) {
       fileHistory.storeFileHistory();
@@ -2834,6 +2848,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     return Client.settingsDirectory;
   }
 
+  public NameGenerator getNameGenerator() {
+    if (generator == null) {
+      generator = new NameFileNameGenerator(getProperties(), getSettingsDirectory());
+    }
+    return generator;
+  }
+
   /**
    * Returns the value of logFile.
    *
@@ -3273,4 +3294,5 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       taskPanel.addInspectorInterceptor(interceptor);
     }
   }
+
 }

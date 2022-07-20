@@ -23,90 +23,224 @@
 //
 package magellan.library.utils;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MarkovNameGenerator implements NameGenerator {
-  public static class Markov {
-    private static final int LEN = 2;
-    private static final int MAX_PARTS = 2;
+  /**
+   * Thrown on integer overflow.
+   */
+  public static class OverflowException extends RuntimeException {
+    /**
+     * Constructs an exception.
+     */
+    public OverflowException() {
+      super("integer overflow");
+    }
+  }
 
-    private Map<Integer, Integer> parts;
-    private int partSum;
-    Map<Integer, Integer>[] lengths;
-    private int[] lengthSum;
-    Map<Character, Integer>[] starters;
-    private int[] startSum;
-    Map<String, Map<Character, Integer>>[] frequencies;
-    Map<String, Integer> sums[];
+  /**
+   * Records the current situation while scanning a word.
+   */
+  public static interface State<K> {
+
+    /**
+     * Change the state after c is read
+     */
+    void update(K c);
+
+    /**
+     * Creates an immutable copy of this state. If update is called on an immutable state, an
+     * {@link IllegalStateException} is thrown.
+     */
+    State<K> getImmutable();
+
+    // don't forget to overwrite these!
+    @Override
+    int hashCode();
+
+    // don't forget to overwrite these!
+    @Override
+    boolean equals(Object obj);
+
+  }
+
+  /**
+   * Creates a state
+   */
+  public static interface StateFactory<K> {
+    /**
+     * Creates a state
+     */
+    State<K> initial();
+
+    /**
+     * Returns the terminal outcome.
+     */
+    K terminator();
+  }
+
+  /**
+   * A state based on the last x characters and the position in the word.
+   */
+  public static class CharacterState implements State<Character>, Cloneable {
+
+    private Character[] c;
+    private boolean immutable;
+    private int length;
+    private int hashCode;
+
+    /**
+     * Creates a state that looks back length characters.
+     */
+    public CharacterState(int length) {
+      c = new Character[length];
+      hashCode = 0;
+    }
+
+    public void update(Character newC) {
+      if (immutable)
+        throw new IllegalStateException("cannot change immutable");
+      if (length < c.length) {
+        c[length] = newC;
+      } else {
+        for (int i = 1; i < c.length; ++i) {
+          c[i - 1] = c[i];
+        }
+        if (c.length > 0) {
+          c[c.length - 1] = newC;
+        }
+      }
+      length++;
+      hashCode = Arrays.hashCode(c) + 31 * length;
+    }
+
+    public State<Character> getImmutable() {
+      try {
+        CharacterState s = (CharacterState) clone();
+        s.c = Arrays.copyOf(c, c.length);
+        s.immutable = true;
+        return s;
+      } catch (CloneNotSupportedException e) {
+        throw new IllegalStateException("this cannot happen");
+      }
+    }
+
+    @Override
+    public int hashCode() {
+      return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof CharacterState) {
+        CharacterState s2 = (CharacterState) obj;
+        return Arrays.equals(c, s2.c) && length == s2.length;
+      }
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return "S(" + Arrays.toString(c) + "," + length + ")";
+    }
+
+  }
+
+  /**
+   * Creates a {@link CharacterState}.
+   */
+  public static class SimpleFactory implements StateFactory<Character> {
+
+    private int length;
+
+    /**
+     * Creates a factory that supplies states with lookback length.
+     */
+    public SimpleFactory(int length) {
+      if (length < 0)
+        throw new IllegalArgumentException("length must be non-negative");
+      this.length = length;
+    }
+
+    public State<Character> initial() {
+      return new CharacterState(length);
+    }
+
+    public Character terminator() {
+      return Character.MAX_VALUE;
+    }
+
+  }
+
+  /**
+   * A class that represents a markov chain.
+   */
+  public static class Markov<K> {
+    Map<State<K>, Map<K, Integer>> model;
+    Map<State<K>, Long> weights;
 
     Random rng = new Random();
 
     private int warn;
     private String lastWarn;
 
-    @SuppressWarnings("unchecked")
-    protected Markov() {
-      parts = new HashMap<>();
-      lengths = new HashMap[MAX_PARTS + 1];
-      lengthSum = new int[MAX_PARTS + 1];
-      starters = new HashMap[MAX_PARTS + 1];
-      startSum = new int[MAX_PARTS + 1];
-      frequencies = new HashMap[MAX_PARTS + 1];
-      sums = new HashMap[MAX_PARTS + 1];
-      for (int p = 0; p < MAX_PARTS + 1; ++p) {
-        lengths[p] = new HashMap<>();
-        starters[p] = new HashMap<>();
-        frequencies[p] = new HashMap<>();
-        sums[p] = new HashMap<>();
-      }
+    private boolean normalized;
+    private StateFactory<K> factory;
+
+    /**
+     * Creates a new, empty model using the states from the factory.
+     */
+    public Markov(StateFactory<K> factory) {
+      model = new HashMap<>();
+      weights = new HashMap<>();
+      normalized = false;
+      this.factory = factory;
     }
 
-    private static Markov create(String[] words) {
-      Markov m = new Markov();
-      for (String w : words) {
-        m.add(w);
-      }
-      m.normalize();
-      return m;
+    protected State<K> createState() {
+      return factory.initial();
     }
 
-    private void add(String word) {
-      String[] wx = word.trim().split("[-\\s]+");
-      increase(parts, wx.length);
-      for (int p = 0; p < wx.length; ++p) {
-        int pnum = Math.min(p, MAX_PARTS - 1);
-        String w = wx[p];
-        increase(lengths[pnum], w.length());
-        String pre = "" + w.charAt(0);
-        increase(starters[pnum], w.charAt(0));
-        Map<String, Map<Character, Integer>> frecs = frequencies[pnum];
-        if (frecs == null) {
-          frecs = new HashMap<String, Map<Character, Integer>>();
-        }
-        for (int i = 1; i < w.length(); ++i) {
-          char c = w.charAt(i);
-          increase(frecs, pre, c);
-          pre = pre + c;
-          if (pre.length() > LEN) {
-            pre = pre.substring(1);
-          }
-        }
-        frequencies[pnum] = frecs;
+    /**
+     * Adds a 'word' by applying the outcomes one by one, starting from the initial state.
+     */
+    public void add(K[] w) {
+      State<K> state = createState();
+      for (K c : w) {
+        increase(state, c);
+        state.update(c);
       }
+      increase(state, factory.terminator());
     }
 
-    private <K, L> void increase(Map<K, Map<L, Integer>> map, K k1, L k2) {
-      Map<L, Integer> map2 = map.get(k1);
+    /**
+     * Modifies the model assuming that the outcome (the character) c is read at the given state.
+     */
+    public void increase(State<K> state, K c) {
+      Map<K, Integer> map2 = model.get(state);
       if (map2 == null) {
-        map2 = new HashMap<L, Integer>();
+        map2 = new HashMap<K, Integer>();
       }
-      increase(map2, k2);
-      map.put(k1, map2);
+      increase(map2, c);
+      model.put(state.getImmutable(), map2);
     }
 
-    private <K> void increase(Map<K, Integer> map, K key) {
+    private void increase(Map<K, Integer> map, K key) {
       Integer v = map.get(key);
       if (v == null) {
         v = 0;
@@ -114,57 +248,71 @@ public class MarkovNameGenerator implements NameGenerator {
       map.put(key, v + 1);
     }
 
-    private void normalize() {
-      for (int pnum = 0; pnum < MAX_PARTS + 1; ++pnum) {
-        lengthSum[pnum] = count(lengths[pnum]);
-        partSum = count(parts);
-        startSum[pnum] = count(starters[pnum]);
-        sums[pnum] = new HashMap<>();
-        Map<String, Map<Character, Integer>> frecs = frequencies[pnum];
-        for (String c : frecs.keySet()) {
-          Map<Character, Integer> map2 = frecs.get(c);
-          sums[pnum].put(c, count(map2));
-        }
+    protected void normalize() {
+      weights.clear();
+      for (State<K> s : model.keySet()) {
+        Map<K, Integer> map2 = model.get(s);
+        weights.put(s, count(map2));
       }
+      normalized = true;
     }
 
-    private <K> Integer count(Map<K, Integer> map2) {
-      int sum = 0;
+    private Long count(Map<K, Integer> map2) {
+      long sum = 0;
       for (K c2 : map2.keySet()) {
-        sum += map2.get(c2);
+        Integer v = map2.get(c2);
+        if (Long.MAX_VALUE - v < v)
+          throw new OverflowException();
+        sum += v;
       }
       return sum;
     }
 
-    public String generate() {
-      int px = select(parts, partSum);
-      String name = null;
-      for (int p = 0; p < px; ++p) {
-        int pnum = Math.min(p, MAX_PARTS - 1);
-        int length = select(lengths[pnum], lengthSum[pnum]);
-        StringBuilder word = new StringBuilder(length);
-        Map<String, Map<Character, Integer>> frecs = frequencies[pnum];
-        word.append(select(starters[pnum], startSum[pnum]));
-        while (word.length() < length) {
-          String pre = word.substring(word.length() - Math.min(word.length(), LEN), word.length());
-          Character nextC = select(frecs.get(pre), sums[pnum].get(pre));
-          if (nextC == null) {
-            ++warn;
-            lastWarn = word.toString();
-            break;
-          }
-          word.append(nextC);
-        }
-        name = name == null ? word.toString() : name + " " + word.toString();
+    /**
+     * Generates a new 'word' by starting from the initial state and progressing until a terminator is reached.
+     * 
+     * @throws IllegalStateException if the factory does not support a terminal state.
+     */
+    public List<K> generate() {
+      if (factory.terminator() == null)
+        throw new IllegalStateException("no terminal state defined");
+      if (!normalized) {
+        normalize();
       }
-      return name;
+
+      State<K> state = createState();
+      List<K> word = new ArrayList<>();
+      while (true) {
+        K nextC = step(state);
+        if (nextC == null) {
+          ++warn;
+          lastWarn = word.toString();
+          break;
+        }
+        if (nextC.equals(factory.terminator())) {
+          break;
+        }
+        state.update(nextC);
+        word.add(nextC);
+      }
+      return word;
     }
 
-    private <K> K select(Map<K, Integer> map, Integer sum) {
+    /**
+     * Make a step from the given state.
+     * 
+     * @return the outcome of the step
+     */
+    public K step(State<K> state) {
+      Map<K, Integer> map2 = model.get(state);
+      return select(map2, weights.get(state));
+    }
+
+    private K select(Map<K, Integer> map, Long sum) {
       if (map == null)
         return null;
-      int r = rng.nextInt(sum);
-      int s = 0;
+      long r = nextLong(sum);
+      long s = 0;
       K last = null;
       for (K k : map.keySet()) {
         last = k;
@@ -174,369 +322,107 @@ public class MarkovNameGenerator implements NameGenerator {
       }
       return last;
     }
+
+    private long nextLong(Long bound) {
+      if (bound <= 0)
+        throw new IllegalArgumentException("bound most be positive");
+      return ThreadLocalRandom.current().nextLong(bound);
+    }
+
+  }
+
+  public static class MarkovGenerator {
+
+    /**
+     * Creates a model from a list of words with given lookback length.
+     * 
+     */
+    public static Markov<Character> create(String[] words, int length) {
+      Markov<Character> m = new Markov<Character>(new SimpleFactory(length));
+      for (String w : words) {
+        m.add(w.chars().mapToObj(c -> Character.valueOf((char) c)).toArray(i -> new Character[i]));
+      }
+      return m;
+    }
+
+  }
+
+  private static String listToString(List<Character> l) {
+    return l.stream()
+        .map(String::valueOf)
+        .collect(Collectors.joining());
   }
 
   public static void main(String[] args) {
-    String[] words = new String[] { // "Hans", "Paul", "Peter", "Hermann" };
-        "Joanna Seidel",
-        "Almuth Hanisch",
-        "Yvonne Esser",
-        "Karina Grabowski",
-        "Luise Borchert",
-        "Thekla Kastner",
-        "Anke Maas",
-        "Nadja Wilke",
-        "Henriette Häusler",
-        "Eugenie Dreher",
-        "Heinz-Jürgen Höfer",
-        "Almut Eckardt",
-        "Georgios Holst",
-        "Hans-Christian Schröder",
-        "Reinhard Oswald",
-        "Waltraut Reinhard",
-        "Hans-Georg Kraus",
-        "Kai Jacobi",
-        "Ali Römer",
-        "Enno Jost",
-        "Margarethe Peters",
-        "Pamela Habermann",
-        "Willibald Voß",
-        "Marlies Kern",
-        "Natascha Albers",
-        "Friederike Paulsen",
-        "Karl Schürmann",
-        "Isabel Metzner",
-        "Ingolf Janssen",
-        "Denis Faust",
-        "Kornelia Gabriel",
-        "Wilma Endres",
-        "Corina Weiser",
-        "Sylvia Brück",
-        "Ursel Mende",
-        "Dominik Noll",
-        "Frieda Mai",
-        "Sabina Brandl",
-        "Fritz Hübner",
-        "Sven Eggers",
-        "Birgit Enders",
-        "Wally Hausmann",
-        "Norbert Schütte",
-        "Christiane Winter",
-        "Nathalie Otten",
-        "Vitali Martin",
-        "Markus Hartung",
-        "Kay Busse",
-        "Jean Baumgart",
-        "Andreas Fritsche",
-        "Henny Schroeder",
-        "Ernestine Gebhardt",
-        "Natalia Wendel",
-        "Maximilian Ehrlich",
-        "Fred Straub",
-        "Edmund Pietsch",
-        "Helmuth Tietz",
-        "Markus Wulff",
-        "Valeri Geisler",
-        "Marietta Heider",
-        "Hans-Walter Kranz",
-        "Eleonore Mahler",
-        "Mandy Ernst",
-        "Otto Böhm",
-        "Albrecht Kilian",
-        "Bertram Stoll",
-        "Bruno Kugler",
-        "Gertraude Bühler",
-        "Inna Grünewald",
-        "Helgard Morgenstern",
-        "Gertraud Kohler",
-        "Bert Reis",
-        "Brunhild Wilke",
-        "Klaus-Peter Vogler",
-        "Gerti Dörr",
-        "Peggy Budde",
-        "Bernd Höhne",
-        "Michele Stein",
-        "Irmhild Brinkmann",
-        "Benedikt Schuster",
-        "Gertrude Göbel",
-        "Christof Paul",
-        "Jörg Thomas",
-        "Ulla Seiler",
-        "Franziska Sander",
-        "Gerta Kleinert",
-        "Ronny Raabe",
-        "Rosalinde Stahl",
-        "Jeanette Adam",
-        "Marita Helm",
-        "Eckard Janßen",
-        "Hedwig Ulbrich",
-        "Hans-Werner Buchner",
-        "Margareta Böhme",
-        "Carolin Büchner",
-        "August Kopp",
-        "Carmen Funk",
-        "Myriam Hohmann",
-        "Susanne Volkmann",
-        "Gesa Scherer",
-        "Ekkehard Ebner",
-        "Roswita Dreier",
-        "Hanne Bolz",
-        "Denis Kühl",
-        "Egbert Ortmann",
-        "Leopold Schönfeld",
-        "Lisbeth Wichmann",
-        "Simon Winkelmann",
-        "Theresa Rahn",
-        "Dorothee Schröer",
-        "Anika Fink",
-        "Dimitrios Hartl",
-        "Sandro Strobel",
-        "Doreen Lampe",
-        "Sigrid Grimm",
-        "Klaudia Ahlers",
-        "Eleonore Grote",
-        "Georg Barth",
-        "Hüseyin Falk",
-        "Heinz-Peter Wilke",
-        "Salvatore Heise",
-        "John Mohr",
-        "Ricarda Otten",
-        "Lore Funk",
-        "Erich Schwab",
-        "Waltraud Springer",
-        "Philipp Klug",
-        "Lieselotte Fuhrmann",
-        "Hanno Kremer",
-        "Rafael Volz",
-        "Saskia Siegel",
-        "Doris Schlüter",
-        "Katja Schweitzer",
-        "Hatice Gerlach",
-        "Volker Reitz",
-        "Julia Römer",
-        "Christiana Petersen",
-        "Ulli Maaß",
-        "Marita Reichel",
-        "Gertrude Baier",
-        "Annerose Eggert",
-        "Henning Siebert",
-        "Barbara Reinhardt",
-        "Sonja Grunwald",
-        "Stefanie Mann",
-        "Wanda Wegner",
-        "Arnold Augustin",
-        "Gottfried Gruber",
-        "Irma Janssen",
-        "Marie Kunze",
-        "Carina Herrmann",
-        "Jessica Gerlach",
-        "Hilda Seidler",
-        "Klaudia Riedel",
-        "Isabel Schilling",
-        "Annett Harder",
-        "Alexandra Geisler",
-        "Henrik Uhlig",
-        "Gerold Forster",
-        "Edgar Lerch",
-        "Patricia Schüller",
-        "Heino Dietze",
-        "Marcel Zink",
-        "Reinhardt Otto",
-        "Pamela Kleinert",
-        "Jonas Wiesner",
-        "Sophia Fiebig",
-        "Friederike Albert",
-        "Monika Wilkens",
-        "Guido Stahl",
-        "Magdalena Eder",
-        "Sven Haag",
-        "Eduard Fröhlich",
-        "Reinhard Rupp",
-        "Konstanze Gabriel",
-        "Heinz-Peter Hildebrandt",
-        "Anja Hopf",
-        "Wally Burger",
-        "Manja Jonas",
-        "Ortwin Oppermann",
-        "Antonius Seibel",
-        "Christiane Kuhn",
-        "Elisabeth Dittmann",
-        "Marlies Ebel",
-        "Meike Sperling",
-        "Leonid Scheel",
-        "Eveline Schramm",
-        "Hinrich Grau",
-        "Jana Eckardt",
-        "Marie Teichmann",
-        "Mareike Schöne",
-        "Conny Heinen",
-        "Erhard Mielke",
-        "Jenny Simon",
-        "Beatrice Balzer",
-        "Pauline Hager",
-        "Volkmar Hinrichs",
-        "Larissa Hinze",
-        "Leo Ehlert",
-        "Alina Schmidt",
-        "Axel Widmann",
-        "Dennis Wolff",
-        "Günter Burger",
-        "Sophia Otto",
-        "Alexander Eberle",
-        "Nina Cremer",
-        "Insa Schneider",
-        "Roberto Klemm",
-        "Swetlana Bruhn",
-        "Walter Armbruster",
-        "Henning Scherer",
-        "Klaus-Jürgen Buck",
-        "Engelbert Weigel",
-        "Christof Späth",
-        "Ernst Oswald",
-        "Margit Schwarze",
-        "Imke Harms",
-        "Emine Seibert",
-        "Myriam Berger",
-        "Murat Vetter",
-        "Waldemar Huth",
-        "Alois Zeidler",
-        "Detlef Seidel",
-        "Zita Endres",
-        "Felicitas Winkler",
-        "Franziska Ortmann",
-        "Renate Herzog",
-        "Hans-Günter Reinke",
-        "Gabriele Petri",
-        "Eleonore Bühler",
-        "Almuth Behr",
-        "Saskia Ebner",
-        "Alwin Dreyer",
-        "Andy Becher",
-        "Ines Fröhlich",
-        "Edith May",
-        "Karen Orth",
-        "Helga Menzel",
-        "Thilo Daniel",
-        "Isa Sperling",
-        "Edward Graf",
-        "Edwin Stoll",
-        "Ivonne Kohler",
-        "Kai-Uwe Kempf",
-        "Siegbert Heckmann",
-        "Ottmar Opitz",
-        "Christine Wille",
-        "Rosa Jacobi",
-        "Irina Schilling",
-        "Jeannette Kühnel",
-        "Jürgen Mai",
-        "Martina Klug",
-        "Rico Götze",
-        "Johann Ostermann",
-        "Hans-Walter Rudolph",
-        "Christian Walther",
-        "Dieter Busse",
-        "Marius Bader",
-        "Friedhelm Reitz",
-        "Ria Beier",
-        "Friederike Kunert",
-        "Georgios Kirchhoff",
-        "Wilma Balzer",
-        "Inge Herold",
-        "Heike Menzel",
-        "Sascha Jacobs",
-        "Hanno Ewald",
-        "Heiner Schöne",
-        "Leopold Schwarze",
-        "Cornelia Heckmann",
-        "Gerald Rudolf",
-        "Rosi Kübler",
-        "Marija Oswald",
-        "Berthold Peter",
-        "Andrew Schütz",
-        "Wally Rademacher",
-        "Antje Wessels",
-        "Rene Köhn",
-        "Heinz Sieber",
-        "Karoline Grau",
-        "Lina Steinbach",
-        "Jolanta Petermann",
-        "Heinz-Werner Schirmer",
-        "Franz Just",
-        "Heidemarie Schindler",
-        "Brunhilde Rau",
-        "Giesela Weise",
-        "Volkmar Heim",
-        "Marie Schwab",
-        "Elfriede Hildebrand",
-        "Carla Dittmann",
-        "Hans-Peter Scholz",
-        "Monica Gross",
-        "Horst-Dieter Hoffmann",
-        "Klaus-Jürgen Steinert",
-        "Rüdiger Dreyer",
-        "Mohammad Stern",
-        "Simona Jansen",
-        "Marliese Berthold",
-        "Falk Rehm",
-        "Lukas Eberle",
-        "Gregor Fleischmann",
-        "Heidi Grün",
-        "Kathrin Bachmann",
-        "Stephanie Grundmann",
-        "Mike Noack",
-        "Michael Hopp",
-        "Gabriele Bühler",
-        "Christl Hornung",
-        "Konrad Reichelt",
-        "Moritz Schulze",
-        "Anke Westermann",
-        "Axel Diehl",
-        "Grete Zeidler",
-        "Claus-Peter Franke",
-        "Bianka Hamann",
-        "Yusuf Leonhardt",
-        "Evi Heitmann",
-        "Ernst Breuer",
-        "Marija Hempel",
-        "Irmhild Dörr",
-        "Heiner Lehnert",
-        "Georg Fritsch",
-        "Conny Thiele",
-        "Hedi Weller",
-        "Eike Rühl",
-        "Pia Wegner",
-        "Marianne Spindler",
-        "Roswitha Metzner",
-        "Jörg Will",
-        "Karl-Friedrich Weiss",
-        "Jens-Peter Knauer",
-        "Rudi Thiemann",
-        "Frauke Engels",
-        "Kathleen Widmann",
-        "Heinz-Werner Herrmann",
-        "Oswald Walter",
-        "Maritta Peter",
-        "Guenter Bode",
-        "Harri Lück",
-        "Liane Frisch",
-        "Eberhard Ostermann",
-        "Winfried Fischer",
-        "Adam Heller",
-        "Tina Kolb",
-        "Carola Stein",
-        "Yilmaz Krug",
-        "Marga Jacobs",
-        "Annett Hübner",
-        "Eveline Dietz",
+    int MAX = 5;
+    List<String> names = readNames("etc/names/human.txt");
+    Collections.shuffle(names);
+    System.out.println("Sample size " + names.size());
+    log("Original", IntStream.iterate(0, (i) -> i <= MAX, (i) -> i + 1)
+        .mapToObj((i) -> String.format("Generated (%d)", i)).toArray());
+    @SuppressWarnings("unchecked")
+    Markov<Character>[] markov = IntStream.iterate(0, (i) -> i <= MAX, (i) -> i + 1)
+        .mapToObj((i) -> MarkovGenerator.create(names.toArray(new String[0]), i))
+        .toArray(Markov[]::new);
 
-    };
-    Markov markov = Markov.create(words);
-    for (int i = 0; i < 100; ++i) {
-      System.out.println(markov.generate());
+    @SuppressWarnings("unchecked")
+    Set<String>[] set = new HashSet[MAX + 1];
+    for (int i = 0; i < 20 && i < names.size(); ++i) {
+      log(names.get(i), Arrays.stream(markov)
+          .map(Markov<Character>::generate)
+          .map(MarkovNameGenerator::listToString)
+          .toArray((n) -> new String[n]));
     }
-    if (markov.warn > 0) {
-      System.out.println(markov.warn + " incomplete: " + markov.lastWarn);
+    for (int x = 0; x <= MAX; ++x) {
+      if (markov[x].warn > 0) {
+        System.out.println(markov[x].warn + " incomplete: " + markov[x].lastWarn);
+      }
+      set[x] = new HashSet<>();
+      for (int i = 0; i < 100000; ++i) {
+        set[x].add(listToString(markov[x].generate()));
+      }
     }
+    {
+      log("" + names.size(), IntStream.iterate(0, (i) -> i <= MAX, (i) -> i + 1)
+          .mapToObj((i) -> String.format("%d unique", set[i].size())).toArray());
+    }
+  }
+
+  private static void log(String name1, Object[] output) {
+    String format = "%-30s";
+    System.out.println(String.format(format, name1) +
+        Arrays.stream(output)
+            .map((s) -> String.format(format, s))
+            .collect(Collectors.joining("\t")));
+  }
+
+  private static List<String> readNames(String filename) {
+    List<String> names = new ArrayList<>();
+    try {
+      BufferedReader in = new BufferedReader(new FileReader(filename, Charset.forName("UTF8")));
+      String name = null;
+
+      while ((name = in.readLine()) != null) {
+        name = name.trim();
+        if (name.startsWith("#")) {
+          // lines starting with # are comments,
+          // unless they start with two ##, in which case the first # is deleted
+          if (name.startsWith("##")) {
+            name = name.substring(1);
+          } else {
+            name = "";
+          }
+        }
+        if (!name.isEmpty()) {
+          names.add(name.trim());
+        }
+      }
+
+      in.close();
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+    return names;
   }
 
   public boolean isActive() {

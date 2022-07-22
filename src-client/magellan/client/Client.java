@@ -202,8 +202,8 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
+import magellan.library.utils.MarkovNameGenerator;
 import magellan.library.utils.MemoryManagment;
-import magellan.library.utils.NameFileNameGenerator;
 import magellan.library.utils.NameGenerator;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
@@ -2850,7 +2850,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   public NameGenerator getNameGenerator() {
     if (generator == null) {
-      generator = new NameFileNameGenerator(getProperties(), getSettingsDirectory());
+      generator = new MarkovNameGenerator(getProperties(), getSettingsDirectory());
     }
     return generator;
   }

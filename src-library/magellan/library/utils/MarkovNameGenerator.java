@@ -351,7 +351,10 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
 
   }
 
-  private static String listToString(List<Character> l) {
+  public static final int LOWER_LIMIT = 1000;
+  public static final String ORIGINAL = "original";
+
+  public static String listToString(List<Character> l) {
     return l.stream()
         .map(String::valueOf)
         .collect(Collectors.joining());
@@ -459,16 +462,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
 
       while ((name = in.readLine()) != null) {
         name = name.trim();
-        if (name.startsWith("#")) {
-          // lines starting with # are comments,
-          // unless they start with two ##, in which case the first # is deleted
-          if (name.startsWith("##")) {
-            name = name.substring(1);
-          } else {
-            name = "";
-          }
-        }
-        if (!name.isEmpty()) {
+        if (!name.startsWith("#") && !name.isEmpty()) {
           names.add(name.trim());
         }
       }
@@ -480,9 +474,81 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
     return names;
   }
 
+  private int original;
+  private int maxSize;
+
   public MarkovNameGenerator(Properties settings, File settingsDir) {
     super(settings, settingsDir);
-    // TODO Auto-generated constructor stub
   }
 
+  @Override
+  public void load(String fileName) {
+    clearVariables();
+    super.load(fileName);
+    original = 0;
+    if (names != null) {
+      original = names.length;
+    }
+    maxSize = -1;
+    update();
+    if (getVariable(ORIGINAL) == null) {
+      setInteger(ORIGINAL, original);
+    } else {
+      original = getInteger(ORIGINAL);
+    }
+  }
+
+  /**
+   * @see magellan.library.utils.NameGenerator#getName()
+   */
+  @Override
+  public String getName() {
+    String name = super.getName();
+    update();
+    return name;
+  }
+
+  protected void update() {
+    if (getNamesCount() >= LOWER_LIMIT)
+      return;
+    if (names == null)
+      return;
+    if (maxSize >= 0 && maxSize <= names.length)
+      return;
+
+    // try creating LOWER_LIMIT / 10 new names with highest possible quality (= length)
+    int needed = Math.max(LOWER_LIMIT / 10, LOWER_LIMIT - getNamesCount());
+    Set<String> all = new HashSet<>(names.length + needed);
+    all.addAll(Arrays.asList(names));
+    Set<String> added = new HashSet<>(needed);
+    int length = 5;
+    for (; length > 0; --length) {
+      Markov<Character> markov = MarkovGenerator.create(names, length);
+      added.clear();
+      for (int i = 0; i < LOWER_LIMIT && added.size() < needed; ++i) {
+        String name = listToString(markov.generate());
+        if (!all.contains(name)) {
+          added.add(name);
+        }
+      }
+      if (added.size() >= needed) {
+        break;
+      }
+    }
+
+    // add to name list
+    if (added.size() > 0) {
+      int start = names.length;
+      names = Arrays.copyOf(names, names.length + Math.min(added.size(), needed));
+      for (String name : added) {
+        names[start++] = name;
+        if (start >= names.length) {
+          break;
+        }
+      }
+      if (added.size() < needed) {
+        maxSize = names.length;
+      }
+    }
+  }
 }

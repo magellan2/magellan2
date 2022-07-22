@@ -38,11 +38,10 @@ import java.util.Properties;
 import magellan.library.utils.logging.Logger;
 
 public abstract class AbstractNameGenerator implements NameGenerator {
-  protected static final String USED = "USED";
-
-  protected static final String NAMEGEN = "NameGenerator.";
-
   protected static Logger log = Logger.getInstance(AbstractNameGenerator.class);
+
+  protected static final String USED = "used";
+  protected static final String NAMEGEN = "NameGenerator.";
 
   protected boolean available = false;
   protected String[] names;
@@ -145,19 +144,23 @@ public abstract class AbstractNameGenerator implements NameGenerator {
   }
 
   protected void readComment(String line) {
-    readVar(line);
+    readVariable(line);
   }
 
-  protected void readVar(String line) {
+  protected void readVariable(String line) {
     line = line.substring(1);
     int split = line.indexOf("=");
     if (split >= 1) {
       String name = line.substring(0, split).trim();
       String value = line.substring(split + 1).trim();
-      if (name.startsWith(NAMEGEN)) {
+      if (name.startsWith(NAMEGEN) && !value.isEmpty()) {
         vars.put(name.substring(NAMEGEN.length()), value);
       }
     }
+  }
+
+  protected void writeVariable(PrintWriter out, String name, String string) {
+    out.println("# " + NAMEGEN + name + "=" + vars.get(name));
   }
 
   protected void initVars() {
@@ -165,11 +168,23 @@ public abstract class AbstractNameGenerator implements NameGenerator {
     vars.put(USED, "0");
   }
 
-  private void setInteger(String name, int val) {
+  protected void clearVariables() {
+    vars.clear();
+  }
+
+  protected void setVariable(String name, String val) {
+    vars.put(name, val);
+  }
+
+  protected String getVariable(String name) {
+    return vars.get(name);
+  }
+
+  protected void setInteger(String name, int val) {
     vars.put(name, String.valueOf(val));
   }
 
-  private int getInteger(String name) {
+  protected int getInteger(String name) {
     return Integer.parseInt(vars.get(name));
   }
 
@@ -184,7 +199,7 @@ public abstract class AbstractNameGenerator implements NameGenerator {
         if (names != null) {
           PrintWriter out = new PrintWriter(new FileWriter(file));
           for (String name : vars.keySet()) {
-            out.println("# " + NAMEGEN + name + "=" + vars.get(name));
+            writeVariable(out, name, vars.get(name));
           }
           for (String name : names) {
             out.println(name);

@@ -45,6 +45,98 @@ import java.util.stream.IntStream;
 
 public class MarkovNameGenerator extends AbstractNameGenerator implements NameGenerator {
 
+  private static enum ProfileCreate {
+    C_START, C_CREATE, C_LOOP, C_INCREASE, C_UPDATE, C_TERMINATE, C_MGET, C_NEWMAP, C_PUT, C_CLONE;
+  }
+
+  private static enum ProfileGenerate {
+    INIT, INIT2, CREATE, CLEAR, LOOP2, GENERATE, ADD, CONTAIN, COPY, LOG,
+    NORMALIZE, CREATE2, LOOP3, STEP, UPDATE2, APPEND, ENDG,
+    GET3, SELECT3, GET3l,
+    LOOP4, GENERATE4, ADD4, CONTAIN4;
+  }
+
+  public static class Profiler {
+
+    private static final String formatMax = "**%10s %10.6f / %10d";
+    private static final String formatMany = "*%11s %10.6f / %10d";
+    private static final String formatNormal = "%12s %10.6f / %10d";
+    private long startGlobal = System.nanoTime();
+    private long startSplit = System.nanoTime();
+    private long startFine = System.nanoTime();
+    private long[] logs;
+    private long[] counts;
+    private Enum<?>[] tags;
+
+    public void split() {
+      startSplit = System.nanoTime();
+      startFine = startSplit;
+    }
+
+    public void print(String string) {
+      System.err.println(string);
+    }
+    // long t2 = System.nanoTime();
+    // System.err.print(String.format(" %s %10.6f:%10.6f:%10.6f ", string,
+    // (double) (t2 - startFine) / 1000000,
+    // (double) (t2 - startSplit) / 1000000,
+    // (double) (t2 - startGlobal) / 1000000));
+    // startFine = t2;
+    // }
+
+    public void log(Enum<?> tag) {
+      if (logs == null)
+        return;
+      long t2 = System.nanoTime();
+      logs[tag.ordinal()] += t2 - startFine;
+      ++counts[tag.ordinal()];
+      startFine = t2;
+    }
+
+    public void register(Enum<?>... tags) {
+      this.tags = tags;
+      logs = new long[tags.length];
+      counts = new long[tags.length];
+    }
+
+    public void printTags() {
+      if (logs == null)
+        return;
+      long max = 0;
+      for (long tt : logs)
+        if (max < tt) {
+          max = tt;
+        }
+      long total = 0;
+      for (Enum<?> tag : tags) {
+        long tt = logs[tag.ordinal()];
+        total += tt;
+        String f;
+        if (tt >= max) {
+          f = formatMax;
+        } else if (tt * 10 >= max) {
+          f = formatMany;
+        } else {
+          f = formatNormal;
+        }
+        System.err.println(String.format(f, tag.name(), (double) tt / 1000000, counts[tag.ordinal()]));
+      }
+      System.err.println(String.format(formatNormal, "TOTAL", (double) total / 1000000, 1));
+      System.err.println();
+    }
+
+  }
+
+  static Profiler profilerCreate = new Profiler();
+  static Profiler profilerGenerate = new Profiler();
+
+  protected static void resetProfilers() {
+    profilerCreate.register(ProfileCreate.values());
+    profilerGenerate.register(ProfileGenerate.values());
+    profilerCreate.split();
+    profilerGenerate.split();
+  }
+
   /**
    * Thrown on integer overflow.
    */
@@ -524,13 +616,19 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
      * Adds a 'word' by applying the outcomes one by one, starting from the initial state.
      */
     public void add(String w) {
+      profilerCreate.log(ProfileCreate.C_START);
       State<Character> state = createState();
+      profilerCreate.log(ProfileCreate.C_CREATE);
       for (int i = 0, n = w.length(); i < n; i++) {
         char c = w.charAt(i);
+        profilerCreate.log(ProfileCreate.C_LOOP);
         increase(state, c);
+        profilerCreate.log(ProfileCreate.C_INCREASE);
         state.update(c);
+        profilerCreate.log(ProfileCreate.C_UPDATE);
       }
       increase(state, factory.terminator());
+      profilerCreate.log(ProfileCreate.C_TERMINATE);
     }
 
     /**
@@ -538,14 +636,20 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
      */
     public void increase(State<Character> state, char c) {
       CMap map2 = model.get(state);
+      profilerCreate.log(ProfileCreate.C_MGET);
       if (map2 == null) {
         map2 = new CMap();
         map2.setMinMax((char) 32, (char) 256);
+        profilerCreate.log(ProfileCreate.C_NEWMAP);
       }
       map2.increase(c);
+      profilerCreate.log(ProfileCreate.C_INCREASE);
 
       State<Character> clone = state.getImmutable();
+      profilerCreate.log(ProfileCreate.C_CLONE);
       model.put(clone, map2);
+      profilerCreate.log(ProfileCreate.C_PUT);
+
     }
 
     protected void normalize() {
@@ -567,12 +671,16 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
         throw new IllegalStateException("no terminal state defined");
       if (!normalized) {
         normalize();
+        profilerGenerate.log(ProfileGenerate.NORMALIZE);
       }
 
       State<Character> state = createState();
+      profilerGenerate.log(ProfileGenerate.CREATE2);
       StringBuilder word = new StringBuilder();
       while (true) {
+        profilerGenerate.log(ProfileGenerate.LOOP3);
         Character nextC = step(state);
+        profilerGenerate.log(ProfileGenerate.STEP);
         if (nextC == null) {
           ++warn;
           lastWarn = word.toString();
@@ -582,8 +690,11 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
           break;
         }
         state.update(nextC);
+        profilerGenerate.log(ProfileGenerate.UPDATE2);
         word.append(nextC);
+        profilerGenerate.log(ProfileGenerate.APPEND);
       }
+      profilerGenerate.log(ProfileGenerate.ENDG);
 
       return word.toString();
     }
@@ -595,8 +706,11 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
      */
     public Character step(State<Character> state) {
       CMap map2 = model.get(state);
+      profilerGenerate.log(ProfileGenerate.GET3);
       Long w = weights.get(state);
+      profilerGenerate.log(ProfileGenerate.GET3l);
       Character c = select(map2, w);
+      profilerGenerate.log(ProfileGenerate.SELECT3);
       return c;
     }
 
@@ -625,7 +739,9 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
      */
     public static CMarkov create(String[] words, int length) {
       CMarkov m = new CMarkov(new SimpleFactory(length));
+      profilerCreate.register(ProfileCreate.values());
 
+      profilerCreate.split();
       for (String w : words) {
         // Character[] xx = w.chars().mapToObj(c -> Character.valueOf((char) c)).toArray(i -> new Character[i]);
         // System.err.print(System.nanoTime() - t + " ");
@@ -633,6 +749,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
         // profilerCreate.print();
       }
       System.err.println();
+      profilerCreate.printTags();
       return m;
     }
 
@@ -823,6 +940,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
 
     // try creating LOWER_LIMIT / 10 new names with highest possible quality (= length)
     int needed = Math.max(lowerLimit / 10, lowerLimit - getNamesCount());
+    profilerGenerate.log(ProfileGenerate.INIT);
     Set<String> all = new HashSet<>(names.length + needed);
     all.addAll(Arrays.asList(names));
     Set<String> added = new HashSet<>(needed);
@@ -830,24 +948,36 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
     if (markov == null) {
       int length = 5;
       for (; length > 0; --length) {
+        profilerGenerate.log(ProfileGenerate.INIT2);
         markov = MarkovGenerator.create(names, length);
+        profilerGenerate.log(ProfileGenerate.CREATE);
         added.clear();
+        profilerGenerate.log(ProfileGenerate.CLEAR);
         for (int i = 0; i < lowerLimit && added.size() < needed; ++i) {
+          profilerGenerate.log(ProfileGenerate.LOOP2);
           String name = markov.generate();
+          profilerGenerate.log(ProfileGenerate.GENERATE);
           if (!all.contains(name)) {
             added.add(name);
+            profilerGenerate.log(ProfileGenerate.ADD);
           }
+          profilerGenerate.log(ProfileGenerate.CONTAIN);
         }
+        // profilerGenerate.print("generated\n" + length);
         if (added.size() >= needed) {
           break;
         }
       }
     } else {
       for (int i = 0; i < lowerLimit && added.size() < needed; ++i) {
+        profilerGenerate.log(ProfileGenerate.LOOP4);
         String name = markov.generate();
+        profilerGenerate.log(ProfileGenerate.GENERATE4);
         if (!all.contains(name)) {
           added.add(name);
+          profilerGenerate.log(ProfileGenerate.ADD4);
         }
+        profilerGenerate.log(ProfileGenerate.CONTAIN4);
       }
 
     }
@@ -867,5 +997,9 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
       maxSize = names.length;
     }
 
+    profilerGenerate.log(ProfileGenerate.COPY);
+    profilerGenerate.printTags();
+    profilerGenerate.log(ProfileGenerate.LOG);
+    profilerGenerate.print("\n");
   }
 }

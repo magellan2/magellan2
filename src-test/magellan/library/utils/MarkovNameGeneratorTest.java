@@ -52,6 +52,7 @@ import org.junit.Test;
 
 import magellan.library.utils.MarkovNameGenerator.CMarkov;
 import magellan.library.utils.MarkovNameGenerator.MarkovGenerator;
+import magellan.library.utils.MarkovNameGenerator.Profiler;
 
 public class MarkovNameGeneratorTest {
 
@@ -162,6 +163,49 @@ public class MarkovNameGeneratorTest {
     String word = namegen.getName();
     assertNotNull(word);
     assertFalse(Arrays.asList(w).contains(word));
+  }
+
+  private long startTime;
+
+  private void resetTime() {
+    startTime = System.currentTimeMillis();
+  }
+
+  private void printTime() {
+    System.err.println("Time " + (System.currentTimeMillis() - startTime));
+  }
+
+  private static enum PTags {
+    INIT, CREATE, NEW, GENERATE, NULL, GEN1
+  }
+
+  @Test
+  public void testProfile() throws IOException {
+    final int LOWER_LIMIT = 1000;
+    long x = System.currentTimeMillis();
+    Profiler p = new MarkovNameGenerator.Profiler();
+    p.register(PTags.values());
+    String[] w = getWords(LOWER_LIMIT, 6);
+    writeWords(w, new File("test/names.txt"));
+    p.log(PTags.INIT);
+    for (int i = 0; i < 10; ++i) {
+      CMarkov markov = MarkovGenerator.create(w, 1);
+    }
+    p.log(PTags.CREATE);
+    MarkovNameGenerator namegen = new MarkovNameGenerator(new Properties(), new File("test"));
+    p.log(PTags.NEW);
+    MarkovNameGenerator.resetProfilers();
+    for (int i = 0; i < 10000; ++i) {
+      String s = namegen.getName();
+      if (s == null) {
+        p.log(PTags.NULL);
+      } else {
+        p.log(PTags.GEN1);
+      }
+    }
+    p.log(PTags.GENERATE);
+    p.printTags();
+    System.err.println(String.format("total %10.6f", (double) (System.currentTimeMillis() - x)));
   }
 
   @Test

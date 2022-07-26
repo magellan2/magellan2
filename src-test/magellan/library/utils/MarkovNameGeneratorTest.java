@@ -50,13 +50,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import magellan.library.utils.MarkovNameGenerator.Markov;
+import magellan.library.utils.MarkovNameGenerator.CMarkov;
 import magellan.library.utils.MarkovNameGenerator.MarkovGenerator;
 
 public class MarkovNameGeneratorTest {
 
   private Random rng;
-  private long startTime;
   private String[] incomplete = new String[] { "a", "aa", "ba", "aaa" };
   private String[] completed = new String[] { "a", "aa", "ba", "aaa", "baa" };
 
@@ -74,9 +73,9 @@ public class MarkovNameGeneratorTest {
   @Test
   public void testGenerate() {
     String[] words = getWords(10, 3);
-    Markov<Character> markov = MarkovGenerator.create(words, 1);
-    List<Character> word = markov.generate();
-    assertTrue(word + " length < 3", word.size() >= 3);
+    CMarkov markov = MarkovGenerator.create(words, 1);
+    String word = markov.generate();
+    assertTrue(word + " length < 3", word.length() >= 3);
   }
 
   @Test
@@ -139,26 +138,23 @@ public class MarkovNameGeneratorTest {
 
   @Test
   public void testManyNames() throws IOException {
-    String[] w = getWords(MarkovNameGenerator.LOWER_LIMIT, 6);
+    final int LOWER_LIMIT = 1000;
+    String[] w = getWords(LOWER_LIMIT, 6);
     writeWords(w, new File("test/names.txt"));
 
-    resetTime();
     MarkovNameGenerator namegen = new MarkovNameGenerator(new Properties(), new File("test"));
-    printTime();
-    assertEquals(MarkovNameGenerator.LOWER_LIMIT, namegen.getNamesCount());
-    printTime();
+    assertEquals(LOWER_LIMIT, namegen.getLowerLimit());
+    assertEquals(namegen.getLowerLimit(), namegen.getNamesCount());
 
     for (String element : w) {
       assertEquals(element, namegen.getName());
-      printTime();
     }
-    printTime();
 
-    w = getWords(MarkovNameGenerator.LOWER_LIMIT / 2, 7);
+    w = getWords(LOWER_LIMIT / 2, 7);
     writeWords(w, new File("test/names.txt"));
 
     namegen.load("test/names.txt");
-    assertEquals(MarkovNameGenerator.LOWER_LIMIT, namegen.getNamesCount());
+    assertEquals(namegen.getLowerLimit(), namegen.getNamesCount());
 
     for (String element : w) {
       assertEquals(element, namegen.getName());
@@ -168,12 +164,14 @@ public class MarkovNameGeneratorTest {
     assertFalse(Arrays.asList(w).contains(word));
   }
 
-  private void resetTime() {
-    startTime = System.currentTimeMillis();
-  }
-
-  private void printTime() {
-    System.err.println("Time " + (System.currentTimeMillis() - startTime));
+  @Test
+  public void testTable() {
+    for (char i = 0; i < 255; ++i) {
+      System.out.print(String.format("%3d %s  ", (int) i, String.valueOf(i)));
+      if (i % 16 == 0) {
+        System.out.println();
+      }
+    }
   }
 
   private void writeWords(String[] w, File file) throws IOException {

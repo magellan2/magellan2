@@ -52,7 +52,6 @@ public abstract class AbstractNameGenerator implements NameGenerator {
   private Map<String, String> vars;
 
   public AbstractNameGenerator(Properties settings, File settingsDir) {
-    super();
     this.settings = settings;
     this.settingsDir = settingsDir;
     available = PropertiesHelper.getBoolean(settings, "NameGenerator.active", true);

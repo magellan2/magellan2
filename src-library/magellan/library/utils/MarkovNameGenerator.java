@@ -99,26 +99,73 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
   }
 
   /**
+   * Immutable version if CharacterState.
+   */
+  public static class ICState implements State<Character> {
+
+    protected int hashCode;
+    protected int length;
+    protected Object[] c;
+
+    public ICState(CharacterState cs) {
+      c = Arrays.copyOf(cs.c, cs.c.length);
+      hashCode = cs.hashCode;
+      length = cs.length;
+    }
+
+    protected ICState() {
+      //
+    }
+
+    public void update(Character c) {
+      throw new UnsupportedOperationException("immutable class");
+    }
+
+    public State<Character> getImmutable() {
+      return this;
+    }
+
+    @Override
+    public int hashCode() {
+      return hashCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (obj instanceof ICState) {
+        ICState s2 = (ICState) obj;
+        return Arrays.equals(c, s2.c) && length == s2.length;
+      }
+      return false;
+    }
+
+    @Override
+    public String toString() {
+      return "S(" + Arrays.toString(c) + "," + length + ")";
+    }
+
+  }
+
+  /**
    * A state based on the last x characters and the position in the word.
    */
-  public static class CharacterState implements State<Character>, Cloneable {
+  public static class CharacterState extends ICState implements State<Character>, Cloneable {
 
-    private Character[] c;
-    private boolean immutable;
-    private int length;
-    private int hashCode;
+    // private Character[] c;
+    // private int length;
+    // private int hashCode;
 
     /**
      * Creates a state that looks back length characters.
      */
     public CharacterState(int length) {
+      super();
       c = new Character[length];
       hashCode = 0;
     }
 
+    @Override
     public void update(Character newC) {
-      if (immutable)
-        throw new IllegalStateException("cannot change immutable");
       if (length < c.length) {
         c[length] = newC;
       } else {
@@ -130,37 +177,20 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
         }
       }
       length++;
-      hashCode = Arrays.hashCode(c) + 31 * length;
+      hashCode = Arrays.hashCode(c) + 1023 * length;
     }
 
+    @Override
     public State<Character> getImmutable() {
-      try {
-        CharacterState s = (CharacterState) clone();
-        s.c = Arrays.copyOf(c, c.length);
-        s.immutable = true;
-        return s;
-      } catch (CloneNotSupportedException e) {
-        throw new IllegalStateException("this cannot happen");
-      }
-    }
-
-    @Override
-    public int hashCode() {
-      return hashCode;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      if (obj instanceof CharacterState) {
-        CharacterState s2 = (CharacterState) obj;
-        return Arrays.equals(c, s2.c) && length == s2.length;
-      }
-      return false;
-    }
-
-    @Override
-    public String toString() {
-      return "S(" + Arrays.toString(c) + "," + length + ")";
+      return new ICState(this);
+      // try {
+      // CharacterState s = (CharacterState) clone();
+      // s.c = Arrays.copyOf(c, c.length);
+      // s.immutable = true;
+      // return s;
+      // } catch (CloneNotSupportedException e) {
+      // throw new IllegalStateException("this cannot happen");
+      // }
     }
 
   }
@@ -335,23 +365,279 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
 
   }
 
+  public static class CMap {
+    private static final char DMAX = 1256;
+    private static final char DMIN = 1256;
+    private char MIN = DMIN;
+    private char MAX = DMAX;
+    int[] primitives = new int[MAX - MIN];
+    int imax;
+    Map<Character, Integer> complexs;
+    long sum;
+    long[] cache;
+    private Character lastP;
+
+    public void setMinMax(char min, char max) {
+      if (min < 0 || min >= Character.MAX_VALUE - 1 || max < 1 || max >= Character.MAX_VALUE || max <= min)
+        throw new IllegalArgumentException("min/max out of range");
+      MIN = min;
+      MAX = max;
+      primitives = new int[MAX - MIN];
+    }
+
+    public void increase(char c) {
+      if (c >= MIN && c < MAX) {
+        ++primitives[c - MIN];
+        cache = null;
+      } else if (c == Character.MAX_VALUE) {
+        ++imax;
+      } else {
+        if (complexs == null) {
+          complexs = new HashMap<>();
+        }
+        Integer v = complexs.get(c);
+        if (v == null) {
+          v = 0;
+        }
+        complexs.put(c, v + 1);
+      }
+      ++sum;
+    }
+
+    public long count() {
+      return sum;
+    }
+
+    public long get(char c) {
+      if (c >= MIN && c < MAX)
+        return primitives[c - MIN];
+      if (c == Character.MAX_VALUE)
+        return imax;
+      if (complexs != null)
+        return complexs.get(c);
+      return 0;
+    }
+
+    public Character select0(long r) {
+      long s = imax;
+      Character last = Character.MAX_VALUE;
+      if (r < s)
+        return Character.MAX_VALUE;
+      for (char i = MIN; i < MAX; ++i) {
+        if (primitives[i - MIN] > 0) {
+          last = i;
+        }
+        s += primitives[i - MIN];
+        if (r < s)
+          return Character.valueOf(i);
+      }
+      if (complexs != null) {
+        for (Character c : complexs.keySet()) {
+          last = c;
+          s += complexs.get(c);
+          if (r < s)
+            return c;
+        }
+      }
+      return last;
+    }
+
+    public Character select(long r) {
+      long s = imax;
+      Character last = Character.MAX_VALUE;
+      if (r < s)
+        return Character.MAX_VALUE;
+      if (cache == null) {
+        cache = new long[primitives.length];
+        lastP = null;
+        for (char i = MIN; i < MAX; ++i) {
+          s += primitives[i - MIN];
+          if (primitives[i - MIN] > 0) {
+            lastP = i;
+          }
+          cache[i - MIN] = s;
+        }
+      } else {
+        s = imax;
+      }
+      {
+        int i = Arrays.binarySearch(cache, r);
+        if (i < 0) {
+          // i is -(insertion point) - 1
+          i = -(i + 1);
+        } else {
+          // i is position of r
+          i = i + 1;
+          while (i < cache.length && primitives[i] == 0) {
+            ++i;
+          }
+        }
+        if (i < primitives.length)
+          return Character.valueOf((char) (MIN + i));
+      }
+      if (lastP != null) {
+        last = lastP;
+      }
+
+      if (complexs != null) {
+        for (Character c : complexs.keySet()) {
+          last = c;
+          s += complexs.get(c);
+          if (r < s)
+            return c;
+        }
+      }
+      return last;
+    }
+  }
+
+  /**
+   * A class that represents a markov chain.
+   */
+  public static class CMarkov {
+    Map<State<Character>, CMap> model;
+    Map<State<Character>, Long> weights;
+
+    Random rng = new Random();
+
+    private int warn;
+    private String lastWarn;
+
+    private boolean normalized;
+    private StateFactory<Character> factory;
+
+    /**
+     * Creates a new, empty model using the states from the factory.
+     */
+    public CMarkov(StateFactory<Character> factory) {
+      model = new HashMap<>();
+      weights = new HashMap<>();
+      normalized = false;
+      this.factory = factory;
+    }
+
+    protected State<Character> createState() {
+      return factory.initial();
+    }
+
+    /**
+     * Adds a 'word' by applying the outcomes one by one, starting from the initial state.
+     */
+    public void add(String w) {
+      State<Character> state = createState();
+      for (int i = 0, n = w.length(); i < n; i++) {
+        char c = w.charAt(i);
+        increase(state, c);
+        state.update(c);
+      }
+      increase(state, factory.terminator());
+    }
+
+    /**
+     * Modifies the model assuming that the outcome (the character) c is read at the given state.
+     */
+    public void increase(State<Character> state, char c) {
+      CMap map2 = model.get(state);
+      if (map2 == null) {
+        map2 = new CMap();
+        map2.setMinMax((char) 32, (char) 256);
+      }
+      map2.increase(c);
+
+      State<Character> clone = state.getImmutable();
+      model.put(clone, map2);
+    }
+
+    protected void normalize() {
+      weights.clear();
+      for (State<Character> s : model.keySet()) {
+        CMap map2 = model.get(s);
+        weights.put(s, map2.count());
+      }
+      normalized = true;
+    }
+
+    /**
+     * Generates a new 'word' by starting from the initial state and progressing until a terminator is reached.
+     * 
+     * @throws IllegalStateException if the factory does not support a terminal state.
+     */
+    public String generate() {
+      if (factory.terminator() == null)
+        throw new IllegalStateException("no terminal state defined");
+      if (!normalized) {
+        normalize();
+      }
+
+      State<Character> state = createState();
+      StringBuilder word = new StringBuilder();
+      while (true) {
+        Character nextC = step(state);
+        if (nextC == null) {
+          ++warn;
+          lastWarn = word.toString();
+          break;
+        }
+        if (nextC.equals(factory.terminator())) {
+          break;
+        }
+        state.update(nextC);
+        word.append(nextC);
+      }
+
+      return word.toString();
+    }
+
+    /**
+     * Make a step from the given state.
+     * 
+     * @return the outcome of the step
+     */
+    public Character step(State<Character> state) {
+      CMap map2 = model.get(state);
+      Long w = weights.get(state);
+      Character c = select(map2, w);
+      return c;
+    }
+
+    private Character select(CMap map, Long sum) {
+      if (map == null)
+        return null;
+      long r = nextLong(sum);
+      Character s = map.select0(r);
+      // Character s = map.select(r);
+      return s;
+    }
+
+    private long nextLong(Long bound) {
+      if (bound <= 0)
+        throw new IllegalArgumentException("bound most be positive");
+      return ThreadLocalRandom.current().nextLong(bound);
+    }
+
+  }
+
   public static class MarkovGenerator {
 
     /**
      * Creates a model from a list of words with given lookback length.
      * 
      */
-    public static Markov<Character> create(String[] words, int length) {
-      Markov<Character> m = new Markov<Character>(new SimpleFactory(length));
+    public static CMarkov create(String[] words, int length) {
+      CMarkov m = new CMarkov(new SimpleFactory(length));
+
       for (String w : words) {
-        m.add(w.chars().mapToObj(c -> Character.valueOf((char) c)).toArray(i -> new Character[i]));
+        // Character[] xx = w.chars().mapToObj(c -> Character.valueOf((char) c)).toArray(i -> new Character[i]);
+        // System.err.print(System.nanoTime() - t + " ");
+        m.add(w);
+        // profilerCreate.print();
       }
+      System.err.println();
       return m;
     }
 
   }
 
-  public static final int LOWER_LIMIT = 1000;
   public static final String ORIGINAL = "original";
 
   public static String listToString(List<Character> l) {
@@ -394,14 +680,14 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
           .mapToObj((i) -> String.format("%d unique", set[i].size())).toArray());
     }
 
-    Markov<Character> mx = MarkovGenerator.create(names.toArray(new String[0]), 2);
+    CMarkov mx = MarkovGenerator.create(names.toArray(new String[0]), 2);
     create(mx, names, 1000);
     // createInsect();
   }
 
-  private static void create(Markov<Character> mx, List<String> names, int amount) {
+  private static void create(CMarkov mx, List<String> names, int amount) {
     for (int x = 0; x < amount; ++x) {
-      String n = listToString(mx.generate());
+      String n = mx.generate();
       if (!names.contains(n)) {
         System.out.println(n);
       } else {
@@ -413,7 +699,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
   private static void createInsect() {
     char[] alphabet = new char[] { 'a', 'c', 'e', 'f', 'h', 'i', 'j', 'k', 'n', 'p', 'q', 's', 't', 'x', 'z' };
 
-    Markov<Character> insect = new Markov<>(new SimpleFactory(1));
+    CMarkov insect = new CMarkov(new SimpleFactory(1));
     Scanner sc = new Scanner(System.in);
     for (Character c1 : alphabet) {
       State<Character> state = insect.createState();
@@ -474,11 +760,25 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
     return names;
   }
 
+  public int lowerLimit = 1000;
+
+  public int getLowerLimit() {
+    return lowerLimit;
+  }
+
+  public void setLowerLimit(int lowerLimit) {
+    if (lowerLimit <= 0)
+      throw new IllegalArgumentException("limit must be > 0");
+    this.lowerLimit = lowerLimit;
+  }
+
   private int original;
   private int maxSize;
+  private CMarkov markov;
 
   public MarkovNameGenerator(Properties settings, File settingsDir) {
     super(settings, settingsDir);
+    updateIfInitialized();
   }
 
   @Override
@@ -490,7 +790,10 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
       original = names.length;
     }
     maxSize = -1;
-    update();
+    markov = null;
+
+    updateIfInitialized();
+
     if (getVariable(ORIGINAL) == null) {
       setInteger(ORIGINAL, original);
     } else {
@@ -504,12 +807,14 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
   @Override
   public String getName() {
     String name = super.getName();
-    update();
+    updateIfInitialized();
     return name;
   }
 
-  protected void update() {
-    if (getNamesCount() >= LOWER_LIMIT)
+  protected void updateIfInitialized() {
+    if (lowerLimit == 0)
+      return;
+    if (getNamesCount() >= lowerLimit)
       return;
     if (names == null)
       return;
@@ -517,23 +822,34 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
       return;
 
     // try creating LOWER_LIMIT / 10 new names with highest possible quality (= length)
-    int needed = Math.max(LOWER_LIMIT / 10, LOWER_LIMIT - getNamesCount());
+    int needed = Math.max(lowerLimit / 10, lowerLimit - getNamesCount());
     Set<String> all = new HashSet<>(names.length + needed);
     all.addAll(Arrays.asList(names));
     Set<String> added = new HashSet<>(needed);
-    int length = 5;
-    for (; length > 0; --length) {
-      Markov<Character> markov = MarkovGenerator.create(names, length);
-      added.clear();
-      for (int i = 0; i < LOWER_LIMIT && added.size() < needed; ++i) {
-        String name = listToString(markov.generate());
+
+    if (markov == null) {
+      int length = 5;
+      for (; length > 0; --length) {
+        markov = MarkovGenerator.create(names, length);
+        added.clear();
+        for (int i = 0; i < lowerLimit && added.size() < needed; ++i) {
+          String name = markov.generate();
+          if (!all.contains(name)) {
+            added.add(name);
+          }
+        }
+        if (added.size() >= needed) {
+          break;
+        }
+      }
+    } else {
+      for (int i = 0; i < lowerLimit && added.size() < needed; ++i) {
+        String name = markov.generate();
         if (!all.contains(name)) {
           added.add(name);
         }
       }
-      if (added.size() >= needed) {
-        break;
-      }
+
     }
 
     // add to name list
@@ -546,9 +862,10 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
           break;
         }
       }
-      if (added.size() < needed) {
-        maxSize = names.length;
-      }
     }
+    if (added.size() < needed) {
+      maxSize = names.length;
+    }
+
   }
 }

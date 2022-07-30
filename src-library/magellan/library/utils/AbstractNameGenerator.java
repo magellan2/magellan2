@@ -37,10 +37,21 @@ import java.util.Properties;
 
 import magellan.library.utils.logging.Logger;
 
+/**
+ * A skeletal implementation of a NameGenerator that takes a list of names from a file.
+ *
+ * @author stm
+ */
 public abstract class AbstractNameGenerator implements NameGenerator {
   protected static Logger log = Logger.getInstance(AbstractNameGenerator.class);
 
+  /**
+   * Variable name for the number of already used names
+   */
   protected static final String USED = "used";
+  /**
+   * Variable name prefix
+   */
   protected static final String NAMEGEN = "NameGenerator.";
 
   protected boolean available = false;
@@ -51,6 +62,12 @@ public abstract class AbstractNameGenerator implements NameGenerator {
 
   private Map<String, String> vars;
 
+  /**
+   * Initialize and load list of files, if defined.
+   * 
+   * @param settings The client settings
+   * @param settingsDir The directory where a configuration file can be stored
+   */
   public AbstractNameGenerator(Properties settings, File settingsDir) {
     this.settings = settings;
     this.settingsDir = settingsDir;
@@ -188,7 +205,7 @@ public abstract class AbstractNameGenerator implements NameGenerator {
   }
 
   /**
-   * Writes the remaining names to {@link #getNameFile()}.
+   * Writes the remaining names and the variables to {@link #getNameFile()}.
    */
   protected void close() {
     File file = getNameFile();
@@ -255,6 +272,9 @@ public abstract class AbstractNameGenerator implements NameGenerator {
     return names.length - getInteger(USED);
   }
 
+  /**
+   * @see magellan.library.utils.NameGenerator#quit()
+   */
   public void quit() {
     close();
   }

@@ -24,8 +24,14 @@ import java.util.Properties;
  */
 public class NameFileNameGenerator extends AbstractNameGenerator implements NameGenerator {
 
-  public NameFileNameGenerator(Properties settings, File dir) {
-    super(settings, dir);
+  /**
+   * Initialize and load list of files, if defined.
+   * 
+   * @param settings The client settings
+   * @param settingsDir The directory where a configuration file can be stored
+   */
+  public NameFileNameGenerator(Properties settings, File settingsDir) {
+    super(settings, settingsDir);
   }
 
 }

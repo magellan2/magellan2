@@ -87,6 +87,7 @@ import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewPreferences;
 import magellan.client.swing.BasicRegionPanel;
+import magellan.client.swing.DialogProvider;
 import magellan.client.swing.FactionStatsPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
@@ -306,11 +307,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private ShowItems showCapacityItems = ShowItems.SHOW_ALL_FACTIONS;
   private UnitChangeListener unitChangeListener;
   protected Object lastCause;
+  private DialogProvider dialogProvider;
 
   /**
    * Creates a new EMapDetailsPanel object.
    */
-  public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr) {
+  public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr,
+      DialogProvider dP) {
     super(d, data, p);
 
     unitChangeListener = new UnitChangeListener() {
@@ -334,6 +337,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       }
     };
+
+    dialogProvider = dP;
 
     initGUI(_undoMgr);
     init(data);
@@ -699,7 +704,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
     topSplitPane.setOneTouchExpandable(true);
 
-    editor = new MultiEditorOrderEditorList(dispatcher, getGameData(), settings, _undoMgr);
+    editor = new MultiEditorOrderEditorList(dispatcher, getGameData(), settings, _undoMgr, dialogProvider);
 
     // build auto completion structure
     orders = new AutoCompletion(settings, dispatcher);

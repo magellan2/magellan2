@@ -124,20 +124,18 @@ public class ProfileManager {
       try {
         settings.loadFromXML(new BufferedInputStream(new FileInputStream(settingsFile)));
         log.info("Found profiles.ini: " + settingsFile);
+        checkProfiles();
       } catch (IOException e) {
         log.error("Error while loading " + settingsFile, e);
         return null;
       }
-      if (settings.getProperty(CURRENT_PROFILE) == null
-          || settings.getProperty(PROFILE_PREFIX + getCurrentProfile() + NAME) == null)
-        return null;
     }
 
-    if (getCurrentProfile() == null) {
+    if (getProfiles().isEmpty()) {
       // try to create a default directory 20 times
       Random r = new Random();
       File dir = new File(getSettingsDirectory(), DEFAULT);
-      for (int i = 0; i < 20 && !dir.mkdir();) {
+      for (int i = 0; i < 20 && !dir.mkdir(); ++i) {
         dir = new File(getSettingsDirectory(), DEFAULT + r.nextInt());
       }
       if (dir.isDirectory() && dir.canWrite()) {
@@ -147,7 +145,7 @@ public class ProfileManager {
         settings.setProperty(PROFILE_PREFIX + dir.getName() + DIRECTORY, dir.getName());
         copyLegacy();
       } else {
-        log.warn("could not create profile directory" + getProfileDirectory(DEFAULT));
+        log.warn("could not create profile directory in " + getSettingsDirectory());
         return null;
       }
     }
@@ -202,9 +200,12 @@ public class ProfileManager {
    * @return The directory of the specified profile.
    */
   public static File getProfileDirectory(String name) {
-    if (settingsDir == null)
+    if (settingsDir == null || name == null)
       return null;
-    return new File(settingsDir, settings.getProperty(PROFILE_PREFIX + name + DIRECTORY));
+    String file = settings.getProperty(PROFILE_PREFIX + name + DIRECTORY);
+    if (file == null)
+      return null;
+    return new File(settingsDir, file);
   }
 
   /**
@@ -246,6 +247,22 @@ public class ProfileManager {
     return dlg.getResult();
   }
 
+  protected static void checkProfiles() {
+    for (String name : getProfiles()) {
+      File dir = getProfileDirectory(name);
+      if (dir == null || !dir.canRead() || !dir.canWrite()) {
+        try {
+          remove(name, false);
+          if (name.equals(getCurrentProfile())) {
+            settings.remove(CURRENT_PROFILE);
+          }
+        } catch (ProfileException e) {
+          log.error("error impossible"); // only while deleting
+        }
+      }
+    }
+  }
+
   /**
    * Returns a list of known profiles.
    *
@@ -257,7 +274,10 @@ public class ProfileManager {
       String key = (String) o;
       if (key.startsWith(PROFILE_PREFIX))
         if (key.endsWith(NAME)) {
-          result.add(settings.getProperty(key));
+          String name = settings.getProperty(key);
+          if (name != null && !name.isBlank()) {
+            result.add(name);
+          }
         }
     }
     Collections.sort(result);
@@ -271,8 +291,9 @@ public class ProfileManager {
    * @param name
    * @param removeFiles
    * @return true if there was such a profile and it has been removed.
+   * @throws ProfileException if the profile directory could not be removed
    */
-  public static boolean remove(String name, boolean removeFiles) {
+  public static boolean remove(String name, boolean removeFiles) throws ProfileException {
     String prefix = PROFILE_PREFIX + name;
     if (settings.getProperty(prefix + NAME) != null) {
       File dir = getProfileDirectory(name);
@@ -283,10 +304,19 @@ public class ProfileManager {
         }
       }
       if (removeFiles) {
-        for (File f : dir.listFiles()) {
-          f.delete();
+        boolean ok = true;
+        try {
+          for (File f : dir.listFiles()) {
+            ok &= f.delete();
+          }
+          ok &= dir.delete();
+        } catch (SecurityException e) {
+          ok = false;
+        } catch (NullPointerException e) {
+          ok = false;
         }
-        dir.delete();
+        if (!ok)
+          throw new ProfileException(Resources.get("profilemanager.exc.nodelete", name));
       }
       return true;
     } else
@@ -297,13 +327,15 @@ public class ProfileManager {
    * Adds a new profile and creates its directory. If <code>copyFrom</code> is not <code>null</code>
    * , all files from the corresponding directory are copied to the new profile directory.
    *
-   * @param name
+   * @param name A non-blank name
    * @param copyFrom
    * @throws ProfileException if the profile directory could not be created, or the files could not
    *           be copied
    */
   public static void add(String name, String copyFrom) throws ProfileException {
     if (settings.getProperty(PROFILE_PREFIX + name + NAME) != null)
+      return;
+    if (name == null || name.isBlank())
       return;
 
     File outDir = new File(settingsDir, name);
@@ -350,12 +382,14 @@ public class ProfileManager {
             } catch (IOException e) {
               throw new ProfileException(Resources
                   .get("profilemanager.exc.ioerror", e.getMessage()));
+            } catch (SecurityException e) {
+              throw new ProfileException(Resources
+                  .get("profilemanager.exc.security", f.toString()));
             }
           }
         }
       }
-    }
-    if (!outDir.mkdir() && !outDir.isDirectory())
+    } else if (!outDir.mkdir() && !outDir.isDirectory())
       throw new ProfileException(Resources
           .get("profilemanager.exc.couldnotcreatedirectory", outDir));
     settings.setProperty(PROFILE_PREFIX + name + NAME, name);

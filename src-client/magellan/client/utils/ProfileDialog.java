@@ -135,6 +135,18 @@ public class ProfileDialog extends JDialog {
       }
     });
 
+    profileList.addListSelectionListener((e) -> {
+      boolean enabled = profileList.getSelectedValue() != null;
+      btnOK.setEnabled(enabled);
+      btnCopy.setEnabled(enabled);
+      btnRemove.setEnabled(enabled);
+    });
+    if (profileList.getSelectedValue() == null) {
+      btnOK.setEnabled(false);
+      btnCopy.setEnabled(false);
+      btnRemove.setEnabled(false);
+    }
+
     GridBagConstraints gc =
         new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
             GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 1, 1);
@@ -218,15 +230,14 @@ public class ProfileDialog extends JDialog {
    */
   protected void createProfile() {
     String name =
-        JOptionPane.showInputDialog(Resources.get("profiledialog.inputdialog.create.message"));
-    if (name != null) {
+        JOptionPane.showInputDialog(Resources.get("profiledialog.inputdialog.create.message")).strip();
+    if (checkNewName(name)) {
       try {
         ProfileManager.add(name, null);
-        profiles.addElement(name);
-        profileList.setSelectedValue(name, true);
       } catch (ProfileException e) {
         JOptionPane.showMessageDialog(this, e.getMessage());
       }
+      updateList(name);
     }
   }
 
@@ -234,16 +245,43 @@ public class ProfileDialog extends JDialog {
    * Copies an existing profile.
    */
   protected void copy() {
-    String name =
-        JOptionPane.showInputDialog(Resources.get("profiledialog.inputdialog.copy.message"));
-    if (name != null) {
+    String name = null;
+    if (profileList.getSelectedValue() == null)
+      return;
+    do {
+      name = JOptionPane.showInputDialog(Resources.get("profiledialog.inputdialog.copy.message")).strip();
+    } while (name.isBlank() || name.equals(profileList.getSelectedValue()));
+    if (checkNewName(name)) {
       try {
         ProfileManager.add(name, profileList.getSelectedValue());
-        profiles.addElement(name);
-        profileList.setSelectedValue(name, true);
       } catch (ProfileException e) {
         JOptionPane.showMessageDialog(this, e.getMessage());
       }
+      updateList(name);
+    }
+  }
+
+  private boolean checkNewName(String name) {
+    if (name == null || name.isBlank() || !name.strip().equals(name)) {
+      JOptionPane.showMessageDialog(this, Resources.get("profiledialog.inputdialog.invalid.message", name));
+      return false;
+    }
+    if (profiles.contains(name)) {
+      JOptionPane.showMessageDialog(this, Resources.get("profiledialog.inputdialog.exists.message", name));
+      return false;
+    }
+    return true;
+  }
+
+  private void updateList(String select) {
+    profiles.clear();
+    for (String name : ProfileManager.getProfiles()) {
+      profiles.addElement(name);
+    }
+    if (select != null) {
+      profileList.setSelectedValue(select, true);
+    } else {
+      profileList.setSelectedIndex(0);
     }
 
   }
@@ -258,11 +296,14 @@ public class ProfileDialog extends JDialog {
           JOptionPane
               .showConfirmDialog(this, Resources.get("profiledialog.inputdialog.remove.message",
                   ProfileManager.getProfileDirectory(name)));
-      if (remove != JOptionPane.CANCEL_OPTION)
-        if (ProfileManager.remove(name, remove == JOptionPane.YES_OPTION)) {
-          profiles.removeElement(profileList.getSelectedValue());
-          profileList.setSelectedIndex(0);
+      if (remove != JOptionPane.CANCEL_OPTION) {
+        try {
+          ProfileManager.remove(name, remove == JOptionPane.YES_OPTION);
+        } catch (ProfileException e) {
+          JOptionPane.showMessageDialog(this, e.getMessage());
         }
+        updateList(null);
+      }
     }
   }
 

@@ -1415,7 +1415,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
       ProfileManager.init(parameters);
-      if (ProfileManager.getProfileDirectory() == null || ProfileManager.isAlwaysAsk()
+      if (ProfileManager.getCurrentProfile() == null || ProfileManager.getProfileDirectory() == null || ProfileManager
+          .isAlwaysAsk()
           || parameters.startPM) {
         if (!ProfileManager.showProfileChooser(Client.startWindow)) {
           log.info("Abort requested by ProfileChooser");

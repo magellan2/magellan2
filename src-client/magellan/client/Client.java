@@ -1384,6 +1384,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       /* set the stderr to stdout while there is no log attached */
       System.setErr(System.out);
+      Logger.activateDefaultLogListener(true);
 
       /* Fiete 20151017: keep the old sorting, needed for FFTools */
       System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");

@@ -108,7 +108,7 @@ public class FileUtils {
 
       });
     } catch (FileAlreadyExistsException e) {
-      throw new FileException(ExceptionType.AccessDenied, "file already exists", context[0], e);
+      throw new FileException(ExceptionType.FileExists, "file already exists", context[0], e);
     } catch (AccessDeniedException e) {
       throw new FileException(ExceptionType.AccessDenied, "access denied", context[0], e);
     } catch (IOException e) {

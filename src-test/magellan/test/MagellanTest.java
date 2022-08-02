@@ -46,6 +46,13 @@ public class MagellanTest {
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
           try {
             allow(dir);
+            Files.list(dir).forEach(t -> {
+              try {
+                MagellanTest.allow(t);
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            });
           } catch (IOException e) {
             throw new RuntimeException(e);
           }

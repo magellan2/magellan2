@@ -167,10 +167,10 @@ public class ProfileManager {
         dir = new File(getSettingsDirectory(), DEFAULT + r.nextInt());
       }
       if (dir.isDirectory() && dir.canWrite()) {
-        settings.setProperty(CURRENT_PROFILE, dir.getName());
+        settings.setProperty(CURRENT_PROFILE, DEFAULT);
         settings.setProperty(ASK_ALWAYS, "1");
-        settings.setProperty(PROFILE_PREFIX + dir.getName() + NAME, dir.getName());
-        settings.setProperty(PROFILE_PREFIX + dir.getName() + DIRECTORY, dir.getName());
+        settings.setProperty(PROFILE_PREFIX + DEFAULT + NAME, DEFAULT);
+        settings.setProperty(PROFILE_PREFIX + DEFAULT + DIRECTORY, dir.getName());
         copyLegacy(settingsDirectory.toPath(), getProfileDirectory().toPath());
       } else {
         log.warn("could not create profile directory in " + getSettingsDirectory());
@@ -393,7 +393,7 @@ public class ProfileManager {
           throw new IOException("could not create directory" + outDir);
       } catch (Exception e) {
         throw new ProfileException(Resources
-            .get("profilemanager.exc.couldnotcreatedirectory", outDir));
+            .get("profilemanager.exc.couldnotcreatedirectory", outDir), e);
       }
     }
     settings.setProperty(PROFILE_PREFIX + name + NAME, name);
@@ -406,12 +406,12 @@ public class ProfileManager {
     } catch (FileException fex) {
       switch (fex.getType()) {
       case FileExists:
-        throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.fileexists", fex.getContext()[0]));
+        throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.fileexists", fex.getContext()[0]),
+            fex);
       case IOError:
-        break;
       case Unknown:
       default:
-        throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.ioerror", fex.getMessage()));
+        throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.ioerror", fex.getMessage()), fex);
       }
     } catch (FileAlreadyExistsException | DirectoryNotEmptyException ex) {
       // FIXME
@@ -540,7 +540,9 @@ public class ProfileManager {
     } catch (FileException e) {
       handleException(e);
     }
-    add(newProfile, null);
+
+    settings.setProperty(PROFILE_PREFIX + newProfile + NAME, newProfile);
+    settings.setProperty(PROFILE_PREFIX + newProfile + DIRECTORY, settingsDir.toPath().relativize(newPath).toString());
   }
 
   public static void exportProfiles(File targetFile) {

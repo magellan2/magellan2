@@ -1414,7 +1414,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.startWindow.setVisible(true);
       Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
-      ProfileManager.init(parameters);
+      ProfileManager.init(parameters.settingsDir);
+      if (parameters.profile != null) {
+        ProfileManager.setProfile(parameters.profile);
+      }
+
       if (ProfileManager.getCurrentProfile() == null || ProfileManager.getProfileDirectory() == null || ProfileManager
           .isAlwaysAsk()
           || parameters.startPM) {

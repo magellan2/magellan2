@@ -114,18 +114,38 @@ public class ProfileManager {
 
   /**
    * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
-   * <code>parameters.settingsDir</code>, new settings are created with a default profile.
-   *
+   * <code>parameters.settingsDir</code>or no valid profile, new settings are created with a default profile.
+   * 
    * @param parameters
    * @return The name of the current profile. <code>null</code> if there was an I/O error while
-   *         reading the inifile
+   *         reading the inifile, no new settings could be created, or the defaultProfile could not be selected
+   * @deprecated replace by {@link #init(File, String)}
    */
+  @Deprecated
   public static String init(Client.Parameters parameters) {
+    String profile = init(parameters.settingsDir);
+    if (parameters.profile != null) {
+      if (!setProfile(parameters.profile))
+        return null;
+    }
+    return profile;
+  }
+
+  /**
+   * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
+   * <code>settingsDir</code> or no valid profile, new settings are created with a default profile.
+   * 
+   *
+   * @param settingsDirectory
+   * @return The name of the current profile. <code>null</code> if there was an I/O error while
+   *         reading the inifile, no new settings could be created
+   */
+  public static String init(File settingsDirectory) {
     settings = new OrderedOutputProperties();
     settings.clear();
 
-    settingsDir = parameters.settingsDir;
-    settingsFile = new File(parameters.settingsDir, INIFILE);
+    ProfileManager.settingsDir = settingsDirectory;
+    settingsFile = new File(settingsDirectory, INIFILE);
 
     // load settings from file
     if (settingsFile.exists()) {
@@ -157,10 +177,7 @@ public class ProfileManager {
         return null;
       }
     }
-    if (parameters.profile != null) {
-      if (!setProfile(parameters.profile))
-        return null;
-    }
+
     return getCurrentProfile();
   }
 

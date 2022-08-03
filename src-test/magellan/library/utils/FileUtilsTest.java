@@ -31,16 +31,9 @@ import static org.junit.Assert.fail;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -51,22 +44,19 @@ import org.junit.Before;
 import org.junit.Test;
 
 import magellan.library.utils.FileUtils.FileException;
+import magellan.test.MagellanTest;
 
 public class FileUtilsTest {
 
   private static Path srcDir;
   private static Path destDir;
 
-  private static Set<PosixFilePermission> permsDeny = Collections.EMPTY_SET;
-  private static Set<PosixFilePermission> permsAllow =
-      EnumSet.of(PosixFilePermission.OWNER_READ, PosixFilePermission.OWNER_WRITE, PosixFilePermission.OWNER_EXECUTE);
-
   @Before
   public void setUp() throws Exception {
     srcDir = Path.of("test/FileUtils/src");
     destDir = Path.of("test/FileUtils/dest");
-    forceDelete(srcDir);
-    forceDelete(destDir);
+    MagellanTest.forceDelete(srcDir);
+    MagellanTest.forceDelete(destDir);
     Files.createDirectories(srcDir);
     Files.createDirectories(destDir);
     Path xyz = srcDir.resolve("xyz");
@@ -79,50 +69,13 @@ public class FileUtilsTest {
         .filter((p) -> {
           return !p.equals(destDir);
         })
-        .forEach(FileUtilsTest::del);
+        .forEach(MagellanTest::del);
   }
 
   @After
   public void after() throws IOException {
-    forceDelete(srcDir);
-    forceDelete(destDir);
-  }
-
-  private void forceDelete(Path dir) throws IOException {
-    if (Files.exists(dir)) {
-      allow(dir);
-      Files.walkFileTree(dir, new SimpleFileVisitor<Path>() {
-
-        @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-          try {
-            allow(dir);
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-          return FileVisitResult.CONTINUE;
-        }
-      });
-      Files.walk(dir)
-          .sorted(Comparator.reverseOrder())
-          .forEach(FileUtilsTest::del);
-    }
-  }
-
-  private void allow(Path dir) throws IOException {
-    Files.setPosixFilePermissions(dir, permsAllow);
-  }
-
-  private void deny(Path dir) throws IOException {
-    Files.setPosixFilePermissions(dir, permsDeny);
-  }
-
-  private static void del(Path p) {
-    try {
-      Files.delete(p);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    MagellanTest.forceDelete(srcDir);
+    MagellanTest.forceDelete(destDir);
   }
 
   @Test
@@ -142,14 +95,14 @@ public class FileUtilsTest {
       FileUtils.copyDirectory(srcDir, destDir);
       fail();
     } catch (FileException exc) {
-      assertEquals(FileException.ExceptionType.AccessDenied, exc.getType());
+      assertEquals(FileException.ExceptionType.FileExists, exc.getType());
       assertEquals(destDir.resolve("xyz"), exc.getContext()[1]);
     }
   }
 
   @Test
   public void testCopyDirectoryPerm() throws FileException, IOException {
-    deny(destDir);
+    MagellanTest.deny(destDir);
     try {
       FileUtils.copyDirectory(srcDir, destDir);
       fail();
@@ -168,7 +121,7 @@ public class FileUtilsTest {
 
   @Test
   public void testDeleteDirectoryPerm() throws FileException, IOException {
-    deny(srcDir.resolve("xyz"));
+    MagellanTest.deny(srcDir.resolve("xyz"));
     assertTrue(Files.exists(srcDir));
     FileUtils.deleteDirectory(srcDir);
     assertFalse(Files.exists(srcDir));
@@ -195,7 +148,7 @@ public class FileUtilsTest {
       FileUtils.unzip(Path.of("test/FileUtils/packed.zip"), dest, null, true);
       assertEquals(3, (long) Files.list(dest).map(Path::toString).collect(Collectors.counting()));
     } finally {
-      forceDelete(dest);
+      MagellanTest.forceDelete(dest);
     }
   }
 
@@ -234,7 +187,7 @@ public class FileUtilsTest {
     assertTrue(Files.isRegularFile(dest));
     assertEquals("", Files.lines(dest).collect(Collectors.joining()));
     zipIn.close();
-    del(dest);
+    MagellanTest.del(dest);
   }
 
   private ZipInputStream readZip(String zipFile) throws FileNotFoundException {
@@ -253,7 +206,7 @@ public class FileUtilsTest {
       assertEquals("test/FileUtils/dest,test/FileUtils/dest/src,test/FileUtils/dest/src/xyz",
           Files.walk(destDir).map(Path::toString).collect(Collectors.joining(",")));
     } finally {
-      del(dest);
+      MagellanTest.del(dest);
     }
   }
 
@@ -269,7 +222,7 @@ public class FileUtilsTest {
     assertEquals("zyx",
         Files.lines(destDir.resolve("xyz")).collect(Collectors.joining()));
     assertEquals("test/FileUtils/dest/xyz", Files.list(destDir).map(Path::toString).collect(Collectors.joining()));
-    del(dest);
+    MagellanTest.del(dest);
   }
 
 }

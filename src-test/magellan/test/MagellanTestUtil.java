@@ -35,7 +35,7 @@ import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Set;
 
-public class MagellanTest {
+public class MagellanTestUtil {
 
   public static void forceDelete(Path dir) throws IOException {
     if (Files.exists(dir)) {
@@ -48,7 +48,7 @@ public class MagellanTest {
             allow(dir);
             Files.list(dir).forEach(t -> {
               try {
-                MagellanTest.allow(t);
+                MagellanTestUtil.allow(t);
               } catch (IOException e) {
                 throw new RuntimeException(e);
               }
@@ -61,7 +61,7 @@ public class MagellanTest {
       });
       Files.walk(dir)
           .sorted(Comparator.reverseOrder())
-          .forEach(MagellanTest::del);
+          .forEach(MagellanTestUtil::del);
     }
   }
 
@@ -85,6 +85,10 @@ public class MagellanTest {
 
   public static void deny(Path dir) throws IOException {
     Files.setPosixFilePermissions(dir, permsDeny);
+  }
+
+  public static boolean isInternalTesting() {
+    return "INTERNAL".equals(System.getenv("MAGELLAN2_TESTING"));
   }
 
 }

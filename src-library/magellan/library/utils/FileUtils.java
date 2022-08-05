@@ -83,6 +83,14 @@ public class FileUtils {
     }
   }
 
+  public static void cpFile(String filename, Path sourceDir, Path destDir) throws IOException {
+    Path dest = destDir.resolve(filename);
+    Path src = sourceDir.resolve(filename);
+    if (Files.exists(src) && Files.isRegularFile(src)) {
+      Files.copy(src, dest);
+    }
+  }
+
   public static void copyDirectory(Path source, Path target, CopyOption... options) throws FileException {
     Path[][] context = new Path[1][];
     try {

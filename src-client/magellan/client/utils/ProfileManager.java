@@ -149,7 +149,7 @@ public class ProfileManager {
         settings.setProperty(ASK_ALWAYS, "1");
         settings.setProperty(PROFILE_PREFIX + DEFAULT + NAME, DEFAULT);
         settings.setProperty(PROFILE_PREFIX + DEFAULT + DIRECTORY, dir.getName());
-        copyLegacy(settingsDirectory.toPath(), getProfileDirectory().toPath());
+        copyLegacy(settingsDirectory.toPath(), getProfileDirectory().toPath(), true);
       } else {
         log.warn("could not create profile directory in " + getSettingsDirectory());
         return null;
@@ -185,22 +185,26 @@ public class ProfileManager {
    * @param destDir
    */
   @SuppressWarnings("deprecation")
-  private static void copyLegacy(Path sourceDir, Path destDir) {
+  private static void copyLegacy(Path sourceDir, Path destDir, boolean move) {
     try {
-      mvFile(Client.SETTINGS_FILENAME, sourceDir, destDir);
-      mvFile(Client.COMPLETIONSETTINGS_FILENAME, sourceDir, destDir);
-      mvFile(MagellanDesktop.DOCKING_LAYOUT_FILE, sourceDir, destDir);
-      mvFile(XCMD_FILENAME, sourceDir, destDir);
+      mvFile(Client.SETTINGS_FILENAME, sourceDir, destDir, move);
+      mvFile(Client.COMPLETIONSETTINGS_FILENAME, sourceDir, destDir, move);
+      mvFile(MagellanDesktop.DOCKING_LAYOUT_FILE, sourceDir, destDir, move);
+      mvFile(XCMD_FILENAME, sourceDir, destDir, move);
     } catch (Exception e) {
       log.error("Could not copy legacy settings to profile directory.");
     }
 
   }
 
-  private static void mvFile(String filename, Path sourceDir, Path destDir) throws Exception {
+  private static void mvFile(String filename, Path sourceDir, Path destDir, boolean move) throws Exception {
     try {
-      FileUtils.mvFile(filename, sourceDir, destDir);
-      log.info("Moved " + filename + " from " + sourceDir + " to " + destDir);
+      if (move) {
+        FileUtils.mvFile(filename, sourceDir, destDir);
+        log.info("Moved " + filename + " from " + sourceDir + " to " + destDir);
+      } else {
+        FileUtils.cpFile(filename, sourceDir, destDir);
+      }
     } catch (Exception e) {
       log.info("Could not move " + filename + " from " + sourceDir + " to " + destDir);
       throw e;
@@ -494,13 +498,13 @@ public class ProfileManager {
           if (profileDir == null || !Files.isDirectory(profileDir)) {
             log.info(profile + ": directory for imported profile not found");
           } else {
-            String imported = importProfile(profile, profileDir);
+            String imported = importProfile(profile, profileDir, false);
             importedProfiles.add(imported);
           }
         }
       }
       if ("true".equals(newSettings.getProperty(LEGACY_PROFILE))) {
-        String imported = importProfile("profile", importDir);
+        String imported = importProfile("profile", importDir, true);
         if (imported != null) {
           importedProfiles.add(imported);
         }
@@ -546,7 +550,7 @@ public class ProfileManager {
           }
           try {
             FileUtils.unzip(zipFile, tempDir, profile, true);
-            String imported = importProfile(profile, tempDir.resolve(profileDir));
+            String imported = importProfile(profile, tempDir.resolve(profileDir), false);
             if (imported != null) {
               importedProfiles.add(imported);
             }
@@ -566,7 +570,7 @@ public class ProfileManager {
         String imported;
         try {
           FileUtils.unzip(zipFile, tempdir, null, true);
-          imported = importProfile("profile", tempdir);
+          imported = importProfile("profile", tempdir, true);
         } finally {
           try {
             FileUtils.deleteDirectory(tempdir);
@@ -603,7 +607,7 @@ public class ProfileManager {
     return newProfiles;
   }
 
-  private static String importProfile(String profile, Path tempdir) throws ProfileException {
+  private static String importProfile(String profile, Path tempdir, boolean legacy) throws ProfileException {
     if (!Files.exists(tempdir) || !Files.isDirectory(tempdir)) {
       log.info("skipping empty profile " + profile);
       return null;
@@ -620,7 +624,16 @@ public class ProfileManager {
       newPath = settingsDir.toPath().resolve(profile + "_" + String.valueOf(i));
     }
     try {
-      FileUtils.copyDirectory(tempdir, newPath);
+      if (legacy) {
+        try {
+          Files.createDirectory(newPath);
+        } catch (IOException e) {
+          throw new ProfileException(Resources.get("profilemanager.exc.couldnotcreatedirectory", newPath), e);
+        }
+        copyLegacy(tempdir, newPath, false);
+      } else {
+        FileUtils.copyDirectory(tempdir, newPath);
+      }
       settings.setProperty(PROFILE_PREFIX + newProfile + NAME, newProfile);
       settings.setProperty(PROFILE_PREFIX + newProfile + DIRECTORY, settingsDir.toPath().relativize(newPath)
           .toString());

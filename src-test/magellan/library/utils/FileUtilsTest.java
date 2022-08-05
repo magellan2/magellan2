@@ -31,6 +31,7 @@ import static org.junit.Assert.fail;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
@@ -84,6 +85,22 @@ public class FileUtilsTest {
     FileUtils.mvFile("xyz", srcDir, destDir);
     FileUtils.mvFile("zyx", srcDir, destDir);
     assertTrue(Files.isRegularFile(destDir.resolve("xyz")));
+    assertFalse(Files.isRegularFile(srcDir.resolve("xyz")));
+    assertFalse(Files.isRegularFile(destDir.resolve("zyx")));
+  }
+
+  @Test
+  public void testCpFile() throws IOException {
+    FileUtils.cpFile("xyz", srcDir, destDir);
+    try {
+      FileUtils.cpFile("xyz", srcDir, destDir);
+      fail();
+    } catch (FileAlreadyExistsException e) {
+      // okay
+    }
+    FileUtils.cpFile("zyx", srcDir, destDir);
+    assertTrue(Files.isRegularFile(destDir.resolve("xyz")));
+    assertTrue(Files.isRegularFile(srcDir.resolve("xyz")));
     assertFalse(Files.isRegularFile(destDir.resolve("zyx")));
   }
 

@@ -23,6 +23,8 @@
 package magellan.client.utils;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -31,6 +33,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.nio.file.Path;
+import java.util.Collection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -44,6 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileFilter;
 
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.layout.WrappableLabel;
@@ -372,15 +377,61 @@ public class ProfileDialog extends JDialog {
         JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
     if (response == 0) {
-      ProfileSearch.importFromZip(this);
+      importFromZip(this);
     }
     if (response == 1) {
-      ProfileSearch.importFromDir(this);
+      importFromDir(this);
     }
     if (response == 2) {
-      ProfileSearch.importFromSearch(this);
+      importFromSearch(this);
     }
     updateList(profileList.getSelectedValue());
+  }
+
+  protected static void importFromSearch(Dialog parent) {
+    new ProfileSearch(parent).setVisible(true);
+  }
+
+  protected static void importFromDir(Component parent) {
+    chooseLocation(parent, true, null, ProfileManager::importProfilesFromDir);
+  }
+
+  protected static void importFromZip(Component parent) {
+    EresseaFileFilter ff = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
+    chooseLocation(parent, false, ff, ProfileManager::importProfilesFromZip);
+  }
+
+  private static interface Importer {
+    Collection<String> importProfile(Path p) throws ProfileException;
+  }
+
+  private static void chooseLocation(Component parent, boolean dirs, FileFilter ff, Importer executor) {
+    JFileChooser fc = new JFileChooser();
+    if (dirs) {
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    } else {
+      fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }
+    if (ff != null) {
+      fc.addChoosableFileFilter(ff);
+      fc.setFileFilter(ff);
+    }
+    fc.setDialogType(JFileChooser.OPEN_DIALOG);
+
+    if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+      File targetFile = fc.getSelectedFile();
+      if (!targetFile.exists() || (dirs ? !targetFile.isDirectory() : !targetFile.isFile()) || !targetFile.canRead()) {
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.filenotfound", targetFile));
+        return;
+      }
+      try {
+        Collection<String> imported = executor.importProfile(targetFile.toPath());
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.imported", imported.size()));
+      } catch (ProfileException e) {
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.errors", targetFile, e));
+        log.warn(e);
+      }
+    }
   }
 
   /**

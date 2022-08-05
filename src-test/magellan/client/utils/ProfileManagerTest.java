@@ -358,4 +358,35 @@ public class ProfileManagerTest {
     }
   }
 
+  @Test
+  public void testImportLegacyDir() throws IOException, ProfileException {
+    makeDefault();
+    Path settingsDir2 = Path.of("test/ProfileManager2");
+    Files.createDirectories(settingsDir2);
+    Files.createDirectories(settingsDir2.resolve("foo"));
+    Files.writeString(settingsDir2.resolve("magellan.ini"), "Hodor!");
+    try {
+      ProfileManager.init(settingsDir.toFile());
+
+      Collection<String> imported = ProfileManager.importProfilesFromDir(settingsDir2);
+
+      assertEquals(1, imported.size());
+      assertEquals(2, ProfileManager.getProfiles().size());
+      assertEquals("profile", ProfileManager.getProfileDirectory("profile").getName());
+      // do not copy subdirectories
+      assertFalse(Files.exists(settingsDir.resolve("profile").resolve("foo")));
+      assertEquals("Hodor!", Files.lines(settingsDir.resolve("profile").resolve(Client.SETTINGS_FILENAME))
+          .collect(Collectors.joining()));
+
+      //
+      imported = ProfileManager.importProfilesFromDir(settingsDir2);
+
+      assertEquals(1, imported.size());
+      assertEquals(3, ProfileManager.getProfiles().size());
+      assertEquals("profile_1", ProfileManager.getProfileDirectory(imported.iterator().next()).getName());
+    } finally {
+      MagellanTest.forceDelete(settingsDir2);
+    }
+  }
+
 }

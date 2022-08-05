@@ -25,12 +25,12 @@ package magellan.client.utils;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -58,7 +58,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -72,13 +71,18 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingWorker;
 
 import magellan.client.Client;
-import magellan.client.swing.EresseaFileFilter;
+import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.basics.SpringUtilities;
-import magellan.client.utils.ProfileManager.ProfileException;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-public class ProfileSearch extends JDialog {
+/**
+ * Responsible for searching profiles in the file system.
+ *
+ * @author stm
+ * @version 1.0, Aug 5, 2022
+ */
+public class ProfileSearch extends InternationalizedDialog {
   private static Logger log = Logger.getInstance(ProfileDialog.class);
 
   protected enum SearchState {
@@ -125,7 +129,14 @@ public class ProfileSearch extends JDialog {
           p = 0;
         }
       }
-      return Resources.get("profiledialog.search.pathdetails", time, p);
+      String extra = "";
+      if (imported) {
+        extra = Resources.get("profiledialog.search.pathdetails.imported");
+      }
+      if (failed) {
+        extra = Resources.get("profiledialog.search.pathdetails.failed");
+      }
+      return Resources.get("profiledialog.search.pathdetails", time, p, extra);
     }
 
     public Path getPath() {
@@ -144,35 +155,6 @@ public class ProfileSearch extends JDialog {
 
   protected static class PathCellRenderer extends JLabel implements ListCellRenderer<PathInfo> {
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
-
-    // public Component getListCellRendererComponent(JList<? extends PathInfo> list, PathInfo value, int index,
-    // boolean isSelected, boolean cellHasFocus) {
-    // setComponentOrientation(list.getComponentOrientation());
-    //
-    // Color bg = null;
-    // Color fg = null;
-    //
-    // if (value.failed) {
-    // bg = Color.RED;
-    // } else if (value.imported) {
-    // bg = Color.GREEN;
-    // }
-    // if (isSelected) {
-    // setBackground(bg == null ? list.getSelectionBackground() : bg.darker());
-    // setForeground(fg == null ? list.getSelectionForeground() : fg.brighter());
-    // } else {
-    // setBackground(bg == null ? list.getBackground() : bg);
-    // setForeground(fg == null ? list.getForeground() : fg);
-    // }
-    //
-    // setText(value.toString());
-    // setToolTipText(value.getDetails());
-    //
-    // setEnabled(list.isEnabled());
-    // setFont(list.getFont());
-    //
-    // return this;
-    // }
 
     public Component getListCellRendererComponent(JList<? extends PathInfo> list, PathInfo value, int index,
         boolean isSelected, boolean cellHasFocus) {
@@ -207,16 +189,15 @@ public class ProfileSearch extends JDialog {
 
     private Collection<Path> searchRoots;
     private java.util.function.Consumer<String> status;
-    private java.util.function.Consumer<PathInfo> results;
+    private java.util.function.Consumer<Path> results;
     private Consumer<SearchState> finish;
 
-    public ProfileSearchWorker(Collection<Path> searchRoots, Consumer<String> status, Consumer<PathInfo> results,
+    public ProfileSearchWorker(Collection<Path> searchRoots, Consumer<String> status, Consumer<Path> results,
         Consumer<SearchState> finish) {
       this.searchRoots = searchRoots;
       this.status = status;
       this.results = results;
       this.finish = finish;
-
     }
 
     @Override
@@ -235,7 +216,7 @@ public class ProfileSearch extends JDialog {
                   if (isCancelled())
                     return FileVisitResult.TERMINATE;
                   if (dir != top && searchRoots.contains(dir)) {
-                    log.fine("aborting " + dir);
+                    log.fine("already searched " + dir);
                     return FileVisitResult.SKIP_SUBTREE;
                   }
                   status.accept(dir.toString());
@@ -285,25 +266,27 @@ public class ProfileSearch extends JDialog {
     @Override
     protected void process(List<Path> chunks) {
       for (Path p : chunks) {
-        PathInfo pi;
-        results.accept(pi = new PathInfo(p));
-        if (ProfileManager.getSettingsDirectory().toPath().equals(p.toAbsolutePath().getParent())) {
-          pi.failed = true;
-        }
+        results.accept(p);
       }
     }
 
     @Override
     protected void done() {
+      log.fine("done");
       try {
-        for (Path p : get()) {
-          results.accept(new PathInfo(p));
+        if (!isCancelled()) {
+          for (Path p : get()) {
+            results.accept(p);
+          }
+          finish.accept(SearchState.Searched);
+        } else {
+          finish.accept(SearchState.Interrupted);
         }
-        finish.accept(SearchState.Searched);
-      } catch (CancellationException e) {
-        log.fine(e);
-        finish.accept(SearchState.Searched);
-      } catch (InterruptedException | ExecutionException e) {
+      } catch (CancellationException | InterruptedException e) {
+        log.fine(e.getClass());
+        finish.accept(SearchState.Interrupted);
+      } catch (ExecutionException e) {
+        log.fine(e.getClass() + " " + e.getCause());
         finish.accept(SearchState.Interrupted);
       }
     }
@@ -322,9 +305,14 @@ public class ProfileSearch extends JDialog {
   private SwingWorker<Collection<Path>, Path> worker;
   private long t0 = System.currentTimeMillis();
 
-  public ProfileSearch() {
+  /**
+   * Initializes the UI
+   * 
+   * @param owner
+   */
+  public ProfileSearch(Dialog owner) {
+    super(owner, true);
     initGUI();
-    setModal(true);
     setResizable(true);
   }
 
@@ -384,12 +372,21 @@ public class ProfileSearch extends JDialog {
 
         }) };
 
-    LayoutManager flow;
-    JPanel operations = new JPanel(flow = new SpringLayout());
+    JPanel operations = new JPanel(new SpringLayout());
+    int width = 0;
     for (JButton b : actionButtons) {
       operations.add(b);
+      if (width < b.getPreferredSize().width) {
+        width = b.getPreferredSize().width;
+      }
     }
-    SpringUtilities.makeCompactGrid(operations, 1, actionButtons.length, 0, 0, 5, 0);
+    for (JButton b : actionButtons) {
+      Dimension d = b.getPreferredSize();
+      d.width = width;
+      b.setMinimumSize(d);
+      b.setPreferredSize(d);
+    }
+    SpringUtilities.makeCompactGrid(operations, 1, actionButtons.length, 0, 0, 5, 5);
 
     JPanel actions = new JPanel(new SpringLayout());
     actions.add(btnImport);
@@ -398,6 +395,8 @@ public class ProfileSearch extends JDialog {
 
     gc.gridx = 0;
     gc.anchor = GridBagConstraints.NORTHWEST;
+    gc.fill = GridBagConstraints.HORIZONTAL;
+    gc.weightx = 0;
     gc.insets = new Insets(2, 2, 2, 2);
 
     mainPanel.add(searchLabel, gc);
@@ -414,12 +413,20 @@ public class ProfileSearch extends JDialog {
     gc.weighty = .1;
     mainPanel.add(new JScrollPane(pathList), gc);
 
-    gc.fill = GridBagConstraints.NONE;
+    gc.fill = GridBagConstraints.HORIZONTAL;
     gc.weightx = 0;
     gc.weighty = 0;
     mainPanel.add(actions, gc);
     add(mainPanel);
     pack();
+
+    JComponent[] cancelComponents = new JComponent[actionButtons.length + 3];
+    System.arraycopy(actionButtons, 0, cancelComponents, 0, actionButtons.length);
+    int c = actionButtons.length;
+    cancelComponents[c++] = btnImport;
+    cancelComponents[c++] = btnClose;
+    cancelComponents[c++] = pathList;
+    setDefaultActions(null, btnClose, cancelComponents);
   }
 
   private void search(Path searchRoot) {
@@ -439,14 +446,18 @@ public class ProfileSearch extends JDialog {
 
     if (searchRoots != null) {
       paths.clear();
-
-      Collection<Path> finalRoots = searchRoots;
-      worker = new ProfileSearchWorker(finalRoots, this::setStatus, p -> paths.addElement(p), this::setState);
-
+      worker = new ProfileSearchWorker(searchRoots, this::setStatus, this::addResult, this::setState);
       setState(SearchState.Searching);
-
       worker.execute();
     }
+  }
+
+  private void addResult(Path p) {
+    PathInfo pi = new PathInfo(p);
+    if (ProfileManager.getSettingsDirectory().toPath().equals(p.toAbsolutePath().getParent())) {
+      pi.imported = true;
+    }
+    paths.addElement(pi);
   }
 
   private void setState(SearchState state) {
@@ -483,14 +494,13 @@ public class ProfileSearch extends JDialog {
       }
       break;
     }
-    pack();
-    invalidate();
+    pathList.repaint();
   }
 
   private void setStatus(String string) {
     if (System.currentTimeMillis() - t0 > 52) {
       if (string.length() > 70) {
-        string = string.substring(0, 20) + " ... " + string.substring(string.length() - 30);
+        string = string.substring(0, 25) + " ... " + string.substring(string.length() - 35);
       }
       status.setString(string);
       t0 = System.currentTimeMillis();
@@ -512,13 +522,18 @@ public class ProfileSearch extends JDialog {
     }
 
     if (failed.size() > 0) {
-      JOptionPane.showMessageDialog(this, Resources.get("profiledialog.search.message.imported.failed", imported.size(),
-          failed
-              .size()));
+      JOptionPane.showMessageDialog(this, Resources.get("profiledialog.search.message.imported.failed",
+          imported.size(), failed.size()));
     } else {
       JOptionPane.showMessageDialog(this, Resources.get("profiledialog.search.message.imported", imported.size()));
     }
     setState(SearchState.Imported);
+  }
+
+  @Override
+  protected void quit() {
+    setVisible(false);
+    super.quit();
   }
 
   protected void cancel(ActionEvent evt) {
@@ -527,8 +542,7 @@ public class ProfileSearch extends JDialog {
       worker = null;
       setState(SearchState.Interrupted);
     } else {
-      setVisible(false);
-      dispose();
+      quit();
     }
   }
 
@@ -542,55 +556,4 @@ public class ProfileSearch extends JDialog {
     super.setVisible(b);
   }
 
-  public static void importFromSearch(Component parent) {
-
-    new ProfileSearch().setVisible(true);
-
-  }
-
-  public static void importFromDir(Component parent) {
-    JFileChooser fc = new JFileChooser();
-    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fc.setDialogType(JFileChooser.OPEN_DIALOG);
-
-    if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-      File targetFile = fc.getSelectedFile();
-      if (!targetFile.exists() || !targetFile.isDirectory() || !targetFile.canRead()) {
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.filenotfound", targetFile));
-        return;
-      }
-      try {
-        Collection<String> imported = ProfileManager.importProfilesFromDir(targetFile.toPath());
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.imported", imported.size()));
-      } catch (ProfileException e) {
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.errors", targetFile, e));
-        log.warn(e);
-      }
-    }
-  }
-
-  protected static void importFromZip(Component parent) {
-    JFileChooser fc = new JFileChooser();
-    EresseaFileFilter ff;
-    fc.addChoosableFileFilter(ff = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
-    fc.setFileFilter(ff);
-    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fc.setDialogType(JFileChooser.OPEN_DIALOG);
-
-    if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-      File targetFile = fc.getSelectedFile();
-      if (!targetFile.exists() || !targetFile.isFile() || !targetFile.canRead()) {
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.filenotfound", targetFile));
-        return;
-      }
-      try {
-        Collection<String> imported = ProfileManager.importProfilesFromZip(targetFile.toPath());
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.imported", imported.size()));
-      } catch (ProfileException e) {
-        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.errors", targetFile, e));
-        log.warn(e);
-      }
-
-    }
-  }
 }

@@ -314,6 +314,7 @@ public class ProfileSearch extends InternationalizedDialog {
     super(owner, true);
     initGUI();
     setResizable(true);
+    SwingUtils.center(this);
   }
 
   private void initGUI() {
@@ -426,7 +427,7 @@ public class ProfileSearch extends InternationalizedDialog {
     cancelComponents[c++] = btnImport;
     cancelComponents[c++] = btnClose;
     cancelComponents[c++] = pathList;
-    setDefaultActions(null, btnClose, cancelComponents);
+    setDefaultActions(null, null, cancelComponents);
   }
 
   private void search(Path searchRoot) {

@@ -49,7 +49,7 @@ import magellan.client.utils.ProfileManager.ProfileException;
 import magellan.library.utils.FileUtils;
 import magellan.library.utils.FileUtils.FileException;
 import magellan.library.utils.OrderedOutputProperties;
-import magellan.test.MagellanTest;
+import magellan.test.MagellanTestUtil;
 
 public class ProfileManagerTest {
 
@@ -59,13 +59,13 @@ public class ProfileManagerTest {
   @Before
   public void setUp() throws Exception {
     settingsDir = Path.of("test/ProfileManager");
-    MagellanTest.forceDelete(settingsDir);
+    MagellanTestUtil.forceDelete(settingsDir);
     Files.createDirectory(settingsDir);
   }
 
   @After
   public void tearDown() throws IOException {
-    MagellanTest.forceDelete(settingsDir);
+    MagellanTestUtil.forceDelete(settingsDir);
   }
 
   @Test
@@ -129,13 +129,13 @@ public class ProfileManagerTest {
   public void testCheckProfiles() throws IOException {
     makeDefault();
 
-    MagellanTest.allow(settingsDir.resolve("default"));
+    MagellanTestUtil.allow(settingsDir.resolve("default"));
     ProfileManager.init(settingsDir.toFile());
-    MagellanTest.deny(settingsDir.resolve("default"));
+    MagellanTestUtil.deny(settingsDir.resolve("default"));
     ProfileManager.checkProfiles();
     assertFalse(ProfileManager.getProfiles().contains("default"));
     assertNull(ProfileManager.getCurrentProfile());
-    MagellanTest.allow(settingsDir.resolve("default"));
+    MagellanTestUtil.allow(settingsDir.resolve("default"));
   }
 
   @Test
@@ -171,7 +171,7 @@ public class ProfileManagerTest {
     // access denied
     FileUtils.deleteDirectory(settingsDir.resolve("second"));
     ProfileManager.add("second", "default");
-    MagellanTest.deny(settingsDir.resolve("second"));
+    MagellanTestUtil.deny(settingsDir.resolve("second"));
     try {
       ProfileManager.remove("second", true);
       fail("should get exception");
@@ -341,7 +341,7 @@ public class ProfileManagerTest {
       ProfileManager.add("third", "default");
       ProfileManager.add("fourth", "default");
       ProfileManager.saveSettings();
-      MagellanTest.forceDelete(settingsDir2.resolve("fourth"));
+      MagellanTestUtil.forceDelete(settingsDir2.resolve("fourth"));
 
       ProfileManager.init(settingsDir.toFile());
       ProfileManager.add("second", "default");
@@ -354,7 +354,7 @@ public class ProfileManagerTest {
       assertEquals("second_1", ProfileManager.getProfileDirectory("second1").getName());
       assertEquals("third", ProfileManager.getProfileDirectory("third").getName());
     } finally {
-      MagellanTest.forceDelete(settingsDir2);
+      MagellanTestUtil.forceDelete(settingsDir2);
     }
   }
 
@@ -385,7 +385,7 @@ public class ProfileManagerTest {
       assertEquals(3, ProfileManager.getProfiles().size());
       assertEquals("profile_1", ProfileManager.getProfileDirectory(imported.iterator().next()).getName());
     } finally {
-      MagellanTest.forceDelete(settingsDir2);
+      MagellanTestUtil.forceDelete(settingsDir2);
     }
   }
 

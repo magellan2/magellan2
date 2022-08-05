@@ -61,6 +61,7 @@ import magellan.library.utils.MarkovNameGenerator.MarkovGenerator;
 import magellan.library.utils.MarkovNameGenerator.SimpleFactory;
 import magellan.library.utils.MarkovNameGenerator.State;
 import magellan.library.utils.MarkovNameGenerator.StateFactory;
+import magellan.test.MagellanTestUtil;
 
 @SuppressWarnings("javadoc")
 public class MarkovNameGeneratorTest {
@@ -441,9 +442,11 @@ public class MarkovNameGeneratorTest {
       generateX(namegenK, MAX);
       p.log(PTags.GENERATEK);
     }
-    p.printTags();
-    System.err.println(String.format("total %10.6f ms", (double) (System.currentTimeMillis() - tStart)));
-    System.err.println(namegenK.getInteger(AbstractNameGenerator.USED) * REPETITIONS + " names generated");
+    if (MagellanTestUtil.isInternalTesting()) {
+      p.printTags();
+      System.err.println(String.format("total %10.6f ms", (double) (System.currentTimeMillis() - tStart)));
+      System.err.println(namegenK.getInteger(AbstractNameGenerator.USED) * REPETITIONS + " names generated");
+    }
   }
 
   private void generateX(MarkovNameGenerator namegen, int n) {
@@ -455,7 +458,6 @@ public class MarkovNameGeneratorTest {
     }
   }
 
-  @Test
   public void testTable() {
     for (char c = 0; c < 255; ++c) {
       System.out.print(String.format("%3d %c  ", (int) c, c));

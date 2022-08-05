@@ -432,13 +432,11 @@ public class ProfileManager {
         throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.ioerror", fex.getMessage()), fex);
       }
     } catch (FileAlreadyExistsException | DirectoryNotEmptyException ex) {
-      // FIXME
-      throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.fileexists", null));
+      throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.fileexists", ex.getFile()));
     } catch (IOException ioe) {
       throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.ioerror", ioe.getMessage()));
     } catch (SecurityException se) {
-      // FIXME
-      throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.security", null));
+      throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.security", (File) null));
     } catch (Exception ex) {
       throw new ProfileManager.ProfileException(Resources.get("profilemanager.exc.ioerror", ex.getMessage()));
     }

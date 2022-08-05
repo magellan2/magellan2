@@ -308,7 +308,7 @@ public class ProfileDialog extends JDialog {
     if (select != null) {
       profileList.setSelectedValue(select, true);
     } else {
-      profileList.setSelectedIndex(0);
+      profileList.setSelectedIndex(-1);
     }
 
   }
@@ -355,7 +355,7 @@ public class ProfileDialog extends JDialog {
           break;
         }
         if (choice == JOptionPane.YES_OPTION) {
-          ProfileManager.exportProfiles(targetFile);
+          ProfileManager.exportProfiles(targetFile.toPath());
         }
       } else {
         break;
@@ -365,27 +365,22 @@ public class ProfileDialog extends JDialog {
   }
 
   private void importProfiles() {
-    JFileChooser fc = new JFileChooser();
-    EresseaFileFilter ff;
-    fc.addChoosableFileFilter(ff = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
-    fc.setFileFilter(ff);
-    fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fc.setDialogType(JFileChooser.OPEN_DIALOG);
+    String[] options = new String[] { Resources.get("profiledialog.import.from.zip"), Resources.get(
+        "profiledialog.import.from.directory"), Resources.get(
+            "profiledialog.import.from.search") };
+    int response = JOptionPane.showOptionDialog(this, Resources.get("profiledialog.import.modeselection"), null,
+        JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
-    if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-      File targetFile = fc.getSelectedFile();
-      if (!targetFile.exists() || !targetFile.isFile() || !targetFile.canRead()) {
-        JOptionPane.showMessageDialog(this, Resources.get("profiledialog.filenotfound", targetFile));
-        return;
-      }
-      try {
-        ProfileManager.importProfiles(targetFile);
-      } catch (ProfileException e) {
-        JOptionPane.showMessageDialog(this, Resources.get("profiledialog.import.errors", targetFile, e));
-        log.warn(e);
-      }
-
+    if (response == 0) {
+      ProfileSearch.importFromZip(this);
     }
+    if (response == 1) {
+      ProfileSearch.importFromDir(this);
+    }
+    if (response == 2) {
+      ProfileSearch.importFromSearch(this);
+    }
+    updateList(profileList.getSelectedValue());
   }
 
   /**

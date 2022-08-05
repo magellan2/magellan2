@@ -40,9 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Random;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import magellan.client.Client;
@@ -114,25 +111,6 @@ public class ProfileManager {
 
   /**
    * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
-   * <code>parameters.settingsDir</code>or no valid profile, new settings are created with a default profile.
-   * 
-   * @param parameters
-   * @return The name of the current profile. <code>null</code> if there was an I/O error while
-   *         reading the inifile, no new settings could be created, or the defaultProfile could not be selected
-   * @deprecated replace by {@link #init(File, String)}
-   */
-  @Deprecated
-  public static String init(Client.Parameters parameters) {
-    String profile = init(parameters.settingsDir);
-    if (parameters.profile != null) {
-      if (!setProfile(parameters.profile))
-        return null;
-    }
-    return profile;
-  }
-
-  /**
-   * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
    * <code>settingsDir</code> or no valid profile, new settings are created with a default profile.
    * 
    *
@@ -179,6 +157,25 @@ public class ProfileManager {
     }
 
     return getCurrentProfile();
+  }
+
+  /**
+   * Reads the profile information from the {@link #INIFILE}. If there is no inifile in
+   * <code>parameters.settingsDir</code>or no valid profile, new settings are created with a default profile.
+   * 
+   * @param parameters
+   * @return The name of the current profile. <code>null</code> if there was an I/O error while
+   *         reading the inifile, no new settings could be created, or the defaultProfile could not be selected
+   * @deprecated replace by {@link #init(File, String)}
+   */
+  @Deprecated
+  public static String init(Client.Parameters parameters) {
+    String profile = init(parameters.settingsDir);
+    if (parameters.profile != null) {
+      if (!setProfile(parameters.profile))
+        return null;
+    }
+    return profile;
   }
 
   /**
@@ -312,6 +309,23 @@ public class ProfileManager {
     }
     Collections.sort(result);
     return result;
+  }
+
+  public static Collection<String> getProfiles(Path settingsDir2) {
+    Properties newSettings = new OrderedOutputProperties();
+    try {
+      Collection<String> newProfiles = getProfiles(settingsDir2, newSettings);
+      if ("true".equals(newSettings.getProperty(LEGACY_PROFILE)))
+        if (newProfiles == null)
+          return Collections.singleton("legacy");
+        else {
+          newProfiles.add("legacy");
+        }
+      return newProfiles;
+
+    } catch (IOException e1) {
+      return null;
+    }
   }
 
   /**
@@ -460,36 +474,99 @@ public class ProfileManager {
     os.close();
   }
 
-  public static void importProfiles(File zipFile) throws ProfileException {
+  /**
+   * Import magellan profiles from a settings directory
+   * 
+   * @param importDir
+   * @return the names of the imported profiles
+   * @throws ProfileException If new profiles cannot be read or written.
+   */
+  public static Collection<String> importProfilesFromDir(Path importDir) throws ProfileException {
     OrderedOutputProperties newSettings = new OrderedOutputProperties();
     newSettings.clear();
     try {
-      Collection<String> newProfiles = getProfiles(zipFile, newSettings);
-
+      Collection<String> newProfiles = getProfiles(importDir, newSettings);
+      Collection<String> importedProfiles = new ArrayList<String>();
       if (newProfiles != null) {
         for (String profile : newProfiles) {
-          Path tempdir = Files.createTempDirectory("magellan_profile_");
+          String profileDirName = newSettings.getProperty(PROFILE_PREFIX + profile + DIRECTORY);
+          Path profileDir = profileDirName != null ? importDir.resolve(profileDirName) : null;
+          if (profileDir == null || !Files.isDirectory(profileDir)) {
+            log.info(profile + ": directory for imported profile not found");
+          } else {
+            String imported = importProfile(profile, profileDir);
+            importedProfiles.add(imported);
+          }
+        }
+      }
+      if ("true".equals(newSettings.getProperty(LEGACY_PROFILE))) {
+        String imported = importProfile("profile", importDir);
+        if (imported != null) {
+          importedProfiles.add(imported);
+        }
+      }
+      return importedProfiles;
+    } catch (IOException e) {
+      throw new ProfileException(Resources.get("profilemanager.exc.ioerror", e.getMessage()));
+    }
+  }
+
+  /**
+   * Import magellan profiles from a zip file containing a settings directory
+   * 
+   * @param zipFile
+   * @return the names of the imported profiles
+   * @throws ProfileException If new profiles cannot be read or written.
+   */
+  public static Collection<String> importProfilesFromZip(Path zipFile) throws ProfileException {
+    OrderedOutputProperties newSettings = new OrderedOutputProperties();
+    newSettings.clear();
+    try {
+      Path tempDir0 = Files.createTempDirectory("magellan_profiles_");
+      Collection<String> newProfiles = null;
+      Collection<String> importedProfiles = new ArrayList<String>();
+      try {
+        FileUtils.unzip(zipFile, tempDir0, null, false);
+
+        newProfiles = getProfiles(tempDir0, newSettings);
+      } finally {
+        try {
+          log.fine("deleting temp dir " + tempDir0);
+          FileUtils.deleteDirectory(tempDir0);
+        } catch (FileException e) {
+          log.warn(e);
+        }
+      }
+      if (newProfiles != null) {
+        for (String profile : newProfiles) {
+          Path tempDir = Files.createTempDirectory("magellan_profile_");
           String profileDir = newSettings.getProperty(PROFILE_PREFIX + profile + DIRECTORY);
           if (profileDir == null) {
             log.info(profile + ": directory for imported profile not found");
           }
           try {
-            FileUtils.unzip(zipFile.toPath(), tempdir, profile, true);
-            importProfile(profile, tempdir.resolve(profileDir));
+            FileUtils.unzip(zipFile, tempDir, profile, true);
+            String imported = importProfile(profile, tempDir.resolve(profileDir));
+            if (imported != null) {
+              importedProfiles.add(imported);
+            }
           } finally {
             try {
-              log.fine("deleting temp dir " + tempdir);
-              FileUtils.deleteDirectory(tempdir);
+              log.fine("deleting temp dir " + tempDir + " for " + profile);
+              FileUtils.deleteDirectory(tempDir);
             } catch (FileException e) {
               log.warn(e);
             }
           }
         }
-      } else if ("true".equals(newSettings.getProperty(LEGACY_PROFILE))) {
+        return importedProfiles;
+      }
+      if ("true".equals(newSettings.getProperty(LEGACY_PROFILE))) {
         Path tempdir = Files.createTempDirectory("magellan_profile_");
+        String imported;
         try {
-          FileUtils.unzip(zipFile.toPath(), tempdir, null, true);
-          importProfile("profile", tempdir);
+          FileUtils.unzip(zipFile, tempdir, null, true);
+          imported = importProfile("profile", tempdir);
         } finally {
           try {
             FileUtils.deleteDirectory(tempdir);
@@ -497,33 +574,40 @@ public class ProfileManager {
             log.warn(e);
           }
         }
+        if (imported != null)
+          return Collections.singletonList(imported);
+        else
+          return Collections.emptyList();
       }
     } catch (FileException | IOException e) {
       // TODO more fine grained message, clean up
       throw new ProfileException(Resources.get("profilemanager.exc.ioerror", e.getMessage()));
     }
+    return Collections.emptyList();
   }
 
-  private static Collection<String> getProfiles(File zipFile, OrderedOutputProperties newSettings) throws ZipException,
-      IOException {
-    try (ZipInputStream inputStream = new ZipInputStream(new FileInputStream(zipFile))) {
-      Collection<String> newProfiles = null;
-      ZipEntry entry = inputStream.getNextEntry();
-      while (entry != null) {
-        if (INIFILE.equals(entry.getName())) {
-          newSettings.loadFromXML(new BufferedInputStream(new FileInputStream(settingsFile)));
-          newProfiles = getProfiles(newSettings);
-        } else if (Client.SETTINGS_FILENAME.equals(entry.getName())) {
-          newSettings.setProperty(LEGACY_PROFILE, "true");
-        }
-        entry = inputStream.getNextEntry();
+  private static Collection<String> getProfiles(Path tempdir, Properties newSettings) throws IOException {
+    Path iniFile = tempdir.resolve(INIFILE);
+    Path legacyFile = tempdir.resolve(Client.SETTINGS_FILENAME);
+    Collection<String> newProfiles = null;
+    if (Files.isRegularFile(iniFile)) {
+      try {
+        newSettings.loadFromXML(Files.newInputStream(iniFile));
+        newProfiles = getProfiles(newSettings);
+      } catch (Exception e) {
+        // no valid profile
       }
-      return newProfiles;
+    } else if (Files.isRegularFile(legacyFile)) {
+      newSettings.setProperty(LEGACY_PROFILE, "true");
     }
-
+    return newProfiles;
   }
 
-  private static void importProfile(String profile, Path tempdir) throws ProfileException {
+  private static String importProfile(String profile, Path tempdir) throws ProfileException {
+    if (!Files.exists(tempdir) || !Files.isDirectory(tempdir)) {
+      log.info("skipping empty profile " + profile);
+      return null;
+    }
     String newProfile = profile;
     if (getProfiles().contains(profile)) {
       for (int i = 1; getProfiles().contains(newProfile); ++i) {
@@ -536,19 +620,27 @@ public class ProfileManager {
       newPath = settingsDir.toPath().resolve(profile + "_" + String.valueOf(i));
     }
     try {
-      FileUtils.copyDirectory(tempdir.resolve(tempdir), newPath);
+      FileUtils.copyDirectory(tempdir, newPath);
+      settings.setProperty(PROFILE_PREFIX + newProfile + NAME, newProfile);
+      settings.setProperty(PROFILE_PREFIX + newProfile + DIRECTORY, settingsDir.toPath().relativize(newPath)
+          .toString());
+      return newProfile;
     } catch (FileException e) {
       handleException(e);
     }
 
-    settings.setProperty(PROFILE_PREFIX + newProfile + NAME, newProfile);
-    settings.setProperty(PROFILE_PREFIX + newProfile + DIRECTORY, settingsDir.toPath().relativize(newPath).toString());
+    return null;
   }
 
-  public static void exportProfiles(File targetFile) {
+  /**
+   * Exports all profiles to a zip file.
+   * 
+   * @param targetFile
+   */
+  public static void exportProfiles(Path targetFile) {
     Path settingsDirectory = settingsFile.getParentFile().toPath();
     try {
-      final ZipOutputStream outputStream = new ZipOutputStream(new FileOutputStream(targetFile));
+      final ZipOutputStream outputStream = new ZipOutputStream(Files.newOutputStream(targetFile));
       FileUtils.addFile(outputStream, settingsDirectory, settingsFile.toPath());
       for (String profile : getProfiles()) {
         FileUtils.addDirectory(outputStream, ProfileManager.getProfileDirectory(profile).toPath(), settingsDirectory,

@@ -486,48 +486,45 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // ////////////////////////
   // BASIC initialization //
   // ////////////////////////
+  public static final String[][] colorProperties = new String[][] { {
+      PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_UNKNOWN_COLOR
+  }, {
+      "#009999", // Format: #RRGGBB
+      "#000000",
+      "#000066",
+      "#666600",
+      "#006666",
+      "#009900",
+      "#990000",
+      "#999900",
+      "#555555"
+  }, {
+      "events",
+      "movement",
+      "economy",
+      "magic",
+      "study",
+      "production",
+      "errors",
+      "battle",
+      "unknown"
+  }
+  };
 
   private void fixSettings(Properties settings) {
     // backward compatibility for white message tags (it's now the text color)
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "#000000");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "#000066");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "#666600");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "#006666");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "#009900");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "#990000");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
-      // #RRGGBB
+    for (int c = 0; c < colorProperties[0].length; ++c) {
+      if (settings.getProperty(colorProperties[0][c], "-").equals("#FFFFFF")) {
+        settings.setProperty(colorProperties[0][c], colorProperties[1][c]);
+      }
     }
   }
 
@@ -550,23 +547,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, "0");
+
     // Message Panel Default colors.
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "#000000");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "#000066");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "#666600");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "#006666");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "#009900");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "#990000");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
-    // #RRGGBB
+    for (int c = 0; c < colorProperties[0].length; ++c) {
+      settings.setProperty(colorProperties[0][c], colorProperties[1][c]);
+    }
 
     DetailsViewAutoCompletionPreferences.applyDefault(settings);
 

@@ -29,8 +29,10 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
@@ -44,12 +46,14 @@ import javax.swing.tree.TreePath;
 
 import magellan.client.Client;
 import magellan.library.Message;
+import magellan.library.rules.MessageType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT ME!
+ * 
  * 
  * @author Andreas
  * @version 1.0
@@ -76,18 +80,19 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     defaultRenderer = def;
 
     setOpaque(false);
+    updateColors();
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public void registerTree(JTree tree) {
     tree.addComponentListener(this);
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public void unregisterTree(JTree tree) {
     tree.removeComponentListener(this);
   }
@@ -110,7 +115,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
   /**
    * 
    */
-  protected boolean computeSize(JTree tree, BasicTreeUI ui, int row) {
+  protected boolean computeSize(JTree tree, BasicTreeUI tui, int row) {
     int treeWidth = tree.getSize().width;
 
     int labelWidth = 0;
@@ -122,10 +127,10 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     int indent = 0;
 
     try {
-      indent = getIndent(tree, ui, row);
+      indent = getIndent(tree, tui, row);
       // FIXME(stm) workaround for an annoying bug, that caused too low rows
       if (row == -1) {
-        indent += ui.getLeftChildIndent() + ui.getRightChildIndent();
+        indent += tui.getLeftChildIndent() + tui.getRightChildIndent();
       }
     } catch (Exception exc) {
       return false;
@@ -185,8 +190,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   @Override
   public void paintComponent(Graphics g) {
     int x = 0;
@@ -289,8 +294,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
   }
 
   /**
-	 * 
-	 */
+   * 
+   */
   public java.awt.Component getTreeCellRendererComponent(JTree jTree, Object obj, boolean selected,
       boolean expanded, boolean leaf, int row, boolean hasFocus) {
     icon = null;
@@ -316,118 +321,17 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
       Message message = (Message) userObject;
       string = message.getText();
       if (message.getMessageType() != null) {
-        String colorName =
-            "messagetype.section." + message.getMessageType().getSection() + ".color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        Color c = getColor(message.getMessageType());
+        if (c != null) {
+          foregroundColor = c;
         }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
       }
     } else {
       string = userObject.toString();
-
-      if (string.equalsIgnoreCase(Resources.get("messagepanel.section.economy"))) {
-        bold = true;
-        String colorName = "messagetype.section.economy.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.errors"))) {
-        bold = true;
-        String colorName = "messagetype.section.errors.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.events"))) {
-        bold = true;
-        String colorName = "messagetype.section.events.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.magic"))) {
-        bold = true;
-        String colorName = "messagetype.section.magic.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-        // } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.mail"))) {
-        // bold = true;
-        // String colorName = "messagetype.section.mail.color";
-        // String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        // if (color == null) {
-        // log.warnOnce("Property "+colorName+" not found.");
-        // color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        // }
-        // // color for message type found.
-        // foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.movement"))) {
-        bold = true;
-        String colorName = "messagetype.section.movement.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.production"))) {
-        bold = true;
-        String colorName = "messagetype.section.production.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.study"))) {
-        bold = true;
-        String colorName = "messagetype.section.study.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
-      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.node.battles"))) {
-        bold = true;
-        String colorName = "messagetype.section.battle.color";
-        String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color == null) {
-          LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
-          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
-        }
-        // color for message type found.
-        foregroundColor = Utils.getColor(color);
-
+      bold = true;
+      Color c = getSectionColor(string);
+      if (c != null) {
+        foregroundColor = c;
       }
     }
 
@@ -467,13 +371,14 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
       textColor = Color.black;
     }
 
-    TreeUI ui = jTree.getUI();
+    TreeUI tui = jTree.getUI();
     boolean init = false;
 
-    if (lineWrap && ui instanceof BasicTreeUI) {
+    if (lineWrap && tui instanceof BasicTreeUI) {
       try {
-        init = computeSize(jTree, (BasicTreeUI) ui, row);
+        init = computeSize(jTree, (BasicTreeUI) tui, row);
       } catch (Exception exc) {
+        // false
       }
     }
 
@@ -484,11 +389,58 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     return this;
   }
 
+  Map<MessageType, Color> typeColorCache = new HashMap<>();
+  Map<String, Color> sectionColorCache = new HashMap<>();
+
+  /**
+   * Notifies this renderer that color settings have changed.
+   */
+  public void updateColors() {
+    sectionColorCache.clear();
+    typeColorCache.clear();
+
+    for (String section : Client.colorProperties[2]) {
+      String caption = Resources.get("messagepanel.section." + section);
+      String colorName = "messagetype.section." + section + ".color";
+      Color color = getColor(colorName);
+      sectionColorCache.put(caption, color);
+    }
+
+  }
+
+  private Color getSectionColor(String section) {
+    Color color = sectionColorCache.get(section);
+    return color;
+  }
+
+  private Color getColor(MessageType messageType) {
+    Color color = typeColorCache.get(messageType);
+    if (color == null) {
+      String colorName = PropertiesHelper.MESSAGETYPE_SECTION_UNKNOWN_COLOR;
+      if (!messageType.equals(MessageType.NO_TYPE) && messageType.getSection() != null) {
+        colorName = "messagetype.section." + messageType.getSection() + ".color";
+      }
+
+      color = getColor(colorName);
+      typeColorCache.put(messageType, color);
+    }
+    return color;
+  }
+
+  private Color getColor(String colorName) {
+    String colorProp = Client.INSTANCE.getProperties().getProperty(colorName);
+    if (colorProp == null) {
+      LineWrapCellRenderer.log.warnOnce("Property " + colorName + " not found.");
+      colorProp = "-";
+    }
+    return Utils.getColor(colorProp);
+  }
+
   /**
    * 
    */
   protected void updateTree(JTree tree) {
-    TreeUI ui = tree.getUI();
+    TreeUI aui = tree.getUI();
 
     // Since there seems to be a kind of bug with JTree.treeDidChange(),
     // we have to try to let the UI compute the bounds manually.
@@ -497,8 +449,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     // to let the cache be cleared.
     // Andreas
     //
-    if (ui instanceof BasicTreeUI) {
-      BasicTreeUI tui = (BasicTreeUI) ui;
+    if (aui instanceof BasicTreeUI) {
+      BasicTreeUI tui = (BasicTreeUI) aui;
       int i = tui.getLeftChildIndent();
       tui.setLeftChildIndent(i + 1);
       tui.setLeftChildIndent(i);
@@ -522,18 +474,21 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
    * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
    */
   public void componentMoved(java.awt.event.ComponentEvent componentEvent) {
+    // nop
   }
 
   /**
    * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
    */
   public void componentShown(java.awt.event.ComponentEvent componentEvent) {
+    // nop
   }
 
   /**
    * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
    */
   public void componentHidden(java.awt.event.ComponentEvent componentEvent) {
+    // nop
   }
 
   /**
@@ -564,14 +519,15 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     protected boolean inCompute = false;
 
     /**
-		 * 
-		 */
+     * 
+     */
     public void addLayoutComponent(java.lang.String str, java.awt.Component component) {
+      // nop
     }
 
     /**
-		 * 
-		 */
+     * 
+     */
     public void layoutContainer(java.awt.Container container) {
       // always use pref sizes
       Component c = container.getComponent(0);
@@ -586,9 +542,10 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     }
 
     /**
-		 * 
-		 */
+     * 
+     */
     public void removeLayoutComponent(java.awt.Component component) {
+      // nop
     }
 
     /**
@@ -599,8 +556,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     }
 
     /**
-		 * 
-		 */
+     * 
+     */
     public java.awt.Dimension preferredLayoutSize(java.awt.Container container) {
       if (inCompute)
         return inDim;
@@ -617,4 +574,5 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
       return dim;
     }
   }
+
 }

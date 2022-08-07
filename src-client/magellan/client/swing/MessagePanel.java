@@ -639,4 +639,11 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   public String getSuperMenuTitle() {
     return Resources.get("messagepanel.menu.supertitle");
   }
+
+  /**
+   * Notifies this panel that settings have changed.
+   */
+  public void setPreferencesChanged() {
+    lineRenderer.updateColors();
+  }
 }

@@ -168,6 +168,9 @@ public class PropertiesHelper {
   /** Property type Color (#RRGGBB): background color for battle messages */
   public static final String MESSAGETYPE_SECTION_BATTLE_COLOR = "messagetype.section.battle.color";
 
+  /** Property type Color (#RRGGBB): background color for battle messages */
+  public static final String MESSAGETYPE_SECTION_UNKNOWN_COLOR = "messagetype.section.unknown.color";
+
   public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT = "ClientPreferences.LoadLastReport";
 
   public static final String CLIENT_LAST_CR_ADDED = "Client.lastCRAdded";

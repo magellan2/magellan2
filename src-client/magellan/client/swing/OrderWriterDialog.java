@@ -805,7 +805,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     chkECheckComments[type] = createCheckBox("addecheckcomments", PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,
         suffix, true);
     chkRemoveSCComments[type] = createCheckBox("removesemicoloncomments",
-        PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS, suffix, false);
+        PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS, suffix, type != FILE_PANEL);
     chkRemoveSSComments[type] = createCheckBox("removedoubleslashcomments",
         PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS, suffix, false);
     chkConfirmedOnly[type] = createCheckBox("skipunconfirmedorders", PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,
@@ -1452,7 +1452,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS + suffix, true));
 
     chkRemoveSCComments[type].setSelected(PropertiesHelper.getBoolean(localSettings,
-        PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, false));
+        PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS + suffix, type != FILE_PANEL));
 
     chkRemoveSSComments[type].setSelected(PropertiesHelper.getBoolean(localSettings,
         PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS + suffix, false));

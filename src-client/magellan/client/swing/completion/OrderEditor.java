@@ -8,6 +8,7 @@
 package magellan.client.swing.completion;
 
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,10 +35,13 @@ import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultCaret;
 import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import javax.swing.text.TabSet;
+import javax.swing.text.TabStop;
 import javax.swing.undo.UndoManager;
 
 import magellan.client.event.EventDispatcher;
@@ -169,6 +173,29 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     errorColor = Colors.decode(settings.getProperty("OrderEditor.errorBgColor", "255,128,0"));
 
     initStyles();
+  }
+
+  /**
+   * @param textPane
+   * @param charactersPerTab
+   */
+  public static void setTabs(final JTextPane textPane, int charactersPerTab) {
+    FontMetrics fm = textPane.getFontMetrics(textPane.getFont());
+    int charWidth = fm.charWidth(' ');
+    int tabWidth = charWidth * charactersPerTab;
+
+    TabStop[] tabs = new TabStop[6];
+
+    for (int j = 0; j < tabs.length; j++) {
+      int tab = j + 1;
+      tabs[j] = new TabStop(tab * tabWidth);
+    }
+
+    TabSet tabSet = new TabSet(tabs);
+    SimpleAttributeSet attributes = new SimpleAttributeSet();
+    StyleConstants.setTabSet(attributes, tabSet);
+    int length = textPane.getDocument().getLength();
+    textPane.getStyledDocument().setParagraphAttributes(0, length, attributes, false);
   }
 
   /**
@@ -709,6 +736,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
    */
   private void formatTokens(int startPos) {
     StyledDocument doc = (StyledDocument) getDocument();
+    setTabs(this, 4);
 
     String text = getText();
 
@@ -844,18 +872,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     } catch (StringIndexOutOfBoundsException e) {
       OrderEditor.log.error("OrderEditor.getLineBorders(), text: " + text + ", offset: " + offset
           + ", ret: (" + ret[0] + ", " + ret[1] + ")", e);
-    }
-
-    if (OrderEditor.log.isDebugEnabled()) {
-      OrderEditor.log.debug("OrderEditor.getLineBorders:(" + text + "," + offset + ") " + ret[0]
-          + "," + ret[1]);
-    }
-
-    if (ret[0] >= 0) {
-      if (ret[1] > ret[0]) {
-        OrderEditor.log.debug("OrderEditor.getLineBorders would be \""
-            + text.substring(ret[0], ret[1]) + "\"");
-      }
     }
 
     return ret;

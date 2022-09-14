@@ -73,37 +73,39 @@ public class EresseaRelationFactory implements RelationFactory {
   /** Order priority */
   public static final int P_BETRETE = 701;
   /** Order priority */
-  public static final int P_GIB_KOMMANDO = 901;
+  public static final int P_VERLASSE = 901;
   /** Order priority */
-  public static final int P_VERLASSE = 1001;
+  public static final int P_ATTACKIERE = 1101;
   /** Order priority */
-  public static final int P_ATTACKIERE = 1201;
+  public static final int P_RESERVIERE = 1201;
   /** Order priority */
-  public static final int P_RESERVIERE = 1301;
-  /** Order priority */
-  public static final int P_FOLGE = 1401;
+  public static final int P_GIB_KOMMANDO = 1401;
   /** Order priority */
   public static final int P_GIB = 1501;
   /** Order priority */
-  public static final int P_REKRUTIERE = 1701;
+  public static final int P_REKRUTIERE = 1601;
   /** Order priority */
-  public static final int P_BEFOERDERE = 1801;
+  public static final int P_FOLGE = 1801;
   /** Order priority */
-  public static final int P_LEHRE = 2301;
+  public static final int P_BEFOERDERE = 1901;
   /** Order priority */
-  public static final int P_FAHRE = 2898;
+  public static final int P_LEHRE = 2401;
   /** Order priority */
-  public static final int P_TRANSPORTIERE = 2899;
+  public static final int P_LERNE = 2502;
   /** Order priority */
-  public static final int P_NACH = 2900;
+  public static final int P_FAHRE = 3098;
   /** Order priority */
-  public static final int P_BEWACHE = 3001;
+  public static final int P_TRANSPORTIERE = 3099;
+  /** Order priority */
+  public static final int P_NACH = 3100;
+  /** Order priority */
+  public static final int P_BEWACHE = 3201;
 
   /** Order priority */
   public static final int P_BUILDING_MAINTENANCE = 2001;
 
   /** Order priority */
-  public static final int P_UNIT_MAINTENANCE = 3501;
+  public static final int P_UNIT_MAINTENANCE = 3701;
 
   protected EresseaRelationFactory(Rules rules) {
     this.rules = rules;
@@ -529,6 +531,8 @@ public class EresseaRelationFactory implements RelationFactory {
       return P_BENENNE;
     else if (order instanceof TeachOrder)
       return P_LEHRE;
+    else if (order instanceof LearnOrder)
+      return P_LERNE;
     else if (order instanceof AttackOrder)
       return P_ATTACKIERE;
     else if (order instanceof RideOrder)

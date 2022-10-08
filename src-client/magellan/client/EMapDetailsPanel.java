@@ -3026,6 +3026,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 + Resources.get("emapdetailspanel.node.overloadedby")
                 + " "
                 + EMapDetailsPanel.weightNumberFormat.format(free)
+                + " / "
+                + EMapDetailsPanel.weightNumberFormat.format(max)
                 + " "
                 + Resources.get("emapdetailspanel.node.weightunits"), "warnung"));
       } else {
@@ -3067,6 +3069,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 + Resources.get("emapdetailspanel.node.overloadedby")
                 + " "
                 + EMapDetailsPanel.weightNumberFormat.format(free)
+                + " / "
+                + EMapDetailsPanel.weightNumberFormat.format(max)
                 + " "
                 + Resources.get("emapdetailspanel.node.weightunits"), "warnung"));
       } else {
@@ -4613,6 +4617,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       loadText.append(
           EMapDetailsPanel.weightNumberFormat.format(Float.valueOf((s.getModifiedLoad() - s
               .getModifiedMaxCapacity()) / 100.0F))).append(" ");
+      loadText.append(" / ").append(EMapDetailsPanel.weightNumberFormat.format(s.getModifiedMaxCapacity()));
       loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 
       n =

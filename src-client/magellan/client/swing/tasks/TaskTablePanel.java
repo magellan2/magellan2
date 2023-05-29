@@ -181,6 +181,44 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     refreshProblems();
   }
 
+  private static class ProblemRenderer implements TableCellRenderer {
+
+    private TableCellRenderer defaultRenderer;
+
+    public ProblemRenderer(TableCellRenderer defaultRenderer) {
+      this.defaultRenderer = defaultRenderer;
+    }
+
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+        int row, int column) {
+      Object wrapper = value;
+      if (value instanceof Problem) {
+        String message = ((Problem) value).getMessage();
+        Object o = ((Problem) value).getObject();
+        Region r = ((Problem) value).getRegion();
+        if (o != null && message.startsWith(o.toString())) {
+          message = message.substring(o.toString().length());
+          if (r != null && message.startsWith(" in " + r.toString())) {
+            message = message.substring(r.toString().length() + 3);
+          }
+          message = "..." + message;
+        }
+
+        final String m = message;
+
+        wrapper = new Object() {
+          @Override
+          public String toString() {
+            return m;
+          }
+        };
+      }
+      Component c = defaultRenderer.getTableCellRendererComponent(table, wrapper, isSelected, hasFocus, row, column);
+      return c;
+    }
+
+  }
+
   private void initGUI() {
     model = new TaskTableModel(getHeaderTitles());
     sorter = new TableSorter(model);
@@ -192,6 +230,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             super.prepareRenderer(renderer, row, column));
       }
     };
+
+    ProblemRenderer problemRenderer = new ProblemRenderer(table.getDefaultRenderer(Object.class));
+    table.setDefaultRenderer(Problem.class, problemRenderer);
 
     sorter.setTableHeader(table.getTableHeader()); // NEW
 
@@ -2011,6 +2052,18 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             removeRow(i);
           }
         }
+      }
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+      switch (columnIndex) {
+      case PROBLEM_POS:
+        return Problem.class;
+      case REGION_POS:
+        return Region.class;
+      default:
+        return super.getColumnClass(columnIndex);
       }
     }
   }

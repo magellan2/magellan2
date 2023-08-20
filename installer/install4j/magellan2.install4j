@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.4" transformSequenceNumber="9">
-  <directoryPresets config="../../release" />
+<install4j version="9.0.7" transformSequenceNumber="9">
+  <directoryPresets config=".." />
   <application name="${compiler:magellan.name}" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" compression="9" lzmaCompression="true" commonExternalFiles="true" shortName="${compiler:magellan.shortname}" publisher="${compiler:magellan.developer}" publisherWeb="${compiler:magellan.website}" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="${compiler:java.version.min}">
     <languages>
       <principalLanguage id="en" customLocalizationFile="./magellan2.utf8" />
@@ -106,7 +106,7 @@
         </classPath>
       </java>
       <vmOptionsFile overwriteMode="1">
-        <content>-include-options ${installer:sys.localAppdataDir}\${compiler:sys.shortName}\my.vmoptions</content>
+        <content>-include-options ${installer:sys.appdataDir}\${compiler:sys.shortName}\my.vmoptions</content>
       </vmOptionsFile>
       <iconImageFiles>
         <file path="../../etc/images/about/appicon.png" />
@@ -347,7 +347,7 @@ return console.askOkCancel(message, true);
                   <property name="vmOptions" type="array" elementType="string" length="3">
                     <element index="0"># Enter one VM parameter per line</element>
                     <element index="1">${installer:xmx}</element>
-                    <element index="2">-include-options ${installer:sys.localAppdataDir}${installer:sys.fileSeparator}Magellan${installer:sys.fileSeparator}my.vmoptions</element>
+                    <element index="2">-include-options ${installer:sys.appdataDir}${installer:sys.fileSeparator}Magellan${installer:sys.fileSeparator}my.vmoptions</element>
                   </property>
                 </serializedBean>
               </action>
@@ -356,7 +356,7 @@ return console.askOkCancel(message, true);
                   <property name="append" type="boolean" value="true" />
                   <property name="file">
                     <object class="java.io.File">
-                      <string>${installer:sys.localAppdataDir}/${compiler:magellan.shortname}/my.vmoptions</string>
+                      <string>${installer:sys.appdataDir}/${compiler:magellan.shortname}/my.vmoptions</string>
                     </object>
                   </property>
                   <property name="text" type="string"># Enter one VM parameter per line
@@ -366,12 +366,49 @@ return console.askOkCancel(message, true);
 # -include-options [path to other .vmoption file]
 </property>
                 </serializedBean>
-                <condition>var dir=new File((String)context.getVariable("sys.localAppdataDir"),context.getCompilerVariable("magellan.shortname"));
+                <condition>var dir=new File((String)context.getVariable("sys.appdataDir"),context.getCompilerVariable("magellan.shortname"));
 if (!dir.exists())
  dir.mkdir();
  
 var file=new File(dir, "my.vmoptions");
 return !file.exists();</condition>
+              </action>
+              <action id="323" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="responseFileVariable" type="boolean" value="true" />
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">""+Long.valueOf(System.currentTimeMillis())</property>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">setFromInstaller</property>
+                </serializedBean>
+              </action>
+              <action id="324" beanClass="com.install4j.runtime.beans.actions.misc.ModifyResponseFileAction" actionElevationType="elevated" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.contentDir}/.install4j/response.varfile</string>
+                    </object>
+                  </property>
+                </serializedBean>
+              </action>
+              <action id="314" beanClass="com.install4j.runtime.beans.actions.properties.WritePropertiesFileAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.appdataDir}/${compiler:magellan.shortname}/installer.properties</string>
+                    </object>
+                  </property>
+                  <property name="propertiesSource" type="enum" class="com.install4j.runtime.beans.actions.properties.PropertiesSource" value="FILE" />
+                  <property name="sourceFile">
+                    <object class="com.install4j.api.beans.ExternalFile">
+                      <string>${installer:sys.contentDir}/.install4j/response.varfile</string>
+                    </object>
+                  </property>
+                  <property name="sourceVariableName" type="string">magellanInstallerProperties</property>
+                  <property name="updateExistingKeys" type="boolean" value="true" />
+                </serializedBean>
               </action>
             </actions>
             <formComponents>
@@ -533,7 +570,45 @@ return console.askYesNo(message, true);
           <screen id="147" beanClass="com.install4j.runtime.beans.screens.StartupScreen" rollbackBarrierExitCode="0">
             <actions>
               <action id="291" beanClass="com.install4j.runtime.beans.actions.misc.LoadResponseFileAction" rollbackBarrierExitCode="0" />
-              <action id="304" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" rollbackBarrierExitCode="0">
+              <action id="313" beanClass="com.install4j.runtime.beans.actions.properties.ReadPropertiesFileAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.appdataDir}/${compiler:magellan.shortname}/installer.properties</string>
+                    </object>
+                  </property>
+                  <property name="variableName" type="string">magellanInstallerProperties</property>
+                </serializedBean>
+              </action>
+              <action id="320" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">@SuppressWarnings("unchecked") 
+Map&lt;String,String&gt; props = (Map&lt;String, String&gt;) context.getVariable("magellanInstallerProperties");
+String message = "magellanInstallerproperties\n";
+for(String key : props.keySet()) {
+    message += key + " = " + props.get(key) + "\n";
+}
+Util.showMessage(message);
+
+// overwrite nightly check with value from magellan if it is more recent
+
+long setFromMagellan = props.get("setFromMagellan") == null ? 0 : Long.valueOf(props.get("setFromMagellan"));
+long setFromInstaller = props.get("setFromInstaller") == null ? 0 : Long.valueOf(props.get("setFromInstaller"));
+if (setFromMagellan &gt; setFromInstaller) {
+  context.setVariable("updateMagellanNightly", props.get("updateMagellanNightly"));
+  context.setVariable("updateSchedule", props.get("updateSchedule"));
+}
+
+// updateSchedule: ON_EVERY_START / NEVER
+
+return true;</property>
+                    </object>
+                  </property>
+                </serializedBean>
+              </action>
+              <action id="304" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" enabled="false" rollbackBarrierExitCode="0">
                 <serializedBean>
                   <property name="script">
                     <object class="com.install4j.api.beans.ScriptProperty">
@@ -551,12 +626,13 @@ return true;</property>
                   <property name="script">
                     <object class="com.install4j.api.beans.ScriptProperty">
                       <property name="value" type="string">String url=context.getCompilerVariable("sys.updatesUrl");
-// Util.showMessage("sys.updatesUrl: "+url+", nightly "+context.getBooleanVariable("updateMagellanNightly"));
+
 if (context.getBooleanVariable("updateMagellanNightly")) {
   url = url.replace("-stable", "-latest");
 } else {
   url = url.replace("-latest", "-stable");
 }
+// Util.showMessage("url1b " + url + " uD " + context.getVariable("updateDescriptor"));
 // Util.showMessage("sys.updatesUrl: "+url+", nightly "+context.getBooleanVariable("updateMagellanNightly"));
 return url;</property>
                     </object>
@@ -569,20 +645,17 @@ return url;</property>
                   <property name="url" type="string">${installer:localUpdateUrl}</property>
                   <property name="variable" type="string">updateDescriptor</property>
                 </serializedBean>
+                <condition>context.getBooleanVariable("updateMagellanNightly") &amp;&amp; !context.getVariable("updateSchedule").equals("NEVER")</condition>
               </action>
-              <action id="286" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" commentSet="true" rollbackBarrierExitCode="0" failureStrategy="askQuit">
+              <action id="286" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0" failureStrategy="askQuit">
                 <serializedBean>
                   <property name="failIfNull" type="boolean" value="true" />
                   <property name="responseFileVariable" type="boolean" value="true" />
                   <property name="script">
                     <object class="com.install4j.api.beans.ScriptProperty">
-                      <property name="value" type="string">// inverse!
+                      <property name="value" type="string">// enforce stable
 String url=context.getCompilerVariable("sys.updatesUrl");
-if (context.getBooleanVariable("updateMagellanNightly")) {
-  url = url.replace("-latest", "-stable");
-} else {
-  // url = url.replace("-stable", "-latest");
-}
+url = url.replace("-latest", "-stable");
 return url;</property>
                     </object>
                   </property>
@@ -606,9 +679,9 @@ return url;</property>
                   <property name="url" type="string">${installer:localUpdateUrl}</property>
                   <property name="variable" type="string">updateDescriptor</property>
                 </serializedBean>
-                <condition>context.getVariable("updateDescriptor")==null</condition>
+                <condition>context.getVariable("updateDescriptor")==null &amp;&amp; !context.getVariable("updateSchedule").equals("NEVER")</condition>
               </action>
-              <action id="299" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" rollbackBarrierExitCode="0">
+              <action id="299" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" enabled="false" rollbackBarrierExitCode="0">
                 <serializedBean>
                   <property name="responseFileVariable" type="boolean" value="true" />
                   <property name="script">
@@ -619,7 +692,7 @@ return url;</property>
                   <property name="variableName" type="string">updateChecked</property>
                 </serializedBean>
               </action>
-              <action id="301" beanClass="com.install4j.runtime.beans.actions.misc.ModifyResponseFileAction" actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="askQuit">
+              <action id="301" beanClass="com.install4j.runtime.beans.actions.misc.ModifyResponseFileAction" enabled="false" actionElevationType="elevated" rollbackBarrierExitCode="0" failureStrategy="askQuit">
                 <serializedBean>
                   <property name="addVariables" type="boolean" value="true" />
                   <property name="file">
@@ -627,6 +700,42 @@ return url;</property>
                       <string>${installer:sys.contentDir}/.install4j/response.varfile</string>
                     </object>
                   </property>
+                </serializedBean>
+              </action>
+              <action id="322" beanClass="com.install4j.runtime.beans.actions.control.RunScriptAction" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="script">
+                    <object class="com.install4j.api.beans.ScriptProperty">
+                      <property name="value" type="string">@SuppressWarnings("unchecked") 
+Map&lt;String,String&gt; props = (Map&lt;String, String&gt;) context.getVariable("magellanInstallerProperties");
+if (context.getVariable("updateDescriptor")!=null || !context.getVariable("updateSchedule").equals("NEVER"))
+  props.put("updateChecked", ""+Long.valueOf(System.currentTimeMillis()));
+
+props.put("setFromUpdater", ""+Long.valueOf(System.currentTimeMillis()));
+context.setVariable("magellanInstallerProperties", props);
+
+//Map&lt;String,String&gt; props = (Map&lt;String, String&gt;) context.getVariable("magellanInstallerProperties");
+String message = "magellanInstallerproperties2\n";
+for(String key : props.keySet()) {
+    message += key + " = " + props.get(key) + "\n";
+}
+Util.showMessage(message);
+
+return true;</property>
+                    </object>
+                  </property>
+                </serializedBean>
+              </action>
+              <action id="321" beanClass="com.install4j.runtime.beans.actions.properties.WritePropertiesFileAction" rollbackBarrier="true" rollbackBarrierExitCode="0">
+                <serializedBean>
+                  <property name="file">
+                    <object class="java.io.File">
+                      <string>${installer:sys.appdataDir}/${compiler:magellan.shortname}/installer.properties</string>
+                    </object>
+                  </property>
+                  <property name="propertiesSource" type="enum" class="com.install4j.runtime.beans.actions.properties.PropertiesSource" value="VARIABLE" />
+                  <property name="sourceVariableName" type="string">magellanInstallerProperties</property>
+                  <property name="updateExistingKeys" type="boolean" value="true" />
                 </serializedBean>
               </action>
               <action name="Update descriptor entry" id="191" beanClass="com.install4j.runtime.beans.actions.control.SetVariableAction" failureStrategy="quit">
@@ -1378,7 +1487,7 @@ return true;</property>
         <entry rootId="203" location="echeck/echeck.exe" />
         <entry rootId="203" location="echeck/echeck.macos" />
       </exclude>
-      <jreBundle jreBundleSource="none" installOnlyIfNecessary="true">
+      <jreBundle installOnlyIfNecessary="true">
         <modules>
           <module name="jdk.jshell" />
         </modules>

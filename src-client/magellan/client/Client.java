@@ -960,12 +960,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // create dynamix menus -- currently not used (stm)
     Map<String, JMenu> topLevel = new HashMap<String, JMenu>();
     List<JMenu> direction = new LinkedList<JMenu>();
-    Iterator<Container> it = components.iterator();
     Client.log.info("Checking for menu-providers...");
 
-    while (it.hasNext()) {
-      Container o = it.next();
-
+    for (Container o : components) {
       if (o instanceof MenuProvider) {
         MenuProvider mp = (MenuProvider) o;
 
@@ -1448,7 +1445,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            versionCheck(c, tBinDir, tResourceDir);
+            versionCheck(c, tBinDir, tResourceDir, tsettFileDir);
 
             c.macify();
 
@@ -1506,35 +1503,50 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  private static void versionCheck(Client c, File tBinDir, File tResourceDir) {
+  private static void versionCheck(Client c, File tBinDir, File tResourceDir, File tConfigDir) {
     try {
-      Install4J.init(tBinDir);
-      boolean silent = false;
-      Boolean nightly = Install4J.isNightlyCheck();
-      if (nightly != null) {
-        log.fine("updated nightly check to " + nightly);
-        PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
-      }
-      if (Install4J.lastUpdateCheck() != null && Install4J.lastUpdateCheck() - System.currentTimeMillis() < 3600) {
-        silent = true;
-      }
+      boolean checkVersion = false;
 
-      String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), silent ? null : Client.startWindow);
-      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
-      if (!Utils.isEmpty(newestVersion)) {
-        Client.log.info("Newest Version on server: " + newestVersion);
-        Client.log.info("Current Version: " + currentVersion);
-        if (!silent && VersionInfo.isNewer(newestVersion, currentVersion)) {
-          String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-              .getGUILocale().getLanguage());
-          if (url == null) {
-            url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+      Install4J i4 = new Install4J(tBinDir, tConfigDir);
+
+      if (i4.isActive()) {
+        checkVersion = false;
+        if (i4.isSetByInstaller()) {
+          Boolean nightly = i4.isNightlyCheck();
+          if (nightly != null) {
+            log.fine("updated nightly check to " + nightly);
+            PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
           }
+          String schedule = i4.getUpdateSchedule();
+          if (schedule != null) {
+            boolean check = !schedule.equals(Install4J.CHECK_NEVER);
+            log.fine("updated version check at start to " + check);
+            PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, check);
+          }
+        }
+      } else {
+        log.info("Install4J configuration not found");
+      }
 
-          JOptionPane.showMessageDialog(Client.startWindow,
-              new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
-              "",
-              JOptionPane.INFORMATION_MESSAGE);
+      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
+      if (checkVersion) {
+        String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), checkVersion ? null
+            : Client.startWindow);
+        if (!Utils.isEmpty(newestVersion)) {
+          Client.log.info("Newest Version on server: " + newestVersion);
+          Client.log.info("Current Version: " + currentVersion);
+          if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+            String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+                .getGUILocale().getLanguage());
+            if (url == null) {
+              url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+            }
+
+            JOptionPane.showMessageDialog(Client.startWindow,
+                new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
+                "",
+                JOptionPane.INFORMATION_MESSAGE);
+          }
         }
       }
 

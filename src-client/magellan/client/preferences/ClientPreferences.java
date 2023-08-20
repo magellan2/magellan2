@@ -83,6 +83,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private JComboBox<String> logLevel;
   private JLabel stableLabel;
   private JLabel nightlyLabel;
+  private JLabel install4JLabel;
 
   /**
    * Creates a new ClientPreferences object.
@@ -124,11 +125,78 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     getLocalesPanel();
     getTempUnitPanel();
     getMiscPanel();
+    getUpdatePanel();
 
   }
 
   private Component getMiscPanel() {
     JPanel panel = addPanel(Resources.get("clientpreferences.misc.border"), new GridBagLayout());
+
+    int line = 0;
+    GridBagConstraints c = new GridBagConstraints();
+    c.insets = new Insets(2, 2, 2, 2);
+
+    // load last report on startup
+    c.gridx = 0;
+    c.gridy = line;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    c.weightx = 0.0;
+    c.gridwidth = 2;
+    loadlastreport =
+        new JCheckBox(Resources.get("clientpreferences.misc.loadlastreport.caption"),
+            PropertiesHelper.getBoolean(settings,
+                PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true));
+    loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
+    panel.add(loadlastreport, c);
+    line++;
+
+    // create void regions
+    c.gridx = 0;
+    c.gridy = line;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    createVoidRegions =
+        new JCheckBox(Resources.get("clientpreferences.create.void.regions.caption"),
+            PropertiesHelper.getBoolean(settings, "map.creating.void", false));
+    createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
+    panel.add(createVoidRegions, c);
+    line++;
+
+    // progress in titlebar
+    c.gridx = 0;
+    c.gridy = line;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    showProgress =
+        new JCheckBox(Resources.get("clientpreferences.progress.caption"), source.isShowingStatus());
+    showProgress.setHorizontalAlignment(SwingConstants.LEFT);
+    panel.add(showProgress, c);
+    line++;
+
+    // log level
+    c.gridx = 0;
+    c.gridy = line;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    c.gridwidth = 1;
+    JLabel logLabel = new JLabel(Resources.get("clientpreferences.loglevel.caption"));
+    logLevel = new JComboBox<String>(new String[] { "Error", "Warn" });
+    logLevel.setEditable(false);
+    initLogLevel();
+
+    panel.add(logLabel, c);
+    ++c.gridx;
+    c.weightx = 1.0;
+    panel.add(logLevel, c);
+    line++;
+
+    return panel;
+  }
+
+  private Component getUpdatePanel() {
+
+    JPanel panel = addPanel(Resources.get("clientpreferences.update.border"), new GridBagLayout());
 
     int line = 0;
     GridBagConstraints c = new GridBagConstraints();
@@ -140,7 +208,14 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
+    c.gridwidth = 3;
+
+    install4JLabel = new JLabel(Resources.get("clientpreferences.update.install4jactive"));
+    panel.add(install4JLabel, c);
+
+    c.gridy = ++line;
     c.gridwidth = 2;
+
     checkForUpdates =
         new JCheckBox(Resources.get("clientpreferences.misc.checkforupdates.caption"));
     checkForUpdates.setHorizontalAlignment(SwingConstants.LEFT);
@@ -181,62 +256,6 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     checkForNightlyUpdates.addActionListener(this);
     checkForUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK);
     checkForUpdates.addActionListener(this);
-
-    // load last report on startup
-    c.gridx = 0;
-    c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
-    loadlastreport =
-        new JCheckBox(Resources.get("clientpreferences.misc.loadlastreport.caption"),
-            PropertiesHelper.getBoolean(settings,
-                PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true));
-    loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
-    panel.add(loadlastreport, c);
-    line++;
-
-    // create void regions
-    c.gridx = 0;
-    c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
-    createVoidRegions =
-        new JCheckBox(Resources.get("clientpreferences.create.void.regions.caption"),
-            PropertiesHelper.getBoolean(settings, "map.creating.void", false));
-    createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
-    panel.add(createVoidRegions, c);
-    line++;
-
-    // progress in titlebar
-    c.gridx = 0;
-    c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
-    showProgress =
-        new JCheckBox(Resources.get("clientpreferences.progress.caption"), source.isShowingStatus());
-    showProgress.setHorizontalAlignment(SwingConstants.LEFT);
-    panel.add(showProgress, c);
-    line++;
-
-    // log level
-    c.gridx = 0;
-    c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
-    c.gridwidth = 1;
-    JLabel logLabel = new JLabel(Resources.get("clientpreferences.loglevel.caption"));
-    logLevel = new JComboBox<String>(new String[] { "Error", "Warn" });
-    logLevel.setEditable(false);
-    initLogLevel();
-
-    panel.add(logLabel, c);
-    ++c.gridx;
-    panel.add(logLevel, c);
-    line++;
 
     return panel;
   }
@@ -391,10 +410,14 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   }
 
   private void initVersion() {
-    checkForUpdates.setSelected(PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,
-        true));
-    checkForNightlyUpdates.setSelected(PropertiesHelper.getBoolean(settings,
-        VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false));
+    Install4J i4 = getInstall4J();
+
+    install4JLabel.setVisible(i4.isActive());
+    boolean check = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, true);
+    boolean nightly = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false);
+
+    checkForUpdates.setSelected(check);
+    checkForNightlyUpdates.setSelected(nightly);
     checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
 
     Properties sCopy = new Properties(settings);
@@ -412,6 +435,10 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     nightlyLabel.setText(version != null && version.equals(nightlyVersion) ? (version + " = " + nightlyVersion)
         : (version + " \u2260 "
             + nightlyVersion));
+  }
+
+  private Install4J getInstall4J() {
+    return new Install4J(Client.getBinaryDirectory(), Client.getSettingsDirectory());
   }
 
   private void initLogLevel() {
@@ -480,15 +507,6 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     settings.setProperty("map.creating.void", String.valueOf(createVoidRegions.isSelected()));
 
-    boolean nightlyChanged = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
-        false) != checkForNightlyUpdates.isSelected();
-    if (nightlyChanged) {
-      Install4J.setNightlyCheck(checkForNightlyUpdates.isSelected());
-    }
-    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String.valueOf(checkForUpdates
-        .isSelected()));
-    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, String
-        .valueOf(checkForNightlyUpdates.isSelected()));
     settings.setProperty(PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, String
         .valueOf(loadlastreport.isSelected()));
 
@@ -496,6 +514,19 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     Logger.setLongLevel(logLevel.getSelectedItem().toString());
     settings.setProperty("Client.logLevel", Logger.getShortLevel(Logger.getLevel()));
+
+    boolean nightly = checkForNightlyUpdates.isSelected();
+    Install4J i4 = getInstall4J();
+    if (i4.isActive()) {
+      i4.setCheckEveryStart(checkForUpdates.isSelected());
+      i4.setNightlyCheck(nightly);
+      i4.setSetByMagellan();
+    }
+    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String.valueOf(checkForUpdates
+        .isSelected()));
+    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, String
+        .valueOf(nightly));
+
   }
 
   /**

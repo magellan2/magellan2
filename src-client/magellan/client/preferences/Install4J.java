@@ -52,45 +52,103 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0, Apr 18, 2022
  */
 public class Install4J {
+  public static final String CHECK_EVERY_START = "ON_EVERY_START";
+  public static final String CHECK_NEVER = "NEVER";
+
+  // Installer -> setFromInstaller
+  // -> updateUrl
+  // -> updateMagellanNightly
+  // -> updateSchedule
+  //
+  // Updater -> lastUpdateCheck
+  // <- setFromInstaller
+  // <- setFromMagellan
+  // <- updateMagellanNightly
+  // <- updateSchedule
+  //
+  // VersionCheck <- isActive
+  // <- setFromInstaller
+  // <- setFromMagellan
+  // <- updateMagellanNightly
+  // <- updateSchedule
+  // -> settings.nightly
+  // -> settings.check
+  //
+  // ClientPrefs <-> settings.nightly / check
+  // -> setFromMagellan
+  // -> updateMagellanNightly
+
   private static final Logger log = Logger.getInstance(Install4J.class);
-  private static final String SCHEDULE_KEY = "updateSchedule$Boolean";
+  private static final String SCHEDULE_KEY = "updateSchedule";
   private static final String NIGHTLY_KEY = "updateMagellanNightly$Boolean";
   private static final String LAST_CHECK_KEY = "updateChecked";
+  private static final String SET_BY_INSTALLER_KEY = "setFromInstaller";
+  private static final String SET_BY_MAGELLAN_KEY = "setFromMagellan";
+
   private File responseFile;
   private Properties install4jProps;
   protected String saved;
-  private static Install4J instance;
+  private Properties localProps;
+  // private static Install4J instance;
 
-  protected Install4J(File tBinDir) throws IOException {
+  public Install4J(File tBinDir, File tConfigDir) {
     install4jProps = new Properties();
     if (tBinDir != null) {
-      responseFile = new File(tBinDir, ".install4j");
-      responseFile = new File(responseFile, "response.varfile");
-      FileReader reader;
-      log.fine("reading install4j configuration from " + responseFile.getAbsolutePath());
-      install4jProps.load(reader = new FileReader(responseFile));
-      reader.close();
-      log.fine("done");
+      try {
+        responseFile = new File(tBinDir, ".install4j");
+        responseFile = new File(responseFile, "response.varfile");
+        FileReader reader;
+        log.fine("reading install4j configuration from " + responseFile.getAbsolutePath());
+        install4jProps.load(reader = new FileReader(responseFile));
+
+        reader.close();
+        log.fine("done");
+
+        if (tConfigDir != null) {
+          responseFile = new File(tConfigDir, "installer.properties");
+          if (!responseFile.canRead()) {
+            responseFile = new File(tConfigDir.getParentFile(), "installer.properties");
+          }
+
+          log.fine("reading updated install4j configuration from " + responseFile.getAbsolutePath());
+          localProps = new Properties();
+          localProps.load(reader = new FileReader(responseFile));
+
+          reader.close();
+          String setByM = localProps.getProperty(SET_BY_MAGELLAN_KEY);
+          if (setByM == null) {
+            setByM = "0";
+          }
+          install4jProps.setProperty(SET_BY_MAGELLAN_KEY, setByM);
+          String lastCheck = localProps.getProperty(LAST_CHECK_KEY);
+          if (lastCheck == null) {
+            lastCheck = "0";
+          }
+          install4jProps.setProperty(LAST_CHECK_KEY, lastCheck);
+        }
+      } catch (IOException e) {
+        log.fine("Install4J configuration not found", e);
+      }
     } else {
       log.fine("not reading install4j configuration");
     }
   }
 
-  /**
-   * Initialize and read settings from ".install4j/response.varfile" in the given directory (the content directory).
-   * This method must be called before any get... and set... methods may be called.
-   * 
-   * @return true if the file could be read.
-   */
-  public static boolean init(File directory) {
-    try {
-      instance = new Install4J(directory);
-      return true;
-    } catch (IOException e) {
-      log.warn("could not read install4j response file", e);
-      return false;
-    }
-  }
+  // /**
+  // * Initialize and read settings from ".install4j/response.varfile" in the given directory (the content directory).
+  // * This method must be called before any get... and set... methods may be called.
+  // *
+  // * @return true if the file could be read.
+  // */
+  // public static boolean init(File binDir, File configDir) {
+  // try {
+  // instance = new Install4J(binDir, configDir);
+  // return true;
+  // } catch (IOException e) {
+  // log.warn("could not read install4j response file", e);
+  // return false;
+  // }
+  // }
 
   private void save() throws IOException {
     store("install4j response file written by Magellan " + VersionInfo.getVersion(Resources.getResourceDirectory()));
@@ -218,14 +276,6 @@ public class Install4J {
     return input.replaceAll("([#\\\\=:!])", "\\\\$1");
   }
 
-  private static boolean checkInstance() {
-    if (instance == null) {
-      log.warn("Install4J not initialized.");
-      return false;
-    }
-    return true;
-  }
-
   protected String getVariable(String key) {
     return install4jProps.getProperty(key);
   }
@@ -248,7 +298,7 @@ public class Install4J {
    * 
    */
   public Boolean getBoolean(String key) {
-    String val = instance.getVariable(key);
+    String val = getVariable(key);
     if (val == null)
       return null;
     return "true".equals(val);
@@ -258,7 +308,7 @@ public class Install4J {
    * Sets the boolean value for the given key. Returns the old value, or null if the key had no previous value.
    */
   public Boolean setBoolean(String key, boolean value) {
-    String val = instance.setVariable(key, value ? "true" : "false");
+    String val = setVariable(key, value ? "true" : "false");
     if (val == null)
       return null;
     return "true".equals(val);
@@ -269,7 +319,7 @@ public class Install4J {
    * 
    */
   public Long getLong(String key) {
-    String val = instance.getVariable(key);
+    String val = getVariable(key);
     if (val == null)
       return null;
     try {
@@ -283,38 +333,65 @@ public class Install4J {
    * Returns the update schedule. Current known values are ON_EVERY_START, DAILY, WEEKLY, MONTHLY, NEVER. Returns null
    * if no schedule is defined.
    */
-  public static String getUpdateSchedule() {
-    if (!checkInstance())
-      return null;
-    return instance.getVariable(SCHEDULE_KEY);
+  public String getUpdateSchedule() {
+    return getVariable(SCHEDULE_KEY);
+  }
+
+  /**
+   * Sets the update schedule to CHECK_EVERY_START if selected is true, otherwise CHECK_NEVER.
+   */
+  public void setCheckEveryStart(boolean selected) {
+    setVariable(SCHEDULE_KEY, selected ? CHECK_EVERY_START : CHECK_NEVER);
   }
 
   /**
    * Returns the time (as in {@link System#currentTimeMillis()} of the last successful update check of the install4j
    * updater. Returns null if there never was such a check.
    */
-  public static Long lastUpdateCheck() {
-    if (!checkInstance())
-      return null;
-    return instance.getLong(LAST_CHECK_KEY);
+  public Long lastUpdateCheck() {
+    return getLong(LAST_CHECK_KEY);
+  }
+
+  /**
+   * Return true if the last modification was made by the installer.
+   */
+  public boolean isSetByInstaller() {
+    return getLong(SET_BY_INSTALLER_KEY) >= getLong(SET_BY_MAGELLAN_KEY);
+  }
+
+  /**
+   * Return true if the last modification was made by the Magellan.
+   */
+  public boolean isSetByMagellan() {
+    return getLong(SET_BY_INSTALLER_KEY) <= getLong(SET_BY_MAGELLAN_KEY);
+  }
+
+  /**
+   * Sets the last modification time to NOW.
+   */
+  public void setSetByMagellan() {
+    setVariable(SET_BY_MAGELLAN_KEY, "" + System.currentTimeMillis());
   }
 
   /**
    * Returns true if the nightly check was defined in the installer. Returns null if there is no known value.
    */
-  public static Boolean isNightlyCheck() {
-    if (!checkInstance())
-      return null;
-    return instance.getBoolean(NIGHTLY_KEY);
+  public Boolean isNightlyCheck() {
+    return getBoolean(NIGHTLY_KEY);
   }
 
   /**
    * Changes the nightly check property for the install4j updater.
    */
-  public static Boolean setNightlyCheck(boolean selected) {
-    if (!checkInstance())
-      return null;
-    return instance.setBoolean(NIGHTLY_KEY, selected);
+  public Boolean setNightlyCheck(boolean selected) {
+    return setBoolean(NIGHTLY_KEY, selected);
+  }
+
+  /**
+   * Returns true if an install4j configuration exists.
+   */
+  public boolean isActive() {
+    return !install4jProps.isEmpty();
   }
 
 }

@@ -39,12 +39,13 @@ public class Install4JTest {
 
   @Before
   public void setUp() throws Exception {
+    clearDir();
   }
 
   @Test
   public void testEscape() throws IOException {
     assertEquals("\\\\ a\\#b$c\\=d", "\\ a#b$c=d".replaceAll("([#\\\\=])", "\\\\$1"));
-    assertEquals("\\\\ a\\#b$c\\=d\\:e\\!f", new Install4J(null).escape("\\ a#b$c=d:e!f"));
+    assertEquals("\\\\ a\\#b$c\\=d\\:e\\!f", new Install4J(null, null).escape("\\ a#b$c=d:e!f"));
   }
 
   String input = "a\\b#c$d:f=g\u2a69h\nij";
@@ -56,7 +57,7 @@ public class Install4JTest {
     dir.mkdir();
     response.delete();
     response.createNewFile();
-    Install4J i4 = new Install4J(new File("./test"));
+    Install4J i4 = new Install4J(new File("./test"), null);
     assertEquals(null, i4.setVariable("x=y", input));
     i4.setVariable("a", "aa");
     i4.setVariable("z", "zz");
@@ -64,7 +65,7 @@ public class Install4JTest {
     assertEquals("aa", i4.getVariable("a"));
     assertEquals(input, i4.getVariable("x=y"));
 
-    Install4J i4b = new Install4J(new File("./test"));
+    Install4J i4b = new Install4J(new File("./test"), null);
     assertEquals("aa", i4b.getVariable("a"));
     assertEquals(input, i4b.getVariable("x=y"));
   }
@@ -72,7 +73,7 @@ public class Install4JTest {
   @Test
   public void testStoreSorted() throws Exception {
     File[] files = createDir();
-    Install4J i4 = new Install4J(new File("./test"));
+    Install4J i4 = new Install4J(new File("./test"), null);
 
     ByteArrayOutputStream buf = new ByteArrayOutputStream();
     buf.write("# 123\n".getBytes());
@@ -110,7 +111,7 @@ public class Install4JTest {
     writer.write("\n");
     writer.close();
 
-    Install4J i4 = new Install4J(new File("./test"));
+    Install4J i4 = new Install4J(new File("./test"), null);
 
     assertEquals("aa", i4.getVariable("a"));
     assertEquals(input, i4.getVariable("x=y"));
@@ -125,6 +126,50 @@ public class Install4JTest {
     response.delete();
     response.createNewFile();
     return new File[] { dir, response };
+  }
+
+  @Test
+  public void testNull() {
+    Install4J i4 = new Install4J(new File("./test"), new File("./test/.install4j"));
+    assertEquals(false, i4.isActive());
+  }
+
+  @Test
+  public void testUpdated() throws IOException {
+    createDir(new String[] { "setFromInstaller", "2" }, new String[] { "setFromMagellan", "3" });
+    Install4J i4 = new Install4J(new File("./test"), new File("./test/.install4j"));
+    assertEquals(true, i4.isSetByMagellan());
+
+    createDir(new String[] { "setFromInstaller", "2" }, new String[] { "setFromMagellan", "1" });
+    i4 = new Install4J(new File("./test"), new File("./test/.install4j"));
+    assertEquals(false, i4.isSetByMagellan());
+  }
+
+  private void clearDir() throws IOException {
+    File dir = new File("./test/.install4j");
+    for (File f : dir.listFiles()) {
+      f.delete();
+    }
+  }
+
+  private void createDir(String[] strings, String[] strings2) throws IOException {
+    File dir = new File("./test/.install4j");
+    File response = new File(dir, "response.varfile");
+    File copy = new File(dir, "installer.properties");
+    dir.mkdir();
+    response.createNewFile();
+    copy.createNewFile();
+    FileWriter writer = new FileWriter(response);
+    for (int i = 0; i < strings.length; ++i) {
+      writer.write(strings[i++] + "=" + strings[i]);
+    }
+    writer.close();
+    writer = new FileWriter(copy);
+    for (int i = 0; i < strings2.length; ++i) {
+      writer.write(strings2[i++] + "=" + strings2[i]);
+    }
+    writer.close();
+
   }
 
 }

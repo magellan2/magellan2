@@ -25,8 +25,10 @@ import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.ButtonGroup;
+import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -84,6 +86,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private JLabel stableLabel;
   private JLabel nightlyLabel;
   private JLabel install4JLabel;
+  private JTextField xmx;
+  private JLabel xmxUnit;
 
   /**
    * Creates a new ClientPreferences object.
@@ -149,11 +153,10 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
                 PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true));
     loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(loadlastreport, c);
-    line++;
 
     // create void regions
     c.gridx = 0;
-    c.gridy = line;
+    c.gridy = ++line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     createVoidRegions =
@@ -161,22 +164,20 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
             PropertiesHelper.getBoolean(settings, "map.creating.void", false));
     createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(createVoidRegions, c);
-    line++;
 
     // progress in titlebar
     c.gridx = 0;
-    c.gridy = line;
+    c.gridy = ++line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     showProgress =
         new JCheckBox(Resources.get("clientpreferences.progress.caption"), source.isShowingStatus());
     showProgress.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(showProgress, c);
-    line++;
 
     // log level
     c.gridx = 0;
-    c.gridy = line;
+    c.gridy = ++line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.gridwidth = 1;
@@ -189,7 +190,40 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     ++c.gridx;
     c.weightx = 1.0;
     panel.add(logLevel, c);
-    line++;
+
+    if (getInstall4J().isActive()) {
+
+      c.gridx = 0;
+      c.gridy = ++line;
+      c.weightx = 0.0;
+      panel.add(new JLabel(Resources.get("clientpreferences.xmx.caption")), c);
+      ++c.gridx;
+      c.weightx = 1.0;
+      xmx = new JTextField("");
+      xmx.setInputVerifier(new InputVerifier() {
+        @Override
+        public boolean verify(JComponent input) {
+          try {
+            JTextField tf = (JTextField) input;
+            long xmx = Long.parseLong(tf.getText());
+            return xmx > 99 && xmx < (long) 1024 * 1024;
+          } catch (NumberFormatException e) {
+            return false;
+          }
+        }
+      });
+      panel.add(xmx, c);
+      xmxUnit = new JLabel("MB");
+      c.weightx = 0.0;
+      ++c.gridx;
+      panel.add(xmxUnit, c);
+
+      ++c.gridy;
+      c.gridx = 1;
+      c.gridwidth = 2;
+      long currentMax = Runtime.getRuntime().maxMemory() / 1024 / 1024;
+      panel.add(new JLabel(Resources.get("clientpreferences.xmx.current", currentMax)), c);
+    }
 
     return panel;
   }
@@ -405,8 +439,14 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
    */
   public void initPreferences() {
     // TODO: implement it
+
     initLogLevel();
     initVersion();
+    if (getInstall4J().isActive()) {
+      ClientMemory cm = new ClientMemory(Client.getBinaryDirectory(), Client.getSettingsDirectory());
+      xmx.setText("" + cm.getXmX());
+      xmxUnit.setText(cm.getXmXUnit());
+    }
   }
 
   private void initVersion() {
@@ -514,6 +554,16 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     Logger.setLongLevel(logLevel.getSelectedItem().toString());
     settings.setProperty("Client.logLevel", Logger.getShortLevel(Logger.getLevel()));
+
+    if (getInstall4J().isActive()) {
+      ClientMemory cm = new ClientMemory(Client.getBinaryDirectory(), Client.getSettingsDirectory());
+      try {
+        int newXmx = Integer.parseInt(xmx.getText());
+        cm.setXmX(newXmx, xmxUnit.getText());
+      } catch (NumberFormatException e) {
+        log.fine("invalid number format '" + xmx.getText() + "'");
+      }
+    }
 
     boolean nightly = checkForNightlyUpdates.isSelected();
     Install4J i4 = getInstall4J();

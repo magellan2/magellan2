@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -46,6 +47,7 @@ import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Order;
+import magellan.library.Orders;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -66,6 +68,7 @@ import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Units;
@@ -503,6 +506,7 @@ class E3CommandParser {
 
   /** All script commands begin with this text. */
   public static final String scriptMarker = "$cript";
+
   /** The GIVE order */
   public static String GIVEOrder = "GIB";
   /** The RESERVE order */
@@ -531,6 +535,8 @@ class E3CommandParser {
   public static String COMMENTOrder = EresseaConstants.O_COMMENT;
   /** The LEARN order */
   public static String LEARNOrder = "LERNE";
+  /** The (TEACH) AUTO order */
+  public static String AUTOOrder = "AUTO";
   /** The TEACH order */
   public static String TEACHOrder = "LEHRE";
   /** The ENTERTAIN order */
@@ -571,6 +577,8 @@ class E3CommandParser {
   public static String COMMENT = "$kommentar";
 
   private static String S_ENDURANCE = EresseaConstants.S_AUSDAUER.toString();
+
+  private static final int TEACH_MULTI = 10;
 
   private String[] WEAPON_PRIORITIES =
       new String[] {
@@ -1185,7 +1193,7 @@ class E3CommandParser {
    * <code>// $cript Verlange faction unit [unit...]</code> -- allow and require units for
    * Ueberwache<br />
    * <code>// $cript Ernaehre [amount]</code> -- earn money<br />
-   * <code>// $cript Handel amount [ALLES | good...]</code> -- trade luxuries<br />
+   * <code>// $cript Handel Menge|xM [xR] [ALLES | Verkaufsgut...] Warnung</code> -- trade luxuries<br />
    * <code>// $cript Steuermann minSilver maxSilver [Talent ...]</code> -- be responsible for ship<br />
    * <code>// $cript Mannschaft [Talen ...]</code> -- be crew and learn<br />
    * <code>// $cript Quartiermeister [[amount item]...]</code> -- be lookout<br />
@@ -4786,6 +4794,134 @@ class E3CommandParser {
     } else {
       log.warn("TeachPlugin not found");
     }
+  }
+
+  protected void teachAuto(Collection<Faction> factions) {
+    teachAuto(factions, Collections.emptySet());
+  }
+
+  Map<Locale, Collection<String>> expensiveSkills = new HashMap<Locale, Collection<String>>();
+
+  protected void initSkills(Locale loc) {
+    // if (!expensiveSkills.containsKey(loc)) {
+    // Set<String> exp;
+    // expensiveSkills.put(loc, exp = new HashSet<String>());
+    //
+    // Arrays.asList(EresseaConstants.S_TAKTIK, EresseaConstants.S_KRAEUTERKUNDE, EresseaConstants.S_MAGIE,
+    // EresseaConstants.S_ALCHEMIE, EresseaConstants.S_SPIONAGE).forEach((skill) -> {
+    // try {
+    // exp.add(
+    // world.getGameSpecificStuff().getOrderChanger().getOrderO(skill, loc).getText());
+    // } catch (RulesException e) {
+    // e.printStackTrace();
+    // // log.error(e.getClass().getSimpleName() + " script error for " + region);
+    // throw new RuntimeException(e);
+    // }
+    // });
+    // }
+  }
+
+  protected void teachAuto(Collection<Faction> factions, Collection<Region> regions) {
+    Set<Region> filter = new HashSet<Region>(regions);
+    Set<Unit> allStudents = new HashSet<Unit>();
+    // for every teacher ...
+    for (Faction faction : factions) {
+      helper.getUI().setMaximum(faction.units().size());
+      for (Unit teacher : faction.units()) {
+        if (!filter.isEmpty() && !filter.contains(teacher.getRegion())) {
+          continue;
+        }
+        int tIndex = 0;
+        int studentCount = 0;
+        helper.getUI().setProgress(teacher.toString(), tIndex);
+        Orders teachOrders = teacher.getOrders2();
+        for (Order teachOrder : teachOrders) {
+          if (teachOrders.isToken(teachOrder, 0, EresseaConstants.OC_TEACH)) {
+            // ... if all students learn the same skill
+            int tokenIndex = 0;
+            Map<Unit, Integer> students = new HashMap<Unit, Integer>();
+            String skill = "";
+            boolean temp = false;
+            allStudents.add(teacher);
+            for (OrderToken t : teachOrder.getTokens()) {
+              if (tokenIndex++ > 0 && t.ttype == OrderToken.TT_ID) {
+                String id = temp ? ("TEMP " + t.getText()) : t.getText();
+                Unit student = helper.getUnit(id);
+                allStudents.add(student);
+                if (student != null && skill != null && student.getFaction() == teacher.getFaction()) {
+                  helper.getUI().setProgress(teacher.toString() + " - " + student.toString(), tIndex);
+                  studentCount += student.getModifiedPersons();
+                  Orders studentOrders = student.getOrders2();
+                  int learnIndex = 0;
+                  for (Order studentOrder : studentOrders) {
+                    if (studentOrders.isToken(studentOrder, 0, EresseaConstants.OC_LEARN)) {
+                      students.put(student, learnIndex);
+                      String subject2 = studentOrder.getToken(1).getText();
+
+                      if (skill.isEmpty() || skill.equals(subject2)) {
+                        skill = subject2;
+                      } else {
+                        skill = null;
+                      }
+                    }
+                    learnIndex++;
+                  }
+
+                } else {
+                  skill = null;
+                }
+              }
+            }
+            // ... replace matching teach and learn orders with LEARN AUTO
+            if (isAutoSkill(teacher, skill) && studentCount != teacher.getModifiedPersons() * TEACH_MULTI) {
+              String autoT = LEARNOrder + " " + AUTOOrder + " " + skill + COMMENTOrder + " T " + teacher.getID();
+              String autoL = LEARNOrder + " " + AUTOOrder + " " + skill + COMMENTOrder + " L " + studentCount;
+              for (Unit s : students.keySet()) {
+                autoL += " " + s.getID();
+              }
+              Order autoOrder = teacher.createOrder(autoL);
+              teacher.replaceOrder(tIndex, autoOrder);
+              autoOrder = teacher.createOrder(autoT);
+              for (Unit s : students.keySet()) {
+                s.replaceOrder(students.get(s), autoOrder);
+              }
+            }
+          }
+          ++tIndex;
+        }
+      }
+    }
+
+    // replace learn orders of students without teacher by LEARN AUTO
+    int tIndex = 0;
+    for (Faction faction : factions) {
+      for (Unit unit : faction.units()) {
+        if (!filter.isEmpty() && !filter.contains(unit.getRegion())) {
+          continue;
+        }
+        helper.getUI().setProgress(unit.toString(), tIndex++);
+        Orders orders = unit.getOrders2();
+        int oIndex = 0;
+        for (Order o : orders) {
+          if (orders.isToken(o, 0, EresseaConstants.OC_LEARN) &&
+              !orders.isToken(o, 1, EresseaConstants.OC_AUTO) &&
+              !allStudents.contains(unit) &&
+              isAutoSkill(unit, o.getToken(1).getText())) {
+            String newOrder = o.getText().replace(o.getToken(0).getText(), o.getToken(0).getText() + " " + AUTOOrder)
+                + COMMENTOrder + " L-";
+            unit.replaceOrder(oIndex, unit.createOrder(newOrder));
+          }
+          ++oIndex;
+        }
+      }
+    }
+  }
+
+  private boolean isAutoSkill(Unit unit, String skillText) {
+    SkillType skill = world.getRules().getSkillType(skillText);
+    return skill != null && skill.getCost(1) == 0;
+    // initSkills(unit.getLocale());
+    // return expensiveSkills.get(unit.getLocale()).contains(skill);
   }
 
   /**

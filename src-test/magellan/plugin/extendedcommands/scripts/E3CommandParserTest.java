@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -3654,6 +3655,129 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("LERNE Taktik", unit, 3);
     assertTrue(unit.isOrdersConfirmed());
 
+  }
+
+  @Test
+  public final void testTeachAuto() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Pupil", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("; comment");
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("; comment");
+    unit2.addOrder("LERNE Ausdauer");
+    unit2.addOrder("GIB xyz 1 Silber");
+    unit3.addOrder("!@LERNE Ausdauer 50 ; hello");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("LERNE AUTO Ausdauer", unit, 1);
+    assertEquals(3, unit2.getOrders2().size());
+    assertOrder("LERNE AUTO Ausdauer", unit2, 1);
+    assertOrder("LERNE AUTO Ausdauer", unit3, 0);
+  }
+
+  @Test
+  public final void testTeachAutoUnequal() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Pupil", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertEquals(1, unit.getOrders2().size());
+    assertOrder("LEHRE a b; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public final void testTeachAutoStudent() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit4 = builder.addUnit(data, "c", "Independent", unit.getFaction(), unit.getRegion());
+    Unit unit5 = builder.addUnit(data, "d", "Independent2", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit4.clearOrders();
+    unit5.clearOrders();
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+    unit4.addOrder("; order0");
+    unit4.addOrder("!@LERNE Ausdauer 50 ; hello");
+    unit4.addOrder("; order1");
+    unit5.addOrder("LERNE AUTO Ausdauer");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a b; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+    assertEquals(3, unit4.getOrders2().size());
+    assertOrder("!@LERNE AUTO Ausdauer 50 ; hello; L-", unit4, 1);
+    assertOrder("LERNE AUTO Ausdauer", unit5, 0);
+  }
+
+  @Test
+  public final void testTeachAutoStudentAfterError() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit4 = builder.addUnit(data, "c", "Independent", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit4.clearOrders();
+    unit.addOrder("LEHRE a b c d; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+    unit4.addOrder("LERNE Ausdauer 50");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a b c d; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+    assertOrder("LERNE Ausdauer 50", unit4, 0);
+  }
+
+  @Test
+  public final void testTeachAutoExpensive() {
+    unit.clearOrders();
+    unit.addOrder("LERNE Alchemie");
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+    assertOrder("LERNE Alchemie", unit, 0);
+  }
+
+  @Test
+  public final void testTeachAutoExpensiveTeaching() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.addOrder("LEHRE a");
+    unit2.addOrder("LERNE Alchemie");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a", unit, 0);
+    assertOrder("LERNE Alchemie", unit2, 0);
   }
 
 }

@@ -27,7 +27,8 @@ public class ClientProvider {
     parameters.resourceDir = dir;
     parameters.settingsDir = parameters.resourceDir;
     parameters.profile = "de";
-    ProfileManager.init(parameters);
+    ProfileManager.init(parameters.settingsDir);
+    ProfileManager.setProfile("de");
     parameters.settingsDir = ProfileManager.getProfileDirectory();
     Client.startWindow = new StartWindow(MagellanImages.ABOUT_MAGELLAN, 5, new File("."));
     return new Client(data, parameters.binDir, parameters.resourceDir, parameters.settingsDir,

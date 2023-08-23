@@ -23,6 +23,8 @@
 package magellan.client.utils;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -30,22 +32,29 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Collection;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
+import javax.swing.filechooser.FileFilter;
 
+import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.utils.ProfileManager.ProfileException;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A Dialog for selecting profiles.
@@ -53,6 +62,7 @@ import magellan.library.utils.Resources;
  * @author stm
  */
 public class ProfileDialog extends JDialog {
+  private static Logger log = Logger.getInstance(ProfileDialog.class);
 
   private boolean abort = true;
 
@@ -135,6 +145,22 @@ public class ProfileDialog extends JDialog {
       }
     });
 
+    // Quit Button
+    final JButton btnExport = new JButton(Resources.get("profiledialog.btn.export.caption"));
+    btnExport.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        exportProfiles();
+      }
+    });
+
+    // Quit Button
+    final JButton btnImport = new JButton(Resources.get("profiledialog.btn.import.caption"));
+    btnImport.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        importProfiles();
+      }
+    });
+
     profileList.addListSelectionListener((e) -> {
       boolean enabled = profileList.getSelectedValue() != null;
       btnOK.setEnabled(enabled);
@@ -164,6 +190,12 @@ public class ProfileDialog extends JDialog {
     buttonPanel.add(btnCopy, gc);
     gc.gridy++;
     buttonPanel.add(btnRemove, gc);
+    gc.gridy++;
+    buttonPanel.add(new JSeparator(), gc);
+    gc.gridy++;
+    buttonPanel.add(btnExport, gc);
+    gc.gridy++;
+    buttonPanel.add(btnImport, gc);
     gc.gridy++;
     gc.fill = GridBagConstraints.BOTH;
     gc.weighty = 1;
@@ -281,7 +313,7 @@ public class ProfileDialog extends JDialog {
     if (select != null) {
       profileList.setSelectedValue(select, true);
     } else {
-      profileList.setSelectedIndex(0);
+      profileList.setSelectedIndex(-1);
     }
 
   }
@@ -303,6 +335,101 @@ public class ProfileDialog extends JDialog {
           JOptionPane.showMessageDialog(this, e.getMessage());
         }
         updateList(null);
+      }
+    }
+  }
+
+  private void exportProfiles() {
+    int choice = JOptionPane.YES_OPTION;
+    do {
+      JFileChooser fc = new JFileChooser();
+      EresseaFileFilter ff;
+      fc.addChoosableFileFilter(ff = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
+      fc.setFileFilter(ff);
+      fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      fc.setDialogType(JFileChooser.SAVE_DIALOG);
+
+      choice = JOptionPane.YES_OPTION;
+      if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        File targetFile = fc.getSelectedFile();
+        if (targetFile.exists()) {
+          choice = JOptionPane.showConfirmDialog(this, Resources.get("profiledialog.fileexists", targetFile));
+        }
+
+        if (choice == JOptionPane.CANCEL_OPTION) {
+          break;
+        }
+        if (choice == JOptionPane.YES_OPTION) {
+          ProfileManager.exportProfiles(targetFile.toPath());
+        }
+      } else {
+        break;
+      }
+
+    } while (choice == JOptionPane.NO_OPTION);
+  }
+
+  private void importProfiles() {
+    String[] options = new String[] { Resources.get("profiledialog.import.from.zip"), Resources.get(
+        "profiledialog.import.from.directory"), Resources.get(
+            "profiledialog.import.from.search") };
+    int response = JOptionPane.showOptionDialog(this, Resources.get("profiledialog.import.modeselection"), null,
+        JOptionPane.YES_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+    if (response == 0) {
+      importFromZip(this);
+    }
+    if (response == 1) {
+      importFromDir(this);
+    }
+    if (response == 2) {
+      importFromSearch(this);
+    }
+    updateList(profileList.getSelectedValue());
+  }
+
+  protected static void importFromSearch(Dialog parent) {
+    new ProfileSearch(parent).setVisible(true);
+  }
+
+  protected static void importFromDir(Component parent) {
+    chooseLocation(parent, true, null, ProfileManager::importProfilesFromDir);
+  }
+
+  protected static void importFromZip(Component parent) {
+    EresseaFileFilter ff = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
+    chooseLocation(parent, false, ff, ProfileManager::importProfilesFromZip);
+  }
+
+  private static interface Importer {
+    Collection<String> importProfile(Path p) throws ProfileException;
+  }
+
+  private static void chooseLocation(Component parent, boolean dirs, FileFilter ff, Importer executor) {
+    JFileChooser fc = new JFileChooser();
+    if (dirs) {
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    } else {
+      fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }
+    if (ff != null) {
+      fc.addChoosableFileFilter(ff);
+      fc.setFileFilter(ff);
+    }
+    fc.setDialogType(JFileChooser.OPEN_DIALOG);
+
+    if (fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+      File targetFile = fc.getSelectedFile();
+      if (!targetFile.exists() || (dirs ? !targetFile.isDirectory() : !targetFile.isFile()) || !targetFile.canRead()) {
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.filenotfound", targetFile));
+        return;
+      }
+      try {
+        Collection<String> imported = executor.importProfile(targetFile.toPath());
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.imported", imported.size()));
+      } catch (ProfileException e) {
+        JOptionPane.showMessageDialog(parent, Resources.get("profiledialog.import.errors", targetFile, e));
+        log.warn(e);
       }
     }
   }

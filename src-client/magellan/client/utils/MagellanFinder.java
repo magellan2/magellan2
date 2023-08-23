@@ -82,7 +82,7 @@ public class MagellanFinder {
     return settFileDir;
   }
 
-  protected static File getAppDataDirectory() {
+  public static File getAppDataDirectory() {
     String os = System.getProperty("os.name");
     if (os != null) {
       os = os.toUpperCase();

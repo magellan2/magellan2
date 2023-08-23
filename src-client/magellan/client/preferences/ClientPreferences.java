@@ -118,7 +118,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     // add the TextEncodingPreferences only as sub adapter
     subAdapters.add(new ClientTextEncodingPreferences(settings));
 
-    subAdapters.add(new ClientMessagePreferences(source.getMessagePanel()));
+    subAdapters.add(new ClientMessagePreferences(source.getMessagePanel(), settings));
 
     // locales
     getLocalesPanel();

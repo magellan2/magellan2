@@ -62,7 +62,7 @@ public class CellGeometry {
    * Creates a new CellGeometry object initializing itself with the data available in the specified
    * resource file. The file is supposed to have the following layout:
    * <p>
-   * <tt>x0=32<br>x1=63<br>
+   * <kbd>x0=32<br>x1=63<br>
    * x2=63<br>
    * x3=32<br>
    * x4=0<br>
@@ -76,7 +76,7 @@ public class CellGeometry {
    * imgOffsetx=8<br>
    * imgOffsety=8<br>
    * imgSizex=80<br>
-   * imgSizey=80 </tt>
+   * imgSizey=80 </kbd>
    * </p>
    * These values are default values if they cannot be retrieved from the file. The coordinates are
    * interpreted to describe a symmetric hexagon that sits at the coordinate axes with positive x

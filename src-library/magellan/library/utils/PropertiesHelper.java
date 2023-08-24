@@ -56,7 +56,7 @@ public class PropertiesHelper {
   /** Property type String: Name of current advanced shape renderer set */
   public static final String ADVANCEDSHAPERENDERER_S_CURRENT_SET = ".CurrentSet";
 
-  /** Property type List<String>: List of all available advanced shape rendererers */
+  /** Property type List&lt;String>: List of all available advanced shape renderers */
   public static final String ADVANCEDSHAPERENDERER_S_SETS = ".Sets";
 
   /** Property type String: ... */
@@ -126,7 +126,7 @@ public class PropertiesHelper {
   /** Property type String: */
   public static final String CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP = "CellRenderer.SkillIconTextColorMap";
 
-  /** Property type List<String>: */
+  /** Property type List&lt;String>: */
   public static final String CELLRENDERER_STYLESETS = "CellRenderer.Stylesets.";
 
   /** Property type String: */
@@ -477,7 +477,7 @@ public class PropertiesHelper {
   }
 
   /**
-   * Delivers a list of all keys having the prefix <tt>prefix</tt>
+   * Delivers a list of all keys having the prefix <kbd>prefix</kbd>
    */
   public static List<String> getPrefixedList(Properties p, String prefix) {
     List<String> ret = new LinkedList<String>();

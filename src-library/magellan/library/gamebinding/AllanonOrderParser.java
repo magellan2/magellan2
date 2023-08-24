@@ -33,16 +33,16 @@ import magellan.library.utils.OrderToken;
  */
 public class AllanonOrderParser extends EresseaOrderParser {
   /**
-   * Creates a new <tt>EresseaOrderParser</tt> object.
+   * Creates a new <kbd>EresseaOrderParser</kbd> object.
    */
   public AllanonOrderParser(GameData data) {
     super(data, null);
   }
 
   /**
-   * Creates a new <tt>EresseaOrderParser</tt> object and registers the specified
-   * <tt>OrderCompleter</tt> object. This constructor should be used only by the
-   * <tt>OrderCompleter</tt> class itself.
+   * Creates a new <kbd>EresseaOrderParser</kbd> object and registers the specified
+   * <kbd>OrderCompleter</kbd> object. This constructor should be used only by the
+   * <kbd>OrderCompleter</kbd> class itself.
    */
   public AllanonOrderParser(GameData data, AllanonOrderCompleter cc) {
     super(data, cc);

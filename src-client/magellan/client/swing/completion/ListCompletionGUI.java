@@ -283,7 +283,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
     }
 
     /**
-     * Set the selected index to <tt>index</tt>.
+     * Set the selected index to <kbd>index</kbd>.
      *
      * @param index The index we want to select.
      */

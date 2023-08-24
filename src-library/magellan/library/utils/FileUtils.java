@@ -157,7 +157,7 @@ public class FileUtils {
    * destDirectory (will be created if does not exists). If filename is null, all files are extracted. Otherwise only
    * filename is extracted. If this is a directory, it is extracted recursively iff recursive is <code>true</code>.
    * 
-   * @throws IOException
+   * @throws FileException if destDirectory is not a writable directory
    */
   public static void unzip(Path zipFile, Path destDirectory, String filename, boolean recursive) throws FileException {
     if (!Files.exists(destDirectory) || !Files.isDirectory(destDirectory) || !Files.isWritable(destDirectory))

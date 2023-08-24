@@ -427,7 +427,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Puts the list elements in <tt>c</tt> into this text pane, one at a time.
+   * Puts the list elements in <kbd>c</kbd> into this text pane, one at a time.
    */
   public void setOrders(Collection<Order> c) {
     orders = new LinkedList<String>();
@@ -478,7 +478,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   }
 
   /**
-   * Allows to change the modified state of this text pane. Setting it to <tt>true</tt> currently does
+   * Allows to change the modified state of this text pane. Setting it to <kbd>true</kbd> currently does
    * not automatically result in an event being fired.
    */
   private void setModified(boolean isModified) {

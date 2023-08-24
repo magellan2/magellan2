@@ -54,17 +54,17 @@ public interface Border extends Identifiable {
   public void setBuildRatio(int buildratio);
 
   /**
-   * A list containing <tt>String</tt> objects, specifying effects on this border.
+   * A list containing <kbd>String</kbd> objects, specifying effects on this border.
    */
   public List<String> getEffects();
 
   /**
-   * A list containing <tt>String</tt> objects, specifying effects on this border.
+   * A list containing <kbd>String</kbd> objects, specifying effects on this border.
    */
   public void setEffects(List<String> effects);
 
   // /**
-  // * Return a string representation of this <tt>Border</tt> object.
+  // * Return a string representation of this <kbd>Border</kbd> object.
   // *
   // * @return Border object as string.
   // */

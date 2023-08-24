@@ -166,7 +166,7 @@ public class ProfileManager {
    * @param parameters
    * @return The name of the current profile. <code>null</code> if there was an I/O error while
    *         reading the inifile, no new settings could be created, or the defaultProfile could not be selected
-   * @deprecated replace by {@link #init(File, String)}
+   * @deprecated replace by {@link #init(File)}
    */
   @Deprecated
   public static String init(Client.Parameters parameters) {

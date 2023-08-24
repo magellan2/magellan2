@@ -46,45 +46,45 @@ public class ManyFeaturesActionBeanInfo extends ActionBeanInfo {
     private void addStandardEditors() {
         addPropertyDescriptor(Install4JPropertyDescriptor.create("color", getBeanClass(),
             "Color",
-            "A property with a <tt>java.awt.Color</tt> value." // Note how you can use HTML in the short descriptions
+            "A property with a <kbd>java.awt.Color</kbd> value." // Note how you can use HTML in the short descriptions
             ).setAllowTextOverride(true) // see the getter
                 .setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("font", getBeanClass(),
             "Font",
-            "A property with a <tt>java.awt.Font</tt> value."
+            "A property with a <kbd>java.awt.Font</kbd> value."
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("insets", getBeanClass(),
             "Insets",
-            "A property with a <tt>java.awt.Insets</tt> value."
+            "A property with a <kbd>java.awt.Insets</kbd> value."
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("date", getBeanClass(),
             "Date",
-            "A property with a <tt>java.util.Date</tt> value, showing the date part only."
+            "A property with a <kbd>java.util.Date</kbd> value, showing the date part only."
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("dateAndTime", getBeanClass(),
             "Date and time",
-            "A property with a <tt>java.awt.Date</tt> value, showing both date and time parts.",
+            "A property with a <kbd>java.awt.Date</kbd> value, showing both date and time parts.",
             // This is done with a special context
             Install4JPropertyDescriptor.CONTEXT_DATETIME
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("integer", getBeanClass(),
             "Integer",
-            "A property with an <tt>int</tt> value."
+            "A property with an <kbd>int</kbd> value."
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("stringArray", getBeanClass(),
             "String array",
-            "A property with a <tt>String[]</tt> value. You can invoke an editor with the \"...\" button or separate array elements with semicolons."
+            "A property with a <kbd>String[]</kbd> value. You can invoke an editor with the \"...\" button or separate array elements with semicolons."
             ).setPropertyCategory(STANDARD_EDITORS)
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("booleanValue", getBeanClass(),
             "Boolean value",
-            "A property with a <tt>boolean</tt> value."
+            "A property with a <kbd>boolean</kbd> value."
             ).setAllowTextOverride(true) // see the getter
                 .setPropertyCategory(STANDARD_EDITORS)
         );
@@ -96,7 +96,7 @@ public class ManyFeaturesActionBeanInfo extends ActionBeanInfo {
         );
         addPropertyDescriptor(Install4JPropertyDescriptor.create("stringToStringMap", getBeanClass(),
             "String to string map",
-            "A property with a <tt>java.util.Map</tt> value where both keys and values are strings.",
+            "A property with a <kbd>java.util.Map</kbd> value where both keys and values are strings.",
             // This is done with a special context
             Install4JPropertyDescriptor.CONTEXT_STRING_TO_STRING_MAP
             ).setPropertyCategory(STANDARD_EDITORS)

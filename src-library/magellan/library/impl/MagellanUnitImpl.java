@@ -106,7 +106,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   /** The weight in silver */
   private int weight = -1;
 
-  /** an object encapsulation the orders of this unit as <tt>String</tt> objects */
+  /** an object encapsulation the orders of this unit as <kbd>String</kbd> objects */
   private MagellanOrdersImplementation ordersObject;
 
   /** Comments modifiable by the user. The comments are represented as String objects. */
@@ -149,14 +149,14 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    */
   private Cache cache;
   /**
-   * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt> with
+   * Messages directly sent to this unit. The list contains instances of class <kbd>Message</kbd> with
    * type -1 and only the text set.
    */
   private List<Message> unitMessages;
   /** A map for unknown tags */
   private Map<String, String> tagMap;
   /**
-   * A list containing <tt>String</tt> objects, specifying effects on this <tt>Unit</tt> object.
+   * A list containing <kbd>String</kbd> objects, specifying effects on this <kbd>Unit</kbd> object.
    */
   private List<String> effects;
   /** true indicates that the unit has orders confirmed by an user. */
@@ -263,7 +263,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   /**
-   * Removes the order at position <tt>i</tt> and refreshes the relations
+   * Removes the order at position <kbd>i</kbd> and refreshes the relations
    *
    * @see magellan.library.Unit#removeOrderAt(int)
    */
@@ -274,7 +274,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   /**
-   * Removes the order at position <tt>i</tt> and possibly refreshes the relations
+   * Removes the order at position <kbd>i</kbd> and possibly refreshes the relations
    *
    * @param refreshRelations if true also refresh the relations of the unit.
    * @see magellan.library.Unit#removeOrderAt(int, boolean)
@@ -308,7 +308,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
    * @param refreshRelations
-   * @return <tt>true</tt> if at least one order was removed
+   * @return <kbd>true</kbd> if at least one order was removed
    * @see magellan.library.Unit#removeOrder(java.lang.String, int, boolean)
    * @deprecated relation refreshing is now done event-based
    */
@@ -321,7 +321,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
    *
-   * @return <tt>true</tt> if the order was successfully added.
+   * @return <kbd>true</kbd> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String)
    */
   public boolean addOrder(String order) {
@@ -338,7 +338,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * Add a order to the unit's orders. This function ensures that TEMP units are not affected by the
    * operation.
    *
-   * @return <tt>true</tt> if the order was successfully added.
+   * @return <kbd>true</kbd> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String, boolean)
    * @deprecated relation refreshing is now done event-based
    */
@@ -352,12 +352,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * operation.
    *
    * @param order the order to add.
-   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
-   *          type. If <tt>false</tt> the order is simply added.
+   * @param replace if <kbd>true</kbd>, the order replaces any other of the unit's orders of the same
+   *          type. If <kbd>false</kbd> the order is simply added.
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if the order was successfully added.
+   * @return <kbd>true</kbd> if the order was successfully added.
    * @see magellan.library.Unit#addOrder(java.lang.String, boolean, int)
    */
   public boolean addOrder(String order, boolean replace, int length) {
@@ -394,7 +394,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   /**
-   * Adds the order at position <tt>i</tt> and refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and refreshes the relations
    *
    * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrder
@@ -405,7 +405,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
   }
 
   /**
-   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and possibly refreshes the relations
    *
    * @param pos An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
    * @param newOrder
@@ -1154,7 +1154,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
 
   /**
    * Returns a Collection over the relations this unit has to other units. The iterator returns
-   * <tt>UnitRelation</tt> objects. An empty iterator is returned if the relations have not been set
+   * <kbd>UnitRelation</kbd> objects. An empty iterator is returned if the relations have not been set
    * up so far or if there are no relations.
    */
   @Override
@@ -2018,7 +2018,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    *
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex) {
@@ -2032,7 +2032,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit {
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale) {

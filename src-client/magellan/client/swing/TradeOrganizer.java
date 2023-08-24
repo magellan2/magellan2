@@ -940,7 +940,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     }
 
     /**
-     * Compares two regions by the value of their <tt>stocks</tt>.
+     * Compares two regions by the value of their <kbd>stocks</kbd>.
      * 
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */

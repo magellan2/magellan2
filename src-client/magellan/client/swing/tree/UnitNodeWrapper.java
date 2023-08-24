@@ -280,7 +280,6 @@ public class UnitNodeWrapper extends DefaultNodeWrapper implements CellObject2, 
    * @param prefix
    * @param amount1
    * @param amount2
-   * @return
    */
   private static String getText(Unit u, String prefix, long amount1, long amount2) {
     StringBuffer sb = new StringBuffer();

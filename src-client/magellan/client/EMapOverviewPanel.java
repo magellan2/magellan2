@@ -774,7 +774,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Returns the (Report) object that belongs to this node, for example a region, a unit or a group.
    *
    * @param node
-   * @return
    */
   private Object getNodeSubject(DefaultMutableTreeNode node) {
     Object o = node.getUserObject();

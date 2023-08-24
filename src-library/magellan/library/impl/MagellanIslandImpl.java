@@ -43,7 +43,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
    * Constructs a new Island object uniquely identifiable by the specified id.
    * 
    * @param id allows this island to return all region objects that belong to it via the
-   *          <tt>regions()</tt> and <tt>getRegion()</tt> methods.
+   *          <kbd>regions()</kbd> and <kbd>getRegion()</kbd> methods.
    */
   public MagellanIslandImpl(IntegerID id, GameData data) {
     super(id);

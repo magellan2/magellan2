@@ -248,7 +248,7 @@ public interface OrderChanger {
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit);

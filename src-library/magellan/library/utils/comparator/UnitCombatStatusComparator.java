@@ -36,7 +36,7 @@ public class UnitCombatStatusComparator implements Comparator<Unit> {
    * Creates a new UnitCombatStautsComparator object.
    * 
    * @param subComparator if two units have the same combat-status, this sub-comparator is applied
-   *          if it is not <tt>null</tt>.
+   *          if it is not <kbd>null</kbd>.
    */
   public UnitCombatStatusComparator(Comparator<? super Unit> subComparator) {
     subCmp = subComparator;

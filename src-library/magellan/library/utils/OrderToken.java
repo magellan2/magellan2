@@ -67,7 +67,7 @@ public class OrderToken {
   private boolean followedBySpace = false;
 
   /**
-   * Creates a new <tt>OrderToken</tt> object representing the specified string, but with invalid
+   * Creates a new <kbd>OrderToken</kbd> object representing the specified string, but with invalid
    * start and end positions and undefined type.
    *
    * @param text the text this order token represents.
@@ -77,7 +77,7 @@ public class OrderToken {
   }
 
   /**
-   * Creates a new <tt>OrderToken</tt> object representing the specified string and the specified
+   * Creates a new <kbd>OrderToken</kbd> object representing the specified string and the specified
    * start and end positions.
    *
    * @param text the text this order token represents.
@@ -89,14 +89,14 @@ public class OrderToken {
   }
 
   /**
-   * Creates a new <tt>OrderToken</tt> object with empty string and specified type
+   * Creates a new <kbd>OrderToken</kbd> object with empty string and specified type
    */
   public OrderToken(int type) {
     this("", -1, -1, type, false);
   }
 
   /**
-   * Creates a new <tt>OrderToken</tt> object representing the specified string with specific start
+   * Creates a new <kbd>OrderToken</kbd> object representing the specified string with specific start
    * and end positions and type.
    *
    * @param text the text this order token represents.

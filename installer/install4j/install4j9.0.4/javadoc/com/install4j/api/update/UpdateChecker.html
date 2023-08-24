@@ -368,7 +368,7 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>isUpdateScheduled</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;isUpdateScheduled()</pre>
-<div class="block">Checks if the "Schedule update installation" action has registered a downloaded update for installation. This method returns <tt>false</tt>
+<div class="block">Checks if the "Schedule update installation" action has registered a downloaded update for installation. This method returns <kbd>false</kbd>
  if the update won't be currently executed because of a failed previous installation or because the installer is currently running. If an
  update fails or is cancelled it will be rescheduled after 24 hours. The number of times the rescheduling happens can be configured with the
  "Schedule update installation" action.</div>
@@ -389,15 +389,15 @@ extends java.lang.Object</pre>
                                           java.lang.Runnable&nbsp;shutdownRunnable)</pre>
 <div class="block">If an update is scheduled for installation execute the update installer and shutdown the current launcher.
  <p>
- Equivalent to calling <a href="#executeScheduledUpdate(java.util.List,boolean,java.util.List,java.lang.Runnable)"><code>executeScheduledUpdate(List, boolean, List, Runnable)</code></a> with <tt>null</tt> for the <tt>launcherArguments</tt> parameter
+ Equivalent to calling <a href="#executeScheduledUpdate(java.util.List,boolean,java.util.List,java.lang.Runnable)"><code>executeScheduledUpdate(List, boolean, List, Runnable)</code></a> with <kbd>null</kbd> for the <kbd>launcherArguments</kbd> parameter
  </p></div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>updaterArguments</code> - updaterArguments to be passed to the updater.</dd>
-<dd><code>restartLauncher</code> - if <tt>true</tt> a GUI or a console launcher will be restarted after the installation. If called from a service launcher the
-                        installer must take care of starting the service again. It can use <tt>context.getBooleanVariable("sys.automaticUpdate")</tt> if restart should be done conditionally.</dd>
-<dd><code>shutdownRunnable</code> - if you want to invoke a custom routine for shutting down the current JVM, you can pass in a <tt>Runnable</tt>. Otherwise, <tt>System.exit(0)</tt> will be called.
-                         If you pass in a Runnable. you must call <tt>System.exit</tt> at the end of your shutdown procedure.</dd>
+<dd><code>restartLauncher</code> - if <kbd>true</kbd> a GUI or a console launcher will be restarted after the installation. If called from a service launcher the
+                        installer must take care of starting the service again. It can use <kbd>context.getBooleanVariable("sys.automaticUpdate")</kbd> if restart should be done conditionally.</dd>
+<dd><code>shutdownRunnable</code> - if you want to invoke a custom routine for shutting down the current JVM, you can pass in a <kbd>Runnable</kbd>. Otherwise, <kbd>System.exit(0)</kbd> will be called.
+                         If you pass in a Runnable. you must call <kbd>System.exit</kbd> at the end of your shutdown procedure.</dd>
 </dl>
 </li>
 </ul>
@@ -415,11 +415,11 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>updaterArguments</code> - updaterArguments to be passed to the updater.</dd>
-<dd><code>restartLauncher</code> - if <tt>true</tt> a GUI or a console launcher will be restarted after the installation. If called from a service launcher the
-                        installer must take care of starting the service again. It can use <tt>context.getBooleanVariable("sys.automaticUpdate")</tt> if restart should be done conditionally.</dd>
-<dd><code>launcherArguments</code> - if <tt>restartLauncher</tt> is <tt>true</tt> and this method is called within a GUI or a console launcher, the given arguments will be passed to the restarted launcher</dd>
-<dd><code>shutdownRunnable</code> - if you want to invoke a custom routine for shutting down the current JVM, you can pass in a <tt>Runnable</tt>. Otherwise, <tt>System.exit(0)</tt> will be called.
-                         If you pass in a Runnable. you must call <tt>System.exit</tt> at the end of your shutdown procedure.</dd>
+<dd><code>restartLauncher</code> - if <kbd>true</kbd> a GUI or a console launcher will be restarted after the installation. If called from a service launcher the
+                        installer must take care of starting the service again. It can use <kbd>context.getBooleanVariable("sys.automaticUpdate")</kbd> if restart should be done conditionally.</dd>
+<dd><code>launcherArguments</code> - if <kbd>restartLauncher</kbd> is <kbd>true</kbd> and this method is called within a GUI or a console launcher, the given arguments will be passed to the restarted launcher</dd>
+<dd><code>shutdownRunnable</code> - if you want to invoke a custom routine for shutting down the current JVM, you can pass in a <kbd>Runnable</kbd>. Otherwise, <kbd>System.exit(0)</kbd> will be called.
+                         If you pass in a Runnable. you must call <kbd>System.exit</kbd> at the end of your shutdown procedure.</dd>
 </dl>
 </li>
 </ul>

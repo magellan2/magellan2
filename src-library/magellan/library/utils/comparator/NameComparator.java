@@ -39,7 +39,7 @@ public class NameComparator implements Comparator<Named> {
    * Creates a new NameComparator object.
    * 
    * @param sameNameSubComparator if two objects with the same name are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public NameComparator(Comparator<? super Named> sameNameSubComparator) {
     sameNameSubCmp = sameNameSubComparator;
@@ -50,7 +50,7 @@ public class NameComparator implements Comparator<Named> {
    * 
    * @param o1 an instance of interface Named.
    * @param o2 an instance of interface Named.
-   * @return the lexical difference of <tt>o1</tt>'s and <tt>o2</tt>'s names as returned by
+   * @return the lexical difference of <kbd>o1</kbd>'s and <kbd>o2</kbd>'s names as returned by
    *         String.compareTo(). If the names are equal and a sub-comparator was specified, the
    *         result of that sub-comparator's comparison is returned. Undefined values are evaluated
    *         as <code>&gt; 0</code>.

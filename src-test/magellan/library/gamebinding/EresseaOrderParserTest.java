@@ -257,7 +257,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BelagereReader}.
+   * Test method for BELAGERE (disabled command).
    */
   @Test
   public void testBelagereReader() {
@@ -1210,7 +1210,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     checkOrder("SABOTIERE SCHIFF ship", false);
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
+  /** Test method for {@link AbstractOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithoutTemps() {
     TokenBucket bucket = getParser().new TokenBucket();
@@ -1224,7 +1224,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     assertTrue(new OrderToken(OrderToken.TT_EOC).equalsAll(bucket.get(4)));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
+  /** Test method for {@link AbstractOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithTemp() {
     TokenBucket bucket = getParser().new TokenBucket();
@@ -1235,7 +1235,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     assertThat(bucket.get(1).getText(), is("TEMP 123"));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
+  /** Test method for {@link AbstractOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithTwoTemps() {
     TokenBucket bucket = getParser().new TokenBucket();
@@ -1247,7 +1247,7 @@ public class EresseaOrderParserTest extends AbstractOrderParserTestUtil {
     assertThat(bucket.get(2).getText(), is("TEMP 456"));
   }
 
-  /** Test method for {@link EresseaOrderParser.TokenBucket#mergeTempTokens(int)}. */
+  /** Test method for {@link AbstractOrderParser.TokenBucket#mergeTempTokens(int)}. */
   @Test
   public void testMergeTempTokensWithMixed() {
     TokenBucket bucket = getParser().new TokenBucket();

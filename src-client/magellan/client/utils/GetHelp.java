@@ -99,6 +99,7 @@ import magellan.library.utils.logging.Logger;
  * <li>copy the files eressea.jhm, eresseaTOC.xml to help/de, all html files from help/de.new/eressea to
  * help/de/eressea</li>
  * <li>create the new magellan.jhm file by running</li>
+ * </ul>
  * <code>xmllint -xinclude --format magellan.template.jhm &gt; magellan.jhm</code> in help/de
  * - create the new JavaHelp search index by running
  * <kbd>java --class-path ../lib/javahelp-2.0.05.jar com.sun.java.help.search.Indexer de/&lowast;/&lowast;html</kbd>

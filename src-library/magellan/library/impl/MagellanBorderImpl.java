@@ -39,11 +39,11 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    */
   private int buildRatio;
 
-  /** A list containing <tt>String</tt> objects, specifying effects on this border. */
+  /** A list containing <kbd>String</kbd> objects, specifying effects on this border. */
   private List<String> effects;
 
   /**
-   * Create a new <tt>Border</tt> object with the specified id.
+   * Create a new <kbd>Border</kbd> object with the specified id.
    * 
    * @param id the id of the border
    */
@@ -52,7 +52,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
   }
 
   /**
-   * Create a new <tt>Border</tt> object initialized to the specified values.
+   * Create a new <kbd>Border</kbd> object initialized to the specified values.
    * 
    * @param id the id of the border
    * @param direction the direction of the border
@@ -67,7 +67,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
   }
 
   /**
-   * Return a string representation of this <tt>Border</tt> object.
+   * Return a string representation of this <kbd>Border</kbd> object.
    * 
    * @return Border object as string.
    */

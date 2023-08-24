@@ -117,24 +117,24 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   public boolean trustLevelSetByUser = false;
 
-  /** contains all messages for this faction as <tt>Message</tt> objects */
+  /** contains all messages for this faction as <kbd>Message</kbd> objects */
   protected List<Message> messages = null;
 
-  /** contains error messages for this faction as <tt>String</tt> objects */
+  /** contains error messages for this faction as <kbd>String</kbd> objects */
   protected List<String> errors = null;
 
-  /** contains the battles, this faction had in the current round, as <tt>Battle</tt> objects */
+  /** contains the battles, this faction had in the current round, as <kbd>Battle</kbd> objects */
   protected List<Battle> battles = null;
 
   /**
    * The allies of this faction are stored in this map with the faction ID of the ally as key and an
-   * <tt>Alliance</tt> object as value.
+   * <kbd>Alliance</kbd> object as value.
    */
   protected Map<EntityID, Alliance> allies = null;
 
   /**
-   * The different groups in this faction. The map contains <tt>ID</tt> objects with the group id as
-   * keys and <tt>Group</tt> objects as values.
+   * The different groups in this faction. The map contains <kbd>ID</kbd> objects with the group id as
+   * keys and <kbd>Group</kbd> objects as values.
    */
   protected Map<IntegerID, Group> groups = CollectionFactory.createSyncOrderedMap(0);
 

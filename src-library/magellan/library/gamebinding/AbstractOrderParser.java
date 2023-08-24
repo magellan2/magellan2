@@ -53,8 +53,8 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A class for reading Eressea orders and checking their syntactical correctness. A
- * <tt>OrderParser</tt> object can register a <tt>OrderCompleter</tt> object. In such a case the
- * <tt>OrderParser</tt> will call the corresponding methods of the <tt>OrderCompleter</tt> if it
+ * <kbd>OrderParser</kbd> object can register a <kbd>OrderCompleter</kbd> object. In such a case the
+ * <kbd>OrderParser</kbd> will call the corresponding methods of the <kbd>OrderCompleter</kbd> if it
  * encounters an incomplete order.
  */
 public abstract class AbstractOrderParser implements OrderParser {
@@ -192,7 +192,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Creates a new <tt>AbstractOrderParser</tt> object.
+   * Creates a new <kbd>AbstractOrderParser</kbd> object.
    */
   public AbstractOrderParser(GameData data) {
     if (data == null)
@@ -490,7 +490,7 @@ public abstract class AbstractOrderParser implements OrderParser {
   /**
    * Returns the tokens read by the parser.
    *
-   * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
+   * @return all <kbd>OrderToken</kbd> object produced by the underlying <kbd>OrderTokenizer</kbd> by
    *         reading a order.
    */
   public List<OrderToken> getTokens() {
@@ -530,10 +530,10 @@ public abstract class AbstractOrderParser implements OrderParser {
   }
 
   /**
-   * Returns the error messages produced by the last invocation of the <tt>read(Reader in)</tt>
+   * Returns the error messages produced by the last invocation of the <kbd>read(Reader in)</kbd>
    * method.
    *
-   * @return an error message if the last <tt>read</tt> returned <tt>false</tt>, <tt>null</tt> else.
+   * @return an error message if the last <kbd>read</kbd> returned <kbd>false</kbd>, <kbd>null</kbd> else.
    */
   public String getErrorMessage() {
     return errMsg;
@@ -570,7 +570,7 @@ public abstract class AbstractOrderParser implements OrderParser {
    * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
    *
    * @param in the stream to read the order from.
-   * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
+   * @return <kbd>true</kbd> if the syntax of the order read is valid, <kbd>false</kbd> else.
    * @deprecated Use {@link #parse(String, Locale)}
    */
   @Deprecated

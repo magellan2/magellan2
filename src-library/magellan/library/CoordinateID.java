@@ -221,7 +221,7 @@ public final class CoordinateID implements ID {
   }
 
   /**
-   * Creates a new <tt>CoordinateID</tt> object from a string containing the coordinates separated
+   * Creates a new <kbd>CoordinateID</kbd> object from a string containing the coordinates separated
    * by delimiters. The string can contain two resp. three integers separated by one resp. two
    * delimiters. For example, <code>parse("12 4"," ")</code> returns the CoordinateID (12,4,0).
    * Leading and trailing whitespace around numbers is ignored. For instance,

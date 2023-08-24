@@ -2823,7 +2823,7 @@ public class BattleInfo {
   /**
    * Creates an HTML string with aggregated data of this battle.
    *
-   * @return A string with HTML formatting (without surrounding <html> or <body> tags).
+   * @return A string with HTML formatting (without surrounding &lt;html&gt; or &lt;body&gt; tags).
    */
   public String toHtml() {
     return new Evaluator().evaluate().toHtml(true);

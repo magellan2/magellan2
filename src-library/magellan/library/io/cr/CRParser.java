@@ -219,7 +219,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * Read the MESSAGETYPES block. Note that message type stubs have already been created by parsing
    * the messages themselves.
    *
-   * @return the resulting list of <tt>MessageType</tt> objects.
+   * @return the resulting list of <kbd>MessageType</kbd> objects.
    * @throws IOException if the scanner throws an IOException
    */
   private List<MessageType> parseMessageTypes(GameData data) throws IOException {
@@ -292,7 +292,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
    * Handle a sequence of quoted strings, interpreting them as messages.
    *
    * @param msgs a list to add the read messages to. May be <code>null</code>.
-   * @return the resulting list of <tt>Message</tt> objects.
+   * @return the resulting list of <kbd>Message</kbd> objects.
    */
   private List<Message> parseMessageSequence(List<Message> msgs) throws IOException {
     sc.getNextToken(); // skip the block
@@ -322,11 +322,11 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * Handle a sequence of quoted strings, storing them as <tt>String</tt> objects. String
+   * Handle a sequence of quoted strings, storing them as <kbd>String</kbd> objects. String
    * interpretation starts with the next line.
    *
    * @param strings a list to add the read strings to. May be <code>null</code>.
-   * @return the resulting list of <tt>String</tt> objects.
+   * @return the resulting list of <kbd>String</kbd> objects.
    */
   private List<String> parseStringSequence(List<String> strings) throws IOException {
     sc.getNextToken(); // skip the block
@@ -349,11 +349,10 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * Parse the SPRUECHE sub block of UNIT and add them as <tt>Spell</tt> objects.
+   * Parse the SPRUECHE sub block of UNIT and add them as <kbd>Spell</kbd> objects.
    *
-   * @param world the game data to get the spells from
    * @param map a map to add the read spells to
-   * @return the resulting map of <tt>Spell</tt> objects.
+   * @return the resulting map of <kbd>Spell</kbd> objects.
    */
   private Map<ID, Spell> parseUnitSpells(Map<ID, Spell> map) throws IOException {
     sc.getNextToken(); // skip the block
@@ -380,9 +379,8 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   }
 
   /**
-   * Parse a KAMPFZAUBER sub block of UNIT and add it as <tt>CombatSpell</tt> object.
+   * Parse a KAMPFZAUBER sub block of UNIT and add it as <kbd>CombatSpell</kbd> object.
    *
-   * @param world the game data to get the spells from
    * @param unit the unit that should get the combat spells set
    */
   private void parseUnitCombatSpells(Unit unit) throws IOException {
@@ -429,10 +427,10 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Parse message blocks as can be found in cr versions &ge; 41. This function evaluates only two
    * special message attributes. These are the ";type" and ";rendered" attributes, which are
-   * directly accessible in the <tt>Message</tt> object as type and text. If there is no MessageType
+   * directly accessible in the <kbd>Message</kbd> object as type and text. If there is no MessageType
    * object for this type of message, a stub MessageType object is created and added to world.
    *
-   * @return a list containing <tt>Message</tt> objects for all messages read.
+   * @return a list containing <kbd>Message</kbd> objects for all messages read.
    * @throws IOException if the scanner throws an IOException
    */
   private List<Message> parseMessages(List<Message> list) throws IOException {
@@ -2700,7 +2698,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Parse one GRENZE sub block of the REGION block.
    *
-   * @return the resulting <tt>Border</tt> object.
+   * @return the resulting <kbd>Border</kbd> object.
    * @throws IOException if the scanner throws an IOException
    */
   private Border parseBorder() throws IOException {
@@ -2757,7 +2755,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
   /**
    * Parse one SIGN sub block of the REGION block.
    *
-   * @return the resulting <tt>SIGN</tt> object.
+   * @return the resulting <kbd>SIGN</kbd> object.
    * @throws IOException if the scanner throws an IOException
    */
   private Sign parseSign() throws IOException {
@@ -3814,7 +3812,7 @@ public class CRParser extends AbstractReportParser implements RulesIO, GameDataI
     }
 
     /**
-     * Adds a handler that is called if the specified tag (i.e., a line like "<value>;tagName" is
+     * Adds a handler that is called if the specified tag (i.e., a line like "value;tagName" is
      * encountered.
      *
      * @param tagName The name of the tag triggering this handler

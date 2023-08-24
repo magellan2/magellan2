@@ -38,15 +38,15 @@ public final class Umlaut {
   }
 
   /**
-   * Search <tt>string</tt> for a character contained in <tt>keys[]</tt> and replace it with the
-   * corresponding string in <tt>values[]</tt>.
+   * Search <kbd>string</kbd> for a character contained in <kbd>keys[]</kbd> and replace it with the
+   * corresponding string in <kbd>values[]</kbd>.
    * 
    * @param string the string to recode.
-   * @param keys an array of chars to be replaced in <tt>string</tt>.
+   * @param keys an array of chars to be replaced in <kbd>string</kbd>.
    * @param values an array of the strings that are used as replacements for the corresponding char
-   *          in <tt>keys</tt>.
-   * @return a string with all occurrences of an element of the <tt>keys</tt> array replaced by the
-   *         corresponding element in the <tt>values</tt> array.
+   *          in <kbd>keys</kbd>.
+   * @return a string with all occurrences of an element of the <kbd>keys</kbd> array replaced by the
+   *         corresponding element in the <kbd>values</kbd> array.
    */
   public static String recode(String string, char keys[], String values[]) {
     // recoding is kind of expensive, so store recoded strings
@@ -94,7 +94,7 @@ public final class Umlaut {
   }
 
   /**
-   * Replaces all occurences of <tt>from</tt> in <tt>str</tt> with <tt>to</tt>.
+   * Replaces all occurences of <kbd>from</kbd> in <kbd>str</kbd> with <kbd>to</kbd>.
    */
   public static String replace(String str, String from, String to) {
     int startIndex = 0;
@@ -132,7 +132,7 @@ public final class Umlaut {
    * Expand all umlauts in a string and convert it to uppercase.
    * 
    * @param str the string to be normalized.
-   * @return the uppercase version of <tt>str</tt> with all umlauts expanded.
+   * @return the uppercase version of <kbd>str</kbd> with all umlauts expanded.
    */
   public static String normalize(String str) {
     if (str == null)

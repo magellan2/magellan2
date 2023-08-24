@@ -73,8 +73,8 @@ import magellan.library.utils.replacers.ReplacerHelp;
 import magellan.library.utils.replacers.ReplacerSystem;
 
 /**
- * A component displaying a map based on a <tt>GameData</tt> object. The appearance of the map is
- * made configurable by using combinations of classes implementing the <tt>CellRenderers</tt>
+ * A component displaying a map based on a <kbd>GameData</kbd> object. The appearance of the map is
+ * made configurable by using combinations of classes implementing the <kbd>CellRenderers</kbd>
  * interface.
  * <p>
  * <b>Note:</b>
@@ -665,8 +665,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Set a path - a list of consecutive regions - to be rendered by the renderer registered to the
    * path rendering plane.
    *
-   * @param path a list of <tt>Region</tt> objects to be rendered as a path on the map.
-   * @param isPersistent if <tt>true</tt>, always render the path, else render the path only until a
+   * @param path a list of <kbd>Region</kbd> objects to be rendered as a path on the map.
+   * @param isPersistent if <kbd>true</kbd>, always render the path, else render the path only until a
    *          different region is selected.
    */
   public void setPath(List<CoordinateID> path, boolean isPersistent) {

@@ -934,11 +934,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Appends information about this faction.
    *
-   * @param alliance
-   * @param allies
-   * @param u
-   * @param parent
-   * @param expandableNodes
    */
   private void appendIslandInfo(Island i, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
@@ -1594,7 +1589,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Return a string showing the signed difference of the two int values in the form "
-   * <tt>current</tt> [&lt;sign&gt;&lt;number&gt;]". If the two values are equal or if one of them
+   * <kbd>current</kbd> [&lt;sign&gt;&lt;number&gt;]". If the two values are equal or if one of them
    * is -1, an empty string is returned.
    */
   private StringBuffer getDiffString(int current, int old) {
@@ -1603,7 +1598,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Return a string showing the signed difference of the three int values in the form "
-   * <tt>current</tt> (future) [&lt;sign&gt;&lt;change&gt;]". e.g. (1,2,1) returns 1 [-1] e.g.
+   * <kbd>current</kbd> (future) [&lt;sign&gt;&lt;change&gt;]". e.g. (1,2,1) returns 1 [-1] e.g.
    * (1,2,2) returns 1 (2) [-1] e.g. (1,1,2) returns 1 (2) e.g. (1,1,1) returns 1 If future == -1,
    * then ignore
    */
@@ -1685,11 +1680,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         DefaultMutableTreeNode guardParty = new DefaultMutableTreeNode(strFaction);
         guardRoot.add(guardParty);
 
-        Iterator<Unit> iterUnits = units.iterator();
-
-        while (iterUnits.hasNext()) {
-          Unit unit = iterUnits.next();
-
+        for (Unit unit : units) {
           if (unit.getFaction().equals(faction)) {
             DefaultMutableTreeNode guardUnit =
                 new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(unit));
@@ -2674,11 +2665,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Appends information about this faction.
    *
-   * @param alliance
-   * @param allies
-   * @param u
-   * @param parent
-   * @param expandableNodes
    */
   private void appendFactionInfo(Faction f, Map<EntityID, Alliance> allies, AllianceGroup alliance,
       DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
@@ -2980,7 +2966,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param u
    * @param parent
    * @param expandableNodes
-   * @return
    */
   private DefaultMutableTreeNode appendUnitHorses(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {

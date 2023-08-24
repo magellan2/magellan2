@@ -244,9 +244,6 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    * tries to find some hints if a faction is "owned" by the user...and possible a password may make
    * sense... uses battle-status to identify such factions (-1 by default)
    *
-   * @param f
-   * @param data
-   * @return
    */
   private boolean isProbablyPriviligedFaction(Faction f) {
     for (Unit u : data.getUnits()) {
@@ -275,7 +272,6 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
    *
-   * @return
    */
   private Vector<FactionItem> getAllFactionItems() {
     Vector<FactionItem> erg = null;

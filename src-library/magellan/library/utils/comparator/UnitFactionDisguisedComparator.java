@@ -37,7 +37,7 @@ public class UnitFactionDisguisedComparator implements Comparator<Unit> {
    * Creates a new UnitFactionDisguisedComparator object.
    * 
    * @param subComparator if two units have the same faction-disguised-status, this sub-comparator
-   *          is applied if it is not <tt>null</tt>.
+   *          is applied if it is not <kbd>null</kbd>.
    */
   public UnitFactionDisguisedComparator(Comparator<? super Unit> subComparator) {
     subCmp = subComparator;

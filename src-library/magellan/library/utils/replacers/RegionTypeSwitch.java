@@ -22,12 +22,12 @@ import magellan.library.utils.Resources;
  * A switch that reacts if the given region is of a certain type.
  * <p>
  * Three possible constructors:
+ * </p>
  * <ul>
  * <li>RegionType object: direct test</li>
  * <li>StringID: compares given region's type ID</li>
  * <li>String: creates a StringID</li>
  * </ul>
- * </p>
  * 
  * @author Andreas
  * @version 1.0

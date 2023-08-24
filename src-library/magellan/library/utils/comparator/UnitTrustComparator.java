@@ -36,7 +36,7 @@ public class UnitTrustComparator implements Comparator<Unit> {
    * Creates a new UnitTrustComparator object.
    * 
    * @param subComparator if two units have the same health-status, this sub-comparator is applied
-   *          if it is not <tt>null</tt>.
+   *          if it is not <kbd>null</kbd>.
    */
   public UnitTrustComparator(Comparator<? super Unit> subComparator) {
     subCmp = subComparator;

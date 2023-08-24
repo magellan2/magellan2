@@ -40,7 +40,7 @@ public class UnitGuiseFactionComparator implements Comparator<Unit> {
    * 
    * @param factionComparator the comparator used to compare the units' factions.
    * @param sameFactionSubComparator if two units belonging to the same faction are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public UnitGuiseFactionComparator(Comparator<? super Faction> factionComparator,
       Comparator<? super Unit> sameFactionSubComparator) {
@@ -51,7 +51,7 @@ public class UnitGuiseFactionComparator implements Comparator<Unit> {
   /**
    * Compares its two arguments for order according to the factions they are disguised as.
    * 
-   * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
+   * @return the result of the faction comparator's comparison of <kbd>o1</kbd>'s and <kbd>o2</kbd>. If
    *         are disguised as the same faction and a sub-comparator was specified, the result that
    *         sub-comparator's comparison is returned. Unknown values are evaluated as
    *         <code>&gt; 0</code>.

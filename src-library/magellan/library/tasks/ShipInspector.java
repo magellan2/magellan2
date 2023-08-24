@@ -258,7 +258,6 @@ public class ShipInspector extends AbstractInspector {
    * checks, if an harbor is in the region and its size == maxSize !checks no alliance status
    *
    * @param nextRegion
-   * @return
    */
   private Unit hasHarbourInRegion(Region nextRegion) {
     if (nextRegion.buildings() != null && nextRegion.buildings().size() > 0) {

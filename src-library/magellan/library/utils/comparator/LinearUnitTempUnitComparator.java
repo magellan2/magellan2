@@ -38,7 +38,7 @@ public class LinearUnitTempUnitComparator implements Comparator<Unit> {
    * Creates a new LinearUnitTempUnitComparator object.
    * 
    * @param unitSubComparator if two units are of the same type (standard or temp unit), this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public LinearUnitTempUnitComparator(Comparator<? super Unit> unitSubComparator) {
     subCmp = unitSubComparator;
@@ -47,9 +47,9 @@ public class LinearUnitTempUnitComparator implements Comparator<Unit> {
   /**
    * Compares its two arguments for order according to their types.
    * 
-   * @return a value less than zero if o1 is.an instance of class <tt>Unit</tt> and o2 an instance
-   *         of class <tt>TempUnit</tt>. Conversely, if o1 is an instance of class <tt>TempUnit</tt>
-   *         and o2 an instance of class <tt>Unit</tt>, a value greater than zero is returned. If o1
+   * @return a value less than zero if o1 is.an instance of class <kbd>Unit</kbd> and o2 an instance
+   *         of class <kbd>TempUnit</kbd>. Conversely, if o1 is an instance of class <kbd>TempUnit</kbd>
+   *         and o2 an instance of class <kbd>Unit</kbd>, a value greater than zero is returned. If o1
    *         and o2 are instances of the same class, the comparison either returns zero or, when
    *         unitSubComparator is not null, that comparator's result.
    */

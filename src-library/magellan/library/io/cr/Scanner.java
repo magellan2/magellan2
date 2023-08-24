@@ -23,10 +23,10 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A simple class for tokenizing lines of an input file. Lines of the form <br/>
- * <tt>number;key</tt> are parsed as two tokens,<br/>
- * <tt>"string";key</tt> are parsed as two tokens,<br/>
- * <tt>BLOCK</tt> are parsed as a block,<br/>
- * <tt>BLOCK id</tt> are parsed as a block with ID.<br/>
+ * <kbd>number;key</kbd> are parsed as two tokens,<br/>
+ * <kbd>"string";key</kbd> are parsed as two tokens,<br/>
+ * <kbd>BLOCK</kbd> are parsed as a block,<br/>
+ * <kbd>BLOCK id</kbd> are parsed as a block with ID.<br/>
  * 
  * @author $Author: $
  * @version $Revision: 389 $

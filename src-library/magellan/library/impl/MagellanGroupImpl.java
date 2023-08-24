@@ -43,7 +43,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   private Map<String, String> attributes = new LinkedHashMap<String, String>();
 
   /**
-   * Create a new <tt>Group</tt> object.
+   * Create a new <kbd>Group</kbd> object.
    * 
    * @param id the id of this group.
    * @param data the game data this group belongs to.
@@ -53,7 +53,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   }
 
   /**
-   * Create a new <tt>Group</tt> object.
+   * Create a new <kbd>Group</kbd> object.
    * 
    * @param id the id of this group.
    * @param data the game data this group belongs to.
@@ -64,7 +64,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   }
 
   /**
-   * Create a new <tt>Group</tt> object.
+   * Create a new <kbd>Group</kbd> object.
    * 
    * @param id the id of this group.
    * @param data the game data this group belongs to.
@@ -93,9 +93,9 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   }
 
   /**
-   * The alliances specific to this group. The map returned by this function contains <tt>ID</tt>
+   * The alliances specific to this group. The map returned by this function contains <kbd>ID</kbd>
    * objects as keys with the id of the faction that alliance references. The values are instances
-   * of class <tt>Alliance</tt>. The return value is never null.
+   * of class <kbd>Alliance</kbd>. The return value is never null.
    */
   public Map<EntityID, Alliance> allies() {
     return allies;

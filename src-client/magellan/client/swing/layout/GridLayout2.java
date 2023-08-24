@@ -35,15 +35,15 @@ public class GridLayout2 extends GridLayout {
   }
 
   /**
-   * Generates a GridLayout with <tt>rows</tt> rows and <tt>cols</tt> columns.
+   * Generates a GridLayout with <kbd>rows</kbd> rows and <kbd>cols</kbd> columns.
    */
   public GridLayout2(int rows, int cols) {
     this(rows, cols, 0, 0);
   }
 
   /**
-   * Generates a GridLayout with <tt>rows</tt> row, <tt>cols</tt> columns, a horizontal gap of
-   * <tt>hgap</tt> and a vertical gap of <tt>vgap</tt> The vertical gap is the distance between two
+   * Generates a GridLayout with <kbd>rows</kbd> row, <kbd>cols</kbd> columns, a horizontal gap of
+   * <kbd>hgap</kbd> and a vertical gap of <kbd>vgap</kbd> The vertical gap is the distance between two
    * objects in a column (y-axis) The horizontal gap is the distance between two objects in a row
    * (x-axis)
    */

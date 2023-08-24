@@ -329,7 +329,7 @@ public class EresseaConstants extends GameConstants {
   /** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP</code> */
   @Deprecated
   public static final String O_FOREIGN = "FOREIGN";
-  /** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP */
+  /** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP</code> */
   @Deprecated
   public static final StringID OC_FOREIGN = StringID.create("FOREIGN");
 

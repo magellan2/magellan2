@@ -43,10 +43,10 @@ import magellan.library.utils.Resources;
  */
 public class AllanonOrderCompleter extends EresseaOrderCompleter {
   /**
-   * Creates a new <tt>AllanonOrderCompleter</tt> taking context information from the specified
-   * <tt>GameData</tt> object.
+   * Creates a new <kbd>AllanonOrderCompleter</kbd> taking context information from the specified
+   * <kbd>GameData</kbd> object.
    * 
-   * @param gd The <tt>GameData</tt> this completer uses as context.
+   * @param gd The <kbd>GameData</kbd> this completer uses as context.
    */
   public AllanonOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
     super(gd, ac);

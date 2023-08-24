@@ -19,14 +19,14 @@ import magellan.library.Alliance;
 import magellan.library.Faction;
 
 /**
- * A comparator imposing an ordering on <tt>Alliance</tt> objects by comparing the factions they
+ * A comparator imposing an ordering on <kbd>Alliance</kbd> objects by comparing the factions they
  * contain.
  */
 public class AllianceFactionComparator implements Comparator<Alliance> {
   protected Comparator<? super Faction> factionSubCmp = null;
 
   /**
-   * Creates a new <tt>AllianceFactionComparator</tt> object.
+   * Creates a new <kbd>AllianceFactionComparator</kbd> object.
    * 
    * @param factionSubComparator is used to compare the factions of two alliance objects.
    */

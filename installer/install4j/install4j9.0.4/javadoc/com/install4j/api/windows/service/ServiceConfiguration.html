@@ -195,7 +195,7 @@ implements java.io.Serializable</pre>
 <td class="colFirst"><code><a href="ServiceConfiguration.html" title="class in com.install4j.api.windows.service">ServiceConfiguration</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#delayedAutoStart(java.lang.Boolean)">delayedAutoStart</a></span>&#8203;(java.lang.Boolean&nbsp;delayedAutoStart)</code></th>
 <td class="colLast">
-<div class="block">If startType is set to <tt>AUTO</tt>, you can specify with this property that the service is started with a short delay after all other auto-start services.</div>
+<div class="block">If startType is set to <kbd>AUTO</kbd>, you can specify with this property that the service is started with a short delay after all other auto-start services.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -420,10 +420,10 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>delayedAutoStart</h4>
 <pre class="methodSignature">public&nbsp;<a href="ServiceConfiguration.html" title="class in com.install4j.api.windows.service">ServiceConfiguration</a>&nbsp;delayedAutoStart&#8203;(java.lang.Boolean&nbsp;delayedAutoStart)</pre>
-<div class="block">If startType is set to <tt>AUTO</tt>, you can specify with this property that the service is started with a short delay after all other auto-start services.</div>
+<div class="block">If startType is set to <kbd>AUTO</kbd>, you can specify with this property that the service is started with a short delay after all other auto-start services.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>delayedAutoStart</code> - <tt>true</tt> if the service start should be delayed</dd>
+<dd><code>delayedAutoStart</code> - <kbd>true</kbd> if the service start should be delayed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this object</dd>
 </dl>
@@ -439,7 +439,7 @@ implements java.io.Serializable</pre>
 <div class="block">If set to true, the service will be restarted after a period defined with <a href="#restartMillis"><code>restartMillis</code></a> (defaults to one second) if it was terminated with an error</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>restartOnFailure</code> - <tt>true</tt> if a restart should be performed</dd>
+<dd><code>restartOnFailure</code> - <kbd>true</kbd> if a restart should be performed</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>this object</dd>
 </dl>
@@ -501,7 +501,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>serviceAccount</h4>
 <pre class="methodSignature">public&nbsp;<a href="ServiceConfiguration.html" title="class in com.install4j.api.windows.service">ServiceConfiguration</a>&nbsp;serviceAccount&#8203;(<a href="ServiceAccount.html" title="enum in com.install4j.api.windows.service">ServiceAccount</a>&nbsp;serviceAccount)</pre>
-<div class="block">The service account to be used. Can be one of the predefined Windows account or <tt>OTHER</tt>. If it is <tt>OTHER</tt>, you have to specify
+<div class="block">The service account to be used. Can be one of the predefined Windows account or <kbd>OTHER</kbd>. If it is <kbd>OTHER</kbd>, you have to specify
  otherAccountName and otherAccountPassword</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -518,7 +518,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>otherAccountName</h4>
 <pre class="methodSignature">public&nbsp;<a href="ServiceConfiguration.html" title="class in com.install4j.api.windows.service">ServiceConfiguration</a>&nbsp;otherAccountName&#8203;(java.lang.String&nbsp;otherAccountName)</pre>
-<div class="block">The service account name to be used. The serviceAccount property will be set to <tt>OTHER</tt> when you call this method.
+<div class="block">The service account name to be used. The serviceAccount property will be set to <kbd>OTHER</kbd> when you call this method.
  The name must be in the form DomainName\UserName. If the account belongs to the built-in domain, you can specify .\UserName.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -535,7 +535,7 @@ implements java.io.Serializable</pre>
 <li class="blockList">
 <h4>otherAccountPassword</h4>
 <pre class="methodSignature">public&nbsp;<a href="ServiceConfiguration.html" title="class in com.install4j.api.windows.service">ServiceConfiguration</a>&nbsp;otherAccountPassword&#8203;(java.lang.String&nbsp;otherAccountPassword)</pre>
-<div class="block">The service account password to be used. The serviceAccount property will be set to <tt>OTHER</tt> when you call this method.</div>
+<div class="block">The service account password to be used. The serviceAccount property will be set to <kbd>OTHER</kbd> when you call this method.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>otherAccountPassword</code> - the account password</dd>

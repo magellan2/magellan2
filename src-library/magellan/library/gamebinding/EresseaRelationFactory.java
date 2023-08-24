@@ -247,7 +247,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   /**
    * Creates a list of com.eressea.util.Relation objects for a unit starting at order position
-   * <tt>from</tt>. Note: The parameter <code>from</code> is ignored by this implementation!
+   * <kbd>from</kbd>. Note: The parameter <code>from</code> is ignored by this implementation!
    *
    * @param u The unit
    * @param from The line of the <code>unit</code>'s orders where to start. Must be &gt; 0

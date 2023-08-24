@@ -30,16 +30,16 @@ public class E3AOrderParser extends EresseaOrderParser {
   private E3AOrderCompleter completer;
 
   /**
-   * Creates a new <tt>EresseaOrderParser</tt> object.
+   * Creates a new <kbd>EresseaOrderParser</kbd> object.
    */
   public E3AOrderParser(GameData data) {
     super(data, null);
   }
 
   /**
-   * Creates a new <tt>EresseaOrderParser</tt> object and registers the specified
-   * <tt>OrderCompleter</tt> object. This constructor should be used only by the
-   * <tt>OrderCompleter</tt> class itself.
+   * Creates a new <kbd>EresseaOrderParser</kbd> object and registers the specified
+   * <kbd>OrderCompleter</kbd> object. This constructor should be used only by the
+   * <kbd>OrderCompleter</kbd> class itself.
    */
   public E3AOrderParser(GameData data, E3AOrderCompleter cc) {
     super(data, cc);

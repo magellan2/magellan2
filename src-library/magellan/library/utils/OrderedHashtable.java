@@ -72,8 +72,8 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
   /**
    * Constructs a new hashtable with the same mappings as the given Map. The hashtable is created
    * with a capacity of twice the number of entries in the given Map or 11 (whichever is greater),
-   * and a default load factor, which is 0.75. If <tt>t</tt> is an instance of
-   * <tt>OrderedHashtable</tt> the new Hashtable contains its values in the same order as <tt>t</tt>
+   * and a default load factor, which is 0.75. If <kbd>t</kbd> is an instance of
+   * <kbd>OrderedHashtable</kbd> the new Hashtable contains its values in the same order as <kbd>t</kbd>
    * . Creating a new Hashtable with this constructor is very expensive.
    */
   public OrderedHashtable(Map<? extends K, ? extends V> t) {
@@ -245,8 +245,8 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
   /**
    * Copies all of the mappings from the specified Map to this Hashtable. These mappings will
    * replace any mappings that this Hashtable had for any of the keys currently in the specified
-   * Map. This method maintains the order of entries as they are returned by <tt>t.entrySet()</tt>
-   * .or <tt>t.entryList()</tt> if t is an instance of <tt>OrderedHashtable</tt>.
+   * Map. This method maintains the order of entries as they are returned by <kbd>t.entrySet()</kbd>
+   * .or <kbd>t.entryList()</kbd> if t is an instance of <kbd>OrderedHashtable</kbd>.
    * 
    * @param t Mappings to be stored in this map.
    * @see java.util.Hashtable#putAll(java.util.Map)
@@ -419,9 +419,9 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
 
     /**
      * @see java.util.Iterator#remove()
-     * @throws IllegalStateException if the <tt>next</tt> method has not yet been called, or the
-     *           <tt>remove</tt> method has already been called after the last call to the
-     *           <tt>next</tt> method.
+     * @throws IllegalStateException if the <kbd>next</kbd> method has not yet been called, or the
+     *           <kbd>remove</kbd> method has already been called after the last call to the
+     *           <kbd>next</kbd> method.
      */
     public void remove() {
       if (last == null)

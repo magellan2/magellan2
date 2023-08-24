@@ -52,6 +52,7 @@ import magellan.library.utils.logging.Logger;
  * </p>
  * <p>
  * In order to use this feature, these are the preconditions:
+ * </p>
  * <ul>
  * <li>Make all preferences of your actual UI component (a subclass of DataPanel or something
  * similar, e.g. the EMapDetailsPanel) publicly accessible (usually via get/set methods).</li>
@@ -66,7 +67,6 @@ import magellan.library.utils.logging.Logger;
  * <li>Finally, plug in your container into this PreferencesDialog object by calling the addTab()
  * method.</li>
  * </ul>
- * </p>
  * <p>
  * Note that such a preferences container has to resize with its parent component, i.e. the
  * preferences dialog

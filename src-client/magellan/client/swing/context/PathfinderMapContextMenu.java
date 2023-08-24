@@ -240,11 +240,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   /**
    * Setzt den gefundenen path als order
    *
-   * @param planner
-   * @param u
-   * @param distance
-   * @param mode
-   * @param orders
    */
   private void setOrders(UnitRoutePlanner planner, Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
@@ -260,11 +255,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   /**
    * Setzt den gefundenen path als order
    *
-   * @param planner
-   * @param u
-   * @param distance
-   * @param mode
-   * @param orders
    */
   private void setOrders(RoutePlanner planner, Unit u, int distance, List<String> orders) {
     // Order setzen, anderes NACH ersetzen
@@ -366,7 +356,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * Prüfen, für wieviele Units eine Landverbindung möglich ist
    *
    * @param c
-   * @return
    */
   private int countLandConnPossible(Collection<Unit> c) {
     int erg = 0;
@@ -382,7 +371,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * Prüfen, für wieviele Units eine Landverbindung möglich ist
    *
    * @param c
-   * @return
    */
   private int countSeaConnPossible(Collection<Unit> c) {
     int erg = 0;
@@ -463,7 +451,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
   /**
    * liefert nur die Units in den selectedObjects
    *
-   * @return
    */
   private List<Unit> getSelectedUnits() {
     ArrayList<Unit> erg = new ArrayList<Unit>();

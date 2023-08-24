@@ -1448,7 +1448,6 @@ public class GameDataMerger {
    * There is also an older variant: <code>"der Sumpf von Rudros (-7,23)";regions</code>
    *
    * @param value
-   * @return
    */
   private static String originTranslateRegions(ReportTransformer transformer, String value) {
     final StringBuffer result = new StringBuffer();
@@ -1479,7 +1478,7 @@ public class GameDataMerger {
    * them and replaces them. This is not completely fool-proof!
    *
    * @param value Usually a message text which might contain coordinates
-   * @see magellan.library.utils.transformation.ReportTransformer#transform(java.lang.String)
+   * @see magellan.library.utils.transformation.ReportTransformer#transform(CoordinateID)
    */
   private static String originTranslate(ReportTransformer transformer, String value) {
     final StringBuffer result = new StringBuffer();

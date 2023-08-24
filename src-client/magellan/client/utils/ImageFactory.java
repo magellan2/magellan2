@@ -110,7 +110,6 @@ public class ImageFactory implements GameDataListener {
    * basic class to load an Icon
    * 
    * @param imageName
-   * @return
    */
   private ImageIcon doLoadImage(String imageName) {
     ImageIcon icon = null;
@@ -130,7 +129,6 @@ public class ImageFactory implements GameDataListener {
    * basic class to load an icon, imageName may be extended by locale_string
    * 
    * @param imageName
-   * @return
    */
   private ImageIcon doLoadImageLocales(String imageName) {
     // try to find a .png

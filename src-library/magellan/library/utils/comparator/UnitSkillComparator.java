@@ -39,7 +39,7 @@ public class UnitSkillComparator implements Comparator<Unit> {
    * 
    * @param skillsComparator used to compare the skills of two units
    * @param subComparator if two units do not possess skills or if the skills comparator regards
-   *          them as equal, this sub-comparator is applied if it is not <tt>null</tt>.
+   *          them as equal, this sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public UnitSkillComparator(Comparator<? super Map<? extends ID, Skill>> skillsComparator,
       Comparator<? super Unit> subComparator) {

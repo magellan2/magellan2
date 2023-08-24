@@ -41,7 +41,7 @@ public interface Orders extends List<Order> {
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if at least one order was removed
+   * @return <kbd>true</kbd> if at least one order was removed
    */
   public abstract boolean removeOrder(Order order, int length);
 

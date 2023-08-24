@@ -31,22 +31,22 @@ public interface Inspector {
   public static final String SUPPRESS_PREFIX_PERMANENT = "// @suppressProblem";
 
   /**
-   * Reviews global problems and returns a list of <tt>Problem</tt>s.
+   * Reviews global problems and returns a list of <kbd>Problem</kbd>s.
    */
   public List<Problem> reviewGlobal();
 
   /**
-   * Reviews global problems and returns a list of <tt>Problem</tt>s.
+   * Reviews global problems and returns a list of <kbd>Problem</kbd>s.
    */
   public List<Problem> reviewFaction(Faction f);
 
   /**
-   * Reviews a unit and returns a list of <tt>Problem</tt> objects associated with it.
+   * Reviews a unit and returns a list of <kbd>Problem</kbd> objects associated with it.
    */
   public List<Problem> reviewUnit(Unit u);
 
   /**
-   * Reviews a unit and returns the list of <tt>Problem</tt> objects which are of the given type.
+   * Reviews a unit and returns the list of <kbd>Problem</kbd> objects which are of the given type.
    *
    * @param u The unit to review
    */
@@ -58,7 +58,7 @@ public interface Inspector {
   public List<Problem> reviewRegion(Region r);
 
   /**
-   * Reviews a region and returns the list of <tt>Problem</tt> objects which are of the given type.
+   * Reviews a region and returns the list of <kbd>Problem</kbd> objects which are of the given type.
    */
   public List<Problem> listProblems(Region r);
 

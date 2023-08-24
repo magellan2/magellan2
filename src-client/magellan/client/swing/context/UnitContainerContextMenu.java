@@ -532,7 +532,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
   /**
    * Plans a route for a ship (typically over several weeks)
    * 
-   * @see ShipRoutingDialog
+   * @see RoutingDialog
    */
   private void planShipRoute() {
     Unit unit =

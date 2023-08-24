@@ -1832,7 +1832,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
    * restrictToPassword
    *
    * @param u
-   * @return
    */
   private boolean isValidUnitByFaction(Unit u) {
     return isValidFaction(u.getFaction());

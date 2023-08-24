@@ -32,7 +32,7 @@ public class GroupingComparator<T> implements Comparator<T> {
   protected GroupingComparator<? super T> sub = null;
 
   /**
-   * Creates a new <tt>GroupingComparator</tt> object.
+   * Creates a new <kbd>GroupingComparator</kbd> object.
    * 
    * @param mainComparator the comparator used to compare the given objects
    * @param subComparator the comparator used to compare the given objects if mainComparator

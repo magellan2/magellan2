@@ -357,9 +357,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Creates a new Client object taking its data from <tt>gd</tt>.
+   * Creates a new Client object taking its data from <kbd>gd</kbd>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * Preferences are read from and stored in a file called <kbd>magellan.ini</kbd>. This file is usually
    * located in the user's home directory, which is the Windows directory in a Microsoft Windows
    * environment.
    * </p>
@@ -374,9 +374,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Creates a new Client object taking its data from <tt>gd</tt>.
+   * Creates a new Client object taking its data from <kbd>gd</kbd>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * Preferences are read from and stored in a file called <kbd>magellan.ini</kbd>. This file is usually
    * located in the user's home directory, which is the Windows directory in a Microsoft Windows
    * environment.
    * </p>
@@ -1657,14 +1657,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Recognizes the following parameters:<br />
-   * <tt>-log X</tt> -- set log level X<br />
-   * <tt>--help</tt> -- start only help dialog<br />
-   * <tt>-d dir</tt> -- set resource directory<br />
-   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
-   * <tt>-p profile</tt> -- set profile<br />
-   * <tt>-pm</tt> -- show profile manager<br />
-   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
-   * <tt>file.[cr|bz2|zip]</tt> -- set report<br />
+   * <kbd>-log X</kbd> -- set log level X<br />
+   * <kbd>--help</kbd> -- start only help dialog<br />
+   * <kbd>-d dir</kbd> -- set resource directory<br />
+   * <kbd>-s dir</kbd> -- set settings (aka profiles) directory<br />
+   * <kbd>-p profile</kbd> -- set profile<br />
+   * <kbd>-pm</kbd> -- show profile manager<br />
+   * <kbd>-s dir</kbd> -- set settings (aka profiles) directory<br />
+   * <kbd>file.[cr|bz2|zip]</kbd> -- set report<br />
    *
    * @param args
    */

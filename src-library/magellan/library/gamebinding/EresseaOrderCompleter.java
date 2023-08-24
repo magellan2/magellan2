@@ -55,18 +55,18 @@ import magellan.library.utils.Units;
 
 /**
  * A class for offering possible completions on incomplete orders. This class relies on the
- * <tt>OrderParser</tt> for reading input which calls the cmpltX methods of this class when it
- * encounters an incomplete order and has a <tt>OrderCompleter</tt> object registered. A
- * <tt>OrderCompleter</tt> wraps itself around a <tt>OrderParser</tt> so you do not get involved
- * with any of the cmpltX methods. They are solely called by the internal <tt>OrderParser</tt>.
+ * <kbd>OrderParser</kbd> for reading input which calls the cmpltX methods of this class when it
+ * encounters an incomplete order and has a <kbd>OrderCompleter</kbd> object registered. A
+ * <kbd>OrderCompleter</kbd> wraps itself around a <kbd>OrderParser</kbd> so you do not get involved
+ * with any of the cmpltX methods. They are solely called by the internal <kbd>OrderParser</kbd>.
  */
 public class EresseaOrderCompleter extends AbstractOrderCompleter {
 
   /**
-   * Creates a new <tt>EresseaOrderCompleter</tt> taking context information from the specified
-   * <tt>GameData</tt> object.
+   * Creates a new <kbd>EresseaOrderCompleter</kbd> taking context information from the specified
+   * <kbd>GameData</kbd> object.
    *
-   * @param gd The <tt>GameData</tt> this completer uses as context.
+   * @param gd The <kbd>GameData</kbd> this completer uses as context.
    */
   public EresseaOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
     super(gd, ac);

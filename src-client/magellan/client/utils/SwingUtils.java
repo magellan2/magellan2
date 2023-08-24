@@ -280,7 +280,6 @@ public class SwingUtils {
      * @param jTable
      * @param row
      * @param component
-     * @return
      */
     Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component);
 
@@ -319,7 +318,6 @@ public class SwingUtils {
      * @param jTable
      * @param row
      * @param component
-     * @return
      */
     public Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component) {
 

@@ -460,7 +460,7 @@ public interface Region extends UnitContainer, Selectable {
   public Unit getUnit(ID key);
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If <tt>neighbours</tt>
+   * Sets the collection of ids for reachable regions to <kbd>neighbours</kbd>. If <kbd>neighbours</kbd>
    * is null they will be evaluated.
    * 
    * @throws IllegalArgumentException if one of the neighbours doesn't exist in the data.
@@ -470,7 +470,7 @@ public interface Region extends UnitContainer, Selectable {
   public void setNeighbours(Collection<CoordinateID> neighbours);
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbors</tt>. If <tt>neighbors</tt>
+   * Sets the collection of ids for reachable regions to <kbd>neighbors</kbd>. If <kbd>neighbors</kbd>
    * is null they will be evaluated from Coordinate neighbors.
    */
   public void setNeighbors(Map<Direction, Region> neighbors);

@@ -64,7 +64,7 @@ public class TaggableComparator implements Comparator<Taggable> {
   /**
    * Compares its two arguments for order according to the factions they belong to.
    * 
-   * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
+   * @return the result of the faction comparator's comparison of <kbd>o1</kbd>'s and <kbd>o2</kbd>. If
    *         both belong to the same faction and a sub-comparator was specified, the result that
    *         sub-comparator's comparison is returned. Undefined values are evaluated as
    *         <code>&gt; 0</code>.

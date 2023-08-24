@@ -40,7 +40,7 @@ public class IDComparator implements Comparator<Unique> {
   /**
    * Compares its two arguments for order according to their ids.
    * 
-   * @return the natural ordering of <tt>o1</tt>'s id and <tt>o2</tt>'s id.
+   * @return the natural ordering of <kbd>o1</kbd>'s id and <kbd>o2</kbd>'s id.
    */
   public int compare(Unique o1, Unique o2) {
     if (o1.getID().getClass() != o2.getID().getClass())

@@ -21,12 +21,12 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.logging.Logger;
 
 /**
- * Splits a string into <tt>OrderToken</tt> objects. The tokenizer recognizes quoted strings and
+ * Splits a string into <kbd>OrderToken</kbd> objects. The tokenizer recognizes quoted strings and
  * comments and marks the generated tokens as such. Note that the tokenizer is not intended to
  * detect keywords, identifiers and numbers, since such a classification can only be made with
  * syntactical context. For proper handling of escaped new lines this class wraps the underlying
  * stream in a MergeLineReader. This implies that the start and end attributes of the produced
- * <tt>OrderToken</tt> objects reflect the actual position and length of the token on the underlying
+ * <kbd>OrderToken</kbd> objects reflect the actual position and length of the token on the underlying
  * stream, including escape line breaks.
  */
 public class OrderTokenizer {
@@ -46,10 +46,10 @@ public class OrderTokenizer {
   private TYPE prefix;
 
   /**
-   * Creates a new <tt>OrderTokenizer</tt> object which will perform its read operations on the
+   * Creates a new <kbd>OrderTokenizer</kbd> object which will perform its read operations on the
    * specified stream.
    *
-   * @param r the stream this <tt>OrderTokenizer</tt> reads from.
+   * @param r the stream this <kbd>OrderTokenizer</kbd> reads from.
    */
   public OrderTokenizer(Reader r) {
     in = new MergeLineReader(r);
@@ -119,7 +119,7 @@ public class OrderTokenizer {
   /**
    * Reads from the underlying stream up to the next quotation mark or line break.
    *
-   * @return a <tt>OrderToken</tt> object of type TT_STRING containing the quoted string.
+   * @return a <kbd>OrderToken</kbd> object of type TT_STRING containing the quoted string.
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readQuote(int quote) throws IOException {
@@ -186,7 +186,7 @@ public class OrderTokenizer {
   /**
    * Reads a one line comment beginning with a semicolon up to the next line break.
    *
-   * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
+   * @return a <kbd>OrderToken</kbd> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSCComment() throws IOException {
@@ -210,7 +210,7 @@ public class OrderTokenizer {
    * Reads a one line comment beginning with a double slash up to the next line break.
    *
    * @param retVal2
-   * @return a <tt>OrderToken</tt> object of type TT_COMMENT containing the comment.
+   * @return a <kbd>OrderToken</kbd> object of type TT_COMMENT containing the comment.
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readSSComment(OrderToken retVal2) throws IOException {
@@ -255,7 +255,7 @@ public class OrderTokenizer {
   /**
    * Reads one word from the underlying stream.
    *
-   * @return a <tt>OrderToken</tt> object of type TT_UNDEF containing the word.
+   * @return a <kbd>OrderToken</kbd> object of type TT_UNDEF containing the word.
    * @throws IOException DOCUMENT-ME
    */
   protected OrderToken readWord() throws IOException {

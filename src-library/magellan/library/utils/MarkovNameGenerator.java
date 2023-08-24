@@ -291,7 +291,7 @@ public class MarkovNameGenerator extends AbstractNameGenerator implements NameGe
     }
 
     /**
-     * Selects the smallest value of k such that sum(c<=k){value(c)} <= r.
+     * Selects the smallest value of k such that sum(c&lt;=k){value(c)} &lt;= r.
      */
     public K select(int r) {
       K s = select2(r);

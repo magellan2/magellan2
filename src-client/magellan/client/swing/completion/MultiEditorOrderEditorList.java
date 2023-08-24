@@ -398,7 +398,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Ensures that the correct editors are loaded and selected for the active object.
    *
-   * @param activeObject
    */
   private void loadEditors(SelectionEvent se) {
     List<Object> context = null;
@@ -1051,8 +1050,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Load editors belonging to the specified island and faction depending on listMode.
    *
-   * @param r
-   * @param f
    */
   private void loadEditors(Island i, Faction f) {
     List<Unit> unitList = new LinkedList<Unit>();

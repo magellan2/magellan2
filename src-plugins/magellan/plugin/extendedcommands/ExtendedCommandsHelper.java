@@ -684,7 +684,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * This method reads the orders of a unit and extracts all lines with the syntax '//
-   * extcmds:"<key>":value'. This method returns always a map and never null.
+   * extcmds:"key":value'. This method returns always a map and never null.
    */
   public Map<String, String> getConfiguration(Unit unit) {
     Map<String, String> configuration = new HashMap<String, String>();
@@ -714,7 +714,7 @@ public class ExtendedCommandsHelper {
 
   /**
    * This method writes the configuration of a unit into its orders based on the syntax: '//
-   * extcmds:"<key>":value'
+   * extcmds:"key":value'
    */
   public void setConfiguration(Unit unit, Map<String, String> configuration) {
     if (unit == null)

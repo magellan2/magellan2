@@ -29,7 +29,7 @@ public interface OrderParser {
    * Parses one line of text from the specified stream by tokenizing it and checking the syntax.
    * 
    * @param in the stream to read the order from.
-   * @return <tt>true</tt> if the syntax of the order read is valid, <tt>false</tt> else.
+   * @return <kbd>true</kbd> if the syntax of the order read is valid, <kbd>false</kbd> else.
    * @deprecated Should use {@link #parse(String, Locale)} instead
    */
   @Deprecated
@@ -38,7 +38,7 @@ public interface OrderParser {
   /**
    * Returns the tokens read by the parser.
    * 
-   * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
+   * @return all <kbd>OrderToken</kbd> object produced by the underlying <kbd>OrderTokenizer</kbd> by
    *         reading a order.
    * @deprecated Should use {@link #parse(String, Locale)} instead
    */

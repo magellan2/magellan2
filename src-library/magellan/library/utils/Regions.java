@@ -1753,7 +1753,6 @@ public class Regions {
    * @param r1
    * @param r2
    * @param useExtendedVersion
-   * @return
    * @deprecated Use {@link #getDistances(Map, CoordinateID, CoordinateID, int, Metric)}
    */
   @Deprecated
@@ -1851,7 +1850,7 @@ public class Regions {
   }
 
   /**
-   * Returns a map of all RegionTypes that are <em>not</em> flagged as <tt>ocean</tt>.
+   * Returns a map of all RegionTypes that are <em>not</em> flagged as <kbd>ocean</kbd>.
    *
    * @param rules Rules of the game
    * @return map of all non-ocean RegionTypes
@@ -1875,7 +1874,7 @@ public class Regions {
   }
 
   /**
-   * Returns a map of all RegionTypes that are flagged as <tt>ocean</tt>.
+   * Returns a map of all RegionTypes that are flagged as <kbd>ocean</kbd>.
    *
    * @param rules Rules of the game
    * @return map of all ocean RegionTypes
@@ -1898,7 +1897,7 @@ public class Regions {
   }
 
   /**
-   * Returns a map of all RegionTypes that are flagged as <tt>land</tt>.
+   * Returns a map of all RegionTypes that are flagged as <kbd>land</kbd>.
    *
    * @param rules Rules of the game
    * @return map of all land RegionTypes
@@ -1919,7 +1918,7 @@ public class Regions {
   }
 
   /**
-   * Returns a map of all RegionTypes that are <em>not</em> flagged as <tt>land</tt>.
+   * Returns a map of all RegionTypes that are <em>not</em> flagged as <kbd>land</kbd>.
    *
    * @param rules Rules of the game
    * @return map of all non-land RegionTypes
@@ -1949,7 +1948,7 @@ public class Regions {
   }
 
   /**
-   * Returns the RegionType that is named as <tt>Feuerwand</tt>.
+   * Returns the RegionType that is named as <kbd>Feuerwand</kbd>.
    *
    * @param data needed for correct rules
    * @return RegionType Feuerwand

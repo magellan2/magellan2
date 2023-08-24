@@ -1165,7 +1165,7 @@ class E3CommandParser {
   /**
    * Parses the orders of the unit u for commands of the form "// $cript ..." and tries to execute
    * them. Known commands:<br />
-   * <tt>// $cript +X text</tt> -- If X<=1 then a warning containing text is added to the unit's
+   * <kbd>// $cript +X text</kbd> -- If X<=1 then a warning containing text is added to the unit's
    * orders. Otherwise X is decreased by one.<br />
    * <code>// $cript [rest [period [length]] text</code> -- Adds text (or commands) to the
    * orders<br />

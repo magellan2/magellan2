@@ -282,7 +282,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * Returns a string representation which looks like this: <tt>[N1 F S See ]</tt> denoting the
+   * Returns a string representation which looks like this: <kbd>[N1 F S See ]</kbd> denoting the
    * type, the level, and if this is a far, a ship or a sea spell.
    *
    * @see magellan.library.impl.MagellanNamedImpl#toString()
@@ -430,7 +430,6 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * or absolute. if it counts per level we assume the aura-cost depends on level and we deliver
    * true, else false
    *
-   * @return
    */
   private boolean isAuraLevelDependend() {
     boolean retval = false;

@@ -421,18 +421,18 @@ public class ReportMerger extends Object {
     int notmerged = 0;
     String lastName = null;
     int listed = 0;
-    for (int i = 0; i < reports.length; i++) {
-      if (!reports[i].isMerged()) {
+    for (ReportCache report : reports) {
+      if (!report.isMerged()) {
         if (++notmerged > 4) {
           if (notmerged == 5) {
             strMessage.append(", ...");
           }
-          lastName = reports[i].getFile().getName();
+          lastName = report.getFile().getName();
         } else {
           if (listed > 0) {
             strMessage.append(", ");
           }
-          strMessage.append(reports[i].getFile().getName());
+          strMessage.append(report.getFile().getName());
           lastName = null;
         }
         listed++;
@@ -585,7 +585,6 @@ public class ReportMerger extends Object {
    * Check if newReport's game type matches that of global data.
    * 
    * @param newReport
-   * @return
    */
   private boolean checkGameType(ReportCache newReport) {
     boolean okay = true;

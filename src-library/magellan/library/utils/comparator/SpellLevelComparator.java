@@ -36,7 +36,7 @@ public class SpellLevelComparator implements Comparator<Spell> {
    * Creates a new SpellLevelComparator object.
    * 
    * @param sameLevelSubComparator if two spells with the same level are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public SpellLevelComparator(Comparator<? super Spell> sameLevelSubComparator) {
     sameLevelSubCmp = sameLevelSubComparator;
@@ -45,7 +45,7 @@ public class SpellLevelComparator implements Comparator<Spell> {
   /**
    * Compares its two arguments for order according to their levels
    * 
-   * @return the difference of <tt>o1</tt>'s and <tt>o2</tt>'s numerical level value. If they are
+   * @return the difference of <kbd>o1</kbd>'s and <kbd>o2</kbd>'s numerical level value. If they are
    *         equal and a sub-comparator was specified, the result that sub-comparator's comparison
    *         is returned.
    */

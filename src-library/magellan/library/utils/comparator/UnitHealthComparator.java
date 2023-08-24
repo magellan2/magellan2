@@ -36,7 +36,7 @@ public class UnitHealthComparator implements Comparator<Unit> {
    * Creates a new UnitHealthComparator object.
    * 
    * @param subComparator if two units have the same health-status, this sub-comparator is applied
-   *          if it is not <tt>null</tt>.
+   *          if it is not <kbd>null</kbd>.
    */
   public UnitHealthComparator(Comparator<? super Unit> subComparator) {
     subCmp = subComparator;

@@ -117,7 +117,6 @@ public class TransformerFinder {
   /**
    * Find best translation in real space
    * 
-   * @param addedData
    */
   private Score<CoordinateID> findRealSpaceTranslation() {
     MapMergeEvaluator mhelp = globalData.getGameSpecificStuff().getMapMergeEvaluator();
@@ -251,10 +250,6 @@ public class TransformerFinder {
    * Chooses a translation among the translations in translationList and savedTranslation. If no
    * translation is acceptable, a default translation (0,0, layer) is chosen.
    * 
-   * @param newReport The report to be merged
-   * @param translationList
-   * @param savedTranslation
-   * @param layer
    * @return The best translation, never <code>null</code>
    */
   private Score<CoordinateID> decideTranslation(Collection<Score<CoordinateID>> translationList,
@@ -306,10 +301,6 @@ public class TransformerFinder {
    * translation is acceptable the user is asked for input. Returns <code>null</code> if user
    * aborts.
    * 
-   * @param newReport The report to be merged
-   * @param translationList never <code>null</code>
-   * @param savedTranslation may be <code>null</code>
-   * @param layer
    * @return The best translation, <code>null</code> if user aborts
    */
   private Score<CoordinateID> askTranslation(Collection<Score<CoordinateID>> translationList,
@@ -594,8 +585,6 @@ public class TransformerFinder {
   /**
    * Ask the user about boxes. Use the argument as proposal.
    * 
-   * @param best
-   * @param ask
    * @return user choice or <code>null</code> for no choice
    */
   private BBox askBox(int layer, Set<BBox> boxes, BBox best) {

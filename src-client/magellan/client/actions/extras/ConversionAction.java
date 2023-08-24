@@ -215,7 +215,6 @@ public class ConversionAction extends MenuAction {
      * @param text
      * @param inBase
      * @param outBase
-     * @return
      */
     private String convert(String text, int inBase, int outBase) {
       return IDBaseConverter.toString(IDBaseConverter.parse(text, inBase), outBase);

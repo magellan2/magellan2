@@ -33,9 +33,9 @@ public interface Group extends Named, Taggable, Addeable {
   public Faction getFaction();
 
   /**
-   * The alliances specific to this group. The map returned by this function contains <tt>ID</tt>
+   * The alliances specific to this group. The map returned by this function contains <kbd>ID</kbd>
    * objects as keys with the id of the faction that alliance references. The values are instances
-   * of class <tt>Alliance</tt>. The return value is never null.
+   * of class <kbd>Alliance</kbd>. The return value is never null.
    */
   public Map<EntityID, Alliance> allies();
 

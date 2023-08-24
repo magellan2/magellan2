@@ -31,14 +31,23 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
+import java.nio.file.Path;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
+
+import magellan.test.MagellanTestUtil;
 
 public class Install4JTest {
 
   @Before
   public void setUp() throws Exception {
+    clearDir();
+  }
+
+  @AfterClass
+  public static void tearDown() throws IOException {
     clearDir();
   }
 
@@ -145,11 +154,8 @@ public class Install4JTest {
     assertEquals(false, i4.isSetByMagellan());
   }
 
-  private void clearDir() throws IOException {
-    File dir = new File("./test/.install4j");
-    for (File f : dir.listFiles()) {
-      f.delete();
-    }
+  private static void clearDir() throws IOException {
+    MagellanTestUtil.forceDelete(Path.of("./test/.install4j"));
   }
 
   private void createDir(String[] strings, String[] strings2) throws IOException {

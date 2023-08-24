@@ -272,7 +272,7 @@ public class ProfileManagerTest {
 
     assertEquals(
         "test/ProfileManager/unpack,test/ProfileManager/unpack/default,test/ProfileManager/unpack/default/magellan.ini,test/ProfileManager/unpack/profiles.ini",
-        Files.walk(unpack).map(Path::toString).collect(Collectors.joining(",")));
+        Files.walk(unpack).map(Path::toString).sorted().collect(Collectors.joining(",")));
     assertFileEquals(iniFile, unpack.resolve("default").resolve("magellan.ini"));
   }
 

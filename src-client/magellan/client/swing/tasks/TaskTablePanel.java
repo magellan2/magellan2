@@ -35,6 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -696,41 +697,47 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
       if (JOptionPane.showConfirmDialog(this, Resources.get("tasks.confirmdelete.message", selectedRows.length), null,
           JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
         return;
+    synchronized (selectedProblems) {
+      getSelection();
 
-    // sort problems by line
-    List<Problem> problems = new ArrayList<Problem>();
-    for (int row : selectedRows) {
-      if (row < 0 || row >= sorter.getRowCount())
-        throw new IndexOutOfBoundsException();
-      Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
-      problems.add(p);
-    }
-
-    int[] sortedRows = new int[selectedRows.length];
-    int i = 0;
-    for (int row : selectedRows) {
-      sortedRows[i++] = sorter.modelIndex(row);
-    }
-    Arrays.sort(sortedRows);
-    for (i = sortedRows.length - 1; i >= 0; --i) {
-      model.removeRow(sortedRows[i]);
-    }
-    // model.fireTableRowsDeleted(sortedRows[0], sortedRows[sortedRows.length - 1]);
-
-    Collections.sort(problems, new Comparator<Problem>() {
-
-      public int compare(Problem p1, Problem p2) {
-        return p2.getLine() - p1.getLine();
+      // sort problems by line
+      List<Problem> problems = new ArrayList<Problem>();
+      for (int row : selectedRows) {
+        if (row < 0 || row >= sorter.getRowCount())
+          throw new IndexOutOfBoundsException();
+        Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+        problems.add(p);
       }
-    });
 
-    for (Problem p : problems) {
-      Unit u = p.addSuppressComment();
-      if (u != null) {
-        dispatcher.fire(new UnitOrdersEvent(this, u));
+      int[] sortedRows = new int[selectedRows.length];
+      int i = 0;
+      for (int row : selectedRows) {
+        sortedRows[i++] = sorter.modelIndex(row);
+      }
+      Arrays.sort(sortedRows);
+      for (i = sortedRows.length - 1; i >= 0; --i) {
+        model.removeRow(sortedRows[i]);
+      }
+
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          resetSelection();
+        }
+      });
+
+      Collections.sort(problems, new Comparator<Problem>() {
+        public int compare(Problem p1, Problem p2) {
+          return p2.getLine() - p1.getLine();
+        }
+      });
+
+      for (Problem p : problems) {
+        Unit u = p.addSuppressComment();
+        if (u != null) {
+          dispatcher.fire(new UnitOrdersEvent(this, u));
+        }
       }
     }
-
   }
 
   private void removeType(int[] rows) {
@@ -1061,7 +1068,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
      */
     protected Thread refreshThread = null;
 
-    /** The events are enqued here */
+    /** The events are enqueued here */
     protected EQueue queue;
 
     private boolean stop = false;
@@ -1092,6 +1099,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
      * @version 1.0, Aug 23, 2008
      */
     protected class TaskSearchRunner implements Runnable {
+      private int errorFlag = 0;
+
       public void run() {
         int progress = 1;
         while (!stop) {
@@ -1101,58 +1110,74 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
             while (queue.size() < 1) {
               Thread.sleep(200);
             }
-            event = queue.waitFor();
+            synchronized (selectedProblems) {
+              getSelection();
+              while (!stop && queue.size() > 0) {
+                event = queue.waitFor();
 
-            // update progress bar as good as possible...
-            if (progressbar.getMaximum() < queue.size() + 1) {
-              progressbar.setMaximum(queue.size() + 1);
-              progress = 1;
-            } else {
-              progress++;
-            }
-            progressbar.setValue(progress);
-            progressbar.repaint();
-
-            // handle event
-            Object object = event.getObject();
-            if (UpdateEvent.CLEAR.equals(object)) {
-              clearProblems();
-            } else if (UpdateEvent.DATA.equals(object)) {
-              reviewGlobal();
-            } else {
-              Region region = null;
-              if (object instanceof Region) {
-                region = event.getRegion();
-              } else if (object instanceof Unit) {
-                region = event.getUnit().getRegion();
-              }
-              if (region == null) {
-                // regionless unit
-                if (event.isAdd()) {
-                  reviewUnit(event.getUnit());
+                // update progress bar as good as possible...
+                if (progressbar.getMaximum() < queue.size() + 1) {
+                  progressbar.setMaximum(queue.size() + 1);
+                  progress = 1;
                 } else {
-                  unReviewUnit(event.getUnit());
+                  progress++;
                 }
-              } else {
-                if (event.isAdd()) {
-                  reviewRegionAndUnits(region);
+                progressbar.setValue(progress);
+                progressbar.repaint();
+
+                // handle event
+                Object object = event.getObject();
+                if (UpdateEvent.CLEAR.equals(object)) {
+                  clearProblems();
+                } else if (UpdateEvent.DATA.equals(object)) {
+                  reviewGlobal();
                 } else {
-                  unReviewRegionAndUnits(region);
+                  Region region = null;
+                  if (object instanceof Region) {
+                    region = event.getRegion();
+                  } else if (object instanceof Unit) {
+                    region = event.getUnit().getRegion();
+                  }
+                  if (region == null) {
+                    // regionless unit
+                    if (event.isAdd()) {
+                      reviewUnit(event.getUnit());
+                    } else {
+                      unReviewUnit(event.getUnit());
+                    }
+                  } else {
+                    if (event.isAdd()) {
+                      reviewRegionAndUnits(region);
+                    } else {
+                      unReviewRegionAndUnits(region);
+                    }
+                  }
+                }
+
+                if (queue.size() == 0) {
+                  progressbar.setMaximum(1);
+                  progress = 1;
+                  progressbar.setValue(progress);
+                  progressbar.repaint();
                 }
               }
+              SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                  resetSelection();
+                }
+              });
             }
-
-            if (queue.size() == 0) {
-              progressbar.setMaximum(1);
-              progress = 1;
-              progressbar.setValue(progress);
-              progressbar.repaint();
-            }
+            errorFlag = 0;
           } catch (Throwable t) {
             // try to handle errors gracefully
             TaskTablePanel.log.error("Exception in TaskTable update thread:", t);
             try {
               error(event);
+              if (++errorFlag < 3) {
+                Thread.sleep(500);
+                updateDispatcher.reset();
+                refreshProblems();
+              }
             } catch (Throwable t2) {
               TaskTablePanel.log.error("Error in TaskTable update thread:", t2);
             }
@@ -1181,7 +1206,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     public void removeRegion(Region r) {
       if (!isShown())
         return;
-      queue.push(new UpdateEvent(r, false));
+      enqueue(new UpdateEvent(r, false));
     }
 
     /**
@@ -1203,7 +1228,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     public void addRegion(Region region) {
       if (!isShown())
         return;
-      queue.push(new UpdateEvent(region, true));
+      enqueue(new UpdateEvent(region, true));
     }
 
     public void addUnits(Collection<Unit> units) {
@@ -1221,7 +1246,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     public void addUnit(Unit u) {
       if (!isShown())
         return;
-      queue.push(new UpdateEvent(u, true));
+      enqueue(new UpdateEvent(u, true));
     }
 
     public void removeUnits(Collection<Unit> units) {
@@ -1239,19 +1264,30 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     public void removeUnit(Unit u) {
       if (!isShown())
         return;
-      queue.push(new UpdateEvent(u, false));
+      enqueue(new UpdateEvent(u, false));
     }
 
     public void addGlobal() {
-      queue.push(new UpdateEvent(true));
+      enqueue(new UpdateEvent(true));
     }
 
     public void clear() {
-      queue.push(new UpdateEvent(false));
+      enqueue(new UpdateEvent(false));
+    }
+
+    private void enqueue(UpdateEvent updateEvent) {
+      synchronized (queue) {
+        queue.push(updateEvent);
+      }
+      // if (anchor < 0) {
+      // getSelection();
+      // }
     }
 
     private void reset() {
-      queue.clear();
+      synchronized (queue) {
+        queue.clear();
+      }
     }
 
     public void quit() {
@@ -1318,6 +1354,80 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitCh
     }
 
     getIgnoredProblems();
+  }
+
+  static class ProblemHash {
+    private Problem problem;
+    private int hash = -1;
+
+    public ProblemHash(Problem p) {
+      problem = p;
+    }
+
+    @Override
+    public int hashCode() {
+      if (hash == 0) {
+        hash = Objects.hash(problem.getOwner(), problem.getFaction(), problem.getLine(), problem.getMessage());
+      }
+      return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      Problem other = ((ProblemHash) obj).problem;
+      return problem == other || (problem.getOwner() == other.getOwner() && problem.getFaction() == other.getFaction()
+          && problem.getLine() == other.getLine()
+          && problem.getMessage().equals(other.getMessage()));
+    }
+
+  }
+
+  Problem[] selectedProblems = new Problem[0];
+  int anchor = -1;
+
+  public Problem[] getSelection() {
+    int[] rows = table.getSelectedRows();
+    selectedProblems = new Problem[rows.length];
+    int i = 0;
+    for (int row : rows) {
+      selectedProblems[i++] = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+    }
+    anchor = table.getSelectionModel().getAnchorSelectionIndex();
+    return selectedProblems;
+  }
+
+  private void resetSelection() {
+    if (selectedProblems.length > 0) {
+      table.clearSelection();
+      Set<ProblemHash> problemSet = new HashSet<ProblemHash>();
+      for (Problem p : selectedProblems) {
+        problemSet.add(new ProblemHash(p));
+      }
+      for (int row = 0; row < table.getRowCount(); ++row) {
+        ProblemHash ph = new ProblemHash((Problem) table.getValueAt(row, TaskTableModel.PROBLEM_POS));
+        if (problemSet.contains(ph)) {
+          table.addRowSelectionInterval(row, row);
+        }
+      }
+    }
+    if (table.getSelectedRow() < 0 && table.getRowCount() > 0) {
+      if (anchor >= 0) {
+        int a = anchor;
+        if (a >= table.getRowCount()) {
+          a = table.getRowCount() - 1;
+        }
+        table.addRowSelectionInterval(a, a);
+        table.scrollRectToVisible(table.getCellRect(a, 0, true));
+      } else {
+        table.scrollRectToVisible(table.getCellRect(table.getSelectedRow(), 0, true));
+      }
+    }
   }
 
   /**

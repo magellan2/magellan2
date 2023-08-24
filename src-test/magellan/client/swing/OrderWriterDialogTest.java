@@ -45,6 +45,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,10 +54,15 @@ import magellan.test.MagellanTestUtil;
 
 public class OrderWriterDialogTest {
 
-  private Path keyStorePath = Path.of("test/newKeyStoreName");
+  private static Path keyStorePath = Path.of("test/newKeyStoreName");
 
   @Before
   public void setUp() throws Exception {
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    MagellanTestUtil.del(keyStorePath);
   }
 
   public void storeKey() throws KeyStoreException, IOException, NoSuchAlgorithmException,

@@ -590,7 +590,7 @@ String message = "magellanInstallerproperties\n";
 for(String key : props.keySet()) {
     message += key + " = " + props.get(key) + "\n";
 }
-Util.showMessage(message);
+// Util.showMessage(message);
 
 // overwrite nightly check with value from magellan if it is more recent
 
@@ -719,7 +719,7 @@ String message = "magellanInstallerproperties2\n";
 for(String key : props.keySet()) {
     message += key + " = " + props.get(key) + "\n";
 }
-Util.showMessage(message);
+// Util.showMessage(message);
 
 return true;</property>
                     </object>

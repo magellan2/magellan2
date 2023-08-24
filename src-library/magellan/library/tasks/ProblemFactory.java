@@ -23,6 +23,8 @@
 //
 package magellan.library.tasks;
 
+import java.util.Objects;
+
 import magellan.library.Battle;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
@@ -368,6 +370,24 @@ public class ProblemFactory {
       return null;
     }
 
+    @Override
+    public int hashCode() {
+      return Objects.hash(faction, object, region, unit);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      MessageOrBattleProblem other = (MessageOrBattleProblem) obj;
+      return Objects.equals(faction, other.faction) && Objects.equals(inspector, other.inspector) && Objects.equals(
+          object, other.object) && Objects.equals(region, other.region) && Objects.equals(unit, other.unit);
+    }
+
   }
 
   /**
@@ -417,6 +437,26 @@ public class ProblemFactory {
 
     public Message getReportMessage() {
       return message;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + Objects.hash(message);
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (!super.equals(obj))
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      MessageProblem other = (MessageProblem) obj;
+      return Objects.equals(message, other.message);
     }
   }
 
@@ -473,6 +513,26 @@ public class ProblemFactory {
       for (Message m : battle.messages())
         return m;
       return message;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + Objects.hash(battle, message);
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (!super.equals(obj))
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      BattleProblem other = (BattleProblem) obj;
+      return Objects.equals(battle, other.battle) && Objects.equals(message, other.message);
     }
 
   }

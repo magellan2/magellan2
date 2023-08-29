@@ -13,6 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        fetch-tags: true
+        fetch-depth: 0
 
     - name: Generate version string
       id: get-version
@@ -33,23 +36,6 @@ jobs:
       with:
         java-version: 11
         distribution: 'temurin'
-
-    - name: Test with ant
-      run: |
-         ant -noinput -buildfile build.xml run_tests
-         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
-         if [ -n "$fails" ]; then
-           echo Errors in $fails
-           cat $fails
-           exit 1
-         fi
-         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
-         if [ -n "$skips" ]; then
-           echo "Skipped tests: "
-           echo $skips
-         fi
-      # do not exit before all commands are executed
-      shell: bash --noprofile --norc -o pipefail {0}
 
     - name: Sanity check
       id: sanity_check
@@ -94,9 +80,26 @@ jobs:
           exit 1
         fi
 
+    - name: Test with ant
+      run: |
+         ant -noinput -buildfile build.xml run_tests
+         fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
+         if [ -n "$fails" ]; then
+           echo Errors in $fails
+           cat $fails
+           exit 1
+         fi
+         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
+         if [ -n "$skips" ]; then
+           echo "Skipped tests: "
+           echo $skips
+         fi
+      # do not exit before all commands are executed
+      shell: bash --noprofile --norc -o pipefail {0}
+
     - name: Build with ant
       env:
-        INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
+        INSTALL4J_KEY: ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
         ant -noinput -buildfile build.xml distribute_install4j
 
@@ -149,15 +152,15 @@ jobs:
 #    - name: trigger meta action
 #      run: |
 #        curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
-#          -H 'Accept: application/vnd.github.everst-preview+json' \
-#          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+#          -H 'Accept: application/vnd.github+json' \
+#          -H 'Authorization: token ${{ secrets.META_REPO_ACCESS }} \
 #          --data '{
 #            "event_type": "actions-release-trigger",
 #            "client_payload": {
-#              "ref" : "${{ github.ref }}",
+#              "ref": "${{ github.ref }}",
 #              "sha": "${{ github.sha }}",
-#              "caller_repository" : "${{ github.repository }}",
-#              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
-#              "tag" : "${{ steps.sanity_check.outputs.TAG }}",
-#              "version" : "${{ steps.get-version.outputs.VERSION }}",
+#              "caller_repository": "${{ github.repository }}",
+#              "meta_repository": "${{ github.repository_owner }}/magellan2.github.io",
+#              "tag": "${{ steps.sanity_check.outputs.TAG }}",
+#              "version": "${{ steps.get-version.outputs.VERSION }}",
 #              "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'

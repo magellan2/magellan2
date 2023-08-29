@@ -20,7 +20,6 @@ jobs:
     - name: Generate version string
       id: get-version
       run: |
-        git tag -l
         VERSION=$(ant -q -S print_version)
         SHORT=$(echo "${VERSION}" | cut -d. -f-2)
         BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
@@ -28,7 +27,7 @@ jobs:
         echo "SHORT=$SHORT" >> $GITHUB_OUTPUT
         echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
         echo "TAG=$(echo "v${SHORT}-latest")" >> $GITHUB_OUTPUT
-        
+
     - name: Set up JDK 11
       uses: actions/setup-java@v3
       with:
@@ -100,8 +99,8 @@ jobs:
       shell: bash --noprofile --norc -o pipefail {0}
 
     - name: Build with ant
-      env: 
-        INSTALL4J_KEY : ${{secrets.INSTALL4J_LICENSE_KEY_1}}
+      env:
+        INSTALL4J_KEY: ${{secrets.INSTALL4J_LICENSE_KEY_1}}
       run: |
         ant -noinput -buildfile build.xml distribute_install4j
 
@@ -167,17 +166,17 @@ jobs:
       run: |
         curl -sS -o meta.log \
           -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
-          -H 'Accept: application/vnd.github.everst-preview+json' \
-          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: token ${{ secrets.META_REPO_ACCESS }}' \
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
-              "caller_repository" : "${{ github.repository }}",
-              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
-              "tag" : "${{ steps.get-version.outputs.TAG }}",
-              "version" : "${{ steps.get-version.outputs.VERSION }}",
+              "caller_repository": "${{ github.repository }}",
+              "meta_repository": "${{ github.repository_owner }}/magellan2.github.io",
+              "tag": "${{ steps.get-version.outputs.TAG }}",
+              "version": "${{ steps.get-version.outputs.VERSION }}",
               "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
         if [ -s meta.log ]; then
           cat meta.log

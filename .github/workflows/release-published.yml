@@ -38,16 +38,16 @@ jobs:
     - name: trigger meta action
       run: |
         curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
-          -H 'Accept: application/vnd.github.everst-preview+json' \
-          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: token ${{ secrets.META_REPO_ACCESS }} \
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
-              "ref" : "${{ github.ref }}",
+              "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
-              "caller_repository" : "${{ github.repository }}",
-              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
-              "tag" : "${{ steps.get-version.outputs.TAG }}",
-              "version" : "${{ steps.get-version.outputs.VERSION }}",
+              "caller_repository": "${{ github.repository }}",
+              "meta_repository": "${{ github.repository_owner }}/magellan2.github.io",
+              "tag": "${{ steps.get-version.outputs.TAG }}",
+              "version": "${{ steps.get-version.outputs.VERSION }}",
               "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
 

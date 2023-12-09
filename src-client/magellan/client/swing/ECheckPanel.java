@@ -368,25 +368,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-    /* check version */
-    try {
-      if (!JECheck.checkVersion(exeFile, settings)) {
-        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
-        JOptionPane.showMessageDialog(getRootPane(), Resources
-            .get("echeckpanel.msg.wrongversion.text", JECheck.getRequiredVersion()), Resources
-                .get("echeckpanel.msg.wrongversion.title"), JOptionPane.ERROR_MESSAGE);
-
-        return;
-      }
-    } catch (IOException e) {
-      setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      if (JOptionPane.showConfirmDialog(getRootPane(), Resources
-          .get("echeckpanel.msg.versionretrievalerror.text"), Resources
-              .get("echeckpanel.msg.versionretrievalerror.title"),
-          JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
-        return;
-    }
+    /* skip version check, because it doesn't work with echeck version > 4.6.1 */
+    /* and if anybody still uses a echeck version < 4.1.2, we can't help anymore. */
 
     // save orders
     if (orderFile != null) {

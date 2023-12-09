@@ -409,16 +409,16 @@ extends java.lang.Object</pre>
 <h4>isNewArchiveInstallation</h4>
 <pre class="methodSignature">public static&nbsp;boolean&nbsp;isNewArchiveInstallation()</pre>
 <div class="block">Determine if this is a new archive installation. An archive installation is defined by a unique build ID and an installation location.
- If this method hasn't been called before for this archive installation it will return <tt>true</tt> during the lifetime of
- the current process and set the "new" state to <tt>false</tt> for all future calls from other processes.
+ If this method hasn't been called before for this archive installation it will return <kbd>true</kbd> during the lifetime of
+ the current process and set the "new" state to <kbd>false</kbd> for all future calls from other processes.
 
  <p>The state is stored as a user setting, so the installation will appear as "new" again if a launcher is executed with a different user account.
  For initialization of global state, additional custom checks are necessary.</p>
 
- <p>When an installer was used this method will always return <tt>false</tt>.</p></div>
+ <p>When an installer was used this method will always return <kbd>false</kbd>.</p></div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd><tt>true</tt> if this is a new archive installation</dd>
+<dd><kbd>true</kbd> if this is a new archive installation</dd>
 </dl>
 </li>
 </ul>

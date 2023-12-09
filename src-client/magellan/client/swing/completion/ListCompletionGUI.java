@@ -260,14 +260,15 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
       scrollPane.setCursor(Cursor.getDefaultCursor());
       choiceList = new CompletionList();
-      choiceList.setFont(new Font("Monospaced", Font.PLAIN, 10));
+      int size = choiceList.getFont().getSize() * 9 / 10;
+      choiceList.setFont(new Font("Monospaced", Font.PLAIN, size));
       choiceList.setBackground(new Color(255, 255, 204));
-      choiceList.setMinimumSize(new Dimension(100, 50));
+      choiceList.setMinimumSize(new Dimension(size * 6, size * 3));
       choiceList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
       scrollPane.setViewportView(choiceList);
       scrollPane.setBounds(new Rectangle(0, 100, 150, 75));
-      scrollPane.setMaximumSize(new Dimension(150, 75));
+      scrollPane.setMaximumSize(new Dimension(size * 10, size * 5));
 
       getContentPane().add(scrollPane);
 
@@ -282,7 +283,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
     }
 
     /**
-     * Set the selected index to <tt>index</tt>.
+     * Set the selected index to <kbd>index</kbd>.
      *
      * @param index The index we want to select.
      */

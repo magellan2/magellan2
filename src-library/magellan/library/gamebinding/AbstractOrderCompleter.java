@@ -36,6 +36,7 @@ import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.UnitID;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
@@ -57,10 +58,10 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A class for offering possible completions on incomplete orders. This class relies on the
- * <tt>OrderParser</tt> for reading input which calls the cmpltX methods of this class when it
- * encounters an incomplete order and has a <tt>OrderCompleter</tt> object registered. A
- * <tt>OrderCompleter</tt> wraps itself around a <tt>OrderParser</tt> so you do not get involved
- * with any of the cmpltX methods. They are solely called by the internal <tt>OrderParser</tt>.
+ * <kbd>OrderParser</kbd> for reading input which calls the cmpltX methods of this class when it
+ * encounters an incomplete order and has a <kbd>OrderCompleter</kbd> object registered. A
+ * <kbd>OrderCompleter</kbd> wraps itself around a <kbd>OrderParser</kbd> so you do not get involved
+ * with any of the cmpltX methods. They are solely called by the internal <kbd>OrderParser</kbd>.
  */
 public abstract class AbstractOrderCompleter implements Completer {
   private static final Logger log = Logger.getInstance(AbstractOrderCompleter.class);
@@ -87,10 +88,10 @@ public abstract class AbstractOrderCompleter implements Completer {
   }
 
   /**
-   * Creates a new <tt>EresseaOrderCompleter</tt> taking context information from the specified
-   * <tt>GameData</tt> object.
+   * Creates a new <kbd>EresseaOrderCompleter</kbd> taking context information from the specified
+   * <kbd>GameData</kbd> object.
    *
-   * @param gd The <tt>GameData</tt> this completer uses as context.
+   * @param gd The <kbd>GameData</kbd> this completer uses as context.
    */
   public AbstractOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
     completerSettingsProvider = ac;
@@ -102,9 +103,9 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Parses the String cmd with Unit u as context and returns possible completions if the cmd is an
    * incomplete order.
    *
-   * @param u a <tt>Unit</tt> object taken as context information for the completion decisions.
-   * @param cmd a <tt>String</tt> containing the (possibly incomplete) order to parse.
-   * @return a <tt>List</tt> with possible completions of the given order. If there are no proposed
+   * @param u a <kbd>Unit</kbd> object taken as context information for the completion decisions.
+   * @param cmd a <kbd>String</kbd> containing the (possibly incomplete) order to parse.
+   * @return a <kbd>List</kbd> with possible completions of the given order. If there are no proposed
    *         completions this list is empty.
    */
   public List<Completion> getCompletions(Unit u, String cmd) {
@@ -227,6 +228,16 @@ public abstract class AbstractOrderCompleter implements Completer {
    */
   public void clear() {
     completions.clear();
+  }
+
+  protected String getIdToken(UnitID uid) {
+    String tounit;
+    try {
+      tounit = getGameSpecificStuff().getOrderChanger().getTokenLocalized(getLocale(), uid);
+    } catch (RulesException e) {
+      tounit = "TEMP " + uid;
+    }
+    return tounit;
   }
 
   /**
@@ -444,7 +455,7 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds completions for the owner u of UnitContainer c.
    */
   public void addUnitContainerOwner(UnitContainer uc, Unit u, String postfix, int cursorOffset) {
-    final String id = u.getID().toString();
+    final String id = getIdToken(u.getID());
 
     completions.add(new Completion(uc.toString() + " (" + uc.getID() + ")", id, postfix,
         Completion.DEFAULT_PRIORITY + 1, cursorOffset));
@@ -675,16 +686,11 @@ public abstract class AbstractOrderCompleter implements Completer {
    * Adds a unit to the completions in a standard manner without comments.
    */
   public void addUnit(Unit u, String postfix, int cursorOffset, boolean omitTemp) {
-    try {
-      if (u instanceof TempUnit) {
-        completions.add(new Completion(omitTemp ? u.getID().toString() : getGameSpecificStuff()
-            .getOrderChanger().getTokenLocalized(getLocale(), u.getID()), postfix,
-            Completion.DEFAULT_PRIORITY - 1, cursorOffset));
-      } else {
-        addNamed(u, postfix, cursorOffset, false);
-      }
-    } catch (RulesException e) {
-      log.warn(e);
+    if (u instanceof TempUnit) {
+      completions.add(new Completion(omitTemp ? u.getID().toString() : getIdToken(u.getID()),
+          postfix, Completion.DEFAULT_PRIORITY - 1, cursorOffset));
+    } else {
+      addNamed(u, postfix, cursorOffset, false);
     }
   }
 

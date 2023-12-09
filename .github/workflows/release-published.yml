@@ -17,8 +17,8 @@ jobs:
         TAG="$(echo "${{ github.ref }}" | awk -F/ '{print $NF}')"
         wget https://github.com/${{ github.repository }}/releases/download/$TAG/VERSION
         VERSION=$(grep "^SEMANTIC_VERSION=" VERSION | sed -e "s/^[[:space:]]*//;s/[[:space:]]*$//" | cut -f2- -d= )
-        echo "::set-output name=VERSION::$VERSION"
-        echo "::set-output name=TAG::$TAG"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+        echo "TAG=$TAG" >> $GITHUB_OUTPUT
 
     - name: prepare meta
       id: prepare-meta
@@ -33,21 +33,21 @@ jobs:
           echo "invalid type $TYPE"
           exit 1
         fi
-        echo "::set-output name=TYPE::$TYPE"
+        echo "TYPE=$TYPE" >> $GITHUB_OUTPUT
 
     - name: trigger meta action
       run: |
         curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
-          -H 'Accept: application/vnd.github.everst-preview+json' \
-          -u magellan-meta-machineuser:${{ secrets.META_REPO_ACCESS }} \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: token ${{ secrets.META_REPO_ACCESS }} \
           --data '{
             "event_type": "actions-release-trigger",
             "client_payload": {
-              "ref" : "${{ github.ref }}",
+              "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}",
-              "caller_repository" : "${{ github.repository }}",
-              "meta_repository" : "${{ github.repository_owner }}/magellan2.github.io",
-              "tag" : "${{ steps.get-version.outputs.TAG }}",
-              "version" : "${{ steps.get-version.outputs.VERSION }}",
+              "caller_repository": "${{ github.repository }}",
+              "meta_repository": "${{ github.repository_owner }}/magellan2.github.io",
+              "tag": "${{ steps.get-version.outputs.TAG }}",
+              "version": "${{ steps.get-version.outputs.VERSION }}",
               "type": "${{ steps.prepare-meta.outputs.TYPE }}" }}'
 

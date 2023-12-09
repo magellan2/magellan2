@@ -90,6 +90,7 @@ import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.Colors;
+import magellan.client.utils.SwingUtils;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -1125,7 +1126,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       cShowPanel = new ColorShowPanel();
 
       Dimension dim = new Dimension(mPanel.getPreferredSize());
-      dim.height = 30;
+      Dimension dim2 = SwingUtils.getDimension(1, 3, false);
+      dim.height = dim2.height;
       cShowPanel.setPreferredSize(dim);
       cShowPanel.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
@@ -1798,9 +1800,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         setLayout(new BorderLayout());
 
         myShow = new ColorShowPanel(false);
-        myShow.setPreferredSize(new Dimension(200, 20));
+        SwingUtils.setPreferredSize(myShow, 15, 3, false);
         mapPainter = new ColorPainter();
-        mapPainter.setPreferredSize(new Dimension(200, 30));
+        SwingUtils.setPreferredSize(mapPainter, 15, 3, false);
         mapPainter.addMouseListener(this);
         mapPainter.addMouseMotionListener(this);
         myShow.addMouseListener(this);
@@ -1809,8 +1811,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         help.add(myShow, BorderLayout.CENTER);
         help.add(mapPainter, BorderLayout.SOUTH);
         help.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        help.setMinimumSize(new Dimension(250, 50));
-        help.setPreferredSize(new Dimension(250, 50));
+        Dimension dim = SwingUtils.getDimension(20, 6, false);
+        help.setMinimumSize(dim);
+        help.setPreferredSize(dim);
         this.add(help, BorderLayout.CENTER);
 
         textValue = new JTextField(5);
@@ -2261,30 +2264,31 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
 
           if (value.size() > 0) {
-            y = Math.max(0, size.height - fm.getAscent() - 1);
+            int h = Math.max(0, size.height - fm.getAscent() - 1);
+            int w = Math.min(size.height, fm.getMaxAdvance());
 
             for (int i = 0; i < value.size(); i++) {
               int x = (int) (size.width * value.get(i).floatValue());
-              paintIcon(g, x, y, mapping.get(i));
+              paintIcon(g, x, h, w, mapping.get(i));
             }
           }
         }
 
-        protected void paintIcon(Graphics g, int x, int h, Color col) {
+        protected void paintIcon(Graphics g, int x, int h, int w, Color col) {
           g.setColor(col);
           poly.xpoints[0] = x;
           poly.ypoints[0] = 2;
 
-          poly.xpoints[4] = x + 4;
+          poly.xpoints[4] = x + w / 2;
           poly.ypoints[4] = h / 3;
 
-          poly.xpoints[3] = x + 4;
+          poly.xpoints[3] = x + w / 2;
           poly.ypoints[3] = h - 1;
 
-          poly.xpoints[2] = x - 4;
+          poly.xpoints[2] = x - w / 2;
           poly.ypoints[2] = h - 1;
 
-          poly.xpoints[1] = x - 4;
+          poly.xpoints[1] = x - w / 2;
           poly.ypoints[1] = h / 3;
           g.fillPolygon(poly);
           g.setColor(Color.black);
@@ -2312,7 +2316,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
        * Creates a new MappingPanel object.
        */
       public MappingPanel() {
-        setPreferredSize(new Dimension(150, 100));
+        SwingUtils.setPreferredSize(this, 12, 8, true);
         setLayout(new BorderLayout());
 
         normCursor = getCursor();

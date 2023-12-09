@@ -33,7 +33,12 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Properties;
 
+import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableModel;
 
 import magellan.library.utils.PropertiesHelper;
 
@@ -53,6 +58,8 @@ public class SwingUtils {
    */
   public static void center(Component component) {
     GraphicsConfiguration gcc = component.getGraphicsConfiguration();
+    if (gcc == null)
+      return;
     Rectangle b = gcc.getBounds();
     // Dimension ss = getToolkit().getScreenSize();
 
@@ -146,13 +153,7 @@ public class SwingUtils {
       boolean maximize) {
     Rectangle bounds = PropertiesHelper.loadRect(settings, null, rectKey);
     if (bounds != null) {
-      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-      // correct position to be included in the screen
-      bounds.x = Math.max(bounds.x, -bounds.width * 4 / 5 + 10);
-      bounds.y = Math.max(bounds.y, -bounds.height * 4 / 5 + 10);
-      bounds.x = Math.min(bounds.x, screen.width - bounds.width / 10 + 10);
-      bounds.y = Math.min(bounds.y, screen.height - bounds.height / 5 + 10);
-
+      adjustToScreen(bounds);
       component.setBounds(bounds);
     } else {
       if (maximize) {
@@ -161,6 +162,23 @@ public class SwingUtils {
       }
       center(component);
     }
+  }
+
+  public static void setPreferredSize(Component component, Properties settings, String rectKey) {
+    Rectangle bounds = PropertiesHelper.loadRect(settings, null, rectKey);
+    if (bounds != null) {
+      adjustToScreen(bounds);
+      component.setPreferredSize(new Dimension(bounds.width, bounds.height));
+    }
+  }
+
+  private static void adjustToScreen(Rectangle bounds) {
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    // correct position to be included in the screen
+    bounds.x = Math.max(bounds.x, -bounds.width * 4 / 5 + 10);
+    bounds.y = Math.max(bounds.y, -bounds.height * 4 / 5 + 10);
+    bounds.x = Math.min(bounds.x, screen.width - bounds.width / 10 + 10);
+    bounds.y = Math.min(bounds.y, screen.height - bounds.height / 5 + 10);
   }
 
   /**
@@ -191,6 +209,41 @@ public class SwingUtils {
     return r;
   }
 
+  /**
+   * Returns a dimension set to multiples of the current (JLabel) font size.
+   * 
+   * @param d This is a multiple of the current font size
+   * @param e This is a multiple of the current font size. If this is -1, widthUnits * 5 / 8 is used instead.
+   * @param adjustToScreen If this is true, the size is adjustet to the screen size
+   */
+  public static Dimension getDimension(double d, double e, boolean adjustToScreen) {
+    int fontSize = new JLabel().getFont().getSize();
+    int width = (int) (fontSize * d);
+    int height = (int) (e < 0 ? width / 1.618 : fontSize * e);
+    if (adjustToScreen) {
+      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+      if (screen.width < width) {
+        width = screen.width;
+      }
+      if (screen.height < height) {
+        height = screen.height;
+      }
+    }
+    return new Dimension(width, height);
+  }
+
+  /**
+   * Sets the preferred size of the component to multiples of the current (JLabel) font size.
+   * 
+   * @param c
+   * @param widthUnits This is a multiple of the current font size
+   * @param heightUnits This is a multiple of the current font size. If this is -1, widthUnits * 5 / 8 is used instead.
+   * @param adjustToScreen If this is true, the size is adjustet to the screen size
+   */
+  public static void setPreferredSize(Component c, double widthUnits, double heightUnits, boolean adjustToScreen) {
+    c.setPreferredSize(getDimension(widthUnits, heightUnits, adjustToScreen));
+  }
+
   public static String getKeyStroke(KeyStroke stroke) {
     return SwingUtils.getKeyStroke(stroke.getModifiers(), stroke.getKeyCode());
   }
@@ -209,6 +262,129 @@ public class SwingUtils {
   public static boolean isModifier(int key) {
     return ((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) || (key == KeyEvent.VK_ALT)
         || (key == KeyEvent.VK_ALT_GRAPH));
+  }
+
+  /**
+   * A class that helps adjusting row heights of tables, see {@link #prepareTable(JTable)}.
+   *
+   */
+  public interface RenderHelper {
+
+    /**
+     * Call this from your overwritten prepareHandler method like this:
+     * <code>
+     * renderHelper.wrapPrepareHandlerRowHeightAdjusted(JTable.this, row,
+     *           super.prepareRenderer(renderer, row, column));
+     * </code>
+     * 
+     * @param jTable
+     * @param row
+     * @param component
+     */
+    Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component);
+
+    /**
+     * Call this after constructing your table.
+     * 
+     * @param jTable
+     */
+    void prepareTable(JTable jTable);
+
+  }
+
+  /**
+   * implementation of RenderHelper
+   */
+  static class RH implements RenderHelper {
+    int invalidate[];
+    int invalidateMarker;
+    private TableModel model;
+
+    void prepareTable(TableModel model) {
+      invalidate = new int[0];
+      this.model = model;
+      model.addTableModelListener((TableModelEvent e) -> {
+        synchronized (model) {
+          ++invalidateMarker;
+        }
+      });
+    }
+
+    public void prepareTable(JTable jTable) {
+      prepareTable(jTable.getModel());
+    }
+
+    /**
+     * @param jTable
+     * @param row
+     * @param component
+     */
+    public Component wrapPrepareHandlerRowHeightAdjusted(JTable jTable, int row, Component component) {
+
+      synchronized (model) {
+        if (invalidate == null || invalidate.length != jTable.getRowCount()) {
+          invalidate = new int[jTable.getRowCount()];
+        }
+        if (invalidate[row] != invalidateMarker) {
+          invalidate[row] = invalidateMarker;
+          int height = component.getPreferredSize().height;
+          int old = jTable.getRowHeight();
+          if (height > old) {
+            jTable.setRowHeight(row, height);
+          }
+        }
+        return component;
+      }
+    }
+
+  }
+
+  /**
+   * Use this method to construct a table that adjusts its row heights with the font size of its content.
+   * 
+   * Use like this:
+   * <code>
+   * AbstractTableModel tableModel = new MyModel();
+   * final RenderHelper renderHelper = SwingUtils.prepareTable(tableModel);
+   * JTable table = MyTable(tableModel) {
+   *   &#64;Override
+   *   public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+   *     return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+   *     super.prepareRenderer(renderer, row, column));
+   *   }
+   * };
+   * </code>
+   * 
+   * @param model Your table model, should extend AbstractTableModel
+   * @return A RenderHelper, which you can call in your prepareRenderer method.
+   */
+  public static RenderHelper prepareTable(AbstractTableModel model) {
+    RH rh = new RH();
+    rh.prepareTable(model);
+    return rh;
+  }
+
+  /**
+   * Alternative method to construct a table that adjusts its row heights with the font size of its content.
+   * 
+   * Use like this:
+   * <code>
+   * RenderHelper renderHelper = SwingUtils.prepareTable();
+   * JTable table = MyTable() {
+   *   &#64;Override
+   *   public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+   *     return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+   *     super.prepareRenderer(renderer, row, column));
+   *   }
+   * };
+   * rh.prepareTable(table);
+   * </code>
+   * 
+   * @return A RenderHelper, which you can call in your prepareRenderer method.
+   */
+  public static RenderHelper prepareTable() {
+    RH rh = new RH();
+    return rh;
   }
 
 }

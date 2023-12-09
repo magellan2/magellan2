@@ -42,6 +42,7 @@ import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -138,7 +139,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
     editors.gameDataChanged(event);
     dummyUnit = getDummyUnit();
     editors.selectionChanged(SelectionEvent.create(this, dummyUnit, SelectionEvent.ST_DEFAULT));
-    editors.setPreferredSize(new Dimension(300, 100));
+    SwingUtils.setPreferredSize(editors, 25, 8, true);
     editors.setMinimumSize(new Dimension(100, 100));
 
     JScrollPane helperPane = new JScrollPane(editors);
@@ -200,11 +201,13 @@ public class GiveOrderDialog extends InternationalizedDialog {
     c.gridx = 1;
     c.anchor = GridBagConstraints.WEST;
     cp.add(cancel, c);
+
+    setDefaultActions(ok, cancel, ok, cancel, editors, firstButton, lastButton, replaceOrders, keepComments);
   }
 
   protected MultiEditorOrderEditorList getEditorList(EventDispatcher dispatcher, GameData data,
       Properties settings) {
-    return new MultiEditorOrderEditorList(getDummyDispatcher(), data, getDummySettings(), null) {
+    return new MultiEditorOrderEditorList(getDummyDispatcher(), data, getDummySettings(), null, null) {
       @Override
       public javax.swing.border.Border getBorder(Unit u, boolean active) {
         TitledBorder border = new TitledBorder(new LineBorder(Color.DARK_GRAY, 2), getCaption());

@@ -8,7 +8,9 @@
 package magellan.client.swing;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -46,12 +48,14 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Item;
@@ -63,6 +67,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.CollectionFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -124,9 +129,16 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   }
 
   protected void init() {
-    int width = Integer.parseInt(settings.getProperty("TradeOrganizer.width", "800"));
-    int height = Integer.parseInt(settings.getProperty("TradeOrganizer.height", "600"));
-    setSize(width, height);
+    Dimension dim;
+    if (settings.getProperty("TradeOrganizer.width") != null) {
+      dim = new Dimension(
+          PropertiesHelper.getInteger(settings, "TradeOrganizer.width", 800),
+          PropertiesHelper.getInteger(settings, "TradeOrganizer.height", 600));
+    } else {
+      dim = SwingUtils.getDimension(50, -1, true);
+    }
+
+    setSize(dim);
 
     SwingUtils.setLocation(this, settings, "TradeOrganizer.xPos", "TradeOrganizer.yPos");
 
@@ -149,7 +161,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
     topPanel.add(new JLabel(Resources.get("tradeorganizer.minsellmultiplier")), c);
     c.gridx++;
-    minSellMultiplierSlider = new JSlider(1, 30, minSellMultiplier);
+    minSellMultiplierSlider = new JSlider(1, 31, minSellMultiplier);
     minSellMultiplierSlider.setMinorTickSpacing(1);
     minSellMultiplierSlider.setMajorTickSpacing(1);
 
@@ -158,6 +170,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     minSellMultiplierSlider.setSnapToTicks(true);
     minSellMultiplierSlider.setPaintTicks(true);
     minSellMultiplierSlider.setPaintLabels(true);
+    dim = SwingUtils.getDimension(20, 3, false);
+    dim.height = minSellMultiplierSlider.getPreferredSize().height;
+    minSellMultiplierSlider.setMinimumSize(dim);
+    dim = SwingUtils.getDimension(30, 3, false);
+    dim.height = minSellMultiplierSlider.getPreferredSize().height;
+    minSellMultiplierSlider.setPreferredSize(dim);
 
     minSellMultiplierSlider.addChangeListener(new ChangeListener() {
       public void stateChanged(ChangeEvent ce) {
@@ -165,7 +183,9 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         setSellTableRegions();
       }
     });
+    c.weightx = .1;
     topPanel.add(minSellMultiplierSlider, c);
+    c.weightx = 0;
     c.gridx++;
 
     topPanel.add(new JLabel(Resources.get("tradeorganizer.luxury")), c);
@@ -201,7 +221,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     c.gridx = 0;
     c.gridy = 1;
     c.insets = new Insets(5, 5, 5, 5);
-    c.gridwidth = 2;
+    c.gridwidth = 4;
     topPanel.add(help, c);
 
     Container cp = getContentPane();
@@ -213,13 +233,29 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     cp = new JPanel();
     cp.setLayout(new BorderLayout());
     tabPane.addTab(Resources.get("tradeorganizer.buy"), cp);
-    buy = new BuyTable();
+    RenderHelper rhb = SwingUtils.prepareTable();
+    buy = new BuyTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rhb.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rhb.prepareTable(buy);
     cp.add(new JScrollPane(buy), BorderLayout.CENTER);
 
     cp = new JPanel();
     cp.setLayout(new BorderLayout());
     tabPane.addTab(Resources.get("tradeorganizer.sell"), cp);
-    sell = new SellTable();
+    RenderHelper rhs = SwingUtils.prepareTable();
+    sell = new SellTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rhs.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rhs.prepareTable(buy);
     cp.add(new JScrollPane(sell), BorderLayout.CENTER);
 
     tabPane.add(Resources.get("tradeorganizer.stocks"), getStocksPanel());
@@ -242,7 +278,15 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     });
 
     JScrollPane factionsScrollPane = new JScrollPane(factionList);
-    stocks = new StocksTable();
+    RenderHelper rh = SwingUtils.prepareTable();
+    stocks = new StocksTable() {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rh.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
+    rh.prepareTable(stocks);
 
     JScrollPane stocksTableScrollPane = new JScrollPane(stocks);
 
@@ -581,7 +625,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     }
 
     /**
-     *  
+     * 
      */
     public void sort(int i) {
       if (i < 0 || i >= getColumnCount())
@@ -896,7 +940,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     }
 
     /**
-     * Compares two regions by the value of their <tt>stocks</tt>.
+     * Compares two regions by the value of their <kbd>stocks</kbd>.
      * 
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */

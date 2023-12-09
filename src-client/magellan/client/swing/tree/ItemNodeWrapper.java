@@ -134,8 +134,10 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
 
   /**
    * produces the string describing an item that a unit (or the like) has. The string is:
-   * "<amount>[(!!!)] of <regionamount> <itemname>: <weight> GE " for items, the unit already has or
-   * "<amount> (<modamount>[,!!!]) of <regionamount> <itemname>: <weight> (<modweight>) GE [(!!!)]"
+   * "&lt;amount&gt;[(!!!)] of &lt;regionamount&gt; &lt;itemname&gt;: &lt;weight&gt; GE " for items, the unit already
+   * has or
+   * "&lt;amount&gt; (&lt;modamount&gt;[,!!!]) of &lt;regionamount&gt; &lt;itemname&gt;: &lt;weight&gt;
+   * (&lt;modweight&gt;) GE [(!!!)]"
    * for new items. (!!!) is added if the warning flag is set.
    *
    * @return the string representation of this item node.
@@ -169,7 +171,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
         // special if unmodifiedAmount is known
         if (unmodifiedAmount > -1 && unmodifiedAmount != modItem.getAmount()) {
           nodeText.append(unmodifiedAmount).append(" (").append(modItem.getAmount()).append(")")
-          .append(' ');
+              .append(' ');
         } else {
           nodeText.append(modItem.getAmount()).append(' ');
         }
@@ -272,7 +274,7 @@ public class ItemNodeWrapper extends DefaultNodeWrapper implements SupportsClipb
     return new DetailsNodeWrapperDrawPolicy(3, null, settings, prefix, new String[][] {
         { "units.showMyTotalAmount", "false" }, { "units.showPrivilegedTotalAmount", "true" },
         { "units.showAllTotalAmount", "false" } }, new String[] { "prefs.total.my.text",
-        "prefs.total.privileged.text", "prefs.total.all.text" }, 0, "tree.itemnodewrapper.");
+            "prefs.total.privileged.text", "prefs.total.all.text" }, 0, "tree.itemnodewrapper.");
   }
 
   /**

@@ -37,7 +37,7 @@ public class MessageTypeSectionComparator implements Comparator<MessageType> {
    * Creates a new MessageTypeSectionComparator object.
    * 
    * @param sameSectionSubComparator if two messages belonging to the same section are compared,
-   *          this sub-comparator is applied if it is not <tt>null</tt>.
+   *          this sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public MessageTypeSectionComparator(Comparator<MessageType> sameSectionSubComparator) {
     sameSectionSubCmp = sameSectionSubComparator;
@@ -46,7 +46,7 @@ public class MessageTypeSectionComparator implements Comparator<MessageType> {
   /**
    * Compares its two arguments for order according to the sections they belong to.
    * 
-   * @return the result of the String.compareTo() method applied to <tt>o1</tt>'s and <tt>o2</tt>.
+   * @return the result of the String.compareTo() method applied to <kbd>o1</kbd>'s and <kbd>o2</kbd>.
    *         If both belong to the same section and a sub-comparator was specified, the result that
    *         sub-comparator's comparison is returned. Undefined values are evaluated as
    *         <code>&gt; 0</code>.

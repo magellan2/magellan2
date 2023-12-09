@@ -17,6 +17,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,8 +75,8 @@ public class HistoryAccessory extends JPanel {
     });
 
     // set-up GUI
+    setLayout(new GridBagLayout());
     if (history.size() > 1) {
-      setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints();
 
@@ -88,7 +90,17 @@ public class HistoryAccessory extends JPanel {
       c.weighty = 0.0;
       this.add(new JLabel("Directory History:"), c);
 
-      JComboBox cmbHistory = new JComboBox(history.toArray());
+      JComboBox<DirWrapper> cmbHistory = new JComboBox<>(history.toArray(new DirWrapper[] {}));
+      cmbHistory.setToolTipText(((DirWrapper) cmbHistory.getSelectedItem()).getDirectory().toString());
+      cmbHistory.addItemListener(new ItemListener() {
+
+        public void itemStateChanged(ItemEvent e) {
+          if (e.getStateChange() == ItemEvent.SELECTED) {
+            cmbHistory.setToolTipText(e.getItem().toString());
+            cmbHistory.setToolTipText(((DirWrapper) e.getItem()).getDirectory().toString());
+          }
+        }
+      });
       cmbHistory.setEditable(false);
       cmbHistory.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {

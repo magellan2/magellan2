@@ -14,7 +14,6 @@
 package magellan.client.preferences;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -47,6 +46,7 @@ import javax.swing.SwingConstants;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 
 /**
@@ -215,7 +215,7 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JScrollPane lstScroller = new JScrollPane(lstPaths, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-    lstScroller.setPreferredSize(new Dimension(300, 200));
+    SwingUtils.setPreferredSize(lstScroller, 30, -1, true);
 
     GridBagConstraints c = new GridBagConstraints();
     c.gridheight = 3;

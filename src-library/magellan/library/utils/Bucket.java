@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * A LRU-like organized collection, i.e. calls to the add() method always insert elements at the
- * front of the collection. If an already exisiting element is added to the bucket it is moved to
+ * front of the collection. If an already existing element is added to the bucket it is moved to
  * the front of the bucket. If a maximum size is set for the bucket it does not grow beyond this
  * limit by dropping elements at the end of the bucket.
  * 

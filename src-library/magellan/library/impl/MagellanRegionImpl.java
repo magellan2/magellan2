@@ -414,7 +414,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * The prices for luxury goods in this region. The map contains the name of the luxury good as
-   * instance of class <tt>StringID</tt> as key and instances of class <tt>LuxuryPrice</tt> as
+   * instance of class <kbd>StringID</kbd> as key and instances of class <kbd>LuxuryPrice</kbd> as
    * values.
    */
   public Map<StringID, LuxuryPrice> prices = null;
@@ -423,44 +423,44 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   public Map<StringID, LuxuryPrice> oldPrices = null;
 
   /**
-   * The messages for this region. The list consists of objects of class <tt>Message</tt>.
+   * The messages for this region. The list consists of objects of class <kbd>Message</kbd>.
    */
   public List<Message> messages = null;
 
   /**
-   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * Special messages related to this region. The list contains instances of class <kbd>Message</kbd>
    * with type -1 and only the text set.
    */
   public List<Message> events = null;
 
   /**
-   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * Special messages related to this region. The list contains instances of class <kbd>Message</kbd>
    * with type -1 and only the text set.
    */
   public List<Message> playerMessages = null;
 
   /**
-   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * Special messages related to this region. The list contains instances of class <kbd>Message</kbd>
    * with type -1 and only the text set.
    */
   public List<Message> surroundings = null;
 
   /**
-   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * Special messages related to this region. The list contains instances of class <kbd>Message</kbd>
    * with type -1 and only the text set.
    */
   public List<Message> travelThru = null;
 
   /**
-   * Special messages related to this region. The list contains instances of class <tt>Message</tt>
+   * Special messages related to this region. The list contains instances of class <kbd>Message</kbd>
    * with type -1 and only the text set.
    */
   public List<Message> travelThruShips = null;
 
   /**
-   * RegionResources in this region. The keys in this map are instances of class <tt>ID</tt>
+   * RegionResources in this region. The keys in this map are instances of class <kbd>ID</kbd>
    * identifying the item type of the resource, the values are instances of class
-   * <tt>RegionResource</tt>.
+   * <kbd>RegionResource</kbd>.
    */
   private Map<Identifiable, RegionResource> resources = null;
 
@@ -582,8 +582,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Schemes in this region. The keys in this map are instances of class <tt>Coordinate</tt>
-   * identifying the location of the scheme, the values are instances of class <tt>Scheme</tt>.
+   * Schemes in this region. The keys in this map are instances of class <kbd>Coordinate</kbd>
+   * identifying the location of the scheme, the values are instances of class <kbd>Scheme</kbd>.
    */
   private Map<ID, Scheme> schemes = null;
 
@@ -651,7 +651,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Border elements of this region. The list contains instances of class <tt>Border</tt>.
+   * Border elements of this region. The list contains instances of class <kbd>Border</kbd>.
    */
   private Map<ID, Border> borders = null;
 
@@ -1046,7 +1046,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Guarding units of this region. The list contains instances of class <tt>Unit</tt>.
+   * Guarding units of this region. The list contains instances of class <kbd>Unit</kbd>.
    */
   private List<Unit> guards;
 

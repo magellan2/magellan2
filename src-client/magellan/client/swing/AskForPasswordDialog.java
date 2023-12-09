@@ -23,7 +23,6 @@
 //
 package magellan.client.swing;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,17 +33,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import magellan.client.Client;
+import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.utils.SwingUtils;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -78,12 +77,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
 
   private void init() {
     setTitle(Resources.get("client.msg.askforpassword.title"));
-    setSize(400, 260);
-    setResizable(false);
 
-    SwingUtils.center(this);
-
-    JPanel panel = new JPanel(new BorderLayout());
     JPanel buttonPanel = new JPanel(new FlowLayout());
     JPanel mainPanel = new JPanel(new GridBagLayout());
 
@@ -97,25 +91,17 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     buttonPanel.add(okButton);
     buttonPanel.add(cancelButton);
 
-    JTextArea comment1 = new JTextArea(Resources.get("client.msg.askforpassword.comment1"));
-    comment1.setEditable(false);
-    comment1.setSelectionColor(comment1.getBackground());
-    comment1.setSelectedTextColor(comment1.getForeground());
-    comment1.setRequestFocusEnabled(false);
-    comment1.setBackground(getContentPane().getBackground());
-    comment1.setSelectionColor(getContentPane().getBackground());
-    comment1.setSelectedTextColor(getContentPane().getForeground());
-    comment1.setFont(okButton.getFont());
-    comment1.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    JComponent comment1 = WrappableLabel.getLabel(Resources.get("client.msg.askforpassword.comment1")).getComponent();
 
     GridBagConstraints c = new GridBagConstraints();
     c.insets = new Insets(2, 2, 2, 2);
     c.gridx = 0;
     c.gridy = 0;
     c.gridwidth = 2;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.CENTER;
-    c.weightx = 0.0;
+    c.fill = GridBagConstraints.BOTH;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.weightx = 0.50;
+    c.weighty = 0.1;
     mainPanel.add(comment1, c);
 
     JLabel label = new JLabel(Resources.get("client.msg.askforpassword.faction"));
@@ -123,8 +109,10 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     c.gridx = 0;
     c.gridy = 1;
     c.gridwidth = 1;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.0;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = .5;
+    c.weighty = 0;
     mainPanel.add(label, c);
 
     // Vector<FactionItem> items = new Vector<FactionItem>();
@@ -147,8 +135,8 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     c.gridx = 1;
     c.gridy = 1;
     c.gridwidth = 1;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.50;
     mainPanel.add(factionBox, c);
 
     label = new JLabel(Resources.get("client.msg.askforpassword.password"));
@@ -156,7 +144,6 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     c.gridx = 0;
     c.gridy = 2;
     c.gridwidth = 1;
-    c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.0;
     mainPanel.add(label, c);
 
@@ -164,15 +151,24 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     c.gridx = 1;
     c.gridy = 2;
     c.gridwidth = 1;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.0;
+    c.weightx = 0.5;
     mainPanel.add(passwordField, c);
 
-    panel.add(mainPanel, BorderLayout.CENTER);
-    panel.add(buttonPanel, BorderLayout.SOUTH);
+    // panel.add(mainPanel, BorderLayout.CENTER);
+    c.gridy++;
+    c.gridx = 0;
+    c.gridwidth = 2;
+    mainPanel.add(buttonPanel, c);
 
-    getContentPane().add(panel);
+    getContentPane().add(mainPanel);
+    SwingUtils.setPreferredSize(this, 30, 25, true);
     pack();
+    // setSize(getPreferredSize());
+    // setSize(400, 260);
+    // setResizable(false);
+
+    SwingUtils.center(this);
+
     factionBox.requestFocusInWindow();
     getRootPane().setDefaultButton(okButton);
   }
@@ -248,9 +244,6 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    * tries to find some hints if a faction is "owned" by the user...and possible a password may make
    * sense... uses battle-status to identify such factions (-1 by default)
    *
-   * @param f
-   * @param data
-   * @return
    */
   private boolean isProbablyPriviligedFaction(Faction f) {
     for (Unit u : data.getUnits()) {
@@ -279,7 +272,6 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   /**
    * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
    *
-   * @return
    */
   private Vector<FactionItem> getAllFactionItems() {
     Vector<FactionItem> erg = null;

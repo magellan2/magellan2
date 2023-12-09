@@ -111,7 +111,7 @@ public class EresseaOrderChanger implements OrderChanger {
    */
   public void addDescribeUnitContainerOrder(Unit unit, UnitContainer uc, String descr) {
     String order = createDescribeUnitContainerOrder(uc, unit, descr);
-    unit.addOrder(order, true, 2); // FIXME should be 1 for BANNER
+    unit.addOrder(order, true, 2); // (FIXME) should be 1 for BANNER, but quotes count as a token
   }
 
   protected String
@@ -632,8 +632,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
       addedOrder = getOrderO(source.getLocale(), EresseaConstants.OC_GIVE, arguments.toArray());
     }
-
-    source.addOrder(addedOrder, false);
+    source.addOrder(addedOrder.getText());
   }
 
   /**
@@ -649,8 +648,7 @@ public class EresseaOrderChanger implements OrderChanger {
     } else {
       group = getOrderO(unit.getLocale(), EresseaConstants.OC_GROUP);
     }
-    // FIXME replace?
-    unit.addOrder(group, true);
+    unit.addOrder(group.getText());
   }
 
   private List<Order> orderList = new ArrayList<Order>(100);
@@ -662,7 +660,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData gdata, int tempSortIndex, Locale locale, Unit unit) {

@@ -1265,7 +1265,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param data
    * @param tagName
    * @param regionList
-   * @return
    */
   private boolean msgUnitAttributeNotInRegionList(GameData data, Message msg, String tagName,
       Collection<Region> regionList) {
@@ -1293,7 +1292,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param data
    * @param tagName
    * @param regionList
-   * @return
    */
   private boolean msgRegionAttributeNotInRegionList(GameData data, Message msg, String tagName,
       Collection<Region> regionList) {

@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Graphics;
@@ -35,7 +34,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -75,6 +73,7 @@ import javax.swing.event.ListSelectionListener;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.CellRenderer;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.NumberStringComparator;
 import magellan.library.utils.Resources;
 
@@ -137,7 +136,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     JScrollPane listScroller;
     this.add(listScroller = new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), con);
-    listScroller.setPreferredSize(new Dimension(100, 400));
+    SwingUtils.setPreferredSize(listScroller, 10, 10, true);
     JPanel bBox = new JPanel(new GridLayout(0, 1));
 
     buttons = new JButton[5];
@@ -632,10 +631,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
       panel.add(button);
       cont.add(panel, BorderLayout.SOUTH);
 
-      Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-      dim.width = PREFERRED_WIDTH;
-      dim.height = PREFERRED_WIDTH * 3 / 4;
-      this.setSize(dim);
+      this.setSize(SwingUtils.getDimension(40, -1, true));
       setLocationRelativeTo(owner);
     }
 

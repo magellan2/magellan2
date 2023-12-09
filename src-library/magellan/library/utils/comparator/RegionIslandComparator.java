@@ -42,9 +42,9 @@ public class RegionIslandComparator implements Comparator<Region> {
    * @param islandComparator determines how the islands are sorted. If null is specified the islands
    *          are sorted according to their natural order.
    * @param sameIslandSubComparator if two regions belonging to the same island are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    * @param noIslandSubComparator if the compared regions both have island members that are null,
-   *          this sub-comparator is applied if it is not <tt>null</tt>.
+   *          this sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public RegionIslandComparator(Comparator<? super Island> islandComparator,
       Comparator<? super Region> sameIslandSubComparator,
@@ -57,7 +57,7 @@ public class RegionIslandComparator implements Comparator<Region> {
   /**
    * Compares its two arguments for order according to the islands they belong to.
    * 
-   * @return the result of comparing <tt>o1</tt>'s and <tt>o2</tt>'s islands with the specified
+   * @return the result of comparing <kbd>o1</kbd>'s and <kbd>o2</kbd>'s islands with the specified
    *         island comparator. If both belong to the same island and a same-island sub-comparator
    *         was specified, the result of that sub-comparator's comparison is returned. If one of
    *         the islands is null, it is considered larger than the other one. If both islands are

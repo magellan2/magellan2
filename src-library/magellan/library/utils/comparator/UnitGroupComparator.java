@@ -40,9 +40,9 @@ public class UnitGroupComparator implements Comparator<Unit> {
    * 
    * @param groupComparator the comparator used to compare the units' groups.
    * @param sameGroupSubComparator if two units belonging to the same group are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    * @param noGroupSubComparator if two units belonging to no group are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public UnitGroupComparator(Comparator<? super Group> groupComparator,
       Comparator<? super Unit> sameGroupSubComparator, Comparator<? super Unit> noGroupSubComparator) {
@@ -56,7 +56,7 @@ public class UnitGroupComparator implements Comparator<Unit> {
    * 
    * @param o1 the 1st object to compare
    * @param o2 the 2nd object to compare
-   * @return the difference of <tt>o1</tt>'s and <tt>o2</tt>'s group ids. If both belong to the same
+   * @return the difference of <kbd>o1</kbd>'s and <kbd>o2</kbd>'s group ids. If both belong to the same
    *         group and a sub-comparator was specified, the result that sub-comparator's comparison
    *         is returned. If both units do not belong to any group and a no-group sub-comparator was
    *         specified, the result of that sub-comparator's comparison is returned. Undefined values

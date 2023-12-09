@@ -17,7 +17,7 @@ import java.util.Comparator;
 import magellan.library.Faction;
 
 /**
- * A comparator imposing an ordering on <tt>Faction</tt> objects by comparing their <i>exact</i>
+ * A comparator imposing an ordering on <kbd>Faction</kbd> objects by comparing their <i>exact</i>
  * trust levels.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
@@ -35,10 +35,10 @@ public class FactionDetailComparator implements Comparator<Faction> {
   protected Comparator<? super Faction> sameTrustSubCmp = null;
 
   /**
-   * Creates a new <tt>FactionDetailComparator</tt> object.
+   * Creates a new <kbd>FactionDetailComparator</kbd> object.
    * 
    * @param sameFactionSubComparator if two factions with the same trust level are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public FactionDetailComparator(Comparator<? super Faction> sameFactionSubComparator) {
     sameTrustSubCmp = sameFactionSubComparator;

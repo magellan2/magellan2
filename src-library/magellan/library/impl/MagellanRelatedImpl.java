@@ -48,7 +48,7 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
 
   /**
    * Delivers all relations of the given class (and its subtypes!). Returns a Collection over the
-   * relations this unit has to other units. The collection consist of <tt>UnitRelation</tt>
+   * relations this unit has to other units. The collection consist of <kbd>UnitRelation</kbd>
    * objects. The UnitRelation objects are filtered by the given relation class.
    * 
    * @see magellan.library.Related#getRelations(java.lang.Class)

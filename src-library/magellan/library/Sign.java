@@ -25,13 +25,13 @@ public class Sign {
   private String text = null;
 
   /**
-   * Create a new <tt>Sign</tt> object
+   * Create a new <kbd>Sign</kbd> object
    */
   public Sign() {
   }
 
   /**
-   * Create a new <tt>Sign</tt> object initialized to the specified values.
+   * Create a new <kbd>Sign</kbd> object initialized to the specified values.
    * 
    * @param text the text of the sign object
    */
@@ -40,7 +40,7 @@ public class Sign {
   }
 
   /**
-   * Return a string representation of this <tt>Sign</tt> object.
+   * Return a string representation of this <kbd>Sign</kbd> object.
    * 
    * @return Sign object as string.
    */

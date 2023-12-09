@@ -96,12 +96,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
   public void clearOrders(boolean refreshRelations);
 
   /**
-   * Removes the order at position <tt>i</tt> and refreshes the relations
+   * Removes the order at position <kbd>i</kbd> and refreshes the relations
    */
   public void removeOrderAt(int i);
 
   /**
-   * Removes the order at position <tt>i</tt> and possibly refreshes the relations
+   * Removes the order at position <kbd>i</kbd> and possibly refreshes the relations
    * 
    * @param refreshRelations if true also refresh the relations of the unit.
    * @deprecated relation refreshing is now done event-based
@@ -116,7 +116,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if at least one order was removed
+   * @return <kbd>true</kbd> if at least one order was removed
    */
   public boolean removeOrder(String order, int length);
 
@@ -128,7 +128,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
    * @param refreshRelations
-   * @return <tt>true</tt> if at least one order was removed
+   * @return <kbd>true</kbd> if at least one order was removed
    * @deprecated relation refreshing is now done event-based
    */
   @Deprecated
@@ -153,7 +153,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
   public void replaceOrder(int pos, Order newOrder, boolean refreshRelations);
 
   /**
-   * Adds the order at position <tt>i</tt> and refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and refreshes the relations
    * 
    * @param i An index between 0 and getOrders().getSize() (inclusively)
    * @param newOrder
@@ -161,7 +161,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
   public void addOrderAt(int i, String newOrder);
 
   /**
-   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and possibly refreshes the relations
    * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrders
@@ -882,12 +882,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    * operation.
    * 
    * @param order the order to add.
-   * @param replace if <tt>true</tt>, the order replaces any other of the unit's orders of the same
-   *          type. If <tt>false</tt> the order is simply added.
+   * @param replace if <kbd>true</kbd>, the order replaces any other of the unit's orders of the same
+   *          type. If <kbd>false</kbd> the order is simply added.
    * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
    *          specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should be
    *          replaced but not all "BENENNE" orders.
-   * @return <tt>true</tt> if the order was successfully added.
+   * @return <kbd>true</kbd> if the order was successfully added.
    */
   public boolean addOrder(String order, boolean replace, int length);
 
@@ -902,7 +902,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
   public void addOrder(Order newOrder, boolean refreshRelations);
 
   /**
-   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and possibly refreshes the relations
    * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrder
@@ -910,7 +910,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
   public void addOrderAt(int i, Order newOrder);
 
   /**
-   * Adds the order at position <tt>i</tt> and possibly refreshes the relations
+   * Adds the order at position <kbd>i</kbd> and possibly refreshes the relations
    * 
    * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end
    * @param newOrder
@@ -927,7 +927,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    * 
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData data, int tempSortIndex);
@@ -939,7 +939,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache, Se
    * @param tempSortIndex an index for sorting units (required to reconstruct the original order in
    *          the report) which is incremented with each new temp unit.
    * @param locale the locale to parse the orders with.
-   * @return the new sort index. <tt>return value</tt> - sortIndex is the number of temp units read
+   * @return the new sort index. <kbd>return value</kbd> - sortIndex is the number of temp units read
    *         from this unit's orders.
    */
   public int extractTempUnits(GameData data, int tempSortIndex, Locale locale);

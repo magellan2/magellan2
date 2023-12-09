@@ -55,17 +55,17 @@ public class FixedWidthWriter extends Writer {
   private boolean forceUnixLineBreaks = false;
 
   /**
-   * Creates a new FixedWidthWriter object with the underlying <tt>Writer</tt> object out stream and
+   * Creates a new FixedWidthWriter object with the underlying <kbd>Writer</kbd> object out stream and
    * a MAX_WIDTH line width.
    * 
-   * @param out the stream this writer writes to through a <tt>BufferedWriter</tt>.
+   * @param out the stream this writer writes to through a <kbd>BufferedWriter</kbd>.
    */
   public FixedWidthWriter(Writer out) {
     this(new BufferedWriter(out));
   }
 
   /**
-   * Creates a new FixedWidthWriter object with the underlying <tt>BufferedWriter</tt> object out
+   * Creates a new FixedWidthWriter object with the underlying <kbd>BufferedWriter</kbd> object out
    * stream and a MAX_WIDTH line width.
    * 
    * @param out the stream this writer writes to.
@@ -75,10 +75,10 @@ public class FixedWidthWriter extends Writer {
   }
 
   /**
-   * Creates a new FixedWidthWriter object with the underlying <tt>Writer</tt> object out stream and
+   * Creates a new FixedWidthWriter object with the underlying <kbd>Writer</kbd> object out stream and
    * the specified line width.
    * 
-   * @param out the stream this writer writes to through a <tt>BufferedWriter</tt>.
+   * @param out the stream this writer writes to through a <kbd>BufferedWriter</kbd>.
    * @param width the maximum line width enforced by this writer.
    */
   public FixedWidthWriter(Writer out, int width) {
@@ -86,10 +86,10 @@ public class FixedWidthWriter extends Writer {
   }
 
   /**
-   * Creates a new FixedWidthWriter object with the underlying <tt>Writer</tt> object out stream and
+   * Creates a new FixedWidthWriter object with the underlying <kbd>Writer</kbd> object out stream and
    * the specified line width.
    * 
-   * @param out the stream this writer writes to through a <tt>BufferedWriter</tt>.
+   * @param out the stream this writer writes to through a <kbd>BufferedWriter</kbd>.
    * @param width the maximum line width enforced by this writer.
    * @param bool forces unix line breaks.
    */
@@ -99,7 +99,7 @@ public class FixedWidthWriter extends Writer {
   }
 
   /**
-   * Creates a new FixedWidthWriter object with the underlying <tt>BufferedWriter</tt> object out
+   * Creates a new FixedWidthWriter object with the underlying <kbd>BufferedWriter</kbd> object out
    * stream and the specified line width.
    * 
    * @param out the stream this writer writes to.

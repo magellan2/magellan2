@@ -16,7 +16,6 @@ package magellan.client.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -25,8 +24,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +42,7 @@ import javax.swing.JTextPane;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 
@@ -181,7 +179,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
     content.setBackground(foreground);
     content.add(didyouknow, BorderLayout.NORTH);
     content.add(pane, BorderLayout.CENTER);
-    content.setPreferredSize(new Dimension(350, 200));
+    SwingUtils.setPreferredSize(content, 30, -1, true);
 
     panel.add(content, BorderLayout.CENTER);
 
@@ -228,12 +226,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
     setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
 
-    addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        quit();
-      }
-    });
+    setDefaultActions(null, close, next, close, showTips);
   }
 
   protected void initTips() {

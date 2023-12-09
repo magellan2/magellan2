@@ -50,6 +50,7 @@ import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.client.swing.completion.OrderEditor;
 import magellan.client.swing.layout.WrappableLabel;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 
 public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapter implements
@@ -110,6 +111,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   }
 
   protected Container getColorPanel() {
+    prefDim = SwingUtils.getDimension(1.5, 1.5, true);
     JPanel content =
         addPanel(Resources.get("completion.multieditorordereditorlist.prefs.colors"),
             new GridBagLayout());

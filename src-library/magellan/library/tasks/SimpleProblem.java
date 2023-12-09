@@ -7,6 +7,8 @@
 
 package magellan.library.tasks;
 
+import java.util.Objects;
+
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Unit;
@@ -155,36 +157,21 @@ public class SimpleProblem implements Problem {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj instanceof SimpleProblem) {
-      SimpleProblem simple = (SimpleProblem) obj;
-      return type == simple.type &&
-          line == simple.line &&
-          region == simple.region &&
-          owner == simple.owner &&
-          faction == simple.faction &&
-          severity == simple.severity &&
-          inspector == simple.inspector &&
-          (message == null && simple.message == null || message.equals(simple.message)) &&
-          (object == null && simple.object == null || object.equals(simple.object)) &&
-          (name == null && simple.name == null || name.equals(simple.name));
-    }
-    return false;
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    SimpleProblem other = (SimpleProblem) obj;
+    return Objects.equals(faction, other.faction) && Objects.equals(inspector, other.inspector) && line == other.line
+        && Objects.equals(message, other.message) && Objects.equals(name, other.name) && Objects.equals(object,
+            other.object) && Objects.equals(owner, other.owner) && Objects.equals(region, other.region)
+        && severity == other.severity && Objects.equals(type, other.type);
   }
 
   @Override
   public int hashCode() {
-    int hash = 0;
-    if (message != null) {
-      hash = message.hashCode();
-    }
-    if (object != null) {
-      hash = hash << 8 + object.hashCode();
-    }
-    if (name != null) {
-      hash = hash << 8 + name.hashCode();
-    } else if (type != null) {
-      hash = hash << 8 + type.hashCode();
-    }
-    return hash;
+    return Objects.hash(message, name, object, line, type);
   }
 }

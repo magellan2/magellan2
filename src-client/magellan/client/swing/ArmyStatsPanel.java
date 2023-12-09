@@ -126,6 +126,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       try {
         dividerPos = Integer.parseInt(dPos);
       } catch (Exception exc) {
+        // no valid number
       }
     }
 
@@ -137,6 +138,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
     createTrees();
 
     setLayout(new java.awt.BorderLayout());
+    content.setDividerLocation(dividerPos);
     add(content, java.awt.BorderLayout.CENTER);
   }
 
@@ -236,7 +238,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
    */
   @Override
   public void quit() {
-    settings.setProperty("ArmyStatsPanel.DividerLoc", String.valueOf(dividerPos));
+    settings.setProperty("ArmyStatsPanel.DividerLoc", String.valueOf(content.getDividerLocation()));
   }
 
   protected void initTrees(EventDispatcher ed) {
@@ -259,6 +261,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
     JSplitPane pane =
         new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(tree), new JScrollPane(tree2));
+    pane.setDividerLocation(.5);
     content = pane;
   }
 

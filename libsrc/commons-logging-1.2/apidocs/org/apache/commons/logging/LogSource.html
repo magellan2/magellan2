@@ -381,13 +381,13 @@ extends <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Object.html?
 <div class="block">Create a new <a href="../../../../org/apache/commons/logging/Log.html" title="interface in org.apache.commons.logging"><code>Log</code></a> implementation, based on the given <i>name</i>.
  <p>
  The specific <a href="../../../../org/apache/commons/logging/Log.html" title="interface in org.apache.commons.logging"><code>Log</code></a> implementation returned is determined by the
- value of the <tt>org.apache.commons.logging.log</tt> property. The value
- of <tt>org.apache.commons.logging.log</tt> may be set to the fully specified
+ value of the <kbd>org.apache.commons.logging.log</kbd> property. The value
+ of <kbd>org.apache.commons.logging.log</kbd> may be set to the fully specified
  name of a class that implements the <a href="../../../../org/apache/commons/logging/Log.html" title="interface in org.apache.commons.logging"><code>Log</code></a> interface. This class must
  also have a public constructor that takes a single <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang"><code>String</code></a> argument
  (containing the <i>name</i> of the <a href="../../../../org/apache/commons/logging/Log.html" title="interface in org.apache.commons.logging"><code>Log</code></a> to be constructed.
  <p>
- When <tt>org.apache.commons.logging.log</tt> is not set, or when no corresponding
+ When <kbd>org.apache.commons.logging.log</kbd> is not set, or when no corresponding
  class can be found, this method will return a Log4JLogger if the log4j Logger
  class is available in the <a href="../../../../org/apache/commons/logging/LogSource.html" title="class in org.apache.commons.logging"><code>LogSource</code></a>'s classpath, or a Jdk14Logger if we
  are on a JDK 1.4 or later system, or NoOpLog if neither of the above conditions is true.</div>

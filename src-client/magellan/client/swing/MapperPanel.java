@@ -372,7 +372,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Creates a new <tt>MapperPanel</tt> object.
+   * Creates a new <kbd>MapperPanel</kbd> object.
    */
   public MapperPanel(MagellanContext context, Collection<MapCellRenderer> customRenderers,
       CellGeometry geo) {

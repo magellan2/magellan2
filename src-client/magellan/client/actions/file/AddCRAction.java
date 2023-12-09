@@ -26,6 +26,7 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.swing.AddCRAccessory;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.ProgressBarUI;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -62,6 +63,8 @@ public class AddCRAction extends MenuAction implements GameDataListener {
     SelectionEvent selectedObjects = client.getSelectedObjects();
     Properties settings = client.getProperties();
     JFileChooser fc = new JFileChooser();
+    SwingUtils.setPreferredSize(fc, 50, -1, true);
+    SwingUtils.setPreferredSize(fc, settings, PropertiesHelper.FILE_CHOOSER_BOUNDS);
     fc.setMultiSelectionEnabled(true);
 
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
@@ -155,10 +158,12 @@ public class AddCRAction extends MenuAction implements GameDataListener {
         client.getDispatcher().fire(selectedObjects);
       }
     }
+    PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
   }
 
   /*
    * (non-Javadoc)
+   * 
    * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {

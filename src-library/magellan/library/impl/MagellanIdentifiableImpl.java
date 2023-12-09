@@ -63,7 +63,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
    * Creates a new identifiable object with the specified id.
    * 
    * @param id ID of the Identifiable
-   * @throws NullPointerException if <tt>ID</tt> is <code>null</code>
+   * @throws NullPointerException if <kbd>ID</kbd> is <code>null</code>
    */
   public MagellanIdentifiableImpl(ID id) {
     if (id == null)

@@ -10,22 +10,21 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -33,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -98,7 +98,9 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 0.1;
 
-    JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
+    // JPanel innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 3, 3));
+    JPanel innerPanel = new JPanel();
+    innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 
     chkShowTagButtons =
         new JCheckBox(Resources.get("emapdetailspanel.prefs.showTagButtons"), source
@@ -114,9 +116,6 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
         new JCheckBox(Resources.get("emapdetailspanel.prefs.compact"), source.isCompactLayout());
     innerPanel.add(chkCompact);
 
-    outerPanel.add(innerPanel, c);
-
-    innerPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
     JLabel lblCapacity = new JLabel(Resources.get("emapdetailspanel.prefs.capacity.label"));
     ButtonGroup showButtons = new ButtonGroup();
     rdbCapacityAllItems =
@@ -138,8 +137,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
 
     lblCapacity.setLabelFor(rdbCapacityAllItems);
 
-    c.gridy++;
-    outerPanel.add(lblCapacity, c);
+    innerPanel.add(lblCapacity, c);
 
     innerPanel.add(rdbCapacityAllItems);
     innerPanel.add(rdbCapacityFriendlyItems);

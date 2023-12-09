@@ -39,7 +39,7 @@ public class UnitFactionComparator implements Comparator<Unit> {
    * 
    * @param factionComparator the comparator used to compare the units' factions.
    * @param sameFactionSubComparator if two units belonging to the same faction are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public UnitFactionComparator(Comparator<? super Faction> factionComparator,
       Comparator<? super Unit> sameFactionSubComparator) {
@@ -50,7 +50,7 @@ public class UnitFactionComparator implements Comparator<Unit> {
   /**
    * Compares its two arguments for order according to the factions they belong to.
    * 
-   * @return the result of the faction comparator's comparison of <tt>o1</tt>'s and <tt>o2</tt>. If
+   * @return the result of the faction comparator's comparison of <kbd>o1</kbd>'s and <kbd>o2</kbd>. If
    *         both belong to the same faction and a sub-comparator was specified, the result that
    *         sub-comparator's comparison is returned. Undefined values are evaluated as
    *         <code>&gt; 0</code>.

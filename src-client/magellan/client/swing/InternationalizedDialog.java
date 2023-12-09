@@ -13,13 +13,18 @@
 
 package magellan.client.swing;
 
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JButton;
 import javax.swing.JDialog;
 
 import magellan.library.utils.logging.Logger;
@@ -38,7 +43,7 @@ public abstract class InternationalizedDialog extends JDialog {
    * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to
    *          be active at the same time
    */
-  public InternationalizedDialog(Frame owner, boolean modal) {
+  protected InternationalizedDialog(Frame owner, boolean modal) {
     super(owner, modal);
     initDialog();
   }
@@ -46,7 +51,7 @@ public abstract class InternationalizedDialog extends JDialog {
   /**
    * Creates a new InternationalizedDialog object.
    */
-  public InternationalizedDialog(Dialog owner, boolean modal) {
+  protected InternationalizedDialog(Dialog owner, boolean modal) {
     super(owner, modal);
     initDialog();
   }
@@ -63,18 +68,7 @@ public abstract class InternationalizedDialog extends JDialog {
   protected void initDialog() {
     setFocusableWindowState(true);
 
-    addKeyListener(new KeyAdapter() {
-      @Override
-      public void keyPressed(KeyEvent e) {
-        if (InternationalizedDialog.log.isDebugEnabled()) {
-          InternationalizedDialog.log.debug("InternationalizedDialog.KeyEvent :" + e);
-        }
-
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-          quit();
-        }
-      }
-    });
+    addKeyListener(getClosingListener());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -85,6 +79,51 @@ public abstract class InternationalizedDialog extends JDialog {
         quit();
       }
     });
+  }
+
+  /**
+   * 
+   * @param okButton This becomes the default button if not <code>null</code>.
+   * @param cancelButton This calls {@link #quit()} if not <code>null</code>.
+   * @param comps These components listen for the escape key and call quit.
+   */
+  protected void setDefaultActions(JButton okButton, JButton cancelButton, Component... comps) {
+    if (okButton != null) {
+      getRootPane().setDefaultButton(okButton);
+    }
+
+    if (cancelButton != null) {
+      cancelButton.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          quit();
+        }
+      });
+    }
+
+    if (comps != null && comps.length > 0) {
+      addKeyListenerTo(comps);
+    }
+  }
+
+  protected void addKeyListenerTo(Component... comps) {
+    for (Component c : comps) {
+      c.addKeyListener(getClosingListener());
+    }
+  }
+
+  protected KeyListener getClosingListener() {
+    return new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (InternationalizedDialog.log.isDebugEnabled()) {
+          InternationalizedDialog.log.debug("InternationalizedDialog.KeyEvent :" + e);
+        }
+
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          quit();
+        }
+      }
+    };
   }
 
   protected void quit() {

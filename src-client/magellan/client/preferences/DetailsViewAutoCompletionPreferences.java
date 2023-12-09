@@ -66,6 +66,7 @@ import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.KeyTextField;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.CollectionFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -498,7 +499,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     private DefineCompletionDialog(Frame frame) {
       super(frame, true);
       setTitle(Resources.get("completion.autocompletion.DefineCompletionDialog.title"));
-      this.setSize(500, 200);
+
+      this.setSize(SwingUtils.getDimension(30, 15, true));
 
       JPanel cp = new JPanel();
       getContentPane().add(cp);
@@ -543,11 +545,6 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
               .get("completion.autocompletion.DefineCompletionDialog.cancelButton.caption"));
       cancel.setMnemonic(Resources.get(
           "completion.autocompletion.DefineCompletionDialog.cancelButton.mnemonic").charAt(0));
-      cancel.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          DefineCompletionDialog.this.quit();
-        }
-      });
       c.gridy = 1;
       c.anchor = GridBagConstraints.NORTH;
       cp.add(cancel, c);
@@ -559,11 +556,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       components.add(cancel);
 
       setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
-      //
-      // name.setNextFocusableComponent(value);
-      // value.setNextFocusableComponent(ok);
-      // ok.setNextFocusableComponent(cancel);
-      // cancel.setNextFocusableComponent(name);
+      setDefaultActions(ok, cancel, ok, cancel, name, value);
     }
 
     private String[] getNewCompletionNameAndValue() {

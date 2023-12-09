@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -31,6 +32,7 @@ import javax.swing.JPanel;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.Colors;
+import magellan.client.utils.SwingUtils;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
@@ -207,7 +209,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 
     private void init() {
       pnlSelectedColor = new JPanel();
-      pnlSelectedColor.setSize(50, 200);
+      SwingUtils.setPreferredSize(pnlSelectedColor, 1.5, 1.5, false);
       pnlSelectedColor.setBackground(source.getSelectedColor());
       pnlSelectedColor.addMouseListener(new MouseAdapter() {
         @Override
@@ -215,7 +217,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
           Color newColor =
               JColorChooser.showDialog(pnlSelectedColor.getTopLevelAncestor(), Resources
                   .get("map.highlightshapecellrenderer.textcolor"), pnlSelectedColor
-                  .getBackground());
+                      .getBackground());
 
           if (newColor != null) {
             pnlSelectedColor.setBackground(newColor);
@@ -228,7 +230,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
       lblSelectedColor.setLabelFor(pnlSelectedColor);
 
       pnlActiveColor = new JPanel();
-      pnlActiveColor.setSize(50, 200);
+      SwingUtils.setPreferredSize(pnlActiveColor, 1.5, 1.5, false);
       pnlActiveColor.setBackground(source.getActiveColor());
       pnlActiveColor.addMouseListener(new MouseAdapter() {
         @Override
@@ -253,7 +255,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 
       setLayout(new GridBagLayout());
 
-      GridBagConstraints c = new GridBagConstraints();
+      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
+          GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 0, 0);
       c.anchor = GridBagConstraints.WEST;
       c.gridx = 0;
       c.gridy = 0;

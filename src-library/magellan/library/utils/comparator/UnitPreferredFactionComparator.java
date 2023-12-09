@@ -41,12 +41,12 @@ public class UnitPreferredFactionComparator implements Comparator<Unit> {
   protected int factionID = 0;
 
   /**
-   * Creates a new <tt>UnitPreferredFactionComparator</tt> object with the specified sub-comparators
+   * Creates a new <kbd>UnitPreferredFactionComparator</kbd> object with the specified sub-comparators
    * and the specified faction id.
    * 
-   * @param preferredFactionSubComparator a <tt>Comparator</tt> applied if both compared units are
+   * @param preferredFactionSubComparator a <kbd>Comparator</kbd> applied if both compared units are
    *          in the preferred faction.
-   * @param otherFactionSubComparator a <tt>Comparator</tt> applied if both compared units are not
+   * @param otherFactionSubComparator a <kbd>Comparator</kbd> applied if both compared units are not
    *          in the preferred faction.
    */
   public UnitPreferredFactionComparator(Comparator<? super Unit> preferredFactionSubComparator,

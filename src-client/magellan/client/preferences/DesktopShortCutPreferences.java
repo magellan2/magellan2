@@ -78,6 +78,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -89,6 +90,7 @@ import magellan.client.preferences.DesktopShortCutPreferences.ShortcutModel.Stro
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.KeyTextField;
 import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -359,7 +361,14 @@ public class DesktopShortCutPreferences extends JPanel implements PreferencesAda
       tcm.addColumn(column);
     }
 
-    return new JTable(model, tcm);
+    RenderHelper rh = SwingUtils.prepareTable(model);
+    return new JTable(model, tcm) {
+      @Override
+      public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+        return rh.wrapPrepareHandlerRowHeightAdjusted(this, row,
+            super.prepareRenderer(renderer, row, column));
+      }
+    };
   }
 
   private JTextField getFilter(JTable aTable) {

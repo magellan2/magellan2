@@ -27,7 +27,7 @@ public class UnitIslandComparator implements Comparator<Island> {
    * Creates a new UnitIslandComparator object.
    * 
    * @param subComparator if two units belonging to the same faction are compared, this
-   *          sub-comparator is applied if it is not<tt>null</tt>.
+   *          sub-comparator is applied if it is not<kbd>null</kbd>.
    */
   public UnitIslandComparator(Comparator<? super Island> subComparator) {
     subCmp = subComparator;

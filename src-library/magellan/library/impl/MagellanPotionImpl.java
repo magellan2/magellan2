@@ -31,7 +31,7 @@ import magellan.library.utils.CollectionFactory;
 public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion {
   private int level = -1;
 
-  /** The ingredients needed for this potion. The list contains <tt>String</tt> objects. */
+  /** The ingredients needed for this potion. The list contains <kbd>String</kbd> objects. */
   private Map<ID, Item> ingredients = null;
 
   /**

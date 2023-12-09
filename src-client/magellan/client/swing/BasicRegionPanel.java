@@ -43,6 +43,7 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Region;
@@ -289,8 +290,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
       // text pane
       defText = new JTextArea(getDefinition());
-
-      panel.setPreferredSize(new Dimension(300, 300));
+      SwingUtils.setPreferredSize(panel, 20, 20, true);
       panel.add(new JScrollPane(defText), BorderLayout.CENTER);
       JButton defaultButton = new JButton(Resources.get("basicregionpanel.prefs.button.default"));
       defaultButton.addActionListener(new ActionListener() {

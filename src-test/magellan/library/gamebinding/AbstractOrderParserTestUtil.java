@@ -46,12 +46,12 @@ import magellan.library.gamebinding.EresseaOrderParser.ArbeiteReader;
 import magellan.library.gamebinding.EresseaOrderParser.AttackReader;
 import magellan.library.utils.OrderToken;
 import magellan.test.GameDataBuilder;
+import magellan.test.MagellanTestUtil;
 import magellan.test.MagellanTestWithResources;
 
 public abstract class AbstractOrderParserTestUtil extends MagellanTestWithResources {
 
-  protected static boolean DO_KNOWN_FAILURES = System.getenv("MAGELLAN2_TESTING") == null ? false
-      : System.getenv("MAGELLAN2_TESTING").equalsIgnoreCase("INTERNAL");
+  protected static boolean DO_KNOWN_FAILURES = MagellanTestUtil.isInternalTesting(); 
   protected GameData data;
   protected AutoCompletion completion;
   protected GameDataBuilder builder;

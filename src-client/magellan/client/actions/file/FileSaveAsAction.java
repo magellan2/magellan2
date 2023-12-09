@@ -24,10 +24,12 @@ import javax.swing.JOptionPane;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -112,6 +114,8 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener {
 
     fc.setAccessory(new magellan.client.swing.HistoryAccessory(settings, fc));
     fc.setDialogTitle(Resources.get("actions.filesaveasaction.title"));
+    SwingUtils.setPreferredSize(fc, 50, -1, true);
+    SwingUtils.setPreferredSize(fc, settings, PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
     if (fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
       boolean bOpenEqualsSave =
@@ -135,10 +139,13 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener {
       // log.warn("Could not create backupfile for file " + dataFile);
       // }
       // }
+      PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
 
       return dataFile;
-    } else
-      return null;
+    } else {
+      PropertiesHelper.saveRectangle(settings, fc.getBounds(), PropertiesHelper.FILE_CHOOSER_BOUNDS);
+    }
+    return null;
   }
 
   protected void doSaveAsAction() {

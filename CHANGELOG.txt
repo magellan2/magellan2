@@ -1,3 +1,18 @@
+2023-08-24 / Build 789 - stm (stm2@users.sourceforge.net)
+    * fixed some order execution priorities
+    * show max capacity of overloaded units
+    * improve TaskTable QOL
+    * improved cooperation with install4j updater
+    * change max memory from options dialog
+    
+2022-08-05 / Build 787 - stm (stm2@users.sourceforge.net)
+    * most dialogs abort on ESC now
+    * name generator interface is more understandable now; added sample name files and feature to generate new names
+    * profile dialog can now export and import profiles  
+
+2022-06-28 / Build 785 - stm (stm2@users.sourceforge.net)
+    * fixed font size setting 
+
 2022-05-10 / Build 782 - stm (stm2@users.sourceforge.net)
     * fixed a bug were Magellan froze while zooming out of map with ARR active
     * implemented server upload (experimental)

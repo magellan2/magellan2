@@ -36,6 +36,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIDefaults;
 
 import io.github.parubok.text.multiline.MultilineLabel;
+import magellan.client.utils.SwingUtils;
 
 /**
  * Provides a component that looks like a label, but behaves like a TextPane, so that it can wrap lines.
@@ -86,8 +87,7 @@ public class WrappableLabel {
     comment = new JLabel(
         String.format("<html><body style=\"text-align: left; text-justify: inter-word;\">%s</body></html>",
             text));
-
-    comment.setPreferredSize(new Dimension(300, 100));
+    SwingUtils.setPreferredSize(comment, 24, 8, false);
     pp.add(comment, BorderLayout.CENTER);
     // setMinimumSize(new Dimension(300, 100));
   }

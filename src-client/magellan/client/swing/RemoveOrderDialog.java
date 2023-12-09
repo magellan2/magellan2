@@ -178,14 +178,11 @@ public class RemoveOrderDialog extends InternationalizedDialog {
 
     cancel = new JButton(Resources.get("removeorderdialog.btn.cancel.caption"));
     cancel.setMnemonic(Resources.get("removeorderdialog.btn.cancel.mnemonic").charAt(0));
-    cancel.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
     c.gridx = 1;
     c.anchor = GridBagConstraints.WEST;
     cp.add(cancel, c);
+
+    setDefaultActions(ok, cancel, ok, cancel, order, caseBox, regexButton, beginButton, containsButton);
   }
 
   protected boolean checkRegex() {

@@ -85,7 +85,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   protected LineWrapCellRenderer lineRenderer;
 
   /**
-   * Creates a new <tt>MessagePanel</tt> object.
+   * Creates a new <kbd>MessagePanel</kbd> object.
    * 
    * @param d the central event dispatcher.
    * @param gd the game data this message panel initiates with.
@@ -416,7 +416,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   }
 
   /**
-   * Display a <tt>Message</tt> object under a parent node.
+   * Display a <kbd>Message</kbd> object under a parent node.
    */
   private void show(Message m, DefaultMutableTreeNode parent) {
     DefaultMutableTreeNode node = null;
@@ -462,7 +462,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   }
 
   /**
-   * Display a <tt>String</tt> object under a parent node.
+   * Display a <kbd>String</kbd> object under a parent node.
    */
   private void show(String s, DefaultMutableTreeNode parent) {
     DefaultMutableTreeNode node = null;
@@ -638,5 +638,12 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    */
   public String getSuperMenuTitle() {
     return Resources.get("messagepanel.menu.supertitle");
+  }
+
+  /**
+   * Notifies this panel that settings have changed.
+   */
+  public void setPreferencesChanged() {
+    lineRenderer.updateColors();
   }
 }

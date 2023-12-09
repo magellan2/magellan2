@@ -35,8 +35,8 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * A class for reading Eressea orders and checking their syntactical correctness. A
- * <tt>OrderParser</tt> object can register a <tt>OrderCompleter</tt> object. In such a case the
- * <tt>OrderParser</tt> will call the corresponding methods of the <tt>OrderCompleter</tt> if it
+ * <kbd>OrderParser</kbd> object can register a <kbd>OrderCompleter</kbd> object. In such a case the
+ * <kbd>OrderParser</kbd> will call the corresponding methods of the <kbd>OrderCompleter</kbd> if it
  * encounters an incomplete order.
  */
 public class EresseaOrderParser extends AbstractOrderParser {

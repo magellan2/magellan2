@@ -360,14 +360,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     JButton findButton = new JButton(Resources.get("finddialog.btn.find"));
     findButton.setDefaultCapable(true);
     findButton.addActionListener(findListener);
-    getRootPane().setDefaultButton(findButton);
 
     JButton cancelButton = new JButton(Resources.get("finddialog.btn.close"));
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
 
     JPanel pnlButtons = new JPanel(new GridLayout(2, 1, 3, 3));
     pnlButtons.add(findButton);
@@ -510,6 +504,42 @@ public class FindDialog extends InternationalizedDataDialog implements
     c.weightx = 0.5;
     c.weighty = 0.5;
     main.add(pnlResults, c);
+
+    setDefaultActions(findButton, cancelButton, findButton, cancelButton,
+        txtPattern,
+        txtPattern.getEditor().getEditorComponent(),
+        chkIDs,
+        chkNames,
+        chkDescs,
+        chkGroups,
+        chkCmds,
+        chkMessages,
+        chkItems,
+        chkResources,
+        chkCase,
+        factionCombo,
+        addUnits,
+        addRegions,
+        addBuildings,
+        addShips,
+        addTraitors,
+        addOnlyUnconfirmedUnits,
+        addFactions,
+        resultList,
+        // private JPanel pnlResults,
+
+        rbtWord,
+        rbtRegexp,
+        rbtList
+
+    );
+
+    getRootPane().setDefaultButton(findButton);
+    cancelButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        quit();
+      }
+    });
 
     return main;
   }
@@ -731,7 +761,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param name
    * @param patterns
-   * @return
    */
   private boolean match(String name, Collection<Pattern> patterns) {
     if (name != null) {
@@ -752,7 +781,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterId(Unique item, Collection<Pattern> patterns) {
     if (patterns.size() == 0)
@@ -780,7 +808,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterItem(Unique item, Collection<Pattern> patterns) {
     if (patterns.size() == 0)
@@ -818,7 +845,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterName(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
@@ -847,7 +873,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterDesc(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
@@ -876,7 +901,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterGroup(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
@@ -904,7 +928,7 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
+   * 
    */
   private boolean filterCmd(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
@@ -936,7 +960,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * Return true if item matches patterns.
    * 
    * @param item
-   * @return
    */
   private Collection<Order> getCmds(Object item) {
     Collection<Order> retVal = null;
@@ -1040,7 +1063,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param pattern
-   * @return
    */
   private boolean filterFaction(Unique item, Faction pattern) {
     boolean retVal = true;
@@ -1078,7 +1100,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return
    */
   private boolean filterResource(Unique item, Collection<Pattern> patterns) {
     if (item instanceof Region) {
@@ -1106,7 +1127,6 @@ public class FindDialog extends InternationalizedDataDialog implements
    * Surround each item with a wrapper
    * 
    * @param items
-   * @return
    */
   private Collection<Object> wrap(Collection<Object> items) {
     Collection<Object> wrappers = new LinkedList<Object>();

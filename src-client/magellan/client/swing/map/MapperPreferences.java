@@ -66,6 +66,7 @@ import javax.swing.border.EmptyBorder;
 import magellan.client.Client;
 import magellan.client.preferences.AbstractPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -330,7 +331,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         JScrollPane sp = new JScrollPane(list);
-        sp.setPreferredSize(new Dimension(100, 200));
+
+        SwingUtils.setPreferredSize(sp, 20, -1, true);
 
         getContentPane().add(sp, BorderLayout.CENTER);
 

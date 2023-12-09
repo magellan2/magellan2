@@ -59,7 +59,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   private Unit ownerUnit = null;
 
   /**
-   * A list containing <tt>String</tt> objects, specifying effects on this <tt>UnitContainer</tt>
+   * A list containing <kbd>String</kbd> objects, specifying effects on this <kbd>UnitContainer</kbd>
    * object.
    */
   protected List<String> effects = null;
@@ -297,7 +297,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
 
   public int modifiedPersonCount() {
-    return modifiedUnits().stream().collect(Collectors.summingInt(Unit::getPersons));
+    return modifiedUnits().stream().collect(Collectors.summingInt(Unit::getModifiedPersons));
   }
 
   /**

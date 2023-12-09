@@ -20,11 +20,13 @@ import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
+import magellan.client.utils.SwingUtils;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerFactory;
 
@@ -104,22 +106,22 @@ class ToolTipReplacersInfo extends JDialog implements javax.swing.event.ListSele
     text.setLineWrap(true);
     text.setWrapStyleWord(true);
 
-    Container c = getContentPane();
-    c.setLayout(new BorderLayout());
-
     JScrollPane p = new JScrollPane(list);
     p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    c.add(p, BorderLayout.WEST);
+    Container c = getContentPane();
     text.setBackground(c.getBackground());
-    c.add(new JScrollPane(text), BorderLayout.CENTER);
+    JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, p, new JScrollPane(text));
 
     JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
     JButton exit = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.ok"));
     exit.addActionListener(this);
     south.add(exit);
+
+    c.add(sp, BorderLayout.CENTER);
     c.add(south, BorderLayout.SOUTH);
 
-    this.setSize(600, 400); // because of some pack mysteries
+    SwingUtils.setPreferredSize(this, 40, -1, true);
+    pack();
     setLocationRelativeTo(getParent());
   }
 

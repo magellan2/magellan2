@@ -13,7 +13,9 @@
 
 package magellan.client.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,8 +44,8 @@ import magellan.library.utils.Resources;
 public class AddSignDialog extends InternationalizedDialog {
   private Properties settings = null;
   private EventDispatcher dispatcher = null;
-  private JTextField Line1 = null;
-  private JTextField Line2 = null;
+  private JTextField line1 = null;
+  private JTextField line2 = null;
   private Region region = null;
 
   /**
@@ -62,27 +64,28 @@ public class AddSignDialog extends InternationalizedDialog {
     setContentPane(getMainPane());
     setTitle(Resources.get("addsigndialog.window.title"));
 
-    int width = Math.max(Integer.parseInt(settings.getProperty("AddSign.width", "350")), 350);
-    int height = Math.max(Integer.parseInt(settings.getProperty("AddSign.height", "140")), 140);
-    setSize(width, height);
-
+    pack();
     SwingUtils.setLocation(this, settings, "AddSign.x", "AddSign.y");
   }
 
   private Container getMainPane() {
     SpringLayout layout = new SpringLayout();
-    JPanel mainPanel = new JPanel(layout);
-    mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
+    JPanel aPanel = new JPanel(layout);
+    aPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
     JLabel label1 = new JLabel(Resources.get("addsigndialog.label.line1"));
-    Line1 = new JTextField(30);
-    mainPanel.add(label1);
-    mainPanel.add(Line1);
+    line1 = new JTextField(30);
+    aPanel.add(label1);
+    aPanel.add(line1);
 
     JLabel label2 = new JLabel(Resources.get("addsigndialog.label.line2"));
-    Line2 = new JTextField();
-    mainPanel.add(label2);
-    mainPanel.add(Line2);
+    line2 = new JTextField(30);
+    aPanel.add(label2);
+    aPanel.add(line2);
+    // Lay out the panel.
+    SpringUtilities.makeCompactGrid(aPanel, 2, 2, // rows, cols
+        6, 6, // initX, initY
+        6, 6); // xPad, yPad
 
     JButton okButton = new JButton(Resources.get("addsigndialog.btn.ok.caption"));
     okButton.addActionListener(new ActionListener() {
@@ -92,20 +95,15 @@ public class AddSignDialog extends InternationalizedDialog {
     });
 
     JButton cancelButton = new JButton(Resources.get("addsigndialog.btn.close.caption"));
-    cancelButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        quit();
-      }
-    });
+    JPanel buttonPanel = new JPanel(new FlowLayout());
 
-    mainPanel.add(okButton);
-    mainPanel.add(cancelButton);
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+    JPanel mainPanel = new JPanel(new BorderLayout());
+    mainPanel.add(aPanel, BorderLayout.CENTER);
+    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    // Lay out the panel.
-    SpringUtilities.makeCompactGrid(mainPanel, 3, 2, // rows, cols
-        6, 6, // initX, initY
-        6, 6); // xPad, yPad
-
+    setDefaultActions(okButton, cancelButton, line1, line2);
     return mainPanel;
   }
 
@@ -123,8 +121,8 @@ public class AddSignDialog extends InternationalizedDialog {
    * going to make the change
    */
   private void addSign() {
-    String s1 = Line1.getText();
-    String s2 = Line2.getText();
+    String s1 = line1.getText();
+    String s2 = line2.getText();
 
     if (s1 != null && s1.length() > 0) {
       region.addSign(new Sign(s1));

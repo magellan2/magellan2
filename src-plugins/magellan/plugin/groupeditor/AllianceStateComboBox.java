@@ -85,7 +85,6 @@ public class AllianceStateComboBox extends JComboBox {
       boolean hasFocus, int row, int column) {
 
     if (value != null) {
-      System.out.println(value + " " + value.getClass().getName());
       if (value instanceof Alliance) {
         Alliance alliance = (Alliance) value;
         for (AllianceState state : states) {

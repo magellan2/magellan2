@@ -41,17 +41,17 @@ import magellan.library.utils.logging.Logger;
  * </p>
  * <p>
  * First, this is the type attribute (tag ;type in the cr) denoting the type of the message. It is
- * transformed into a <tt>MessageType</tt> object.
+ * transformed into a <kbd>MessageType</kbd> object.
  * </p>
  * <p>
  * Second, there is the text attribute (tag ;rendered in the cr). By design this attribute should
  * actually be created by rendering the message according to the message type's pattern and the
- * other attributes. This class does contain a <tt>render()</tt> method, still, it is too primitive
+ * other attributes. This class does contain a <kbd>render()</kbd> method, still, it is too primitive
  * to yield acceptable results, so it is preferable to take the rendered message text directly from
  * the cr.
  * </p>
  * <p>
- * Note, that for historic reasons, a <tt>Message</tt> object might have no type or attributes and
+ * Note, that for historic reasons, a <kbd>Message</kbd> object might have no type or attributes and
  * an invalid id of -1.
  * </p>
  */

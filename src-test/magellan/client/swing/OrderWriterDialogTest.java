@@ -30,6 +30,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.KeyStore.SecretKeyEntry;
 import java.security.KeyStoreException;
@@ -41,15 +45,24 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JTextField;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import magellan.client.swing.OrderWriterDialog.EmailVerifier;
+import magellan.test.MagellanTestUtil;
 
 public class OrderWriterDialogTest {
 
+  private static Path keyStorePath = Path.of("test/newKeyStoreName");
+
   @Before
   public void setUp() throws Exception {
+  }
+
+  @AfterClass
+  public static void tearDown() {
+    MagellanTestUtil.del(keyStorePath);
   }
 
   public void storeKey() throws KeyStoreException, IOException, NoSuchAlgorithmException,
@@ -82,42 +95,43 @@ public class OrderWriterDialogTest {
     keyStore.setEntry("secretKeyAlias", secretKeyEntry, protectionParam);
 
     // Storing the KeyStore object
-    java.io.FileOutputStream fos = null;
-    fos = new java.io.FileOutputStream("newKeyStoreName");
-    keyStore.store(fos, password);
-    System.out.println("data stored");
+    try (OutputStream fos = Files.newOutputStream(keyStorePath)) {
+      keyStore.store(fos, password);
+      System.out.println("data stored");
+    }
   }
 
   @Test
   public void testLoadKey() throws NoSuchAlgorithmException, CertificateException, IOException, KeyStoreException,
       UnrecoverableEntryException {
+    try {
+      storeKey();
 
-    storeKey();
+      // Creating the KeyStore object
+      KeyStore keyStore = KeyStore.getInstance("JCEKS");
 
-    // Creating the KeyStore object
-    KeyStore keyStore = KeyStore.getInstance("JCEKS");
+      // Loading the KeyStore object
+      char[] password = "changeit".toCharArray();
+      String pwAlias = "secretKeyAlias";
+      if (!Files.isRegularFile(keyStorePath)) {
+        keyStore.load(null);
+        keyStore.store(Files.newOutputStream(keyStorePath), password);
+      } else {
+        InputStream fis = Files.newInputStream(keyStorePath);
+        keyStore.load(fis, password);
+      }
 
-    // Loading the KeyStore object
-    char[] password = "changeit".toCharArray();
-    String path = "newKeyStoreName";
-    String pwAlias = "secretKeyAlias";
-    File keyFile = new File(path);
-    if (!keyFile.isFile()) {
-      keyStore.load(null);
-      keyStore.store(new FileOutputStream(keyFile), password);
-    } else {
-      java.io.FileInputStream fis = new FileInputStream(path);
-      keyStore.load(fis, password);
+      // Creating the KeyStore.ProtectionParameter object
+      KeyStore.ProtectionParameter protectionParam = new KeyStore.PasswordProtection(password);
+
+      SecretKeyEntry entry = (SecretKeyEntry) keyStore.getEntry(pwAlias, protectionParam);
+      SecretKey key = entry.getSecretKey();
+      System.out.println("key was " + new String(key.getEncoded()));
+
+      System.out.println("data read");
+    } finally {
+      MagellanTestUtil.del(keyStorePath);
     }
-
-    // Creating the KeyStore.ProtectionParameter object
-    KeyStore.ProtectionParameter protectionParam = new KeyStore.PasswordProtection(password);
-
-    SecretKeyEntry entry = (SecretKeyEntry) keyStore.getEntry(pwAlias, protectionParam);
-    SecretKey key = entry.getSecretKey();
-    System.out.println("key was " + new String(key.getEncoded()));
-
-    System.out.println("data read");
   }
 
   @Test

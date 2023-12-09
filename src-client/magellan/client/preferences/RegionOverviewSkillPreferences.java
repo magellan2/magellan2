@@ -10,22 +10,21 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
+// Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//
 package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -101,7 +100,6 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
             GridBagConstraints.HORIZONTAL, new Insets(0, 1, 2, 1), 0, 0);
 
     upButton = new JButton(Resources.get("emapoverviewpanel.prefs.upbutton.caption"));
-    upButton.setPreferredSize(new Dimension(110, 40));
     upButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
@@ -153,7 +151,6 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
     c.gridy++;
 
     downButton = new JButton(Resources.get("emapoverviewpanel.prefs.downbutton.caption"));
-    downButton.setPreferredSize(new Dimension(110, 40));
     downButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))
@@ -220,7 +217,6 @@ public class RegionOverviewSkillPreferences extends JPanel implements Preference
 
     refreshListButton =
         new JButton(Resources.get("emapoverviewpanel.prefs.refreshlistbutton.caption"));
-    refreshListButton.setPreferredSize(new Dimension(110, 40));
     refreshListButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0))

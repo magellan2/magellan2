@@ -164,7 +164,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
   }
 
   /**
-   * Expands value in form a|b|... for property <tt>key</tt>
+   * Expands value in form a|b|... for property <kbd>key</kbd>
    */
   private String doExpandValue(String name, String key, String delim) {
     if (name.equals(key))
@@ -195,7 +195,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
   }
 
   /**
-   * Expands value in form x|y|width|height for property <tt>key</tt>
+   * Expands value in form x|y|width|height for property <kbd>key</kbd>
    */
   private String doExpandRectangle(String name, String key, String delim) {
     if (name.equals(key))

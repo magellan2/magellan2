@@ -14,8 +14,8 @@
 package magellan.library;
 
 /**
- * A Zero Pattern implementation of the <tt>GameData</tt> supporting all of the attributes defined
- * there. No maps are defined as <tt>null</tt>.
+ * A Zero Pattern implementation of the <kbd>GameData</kbd> supporting all of the attributes defined
+ * there. No maps are defined as <kbd>null</kbd>.
  *
  * @see magellan.library.GameData
  */

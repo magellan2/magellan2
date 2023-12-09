@@ -38,10 +38,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 
 import javax.swing.Action;
@@ -64,10 +68,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.plaf.FontUIResource;
+import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
@@ -134,6 +143,7 @@ import magellan.client.preferences.DetailsViewAutoCompletionPreferences;
 import magellan.client.preferences.Install4J;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
+import magellan.client.swing.DialogProvider;
 import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InfoDialog;
 import magellan.client.swing.InternationalizedDataPanel;
@@ -143,6 +153,7 @@ import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.StartWindow;
+import magellan.client.swing.TempUnitDialog;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
@@ -157,7 +168,6 @@ import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
 import magellan.client.utils.MagellanFinder;
-import magellan.client.utils.NameGenerator;
 import magellan.client.utils.PluginSettingsFactory;
 import magellan.client.utils.ProfileManager;
 import magellan.client.utils.RendererLoader;
@@ -192,7 +202,9 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.MagellanUrl;
+import magellan.library.utils.MarkovNameGenerator;
 import magellan.library.utils.MemoryManagment;
+import magellan.library.utils.NameGenerator;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
@@ -231,7 +243,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   public static final String DEFAULT_LAF = "Nimbus";
 
-  public static final String FALLBACK_LAF = "Metal";
+  public static final String[] FALLBACK_LAF = { "Metal", "Windows" };
 
   /** This is the instance of this class */
   public static Client INSTANCE;
@@ -345,9 +357,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Creates a new Client object taking its data from <tt>gd</tt>.
+   * Creates a new Client object taking its data from <kbd>gd</kbd>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * Preferences are read from and stored in a file called <kbd>magellan.ini</kbd>. This file is usually
    * located in the user's home directory, which is the Windows directory in a Microsoft Windows
    * environment.
    * </p>
@@ -362,9 +374,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * Creates a new Client object taking its data from <tt>gd</tt>.
+   * Creates a new Client object taking its data from <kbd>gd</kbd>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * Preferences are read from and stored in a file called <kbd>magellan.ini</kbd>. This file is usually
    * located in the user's home directory, which is the Windows directory in a Microsoft Windows
    * environment.
    * </p>
@@ -474,48 +486,45 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // ////////////////////////
   // BASIC initialization //
   // ////////////////////////
+  public static final String[][] colorProperties = new String[][] { {
+      PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,
+      PropertiesHelper.MESSAGETYPE_SECTION_UNKNOWN_COLOR
+  }, {
+      "#009999", // Format: #RRGGBB
+      "#000000",
+      "#000066",
+      "#666600",
+      "#006666",
+      "#009900",
+      "#990000",
+      "#999900",
+      "#555555"
+  }, {
+      "events",
+      "movement",
+      "economy",
+      "magic",
+      "study",
+      "production",
+      "errors",
+      "battle",
+      "unknown"
+  }
+  };
 
   private void fixSettings(Properties settings) {
     // backward compatibility for white message tags (it's now the text color)
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "#000000");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "#000066");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "#666600");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "#006666");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "#009900");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "#990000");// Format:
-      // #RRGGBB
-    }
-    if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "-").equals(
-        "#FFFFFF")) {
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
-      // #RRGGBB
+    for (int c = 0; c < colorProperties[0].length; ++c) {
+      if (settings.getProperty(colorProperties[0][c], "-").equals("#FFFFFF")) {
+        settings.setProperty(colorProperties[0][c], colorProperties[1][c]);
+      }
     }
   }
 
@@ -538,23 +547,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0");
     settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + ".Einkaufsgut"
         + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, "0");
+
     // Message Panel Default colors.
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR, "#009999"); // Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR, "#000000");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR, "#000066");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR, "#666600");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR, "#006666");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR, "#009900");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR, "#990000");// Format:
-    // #RRGGBB
-    settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
-    // #RRGGBB
+    for (int c = 0; c < colorProperties[0].length; ++c) {
+      settings.setProperty(colorProperties[0][c], colorProperties[1][c]);
+    }
 
     DetailsViewAutoCompletionPreferences.applyDefault(settings);
 
@@ -567,6 +564,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private MagellanContext context;
 
   private TitleLine title;
+
+  private NameGenerator generator;
 
   /**
    * Load the file fileName in the given directory into the settings object.
@@ -707,6 +706,138 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     initLookAndFeels();
   }
 
+  private void setFontSize(float fScale) {
+    try {
+
+      String[] fonts = { "ArrowButton.font",
+          "Button.font",
+          "CheckBox.font",
+          "CheckBoxMenuItem.acceleratorFont",
+          "CheckBoxMenuItem.font",
+          "ColorChooser.font",
+          "ComboBox.font",
+          "DesktopIcon.font",
+          "DesktopPane.font",
+          "EditorPane.font",
+          "FileChooser.font",
+          "FileChooser.listFont",
+          "FormattedTextField.font",
+          "InternalFrame.font",
+          "InternalFrame.titleFont",
+          "InternalFrameTitlePane.font",
+          "Label.font",
+          "List.font",
+          "Menu.acceleratorFont",
+          "MenuBar.font",
+          "Menu.font",
+          "MenuItem.acceleratorFont",
+          "MenuItem.font",
+          "OptionPane.buttonFont",
+          "OptionPane.font",
+          "OptionPane.messageFont",
+          "OptionPane.titleFont",
+          "Panel.font",
+          "PasswordField.font",
+          "PopupMenu.font",
+          "PopupMenuSeparator.font",
+          "ProgressBar.font",
+          "RadioButton.font",
+          "RadioButtonMenuItem.acceleratorFont",
+          "RadioButtonMenuItem.font",
+          "RootPane.font",
+          "ScrollBar.font",
+          "ScrollBarThumb.font",
+          "ScrollBarTrack.font",
+          "ScrollPane.font",
+          "Separator.font",
+          "Slider.font",
+          "SliderThumb.font",
+          "SliderTrack.font",
+          "Spinner.font",
+          "SplitPane.font",
+          "TabbedPane.font",
+          "Table.font",
+          "TableHeader.font",
+          "TextArea.font",
+          "TextField.font",
+          "TextPane.font",
+          "TitledBorder.font",
+          "ToggleButton.font",
+          "ToolBar.font",
+          "ToolTip.font",
+          "Tree.font",
+          "Viewport.font",
+          "defaultFont" };
+
+      {
+        Set<String> sFonts = new HashSet<String>(Arrays.asList(fonts));
+        UIDefaults lTable = UIManager.getLookAndFeelDefaults();
+        Enumeration<?> eKeys = lTable.keys();
+        Map<Font, Integer> sizes = new HashMap<Font, Integer>();
+        Map<Font, Font> derivatives = new HashMap<Font, Font>();
+        while (eKeys.hasMoreElements()) {
+          Object key = eKeys.nextElement();
+          Object val = lTable.get(key);
+          Font font;
+          if (val instanceof Font) {
+            font = (Font) val;
+          } else {
+            font = UIManager.getFont(key);
+          }
+
+          if (font != null) {
+            Integer n = sizes.get(font);
+            // log.finest(key + ":" + font);
+            if (n == null) {
+              sizes.put(font, 1);
+              Font scaledFont = font;
+              if (fScale != 1.0f && !derivatives.containsValue(font)) {
+                scaledFont = new FontUIResource(font.deriveFont(font.getSize2D() * fScale));
+                derivatives.put(font, scaledFont);
+                font = scaledFont;
+              }
+            } else {
+              sizes.put(font, n + 1);
+              font = derivatives.get(font);
+            }
+            UIManager.put(key, font);
+            lTable.put(key, font);
+            if (!sFonts.contains(key)) {
+              log.warn("unknown font key " + key);
+            }
+          }
+        }
+        int max = 0;
+        Font maxS = null;
+        for (Font s : sizes.keySet()) {
+          log.finer("font " + s + ": " + sizes.get(s));
+          if (sizes.get(s) > max) {
+            max = sizes.get(s);
+            maxS = s;
+          }
+        }
+        if (maxS != null) {
+          Font font = maxS;
+          if (fScale != 1.0f) {
+            font = derivatives.get(font);
+          }
+          log.fine("new default font: " + font);
+          for (String key : fonts) {
+            if (UIManager.get(key) == null) {
+              log.fine("new font " + key);
+              UIManager.put(key, font);
+              lTable.put(key, font);
+            }
+          }
+
+        }
+      }
+    } catch (Throwable e) {
+      Client.log.error(e);
+    }
+
+  }
+
   // ////////////////////////////
   // COMPONENT initialization //
   // ////////////////////////////
@@ -747,7 +878,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     topLevel.add(messagePanel);
 
     // configure and add details panel
-    detailsPanel = new EMapDetailsPanel(getDispatcher(), getData(), getProperties(), undoMgr);
+    detailsPanel = new EMapDetailsPanel(getDispatcher(), getData(), getProperties(), undoMgr, new DialogProvider() {
+
+      public TempUnitDialog create() {
+        TempUnitDialog d = new TempUnitDialog(Client.this, Client.this, getProperties());
+        d.setNameGenerator(getNameGenerator());
+        return d;
+      }
+    });
     detailsPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(detailsPanel);
     nodeWrapperFactories.add(detailsPanel.getNodeWrapperFactory());
@@ -822,12 +960,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // create dynamix menus -- currently not used (stm)
     Map<String, JMenu> topLevel = new HashMap<String, JMenu>();
     List<JMenu> direction = new LinkedList<JMenu>();
-    Iterator<Container> it = components.iterator();
     Client.log.info("Checking for menu-providers...");
 
-    while (it.hasNext()) {
-      Container o = it.next();
-
+    for (Container o : components) {
       if (o instanceof MenuProvider) {
         MenuProvider mp = (MenuProvider) o;
 
@@ -902,6 +1037,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.MAIL));
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.FILE));
     addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.CLIPBOARD));
+    addMenuItem(file, new SaveOrdersAction(this, SaveOrdersAction.Mode.PUT_ON_SERVER));
     file.addSeparator();
     addMenuItem(file, new ExportCRAction(this));
     file.addSeparator();
@@ -1230,6 +1366,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       /* set the stderr to stdout while there is no log attached */
       System.setErr(System.out);
+      Logger.activateDefaultLogListener(true);
 
       /* Fiete 20151017: keep the old sorting, needed for FFTools */
       System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
@@ -1259,8 +1396,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.startWindow.setVisible(true);
       Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
-      ProfileManager.init(parameters);
-      if (ProfileManager.getProfileDirectory() == null || ProfileManager.isAlwaysAsk()
+      ProfileManager.init(parameters.settingsDir);
+      if (parameters.profile != null) {
+        ProfileManager.setProfile(parameters.profile);
+      }
+
+      if (ProfileManager.getCurrentProfile() == null || ProfileManager.getProfileDirectory() == null || ProfileManager
+          .isAlwaysAsk()
           || parameters.startPM) {
         if (!ProfileManager.showProfileChooser(Client.startWindow)) {
           log.info("Abort requested by ProfileChooser");
@@ -1303,7 +1445,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             // setup a singleton instance of this client
             Client.INSTANCE = c;
 
-            versionCheck(c, tBinDir, tResourceDir);
+            versionCheck(c, tBinDir, tResourceDir, tsettFileDir);
 
             c.macify();
 
@@ -1361,35 +1503,50 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  private static void versionCheck(Client c, File tBinDir, File tResourceDir) {
+  private static void versionCheck(Client c, File tBinDir, File tResourceDir, File tConfigDir) {
     try {
-      Install4J.init(tBinDir);
-      boolean silent = false;
-      Boolean nightly = Install4J.isNightlyCheck();
-      if (nightly != null) {
-        log.fine("updated nightly check to " + nightly);
-        PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
-      }
-      if (Install4J.lastUpdateCheck() != null && Install4J.lastUpdateCheck() - System.currentTimeMillis() < 3600) {
-        silent = true;
-      }
+      boolean checkVersion = false;
 
-      String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), silent ? null : Client.startWindow);
-      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
-      if (!Utils.isEmpty(newestVersion)) {
-        Client.log.info("Newest Version on server: " + newestVersion);
-        Client.log.info("Current Version: " + currentVersion);
-        if (!silent && VersionInfo.isNewer(newestVersion, currentVersion)) {
-          String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
-              .getGUILocale().getLanguage());
-          if (url == null) {
-            url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+      Install4J i4 = new Install4J(tBinDir, tConfigDir);
+
+      if (i4.isActive()) {
+        checkVersion = false;
+        if (i4.isSetByInstaller()) {
+          Boolean nightly = i4.isNightlyCheck();
+          if (nightly != null) {
+            log.fine("updated nightly check to " + nightly);
+            PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
           }
+          String schedule = i4.getUpdateSchedule();
+          if (schedule != null) {
+            boolean check = !schedule.equals(Install4J.CHECK_NEVER);
+            log.fine("updated version check at start to " + check);
+            PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, check);
+          }
+        }
+      } else {
+        log.info("Install4J configuration not found");
+      }
 
-          JOptionPane.showMessageDialog(Client.startWindow,
-              new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
-              "",
-              JOptionPane.INFORMATION_MESSAGE);
+      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
+      if (checkVersion) {
+        String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), checkVersion ? null
+            : Client.startWindow);
+        if (!Utils.isEmpty(newestVersion)) {
+          Client.log.info("Newest Version on server: " + newestVersion);
+          Client.log.info("Current Version: " + currentVersion);
+          if (VersionInfo.isNewer(newestVersion, currentVersion)) {
+            String url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD + "." + Locales
+                .getGUILocale().getLanguage());
+            if (url == null) {
+              url = MagellanUrl.getMagellanUrl(MagellanUrl.WWW_DOWNLOAD);
+            }
+
+            JOptionPane.showMessageDialog(Client.startWindow,
+                new MessageWithLink(Resources.get("client.new_version", new Object[] { newestVersion, url })),
+                "",
+                JOptionPane.INFORMATION_MESSAGE);
+          }
         }
       }
 
@@ -1500,14 +1657,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Recognizes the following parameters:<br />
-   * <tt>-log X</tt> -- set log level X<br />
-   * <tt>--help</tt> -- start only help dialog<br />
-   * <tt>-d dir</tt> -- set resource directory<br />
-   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
-   * <tt>-p profile</tt> -- set profile<br />
-   * <tt>-pm</tt> -- show profile manager<br />
-   * <tt>-s dir</tt> -- set settings (aka profiles) directory<br />
-   * <tt>file.[cr|bz2|zip]</tt> -- set report<br />
+   * <kbd>-log X</kbd> -- set log level X<br />
+   * <kbd>--help</kbd> -- start only help dialog<br />
+   * <kbd>-d dir</kbd> -- set resource directory<br />
+   * <kbd>-s dir</kbd> -- set settings (aka profiles) directory<br />
+   * <kbd>-p profile</kbd> -- set profile<br />
+   * <kbd>-pm</kbd> -- show profile manager<br />
+   * <kbd>-s dir</kbd> -- set settings (aka profiles) directory<br />
+   * <kbd>file.[cr|bz2|zip]</kbd> -- set report<br />
    *
    * @param args
    */
@@ -1804,7 +1961,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    NameGenerator.quit();
+    if (getNameGenerator() != null) {
+      getNameGenerator().quit();
+    }
 
     if (fileHistory != null) {
       fileHistory.storeFileHistory();
@@ -2450,19 +2609,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    // // pavkovic 2004.01.04:
-    // // this method behaves at if the gamedata has been loaded by this
-    // // method.
-    // // this is not true at all but true enough for our needs.
-    // // dispatcher.fire(new GameDataEvent(this, data));
-    // // FIXME(stm) duplicate GameDataEvent??
-    // getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
     getDispatcher().fire(SelectionEvent.create(this, getData().getSelectedRegionCoordinates()
         .values()));
-    // getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
-
   }
 
   // ////////////
@@ -2472,34 +2622,59 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param laf
    */
   public void setLookAndFeel(String laf) {
-    boolean lafSet = true;
+    setLookAndFeel(laf, false);
+  }
 
-    if (MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(
+  /**
+   * @param laf
+   * @param force
+   */
+  public void setLookAndFeel(String laf, boolean force) {
+    LookAndFeel lafSet;
+
+    float fScale = PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
+
+    if (!force && MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(
         PropertiesHelper.CLIENT_LOOK_AND_FEEL, ""))) {
-      lafSet = false;
+      lafSet = null;
     } else {
       lafSet = MagellanLookAndFeel.setLookAndFeel(laf);
+      if (lafSet == null) {
+        log.warn("Could not set LaF to " + laf);
+      }
 
-      if (!lafSet) {
-        laf = Client.FALLBACK_LAF;
-        lafSet = MagellanLookAndFeel.setLookAndFeel(Client.FALLBACK_LAF);
+      for (String fLaf : Client.FALLBACK_LAF) {
+        if (lafSet == null) {
+          lafSet = MagellanLookAndFeel.setLookAndFeel(fLaf);
+        }
       }
     }
 
-    if (laf.equals(Client.FALLBACK_LAF)) {
+    if (lafSet == null)
+      return;
+
+    if (lafSet instanceof MetalLookAndFeel) {
       MagellanLookAndFeel.loadBackground(getProperties());
     }
 
-    if (!lafSet)
-      return;
-
+    setFontSize(fScale);
+    // FIXME we set laf and font size twice in order to update everything reliably. Seems like a hack.
+    MagellanLookAndFeel.setLookAndFeel(lafSet.getName());
+    setFontSize(fScale);
     updateLaF();
 
     getProperties().setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, laf);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns current LaF
+   */
+  public String getLookAndFeel() {
+    return getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, Client.DEFAULT_LAF);
+  }
+
+  /**
+   * Applies current LaF to main window.
    */
   public void updateLaF() {
     // call updateUI in MagellanDesktop
@@ -2674,6 +2849,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    */
   public static File getSettingsDirectory() {
     return Client.settingsDirectory;
+  }
+
+  public NameGenerator getNameGenerator() {
+    if (generator == null) {
+      generator = new MarkovNameGenerator(getProperties(), getSettingsDirectory());
+    }
+    return generator;
   }
 
   /**
@@ -3115,4 +3297,5 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       taskPanel.addInspectorInterceptor(interceptor);
     }
   }
+
 }

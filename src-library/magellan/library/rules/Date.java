@@ -69,7 +69,7 @@ public abstract class Date extends Object implements ID {
 
   /**
    * @param o the date to compare this date to
-   * @return <tt>true</tt> if this date equals o, <tt> false </tt> otherwise
+   * @return <kbd>true</kbd> if this date equals o, <kbd> false </kbd> otherwise
    */
   @Override
   public boolean equals(Object o) {
@@ -106,7 +106,7 @@ public abstract class Date extends Object implements ID {
    * value.
    * 
    * @param o the date to compare this date to
-   * @return &gt; 0 if this date is greater than <tt>o</tt>,<br/>
+   * @return &gt; 0 if this date is greater than <kbd>o</kbd>,<br/>
    *         &lt; 0 if this date is smaller, 0 if the dates are equal
    */
   public int compareTo(Object o) {

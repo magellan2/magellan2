@@ -42,7 +42,7 @@ public class FileBackup {
    * @throws IOException if the file cannot be created
    */
   public static synchronized File create(File file) throws IOException {
-    return FileBackup.create(file, file.getParentFile());
+    return FileBackup.create(file, file.getCanonicalFile().getParentFile());
   }
 
   /**

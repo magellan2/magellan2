@@ -78,9 +78,9 @@ import magellan.library.utils.transformation.TwoLevelTransformer;
  * <p>
  * The maps units, regions and so on are declared as abstract methods and the getX and addX provide
  * access to them. This allows for subclasses that implicitly represent only a certain part of the
- * game data by declaring certain maps as <tt>null</tt> and returning <tt>null</tt> on the
+ * game data by declaring certain maps as <kbd>null</kbd> and returning <kbd>null</kbd> on the
  * corresponding getX() methods. This concept has so far not been applied and you usually operate on
- * the <tt>CompleteData</tt> subclass.
+ * the <kbd>CompleteData</kbd> subclass.
  * </p>
  */
 public abstract class GameData implements Cloneable, Addeable {
@@ -193,8 +193,8 @@ public abstract class GameData implements Cloneable, Addeable {
   private Race nullRace;
 
   /**
-   * A collection of all units. The keys are <tt>Integer</tt> objects containing the unit's ids. The
-   * values consist of objects of class <tt>Unit</tt>. TEMP units are not included, they are only
+   * A collection of all units. The keys are <kbd>Integer</kbd> objects containing the unit's ids. The
+   * values consist of objects of class <kbd>Unit</kbd>. TEMP units are not included, they are only
    * stored in the unit collection of their parents and their regions and in the tempUnits map.
    * 
    * @return returns the units map
@@ -216,8 +216,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<UnitID, Unit> unitView();
 
   /**
-   * A collection of tempUnits. The keys are <tt>Integer</tt> objects containinng the unit's ids.
-   * The values consist of objects of class <tt>TempUnit</tt>.
+   * A collection of tempUnits. The keys are <kbd>Integer</kbd> objects containinng the unit's ids.
+   * The values consist of objects of class <kbd>TempUnit</kbd>.
    * 
    * @return returns the tempunits map
    * @deprecated
@@ -234,10 +234,10 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<UnitID, Unit> oldUnitsView();
 
   /**
-   * All regions in this game data. The keys are <tt>Coordinate</tt> objects containing the id of
-   * each region. The values consist of objects of class <tt>Region</tt>.<br />
+   * All regions in this game data. The keys are {@link CoordinateID} objects containing the id of
+   * each region. The values consist of objects of class {@link Region}.<br>
    * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
-   * cylinder- or torus-shaped world! <a>
+   * cylinder- or torus-shaped world!
    * 
    * @see Region#getNeighbours()
    * @return returns the regions map
@@ -260,8 +260,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<CoordinateID, Region> regionView();
 
   /**
-   * All factions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
-   * faction. The values consist of objects of class <tt>Faction</tt>. One of these factions can be
+   * All factions in this game data. The keys are <kbd>Integer</kbd> objects containg the id of each
+   * faction. The values consist of objects of class <kbd>Faction</kbd>. One of these factions can be
    * referenced by the ownerFaction attribute.
    * 
    * @return returns the factions map
@@ -283,8 +283,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<EntityID, Faction> factionView();
 
   /**
-   * All buildings in this game data. The keys are <tt>Integer</tt> objects containg the id of each
-   * building. The values consist of objects of class <tt>Building</tt>.
+   * All buildings in this game data. The keys are <kbd>Integer</kbd> objects containg the id of each
+   * building. The values consist of objects of class <kbd>Building</kbd>.
    * 
    * @return returns the buildings map
    * @deprecated Try using {@link #getBuildings()}
@@ -305,8 +305,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<EntityID, Building> buildingView();
 
   /**
-   * All ships in this game data. The keys are <tt>Integer</tt> objects containing the id of each
-   * ship. The values consist of objects of class <tt>Ship</tt>.
+   * All ships in this game data. The keys are <kbd>Integer</kbd> objects containing the id of each
+   * ship. The values consist of objects of class <kbd>Ship</kbd>.
    * 
    * @return returns the ships map
    * @deprecated Try using {@link #getShips()}
@@ -327,8 +327,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<EntityID, Ship> shipView();
 
   /**
-   * All message types in this game data. The keys are <tt>Integer</tt> objects containg the id of
-   * each message type. The values consist of <tt>MessageType</tt> objects.
+   * All message types in this game data. The keys are <kbd>Integer</kbd> objects containg the id of
+   * each message type. The values consist of <kbd>MessageType</kbd> objects.
    * 
    * @return returns the messageType map
    */
@@ -340,8 +340,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<IntegerID, MessageType> msgTypeView();
 
   /**
-   * All magic spells in this game data. The keys are <tt>Integer</tt> objects containing the id of
-   * each spell. The values consist of objects of class <tt>Spell</tt>.
+   * All magic spells in this game data. The keys are <kbd>Integer</kbd> objects containing the id of
+   * each spell. The values consist of objects of class <kbd>Spell</kbd>.
    * 
    * @return returns the spells map
    * @deprecated Try using {@link #getSpells()}
@@ -362,8 +362,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<StringID, Spell> spellView();
 
   /**
-   * All potions in this game data. The keys are <tt>Integer</tt> objects containg the id of each
-   * potion. The values consist of objects of class <tt>Potion</tt>.
+   * All potions in this game data. The keys are <kbd>Integer</kbd> objects containg the id of each
+   * potion. The values consist of objects of class <kbd>Potion</kbd>.
    * 
    * @return returns the potions map
    * @deprecated
@@ -384,8 +384,8 @@ public abstract class GameData implements Cloneable, Addeable {
   protected abstract Map<IntegerID, Potion> potionView();
 
   /**
-   * All islands in this game data. The keys are <tt>Integer</tt> objects containing the id of each
-   * island. The values consist of objects of class <tt>Island</tt>.
+   * All islands in this game data. The keys are <kbd>Integer</kbd> objects containing the id of each
+   * island. The values consist of objects of class <kbd>Island</kbd>.
    * 
    * @return returns the islands map
    * @deprecated
@@ -511,7 +511,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a unit to the specified game data. If units() is <tt>null</tt>, this method has no effect.
+   * Add a unit to the specified game data. If units() is <kbd>null</kbd>, this method has no effect.
    * 
    * @param u the unit to be added.
    */
@@ -559,7 +559,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a region to the specified game data. If regions() is <tt>null</tt>, this method has no
+   * Add a region to the specified game data. If regions() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param r the region to be added.
@@ -595,7 +595,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a faction to the specified game data. If factions() is <tt>null</tt>, this method has no
+   * Add a faction to the specified game data. If factions() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param f the faction to be added.
@@ -606,7 +606,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a building to the specified game data. If buildings() is <tt>null</tt>, this method has no
+   * Add a building to the specified game data. If buildings() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param b the building to be added.
@@ -622,7 +622,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a ship to the specified game data. If ships() is <tt>null</tt>, this method has no effect.
+   * Add a ship to the specified game data. If ships() is <kbd>null</kbd>, this method has no effect.
    * 
    * @param s the ship to be added.
    */
@@ -637,7 +637,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a message type to the specified game data. If msgTypes() is <tt>null</tt>, this method has
+   * Add a message type to the specified game data. If msgTypes() is <kbd>null</kbd>, this method has
    * no effect.
    * 
    * @param type the message type to be added.
@@ -648,7 +648,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a spell to the specified game data. If spells() is <tt>null</tt>, this method has no
+   * Add a spell to the specified game data. If spells() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param s the spells to be added.
@@ -659,7 +659,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add a potion to the specified game data. If potions() is <tt>null</tt>, this method has no
+   * Add a potion to the specified game data. If potions() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param p the potion to be added.
@@ -670,7 +670,7 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Add an island to the specified game data. If islands() is <tt>null</tt>, this method has no
+   * Add an island to the specified game data. If islands() is <kbd>null</kbd>, this method has no
    * effect.
    * 
    * @param i the island to be added.
@@ -724,8 +724,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a unit from units() by id.
    * 
    * @param id the id of the unit to be retrieved.
-   * @return an instance of class <tt>Unit</tt> or <tt>null</tt> if there is no unit with the
-   *         specified id or if units() is <tt>null</tt>.
+   * @return an instance of class <kbd>Unit</kbd> or <kbd>null</kbd> if there is no unit with the
+   *         specified id or if units() is <kbd>null</kbd>.
    */
   public Unit getUnit(ID id) {
     return (unitView() == null) ? null : unitView().get(id);
@@ -739,14 +739,14 @@ public abstract class GameData implements Cloneable, Addeable {
   }
 
   /**
-   * Retrieve a region from regions() by id.<br />
+   * Retrieve a region from regions() by id.<br>
    * <b>Attention</b>: You might not always get what you expect if work based on coordinates in a
-   * cylinder- or torus-shaped world! <a>
+   * cylinder- or torus-shaped world!
    * 
    * @see Region#getNeighbours()
    * @param c region coordinate
-   * @return an instance of class <tt>Region</tt> or <tt>null</tt> if there is no region with the
-   *         specified coordinates or if regions() is <tt>null</tt>.
+   * @return an instance of class <kbd>Region</kbd> or <kbd>null</kbd> if there is no region with the
+   *         specified coordinates or if regions() is <kbd>null</kbd>.
    */
   public Region getRegion(CoordinateID c) {
     return (regionView() == null) ? null : regionView().get(c);
@@ -756,8 +756,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a faction from factions() by id.
    * 
    * @param id the id of the faction to be retrieved.
-   * @return an instance of class <tt>Faction</tt> or <tt>null</tt> if there is no faction with the
-   *         specified id or if factions() is <tt>null</tt>.
+   * @return an instance of class <kbd>Faction</kbd> or <kbd>null</kbd> if there is no faction with the
+   *         specified id or if factions() is <kbd>null</kbd>.
    */
   public Faction getFaction(ID id) {
     return (factionView() == null) ? null : (factionView().get(id) != null ? factionView().get(id)
@@ -768,8 +768,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a building from buildings() by id.
    * 
    * @param id the id of the building to be retrieved.
-   * @return an instance of class <tt>Building</tt> or <tt>null</tt> if there is no building with
-   *         the specified id or if buildings() is <tt>null</tt>.
+   * @return an instance of class <kbd>Building</kbd> or <kbd>null</kbd> if there is no building with
+   *         the specified id or if buildings() is <kbd>null</kbd>.
    */
   public Building getBuilding(ID id) {
     return (buildingView() == null) ? null : (Building) buildingView().get(id);
@@ -779,8 +779,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a ship from ships() by id.
    * 
    * @param id the id of the ship to be retrieved.
-   * @return an instance of class <tt>Ship</tt> or <tt>null</tt> if there is no ship with the
-   *         specified id or if ships() is <tt>null</tt>.
+   * @return an instance of class <kbd>Ship</kbd> or <kbd>null</kbd> if there is no ship with the
+   *         specified id or if ships() is <kbd>null</kbd>.
    */
   public Ship getShip(ID id) {
     return (shipView() == null) ? null : (Ship) shipView().get(id);
@@ -790,8 +790,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a message type from msgTypes() by id.
    * 
    * @param id the id of the message type to be retrieved.
-   * @return an instance of class <tt>MessageType</tt> or <tt>null</tt> if there is no message type
-   *         with the specified id or if msgTypes() is <tt>null</tt>.
+   * @return an instance of class <kbd>MessageType</kbd> or <kbd>null</kbd> if there is no message type
+   *         with the specified id or if msgTypes() is <kbd>null</kbd>.
    */
   public MessageType getMsgType(ID id) {
     return (msgTypeView() == null) ? null : (MessageType) msgTypeView().get(id);
@@ -801,8 +801,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a spell from spells() by id.
    * 
    * @param id the id of the spell to be retrieved.
-   * @return an instance of class <tt>Spell</tt> or <tt>null</tt> if there is no spell with the
-   *         specified id or if spells() is <tt>null</tt>.
+   * @return an instance of class <kbd>Spell</kbd> or <kbd>null</kbd> if there is no spell with the
+   *         specified id or if spells() is <kbd>null</kbd>.
    */
   public Spell getSpell(ID id) {
     return (spellView() == null) ? null : (Spell) spellView().get(id);
@@ -812,8 +812,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a spell from spells() by Name. used for orderReader / completer
    * 
    * @param spellName the name of the spell to be retrieved.
-   * @return an instance of class <tt>Spell</tt> or <tt>null</tt> if there is no spell with the
-   *         specified id or if spells() is <tt>null</tt>.
+   * @return an instance of class <kbd>Spell</kbd> or <kbd>null</kbd> if there is no spell with the
+   *         specified id or if spells() is <kbd>null</kbd>.
    */
   public Spell getSpell(String spellName) {
     if (spellView() == null || spellView().size() == 0)
@@ -829,8 +829,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a potion from potions() by id.
    * 
    * @param id the id of the potion to be retrieved.
-   * @return an instance of class <tt>Potion</tt> or <tt>null</tt> if there is no potion with the
-   *         specified id or if potions() is <tt>null</tt>.
+   * @return an instance of class <kbd>Potion</kbd> or <kbd>null</kbd> if there is no potion with the
+   *         specified id or if potions() is <kbd>null</kbd>.
    */
   public Potion getPotion(ID id) {
     return (potionView() == null) ? null : (Potion) potionView().get(id);
@@ -840,8 +840,8 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a island from islands() by id.
    * 
    * @param id the id of the island to be retrieved.
-   * @return an instance of class <tt>Island</tt> or <tt>null</tt> if there is no island with the
-   *         specified id or if islands() is <tt>null</tt>.
+   * @return an instance of class <kbd>Island</kbd> or <kbd>null</kbd> if there is no island with the
+   *         specified id or if islands() is <kbd>null</kbd>.
    */
   public Island getIsland(ID id) {
     return (islandView() == null) ? null : (Island) islandView().get(id);
@@ -860,9 +860,9 @@ public abstract class GameData implements Cloneable, Addeable {
   // * Retrieve a hot spot from hotSpots() by its id.
   // *
   // * @param id the id of the hot spot to be retrieved.
-  // * @return an instance of class <tt>HotSpot</tt> or <tt>null</tt> if there is no hot spot with
+  // * @return an instance of class <kbd>HotSpot</kbd> or <kbd>null</kbd> if there is no hot spot with
   // the
-  // * specified id or if hotSpots() is <tt>null</tt> .
+  // * specified id or if hotSpots() is <kbd>null</kbd> .
   // */
   // public HotSpot getHotSpot(IntegerID id) {
   // return (hotSpotView() == null) ? null : (HotSpot) hotSpotView().get(id);
@@ -974,7 +974,7 @@ public abstract class GameData implements Cloneable, Addeable {
   public abstract void setSelectedRegionCoordinates(Map<CoordinateID, Region> regions);
 
   // /**
-  // * Add or set a hot spot to the specified game data. If hotSpots() is <tt>null</tt>, this method
+  // * Add or set a hot spot to the specified game data. If hotSpots() is <kbd>null</kbd>, this method
   // * has no effect.
   // *
   // * @param h the hot spot to be added.
@@ -1016,7 +1016,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a translation from translations().
    * 
    * @param key the key of the translation to be retrieved.
-   * @return an instance of class <tt>String</tt>. If no translation could be found, the name of the
+   * @return an instance of class <kbd>String</kbd>. If no translation could be found, the name of the
    *         object is returned.
    */
   public String getTranslation(Named key) {
@@ -1027,7 +1027,7 @@ public abstract class GameData implements Cloneable, Addeable {
    * Retrieve a translation from translations().
    * 
    * @param key the key of the translation to be retrieved.
-   * @return an instance of class <tt>String</tt>. If no translation could be found, the key is
+   * @return an instance of class <kbd>String</kbd>. If no translation could be found, the key is
    *         returned.
    */
   public String getTranslation(String key) {

@@ -25,7 +25,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -370,14 +369,11 @@ public class CellRenderer implements TreeCellRenderer {
             "none");
       } else {
         StringBuffer str = new StringBuffer();
-        Iterator<String> it = CellRenderer.colorMap.keySet().iterator();
-
-        while (it.hasNext()) {
+        for (String value : CellRenderer.colorMap.keySet()) {
           if (str.length() > 0) {
             str.append(';');
           }
 
-          String value = it.next();
           str.append(value);
           str.append(';');
 
@@ -602,7 +598,8 @@ public class CellRenderer implements TreeCellRenderer {
   /**
    * Returns an icon constructed out of the given information.
    * <p>
-   * Following parseing is done:
+   * The following parsing is done:
+   * </p>
    * <ol>
    * <li>If given object is an icon, return it.</li>
    * <li>If given object is an image, construct an ImageIcon and return.</li>
@@ -610,7 +607,6 @@ public class CellRenderer implements TreeCellRenderer {
    * </ol>
    * All icons are cached(except (1)). Non-found images of (3) are replaced with missingIcon. All
    * unparseable objects return missingIcon.
-   * </p>
    */
   protected Icon getIcon(Object icon) {
     if (icon instanceof Icon)
@@ -1017,10 +1013,7 @@ public class CellRenderer implements TreeCellRenderer {
     // custom sets
     if (CellRenderer.stylesets != null) {
       StringBuffer custom = new StringBuffer();
-      Iterator<String> it = CellRenderer.stylesets.keySet().iterator();
-
-      while (it.hasNext()) {
-        String name = it.next();
+      for (String name : CellRenderer.stylesets.keySet()) {
         GraphicsStyleset set = CellRenderer.stylesets.get(name);
         String def = CellRenderer.createDefinitionString(set);
         CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);

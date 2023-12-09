@@ -173,7 +173,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region0);
 
-    assertEquals(unit3, b1.getModifiedOwnerUnit());
+    assertEquals(unit, b1.getModifiedOwnerUnit());
   }
 
   @Test
@@ -185,7 +185,6 @@ public class GiveOrderTest extends MagellanTestWithResources {
 
     unit.addOrder("GIB tree KOMMANDO");
     unit.addOrder("VERLASSE");
-    builder.addTo(unit, b1);
 
     builder.addTo(unit, b1);
     builder.addTo(unit2, b1);
@@ -194,7 +193,7 @@ public class GiveOrderTest extends MagellanTestWithResources {
     EresseaRelationFactory executor = new EresseaRelationFactory(data.rules);
     executor.processOrders(region0);
 
-    assertEquals(unit3, b1.getModifiedOwnerUnit());
+    assertEquals(unit2, b1.getModifiedOwnerUnit());
   }
 
   /**

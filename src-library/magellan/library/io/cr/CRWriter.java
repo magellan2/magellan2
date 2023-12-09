@@ -158,7 +158,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Escape quotation marks in <tt>text</tt> with a backslash.
+   * Escape quotation marks in <kbd>text</kbd> with a backslash.
    *
    * @param text the string to be modified.
    * @return the resulting string with escaped quotation marks.
@@ -204,7 +204,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the String <tt>str</tt> quoted to the underlying stream. If a part of <tt>str</tt> is
+   * Write the String <kbd>str</kbd> quoted to the underlying stream. If a part of <kbd>str</kbd> is
    * quoted, its quotes are escaped according to the current quote escape setting.
    *
    * @throws IOException If an I/O error occurs.
@@ -252,12 +252,12 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the String <tt>str</tt> quoted along with the specified tag to the underlying stream. If
-   * a part of <tt>str</tt> is quoted, its quotes are escaped according to the current quote escape
+   * Write the String <kbd>str</kbd> quoted along with the specified tag to the underlying stream. If
+   * a part of <kbd>str</kbd> is quoted, its quotes are escaped according to the current quote escape
    * setting. writeQuotedTag("a b", "tag") results in writing "\"a b\";tag\n" to the
    *
    * @param value the string that is to be put in quotes and written to the
-   * @param key the tag to be written to the stream, separated from <tt>str</tt> by a semicolon.
+   * @param key the tag to be written to the stream, separated from <kbd>str</kbd> by a semicolon.
    * @throws IOException If an I/O error occurs.
    */
   private void writeQuotedTag(String value, String key) throws IOException {
@@ -300,7 +300,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of message blocks to the underlying stream.
    *
-   * @param list a list containing the <tt>Message</tt> objects to be written.
+   * @param list a list containing the <kbd>Message</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessages(List<Message> list) throws IOException {
@@ -313,7 +313,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Message</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Message</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -359,11 +359,11 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the data as one block named <tt>blockName</tt> to the underlying stream. The data is
+   * Write the data as one block named <kbd>blockName</kbd> to the underlying stream. The data is
    * written as simple cr strings. The block name is only written if there is data to follow.
    *
    * @param blockName the name of the block to be written (can not be a block with an id).
-   * @param data a collection containing <tt>Message</tt> objects.
+   * @param data a collection containing <kbd>Message</kbd> objects.
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessageBlock(String blockName, Collection<Message> data) throws IOException {
@@ -378,7 +378,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write the data as one sequence of simple cr strings.
    *
-   * @param data a collection containing <tt>Message</tt> objects.
+   * @param data a collection containing <kbd>Message</kbd> objects.
    * @throws IOException If an I/O error occurs.
    */
   public void writeMessageSequence(Collection<Message> data) throws IOException {
@@ -393,7 +393,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a the data as one sequence of simple cr strings.
    *
-   * @param data a collection containing <tt>String</tt> objects.
+   * @param data a collection containing <kbd>String</kbd> objects.
    * @throws IOException If an I/O error occurs.
    */
   public void writeStringSequence(Collection<String> data) throws IOException {
@@ -406,11 +406,11 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the data as one block named <tt>blockName</tt> to the underlying stream. The data is
+   * Write the data as one block named <kbd>blockName</kbd> to the underlying stream. The data is
    * written as simple cr strings. The block name is only written if there is data to follow.
    *
    * @param blockName the name of the block to be written (can not be a block with an id).
-   * @param data a colleciton containing <tt>String</tt> objects.
+   * @param data a colleciton containing <kbd>String</kbd> objects.
    * @throws IOException If an I/O error occurs.
    */
   public void writeStringBlock(String blockName, Collection<String> data) throws IOException {
@@ -531,7 +531,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Spell</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Spell</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -606,7 +606,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Potion</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Potion</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -643,11 +643,11 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write a spell components (KOMPONENTEN) block to the underyling. The block name is only written,
-   * if there are components in <tt>comps</tt>.
+   * if there are components in <kbd>comps</kbd>.
    *
    * @param comps a map containing the components to be written. The map is expected to contain the
    *          names of the components as keys and the component data as values (both as
-   *          <tt>String</tt> objects). Such a map can be found in the <tt>Spell</tt> class.
+   *          <kbd>String</kbd> objects). Such a map can be found in the <kbd>Spell</kbd> class.
    * @throws IOException If an I/O error occurs.
    * @see magellan.library.Spell
    */
@@ -677,7 +677,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Option</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Option</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -694,9 +694,9 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of group (GRUPPE) blocks to the underlying stream.
    *
-   * @param map a map containing the groups to write. The keys are expected to be <tt>Integer</tt>
+   * @param map a map containing the groups to write. The keys are expected to be <kbd>Integer</kbd>
    *          objects containing the ids of the alliances. The values are expected to be instances
-   *          of class <tt>Group</tt>. May be <code>null</code>.
+   *          of class <kbd>Group</kbd>. May be <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
   public void writeGroups(Map<? extends ID, Group> map) throws IOException {
@@ -709,7 +709,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Group</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Group</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -740,8 +740,8 @@ public class CRWriter extends BufferedWriter {
    * Write a sequence of alliance (ALLIANZ) blocks to the underlying stream.
    *
    * @param map a map containing the alliances to write. The keys are expected to be
-   *          <tt>Integer</tt> objects containing the ids of the alliances. The values are expected
-   *          to be instances of class <tt>Alliance</tt>. May be <code>null</code>.
+   *          <kbd>Integer</kbd> objects containing the ids of the alliances. The values are expected
+   *          to be instances of class <kbd>Alliance</kbd>. May be <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
   public void writeAlliances(Map<EntityID, Alliance> map) throws IOException {
@@ -754,7 +754,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of an <tt>Alliance</tt> object to the underlying stream.
+   * Write the cr representation of an <kbd>Alliance</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -777,7 +777,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of battle (BATTLE) blocks to the underlying stream.
    *
-   * @param list a list containing the <tt>Battle</tt> objects to be written. My be
+   * @param list a list containing the <kbd>Battle</kbd> objects to be written. My be
    *          <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
@@ -791,7 +791,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Battle</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Battle</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -867,7 +867,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Faction</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Faction</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1006,7 +1006,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of ship (SCHIFF) blocks to the underlying stream.
    *
-   * @param ships an iterator containing the<tt>Ship</tt> objects to be written.
+   * @param ships an iterator containing the<kbd>Ship</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeShips(Collection<Ship> ships) throws IOException {
@@ -1023,7 +1023,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Ship</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Ship</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1123,7 +1123,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of building (BURG) blocks to the underlying stream.
    *
-   * @param buildings an iterator containing the<tt>Building</tt> objects to be written.
+   * @param buildings an iterator containing the<kbd>Building</kbd> objects to be written.
    * @throws IOException
    */
   public void writeBuildings(Collection<Building> buildings) throws IOException {
@@ -1141,7 +1141,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Building</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Building</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1206,9 +1206,9 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write a skills (TALENTE) block to the underlying stream. The block is only written, if
-   * <tt>skills</tt> contains at least one <tt>Skill</tt> object.
+   * <kbd>skills</kbd> contains at least one <kbd>Skill</kbd> object.
    *
-   * @param skills an iterator over the <tt>Skill</tt> objects to write.
+   * @param skills an iterator over the <kbd>Skill</kbd> objects to write.
    * @param persons the number of persons in the unit this skill belongs to.
    * @throws IOException If an I/O error occurs.
    */
@@ -1224,7 +1224,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Skill</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Skill</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1241,10 +1241,10 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write a COMMANDS block to the underlying stream. The block is only written, if <tt>list</tt>
-   * contains at least one <tt>String</tt> object representing an order.
+   * Write a COMMANDS block to the underlying stream. The block is only written, if <kbd>list</kbd>
+   * contains at least one <kbd>String</kbd> object representing an order.
    *
-   * @param list a list with the <tt>String</tt> objects to be written.
+   * @param list a list with the <kbd>String</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeOrders(List<Order> list) throws IOException {
@@ -1261,9 +1261,9 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write a unit's spell (SPRUECHE) block to the underlying stream. The block is only written, if
-   * <tt>list</tt> contains at least one <tt>Spell</tt> object.
+   * <kbd>list</kbd> contains at least one <kbd>Spell</kbd> object.
    *
-   * @param spells a list with the<tt>Spell</tt> object names to be written.
+   * @param spells a list with the<kbd>Spell</kbd> object names to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnitSpells(Map<? extends ID, Spell> spells) throws IOException {
@@ -1286,23 +1286,20 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a unit's combat spell (KAMPFZAUBER) blocks to the underlying stream.
    *
-   * @param map a Map with the <tt>CombatSpell</tt> objects to be written.
+   * @param map a Map with the <kbd>CombatSpell</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnitCombatSpells(Map<? extends ID, CombatSpell> map) throws IOException {
     if (map == null)
       return;
 
-    Iterator<CombatSpell> i = map.values().iterator();
-
-    while (i.hasNext()) {
-      CombatSpell cs = i.next();
+    for (CombatSpell cs : map.values()) {
       write(cs);
     }
   }
 
   /**
-   * Write the cr representation of a <tt>CombatSpell</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>CombatSpell</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1334,9 +1331,9 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write a unit's items (GEGENSTAENDE) block to the underlying stream. The block is only written,
-   * if <tt>items</tt> contains at least one <tt>Item</tt> object.
+   * if <kbd>items</kbd> contains at least one <kbd>Item</kbd> object.
    *
-   * @param items an iterator over the <tt>Item</tt> objects to be written.
+   * @param items an iterator over the <kbd>Item</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeItems(Iterator<Item> items) throws IOException {
@@ -1352,7 +1349,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Item</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Item</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1364,7 +1361,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of unit (EINHEIT) blocks to the underlying stream.
    *
-   * @param units an iterator for the<tt>Unit</tt> objects to be written.
+   * @param units an iterator for the<kbd>Unit</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeUnits(Collection<Unit> units) throws IOException {
@@ -1404,7 +1401,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Unit</tt> object to the underyling
+   * Write the cr representation of a <kbd>Unit</kbd> object to the underyling
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1413,7 +1410,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Unit</tt> object to the underyling
+   * Write the cr representation of a <kbd>Unit</kbd> object to the underyling
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1588,10 +1585,7 @@ public class CRWriter extends BufferedWriter {
 
     if (getIncludeUnitDetails() && unit.hasTags()) {
       java.util.Map<String, String> map = unit.getTagMap();
-      java.util.Iterator<String> it = map.keySet().iterator();
-
-      while (it.hasNext()) {
-        Object key = it.next();
+      for (Object key : map.keySet()) {
         Object value = map.get(key);
 
         try {
@@ -1638,7 +1632,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a region prices (PREISE) block to the underlying stream.
    *
-   * @param map list containing the<tt>LuxuryPrice</tt> objects to be written.
+   * @param map list containing the<kbd>LuxuryPrice</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writePrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
@@ -1661,7 +1655,7 @@ public class CRWriter extends BufferedWriter {
    * Write region block containing the luxury prices of the last turn (LETZTEPREISE) to the
    * underlying stream.
    *
-   * @param map a map containing the <tt>LuxuryPrice</tt> objects to be written.
+   * @param map a map containing the <kbd>LuxuryPrice</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeOldPrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
@@ -1681,7 +1675,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>LuxuryPrice</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>LuxuryPrice</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1693,22 +1687,20 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a sequence of region border (GRENZE) blocks to the underlying stream.
    *
-   * @param c collection containing the <tt>Border</tt> objects to be written.
+   * @param c collection containing the <kbd>Border</kbd> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
   public void writeBorders(Collection<Border> c) throws IOException {
     if (c == null)
       return;
 
-    Iterator<Border> i = c.iterator();
-
-    while (i.hasNext()) {
-      writeBorder(i.next());
+    for (Border element : c) {
+      writeBorder(element);
     }
   }
 
   /**
-   * Write the cr representation of a <tt>Border</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Border</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1750,7 +1742,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>Region</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>Region</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -1815,10 +1807,7 @@ public class CRWriter extends BufferedWriter {
 
     if (region.hasTags()) {
       java.util.Map<String, String> map = region.getTagMap();
-      java.util.Iterator<String> it = map.keySet().iterator();
-
-      while (it.hasNext()) {
-        Object key = it.next();
+      for (Object key : map.keySet()) {
         Object value = map.get(key);
 
         try {
@@ -2066,7 +2055,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write a presentation of a sign to the underlying stream
    *
-   * @param sign the sign
+   * @param s the sign
    * @param counter just a counter for IDing the sign
    * @throws IOException passes a IOException from streamwriter
    */
@@ -2148,7 +2137,7 @@ public class CRWriter extends BufferedWriter {
   /**
    * Write message type blocks to the underlying stream.
    *
-   * @param map a map containing the <tt>MessageType</tt> objects to be written as values.
+   * @param map a map containing the <kbd>MessageType</kbd> objects to be written as values.
    * @throws IOException If an I/O error occurs.
    */
   public void writeMsgTypes(Map<? extends ID, MessageType> map) throws IOException {
@@ -2161,7 +2150,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of a <tt>MessageType</tt> object to the underlying stream.
+   * Write the cr representation of a <kbd>MessageType</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */
@@ -2219,7 +2208,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the complete game data from <tt>world</tt> in the cr format.
+   * Write the complete game data from <kbd>world</kbd> in the cr format.
    */
   public synchronized Thread writeAsynchronously() throws IOException, NullPointerException {
     if (world == null)
@@ -2285,7 +2274,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the complete game data from <tt>world</tt> in the cr format. This method is called by the
+   * Write the complete game data from <kbd>world</kbd> in the cr format. This method is called by the
    * public method write(). This method can be run in a thread.
    *
    * @throws IOException If an I/O error occurs.
@@ -2430,8 +2419,8 @@ public class CRWriter extends BufferedWriter {
    * Change the quote escape behaviour of this CRWriter. Tilde escapes look like: 'a "b c"' &rarr; 'a
    * b~c', whereas a backslash escape works like this: 'a "b c"' &rarr; 'a \"b c\"'
    *
-   * @param bool if <tt>true</tt>, escape quoted parts of any string written to the underlying
-   *          stream with tildes. If <tt>false</tt>, use backslash character to escape the quotation
+   * @param bool if <kbd>true</kbd>, escape quoted parts of any string written to the underlying
+   *          stream with tildes. If <kbd>false</kbd>, use backslash character to escape the quotation
    *          marks themselves.
    */
   public void setTildeEscapes(boolean bool) {
@@ -2707,7 +2696,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Write the cr representation of an <tt>Island</tt> object to the underlying stream.
+   * Write the cr representation of an <kbd>Island</kbd> object to the underlying stream.
    *
    * @throws IOException If an I/O error occurs.
    */

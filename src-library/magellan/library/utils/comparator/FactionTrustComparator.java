@@ -20,7 +20,7 @@ import magellan.library.TrustLevel;
 import magellan.library.utils.TrustLevels;
 
 /**
- * A comparator imposing an ordering on <tt>Faction</tt> objects by comparing the trust levels.
+ * A comparator imposing an ordering on <kbd>Faction</kbd> objects by comparing the trust levels.
  * <p>
  * Note: this comparator imposes orderings that are inconsistent with equals.
  * </p>
@@ -35,10 +35,10 @@ public class FactionTrustComparator implements Comparator<Faction> {
   protected Comparator<? super Faction> sameTrustSubCmp = null;
 
   /**
-   * Creates a new <tt>FactionTrustComparator</tt> object.
+   * Creates a new <kbd>FactionTrustComparator</kbd> object.
    * 
    * @param sameFactionSubComparator if two factions with the same trust level are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    */
   public FactionTrustComparator(Comparator<? super Faction> sameFactionSubComparator) {
     sameTrustSubCmp = sameFactionSubComparator;
@@ -62,7 +62,7 @@ public class FactionTrustComparator implements Comparator<Faction> {
    * 
    * @param o1
    * @param o2
-   * @return the difference of <tt>o2</tt>'s and <tt>o1</tt>'s trust level values. If this is 0 and
+   * @return the difference of <kbd>o2</kbd>'s and <kbd>o1</kbd>'s trust level values. If this is 0 and
    *         a sub-comparator is specified, the result of that sub-comparator's comparison is
    *         returned. Unknown values are evaluated as &gt; 0.
    */

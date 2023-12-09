@@ -44,7 +44,7 @@ public class SortIndexComparator<T extends Sorted> implements Comparator<T> {
    * Creates a new SortIndexComparator object.
    * 
    * @param sameIndexSubComparator if two objects with the same sort index are compared, the given
-   *          sub-comparator is applied (if not <tt>null</tt>).
+   *          sub-comparator is applied (if not <kbd>null</kbd>).
    */
   public SortIndexComparator(Comparator<? super T> sameIndexSubComparator) {
     sameIndexSubCmp = sameIndexSubComparator;
@@ -53,7 +53,7 @@ public class SortIndexComparator<T extends Sorted> implements Comparator<T> {
   /**
    * Compares its two arguments for order according to their sort indices.
    * 
-   * @return the numerical difference of <tt>o1</tt>'s and <tt>o2</tt>'s sort indices. If the sort
+   * @return the numerical difference of <kbd>o1</kbd>'s and <kbd>o2</kbd>'s sort indices. If the sort
    *         indices are equal and a sub-comparator was specified, the result of that
    *         sub-comparator's comparison is returned.
    */

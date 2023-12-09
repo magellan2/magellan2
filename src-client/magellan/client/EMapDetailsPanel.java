@@ -87,6 +87,7 @@ import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewPreferences;
 import magellan.client.swing.BasicRegionPanel;
+import magellan.client.swing.DialogProvider;
 import magellan.client.swing.FactionStatsPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
@@ -306,11 +307,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private ShowItems showCapacityItems = ShowItems.SHOW_ALL_FACTIONS;
   private UnitChangeListener unitChangeListener;
   protected Object lastCause;
+  private DialogProvider dialogProvider;
 
   /**
    * Creates a new EMapDetailsPanel object.
    */
-  public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr) {
+  public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr,
+      DialogProvider dP) {
     super(d, data, p);
 
     unitChangeListener = new UnitChangeListener() {
@@ -334,6 +337,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       }
     };
+
+    dialogProvider = dP;
 
     initGUI(_undoMgr);
     init(data);
@@ -699,7 +704,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
     topSplitPane.setOneTouchExpandable(true);
 
-    editor = new MultiEditorOrderEditorList(dispatcher, getGameData(), settings, _undoMgr);
+    editor = new MultiEditorOrderEditorList(dispatcher, getGameData(), settings, _undoMgr, dialogProvider);
 
     // build auto completion structure
     orders = new AutoCompletion(settings, dispatcher);
@@ -929,11 +934,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Appends information about this faction.
    *
-   * @param alliance
-   * @param allies
-   * @param u
-   * @param parent
-   * @param expandableNodes
    */
   private void appendIslandInfo(Island i, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
@@ -1589,7 +1589,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Return a string showing the signed difference of the two int values in the form "
-   * <tt>current</tt> [&lt;sign&gt;&lt;number&gt;]". If the two values are equal or if one of them
+   * <kbd>current</kbd> [&lt;sign&gt;&lt;number&gt;]". If the two values are equal or if one of them
    * is -1, an empty string is returned.
    */
   private StringBuffer getDiffString(int current, int old) {
@@ -1598,7 +1598,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   /**
    * Return a string showing the signed difference of the three int values in the form "
-   * <tt>current</tt> (future) [&lt;sign&gt;&lt;change&gt;]". e.g. (1,2,1) returns 1 [-1] e.g.
+   * <kbd>current</kbd> (future) [&lt;sign&gt;&lt;change&gt;]". e.g. (1,2,1) returns 1 [-1] e.g.
    * (1,2,2) returns 1 (2) [-1] e.g. (1,1,2) returns 1 (2) e.g. (1,1,1) returns 1 If future == -1,
    * then ignore
    */
@@ -1680,11 +1680,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         DefaultMutableTreeNode guardParty = new DefaultMutableTreeNode(strFaction);
         guardRoot.add(guardParty);
 
-        Iterator<Unit> iterUnits = units.iterator();
-
-        while (iterUnits.hasNext()) {
-          Unit unit = iterUnits.next();
-
+        for (Unit unit : units) {
           if (unit.getFaction().equals(faction)) {
             DefaultMutableTreeNode guardUnit =
                 new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(unit));
@@ -2669,11 +2665,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   /**
    * Appends information about this faction.
    *
-   * @param alliance
-   * @param allies
-   * @param u
-   * @param parent
-   * @param expandableNodes
    */
   private void appendFactionInfo(Faction f, Map<EntityID, Alliance> allies, AllianceGroup alliance,
       DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
@@ -2975,7 +2966,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param u
    * @param parent
    * @param expandableNodes
-   * @return
    */
   private DefaultMutableTreeNode appendUnitHorses(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
@@ -3021,6 +3011,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 + Resources.get("emapdetailspanel.node.overloadedby")
                 + " "
                 + EMapDetailsPanel.weightNumberFormat.format(free)
+                + " / "
+                + EMapDetailsPanel.weightNumberFormat.format(max)
                 + " "
                 + Resources.get("emapdetailspanel.node.weightunits"), "warnung"));
       } else {
@@ -3062,6 +3054,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 + Resources.get("emapdetailspanel.node.overloadedby")
                 + " "
                 + EMapDetailsPanel.weightNumberFormat.format(free)
+                + " / "
+                + EMapDetailsPanel.weightNumberFormat.format(max)
                 + " "
                 + Resources.get("emapdetailspanel.node.weightunits"), "warnung"));
       } else {
@@ -4608,6 +4602,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       loadText.append(
           EMapDetailsPanel.weightNumberFormat.format(Float.valueOf((s.getModifiedLoad() - s
               .getModifiedMaxCapacity()) / 100.0F))).append(" ");
+      loadText.append(" / ").append(EMapDetailsPanel.weightNumberFormat.format(s.getModifiedMaxCapacity()));
       loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 
       n =

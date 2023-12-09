@@ -56,7 +56,7 @@ public class PropertiesHelper {
   /** Property type String: Name of current advanced shape renderer set */
   public static final String ADVANCEDSHAPERENDERER_S_CURRENT_SET = ".CurrentSet";
 
-  /** Property type List<String>: List of all available advanced shape rendererers */
+  /** Property type List&lt;String>: List of all available advanced shape renderers */
   public static final String ADVANCEDSHAPERENDERER_S_SETS = ".Sets";
 
   /** Property type String: ... */
@@ -126,7 +126,7 @@ public class PropertiesHelper {
   /** Property type String: */
   public static final String CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP = "CellRenderer.SkillIconTextColorMap";
 
-  /** Property type List<String>: */
+  /** Property type List&lt;String>: */
   public static final String CELLRENDERER_STYLESETS = "CellRenderer.Stylesets.";
 
   /** Property type String: */
@@ -167,6 +167,9 @@ public class PropertiesHelper {
 
   /** Property type Color (#RRGGBB): background color for battle messages */
   public static final String MESSAGETYPE_SECTION_BATTLE_COLOR = "messagetype.section.battle.color";
+
+  /** Property type Color (#RRGGBB): background color for battle messages */
+  public static final String MESSAGETYPE_SECTION_UNKNOWN_COLOR = "messagetype.section.unknown.color";
 
   public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT = "ClientPreferences.LoadLastReport";
 
@@ -334,6 +337,12 @@ public class PropertiesHelper {
   /** Property type String (semantic version number): last used version number */
   public static final String LAST_VERSION = "Client.LastVersion";
 
+  /** Property type bounds (x, y, width, height): dialog dimensions */
+  public static final String FILE_CHOOSER_BOUNDS = "Filechooser.bounds";
+
+  /** Property type bounds (x, y, width, height): dialog dimensions */
+  public static final String ALCHEMY_DIALOG_BOUNDS = "AlchemyDialog.bounds";
+
   /**
    * Searches the property with the given key and if it exists, it tries to convert it into a boolean and returns that
    * value. If something goes wrong or the key couldn't be found the default value def
@@ -468,7 +477,7 @@ public class PropertiesHelper {
   }
 
   /**
-   * Delivers a list of all keys having the prefix <tt>prefix</tt>
+   * Delivers a list of all keys having the prefix <kbd>prefix</kbd>
    */
   public static List<String> getPrefixedList(Properties p, String prefix) {
     List<String> ret = new LinkedList<String>();

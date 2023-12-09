@@ -112,12 +112,6 @@ public class MapSaverUI extends InternationalizedDialog {
     java.awt.GridBagConstraints gridBagConstraints1;
 
     setTitle(Resources.get("mapsaverui.window.title"));
-    addWindowListener(new java.awt.event.WindowAdapter() {
-      @Override
-      public void windowClosing(java.awt.event.WindowEvent evt) {
-        closeDialog(evt);
-      }
-    });
 
     DefaultBoundedRangeModel dbrm = new DefaultBoundedRangeModel(7, 0, 1, 10);
 
@@ -135,12 +129,6 @@ public class MapSaverUI extends InternationalizedDialog {
     gridBagConstraints1.gridy = 1;
     gridBagConstraints1.insets = new java.awt.Insets(0, 5, 5, 5);
     getContentPane().add(cbFormat, gridBagConstraints1);
-
-    btnCancel.addActionListener(new java.awt.event.ActionListener() {
-      public void actionPerformed(java.awt.event.ActionEvent evt) {
-        btnCancelAction(evt);
-      }
-    });
 
     gridBagConstraints1 = new java.awt.GridBagConstraints();
     gridBagConstraints1.gridx = 2;
@@ -256,6 +244,14 @@ public class MapSaverUI extends InternationalizedDialog {
     gridBagConstraints1.gridy = 1;
     gridBagConstraints1.insets = new java.awt.Insets(0, 0, 5, 5);
     getContentPane().add(btnSave, gridBagConstraints1);
+
+    setDefaultActions(btnSave, btnCancel, btnSave, btnCancel,
+        cbFormat,
+        rbtnCount,
+        rbtnSize,
+        textX,
+        textY,
+        qSlider);
   }
 
   /**
@@ -270,11 +266,6 @@ public class MapSaverUI extends InternationalizedDialog {
       int y = getToolkit().getScreenSize().height;
       setLocation(new Point((x / 2 - xSize / 2), (y / 2 - ySize / 2)));
     }
-  }
-
-  private void btnCancelAction(java.awt.event.ActionEvent evt) {
-    setVisible(false);
-    dispose();
   }
 
   private void btnSaveAction(java.awt.event.ActionEvent evt) {

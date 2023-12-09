@@ -26,7 +26,6 @@ package magellan.client.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -104,6 +103,8 @@ import magellan.client.swing.AlchemyDialog.PlannerModel.ValueMarker;
 import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.table.TableSorter;
 import magellan.client.swing.tree.ContextManager;
+import magellan.client.utils.SwingUtils;
+import magellan.client.utils.SwingUtils.RenderHelper;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -120,6 +121,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.impl.MagellanPotionImpl;
 import magellan.library.io.file.FileBackup;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
@@ -191,9 +193,19 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     mainPanel.add(createMenuBar(), BorderLayout.NORTH);
     mainPanel.add(new JScrollPane(planner), BorderLayout.CENTER);
     this.add(mainPanel);
+    SwingUtils.setPreferredSize(mainPanel, 60, -1, true);
 
-    setPreferredSize(new Dimension(800, 500));
     pack();
+  }
+
+  @Override
+  public void setVisible(boolean b) {
+    super.setVisible(b);
+    if (b) {
+      SwingUtils.setBounds(this, settings, PropertiesHelper.ALCHEMY_DIALOG_BOUNDS, false);
+    } else {
+      PropertiesHelper.saveRectangle(settings, getBounds(), PropertiesHelper.ALCHEMY_DIALOG_BOUNDS);
+    }
   }
 
   private JMenuBar createMenuBar() {
@@ -331,8 +343,18 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
    * Creates the main content of the dialog, the production table.
    */
   private JTable createTable() {
+    tableModel = new PlannerModel(getData());
+    RenderHelper renderHelper = SwingUtils.prepareTable(tableModel);
+
     final JTable table =
-        new AlchemyTable(sorter = new TableSorter(tableModel = new PlannerModel(getData())));
+        new AlchemyTable(sorter = new TableSorter(tableModel)) {
+          @Override
+          public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+            return renderHelper.wrapPrepareHandlerRowHeightAdjusted(this, row,
+                super.prepareRenderer(renderer, row, column));
+          }
+        };
+
     table.getModel().addTableModelListener(new TableModelListener() {
 
       public void tableChanged(TableModelEvent e) {
@@ -489,6 +511,10 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Integer.class);
     return new TableCellRenderer() {
 
+      private Font[] boldCache = new Font[2];
+      private Font[] plainCache = new Font[2];
+      private int miss = 0;
+
       public Component getTableCellRendererComponent(JTable pTable, Object value,
           boolean isSelected, boolean hasFocus, int row, int column) {
         Component c =
@@ -503,7 +529,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
           c.setBackground(Color.WHITE);
           c.setForeground(Color.BLACK);
-          c.setFont(c.getFont().deriveFont(Font.BOLD));
+          c.setFont(getBold(c.getFont()));
 
           c.setEnabled(true);
           c.setFocusable(true);
@@ -512,7 +538,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           // automatically updated cells
           c.setBackground(Color.LIGHT_GRAY);
           c.setForeground(Color.BLACK);
-          c.setFont(c.getFont().deriveFont(Font.BOLD));
+          c.setFont(getBold(c.getFont()));
           c.setEnabled(true);
           c.setFocusable(false);
         } else if (value instanceof ProductionValue) {
@@ -523,26 +549,51 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
           c.setBackground(Color.WHITE);
           c.setForeground(Color.BLACK);
-          c.setFont(c.getFont().deriveFont(Font.BOLD));
+          c.setFont(getBold(c.getFont()));
           c.setEnabled(true);
           c.setFocusable(true);
         } else if (value instanceof IngredientValue) {
           // ingredients cells -- editable, shaded
           c.setBackground(Color.CYAN);
           c.setForeground(Color.BLACK);
-          c.setFont(c.getFont().deriveFont(Font.PLAIN));
+          c.setFont(getPlain(c.getFont()));
           c.setEnabled(true);
           c.setFocusable(true);
         } else {
           // other non-editable cells
           c.setBackground(Color.WHITE);
           c.setForeground(Color.BLACK);
-          c.setFont(c.getFont().deriveFont(Font.PLAIN));
+          c.setFont(getPlain(c.getFont()));
           c.setEnabled(true);
           c.setFocusable(true);
         }
-
         return c;
+      }
+
+      private Font getPlain(Font font) {
+        if (plainCache[0] != font) {
+          ++miss;
+          Font plain = font.deriveFont(Font.PLAIN);
+          plainCache[0] = font;
+          plainCache[1] = plain;
+        }
+        if (miss == 10 || miss == 100) {
+          log.fine("cache miss " + miss);
+        }
+        return plainCache[1];
+      }
+
+      private Font getBold(Font font) {
+        if (boldCache[0] != font) {
+          ++miss;
+          Font bold = font.deriveFont(Font.BOLD);
+          boldCache[0] = font;
+          boldCache[1] = bold;
+        }
+        if (miss == 10 || miss == 100) {
+          log.fine("cache miss " + miss);
+        }
+        return boldCache[1];
       }
     };
   }
@@ -1510,7 +1561,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * HerbInfo (Herb1) | StockValue | RestValue | IngredientValue/null | ...
      * HerbInfo (Herb2) | StockValue | RestValue | IngredientValue/null | ...
      * ...
-     * <code>
+     * </code>
      * 
      * @see javax.swing.table.TableModel#getValueAt(int, int)
      */

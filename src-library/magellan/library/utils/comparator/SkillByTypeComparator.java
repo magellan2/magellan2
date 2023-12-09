@@ -41,7 +41,7 @@ public class SkillByTypeComparator implements Comparator<Skill> {
    * 
    * @param typeComparator used to compare the types of skills.
    * @param subComparator if the typeComparator's comparison of the skill types yields 0, this
-   *          sub-comparator is applied to the skill objects if it is not <tt>null</tt>.
+   *          sub-comparator is applied to the skill objects if it is not <kbd>null</kbd>.
    */
   public SkillByTypeComparator(Comparator<? super SkillType> typeComparator,
       Comparator<? super Skill> subComparator) {

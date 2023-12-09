@@ -39,9 +39,9 @@ public class UnitTempUnitComparator implements Comparator<Unit> {
    * Creates a new UnitTempUnitComparator object.
    * 
    * @param sameParentSubComparator if two units with the same parent unit are compared, this
-   *          sub-comparator is applied if it is not <tt>null</tt>.
+   *          sub-comparator is applied if it is not <kbd>null</kbd>.
    * @param unitSubComparator if two units do not have the same parent unit and do not have a
-   *          parent-child relation, this sub- comparator is applied if it is not <tt>null</tt>.
+   *          parent-child relation, this sub- comparator is applied if it is not <kbd>null</kbd>.
    */
   public UnitTempUnitComparator(Comparator<? super Unit> sameParentSubComparator,
       Comparator<? super Unit> unitSubComparator) {
@@ -52,9 +52,9 @@ public class UnitTempUnitComparator implements Comparator<Unit> {
   /**
    * Compares its two arguments for order according to their names.
    * 
-   * @return a value less than zero if o1 is.an instance of class <tt>Unit</tt> and o2 an instance
-   *         of class <tt>TempUnit</tt> and o1 is o2's parent. Conversely, if o1 is an instance of
-   *         class <tt>TempUnit</tt> and o2 an instance of class <tt>Unit</tt> and o2 is the parent
+   * @return a value less than zero if o1 is.an instance of class <kbd>Unit</kbd> and o2 an instance
+   *         of class <kbd>TempUnit</kbd> and o1 is o2's parent. Conversely, if o1 is an instance of
+   *         class <kbd>TempUnit</kbd> and o2 an instance of class <kbd>Unit</kbd> and o2 is the parent
    *         of o1, a value greater than zero is returned. When o1 and o2 have the same parent the
    *         result of the sameparentsubcomparator is applied if it is not null, else 0 is returned.
    *         If not both, o1 and o2, are instances of class TempUnit or they are but have different

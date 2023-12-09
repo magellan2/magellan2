@@ -39,7 +39,7 @@ import magellan.library.rules.SkillType;
  * </p>
  * <p>
  * If internationalization is a concern, implementing sub-classes should ensure that the
- * access-methods to the various collections (<tt>getXXX()</tt>) return their objects not only by
+ * access-methods to the various collections (<kbd>getXXX()</kbd>) return their objects not only by
  * their (usually language-independent) id but also by their (language-dependent) name as it may be
  * supplied by the user.
  * </p>

@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -1034,6 +1035,27 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    * Test method for {@link E3CommandParser#commandNeed(String...)}.
    */
   @Test
+  public final void testCommandBenoetigeFremdSchild() {
+    E3CommandParser.ADD_NOT_THERE_INFO = true;
+    // add other unit with shield
+    Unit unit2 = builder.addUnit(data, "v", "Versorger", unit.getFaction(), unit.getRegion());
+    builder.addItem(data, unit, "Schild", 6);
+
+    // Warning in Benoetige should not parse
+    unit.clearOrders();
+    unit.addOrder("// $cript BenoetigeFremd v 1 4 Schild Menge");
+    unit2.clearOrders();
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("GIB v 1 Schild", unit, 2);
+    assertOrder("GIB v 3 Schild", unit, 3);
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandNeed(String...)}.
+   */
+  @Test
   public final void testCommandBenoetigeFremdOtherFaction() {
     // add other unit with Silber
     Faction faction2 = builder.addFaction(data, "otto", "Others", "Menschen", 0);
@@ -1462,6 +1484,17 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     builder.addSkill(unit, "Unterhaltung", 1);
     parser.execute(unit.getFaction());
 
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("UNTERHALTE", unit, 3);
+
+    // with entertain skill and peasant money
+    unit.getRegion().setSilver(20 * 20 * unit.getPersons());
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    parser.execute(unit.getFaction());
+
     assertEquals(3, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
     assertOrder("UNTERHALTE", unit, 2);
@@ -1537,11 +1570,75 @@ public class E3CommandParserTest extends MagellanTestWithResources {
    * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
    */
   @Test
+  public final void testCommandEmbassadorNoPeasants() {
+    // with entertain skill
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    unit.getRegion().setPeasants(100);
+    unit.getRegion().setSilver(0);
+    unit.getRegion().setEntertain(0);
+    parser.execute(unit.getFaction());
+
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("UNTERHALTE", unit, 3);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
+  public final void testCommandEmbassadorForce() {
+    // with entertain skill
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter ARBEITE Segeln");
+    builder.addItem(data, unit, "Silber", 90);
+    builder.addSkill(unit, "Unterhaltung", 1);
+    unit.getRegion().setPeasants(100);
+    unit.getRegion().setSilver(0);
+    unit.getRegion().setEntertain(0);
+    parser.execute(unit.getFaction());
+
+    assertEquals(3, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter ARBEITE Segeln", unit, 1);
+    assertOrder("ARBEITE", unit, 2);
+
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter ARBEITE Segeln");
+    builder.addItem(data, unit, "Silber", 110);
+    parser.execute(unit.getFaction());
+    assertEquals(4, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter ARBEITE Segeln", unit, 1);
+    assertOrder("LERNE Segeln", unit, 3);
+
+  }
+
+  /**
+   * Test method for {@link E3CommandParser#commandEmbassador(String ...)}.
+   */
+  @Test
   public final void testCommandEmbassadorTax() {
     unit.clearOrders();
     unit.addOrder("// $cript BerufBotschafter Segeln");
     unit.addOrder("LERNE Segeln");
     builder.addSkill(unit, "Steuereintreiben", 1);
+    parser.execute(unit.getFaction());
+
+    assertEquals(5, unit.getOrders2().size());
+    assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
+    assertWarning("Bauern zu arm", unit, 2);
+    assertOrder("TREIBE", unit, 3);
+    assertOrder("; LERNE Segeln", unit, 4);
+
+    // with silver
+    unit.getRegion().setSilver(unit.getPersons() * 20);
+    unit.clearOrders();
+    unit.addOrder("// $cript BerufBotschafter Segeln");
+    unit.addOrder("LERNE Segeln");
     parser.execute(unit.getFaction());
 
     assertEquals(4, unit.getOrders2().size());
@@ -1562,8 +1659,8 @@ public class E3CommandParserTest extends MagellanTestWithResources {
 
     assertEquals(5, unit.getOrders2().size());
     assertOrder("// $cript BerufBotschafter Segeln", unit, 1);
-    assertOrder("TREIBE", unit, 2);
-    assertWarning("Region wird bewacht", unit, 3);
+    assertWarning("Region wird bewacht", unit, 2);
+    assertOrder("TREIBE", unit, 3);
     assertOrder("; LERNE Segeln", unit, 4);
 
     builder.addAlliance(otherFaction, unit.getFaction(), EresseaConstants.A_GUARD);
@@ -3558,6 +3655,129 @@ public class E3CommandParserTest extends MagellanTestWithResources {
     assertOrder("LERNE Taktik", unit, 3);
     assertTrue(unit.isOrdersConfirmed());
 
+  }
+
+  @Test
+  public final void testTeachAuto() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Pupil", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("; comment");
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("; comment");
+    unit2.addOrder("LERNE Ausdauer");
+    unit2.addOrder("GIB xyz 1 Silber");
+    unit3.addOrder("!@LERNE Ausdauer 50 ; hello");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertEquals(2, unit.getOrders2().size());
+    assertOrder("LERNE AUTO Ausdauer", unit, 1);
+    assertEquals(3, unit2.getOrders2().size());
+    assertOrder("LERNE AUTO Ausdauer", unit2, 1);
+    assertOrder("LERNE AUTO Ausdauer", unit3, 0);
+  }
+
+  @Test
+  public final void testTeachAutoUnequal() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Pupil", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertEquals(1, unit.getOrders2().size());
+    assertOrder("LEHRE a b; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+  }
+
+  /**
+   * 
+   */
+  @Test
+  public final void testTeachAutoStudent() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit4 = builder.addUnit(data, "c", "Independent", unit.getFaction(), unit.getRegion());
+    Unit unit5 = builder.addUnit(data, "d", "Independent2", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit4.clearOrders();
+    unit5.clearOrders();
+    unit.addOrder("LEHRE a b; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+    unit4.addOrder("; order0");
+    unit4.addOrder("!@LERNE Ausdauer 50 ; hello");
+    unit4.addOrder("; order1");
+    unit5.addOrder("LERNE AUTO Ausdauer");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a b; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+    assertEquals(3, unit4.getOrders2().size());
+    assertOrder("!@LERNE AUTO Ausdauer 50 ; hello; L-", unit4, 1);
+    assertOrder("LERNE AUTO Ausdauer", unit5, 0);
+  }
+
+  @Test
+  public final void testTeachAutoStudentAfterError() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit3 = builder.addUnit(data, "b", "Student", unit.getFaction(), unit.getRegion());
+    Unit unit4 = builder.addUnit(data, "c", "Independent", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit3.clearOrders();
+    unit4.clearOrders();
+    unit.addOrder("LEHRE a b c d; 100");
+    unit2.addOrder("LERNE Ausdauer");
+    unit3.addOrder("LERNE Hiebwaffen");
+    unit4.addOrder("LERNE Ausdauer 50");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a b c d; 100", unit, 0);
+    assertOrder("LERNE Ausdauer", unit2, 0);
+    assertOrder("LERNE Hiebwaffen", unit3, 0);
+    assertOrder("LERNE Ausdauer 50", unit4, 0);
+  }
+
+  @Test
+  public final void testTeachAutoExpensive() {
+    unit.clearOrders();
+    unit.addOrder("LERNE Alchemie");
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+    assertOrder("LERNE Alchemie", unit, 0);
+  }
+
+  @Test
+  public final void testTeachAutoExpensiveTeaching() {
+    Unit unit2 = builder.addUnit(data, "a", "Student", unit.getFaction(), unit.getRegion());
+
+    unit.clearOrders();
+    unit2.clearOrders();
+    unit.addOrder("LEHRE a");
+    unit2.addOrder("LERNE Alchemie");
+
+    parser.teachAuto(Collections.singleton(unit.getFaction()));
+
+    assertOrder("LEHRE a", unit, 0);
+    assertOrder("LERNE Alchemie", unit2, 0);
   }
 
 }

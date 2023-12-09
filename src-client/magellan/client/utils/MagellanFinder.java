@@ -82,7 +82,7 @@ public class MagellanFinder {
     return settFileDir;
   }
 
-  protected static File getAppDataDirectory() {
+  public static File getAppDataDirectory() {
     String os = System.getProperty("os.name");
     if (os != null) {
       os = os.toUpperCase();
@@ -91,11 +91,40 @@ public class MagellanFinder {
         dir = System.getenv("APPDATA");
       } else if (os.contains("MAC")) {
         dir = System.getProperty("user.home") + "/Library/Application Support";
+      } else if (os.contains("LINUX")) {
+        dir = System.getenv("XDG_DATA_HOME");
+        if (dir == null) {
+          dir = System.getProperty("user.home");
+          File config = new File(new File(dir, ".local"), "share");
+          if (config.isDirectory() && config.canWrite()) {
+            dir = config.getAbsolutePath();
+          }
+        }
+        String olddir = System.getProperty("user.home");
+        File oldConfig = new File(olddir, ".magellan");
+        File newConfig = new File(dir, "Magellan");
+        if (oldConfig.isDirectory()) {
+          if (newConfig.exists()) {
+            MagellanFinder.log.warn("found possible old configuration in " + oldConfig.getAbsolutePath() + " but "
+                + newConfig
+                + " also exists. Using the latter.");
+          } else {
+            MagellanFinder.log.info("trying to move magellan configuration from " + oldConfig.getAbsolutePath()
+                + " to "
+                + newConfig.getAbsolutePath());
+            if (!oldConfig.renameTo(newConfig)) {
+              MagellanFinder.log.error("could not copy configuration from " + oldConfig.getAbsolutePath() + " to "
+                  + newConfig.getAbsolutePath());
+            }
+          }
+        }
+
       } else {
         dir = System.getProperty("user.home");
       }
       if (dir != null && new File(dir).exists())
-        if (os.contains("WIN") || os.contains("MAC"))
+        if (os.contains("WIN") || os.contains("MAC") || (os.contains("LINUX") && !dir.equals(System.getProperty(
+            "user.home"))))
           return new File(dir, "Magellan");
         else
           return new File(dir, ".magellan");

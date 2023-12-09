@@ -15,7 +15,6 @@ package magellan.client.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -111,14 +110,16 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     btnOK = new javax.swing.JButton();
     btnCancel = new javax.swing.JButton();
 
-    btnOK.setText(Resources.get("setorigindialog.btn.ok.caption"));
+    btnOK.setText(Resources.get("button.ok"));
+    btnOK.setMnemonic(Resources.get("button.ok.mnemonic").charAt(0));
     btnOK.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnOKActionPerformed(evt);
       }
     });
 
-    btnCancel.setText(Resources.get("setorigindialog.btn.cancel.caption"));
+    btnCancel.setText(Resources.get("button.cancel"));
+    btnCancel.setMnemonic(Resources.get("button.cancel.mnemonic").charAt(0));
     btnCancel.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnCancelActionPerformed(evt);
@@ -128,7 +129,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     txtPassword = new JTextField(faction.getPassword());
     txtPassword.setEditable(true);
     txtPassword.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-    txtPassword.setPreferredSize(new Dimension(100, 25));
+    // txtPassword.setPreferredSize(new Dimension(100, 25));
     txtPassword.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
 
     JLabel l = new JLabel(Resources.get("factionpropertiesdialog.password.label"));
@@ -152,21 +153,15 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
         .get("factionpropertiesdialog.translations.title")));
     translationPanel.setToolTipText(Resources.get("factionpropertiesdialog.translations.tooltip"));
 
-    tx = new JTextField();
-    tx.setPreferredSize(new java.awt.Dimension(55, 20));
-    tx.setMinimumSize(new java.awt.Dimension(50, 20));
+    tx = new JTextField(3);
     JLabel lx = new JLabel("x: ");
     lx.setLabelFor(tx);
 
-    ty = new JTextField();
-    ty.setPreferredSize(new java.awt.Dimension(55, 20));
-    ty.setMinimumSize(new java.awt.Dimension(50, 20));
+    ty = new JTextField(3);
     JLabel ly = new JLabel("y: ");
     ly.setLabelFor(ty);
 
-    tz = new JTextField();
-    tz.setPreferredSize(new java.awt.Dimension(55, 20));
-    tz.setMinimumSize(new java.awt.Dimension(50, 20));
+    tz = new JTextField(3);
     JLabel lz = new JLabel("z: ");
     lz.setLabelFor(tz);
 
@@ -220,17 +215,18 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     cc.weightx = 0.0;
     cc.weighty = 0.0;
     cc.insets = new Insets(5, 5, 5, 5);
-    translationPanel.add(lx);
+    translationPanel.add(lx, cc);
     cc.gridx++;
-    translationPanel.add(tx);
+    cc.weightx = .5;
+    translationPanel.add(tx, cc);
     cc.gridx++;
-    translationPanel.add(ly);
+    translationPanel.add(ly, cc);
     cc.gridx++;
-    translationPanel.add(ty);
+    translationPanel.add(ty, cc);
     cc.gridx++;
-    translationPanel.add(lz);
+    translationPanel.add(lz, cc);
     cc.gridx++;
-    translationPanel.add(tz);
+    translationPanel.add(tz, cc);
 
     cc.gridx = 0;
     cc.gridy++;
@@ -293,6 +289,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     // c.gridy = 2;
     c.insets = new java.awt.Insets(0, 0, 5, 5);
     main.add(btnCancel, c);
+
+    getRootPane().setDefaultButton(btnOK);
 
     return main;
   }

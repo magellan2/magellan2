@@ -358,10 +358,10 @@ public class JECheck extends Reader {
                 version = tokenizer.nextToken();
                 line = JECheck.getLine(in);
               } else {
-                /* check for error in header */
-                if (version == null) {
-                  JECheck.log.info("Version line missing or corrupt: " + line);
-                }
+                /* ignore check for version */
+                // if (version == null) {
+                // JECheck.log.info("Version line missing or corrupt: " + line);
+                // }
                 ECheckMessage msg = new ECheckMessage(line);
                 msgs.add(msg);
                 line = JECheck.getLine(in);

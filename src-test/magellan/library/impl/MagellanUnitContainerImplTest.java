@@ -82,6 +82,7 @@ public class MagellanUnitContainerImplTest extends MagellanTestWithResources {
     building.addUnit(unit2);
     building.addUnit(unit3);
     building.addUnit(unit4);
+
     assertEquals(10, building.personCount());
   }
 

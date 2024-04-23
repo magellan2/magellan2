@@ -95,6 +95,28 @@ public class EresseaMovementEvaluatorTest extends MagellanTestWithResources {
     builder.addItem(data, unit, "Pferd", 3);
     unit.clearCache();
     assertEquals(10000 + 3 * 2000 - 2 * 1000, movement.getPayloadOnHorse(unit));
+
+    builder.addItem(data, unit, "Wagen", 0);
+    builder.addItem(data, unit, "Katapult", 1);
+    builder.addItem(data, unit, "Pferd", 2);
+    unit.clearCache();
+    assertEquals(0 + 2 * 2000 - 2 * 1000, movement.getPayloadOnHorse(unit));
+
+    unit.setPersons(1);
+    builder.addSkill(unit, "Reiten", 5);
+    builder.addItem(data, unit, "Wagen", 3);
+    builder.addItem(data, unit, "Katapult", 2);
+    builder.addItem(data, unit, "Pferd", 10);
+    unit.clearCache();
+    assertEquals(3 * 10000 + 10 * 2000 - 1 * 1000, movement.getPayloadOnHorse(unit));
+
+    unit.setPersons(1);
+    builder.addSkill(unit, "Reiten", 5);
+    builder.addItem(data, unit, "Wagen", 3);
+    builder.addItem(data, unit, "Katapult", 3);
+    builder.addItem(data, unit, "Pferd", 10);
+    unit.clearCache();
+    assertEquals(3 * 10000 + 10 * 2000 - 1 * 1000 - 10000, movement.getPayloadOnHorse(unit));
   }
 
   /**
@@ -167,9 +189,16 @@ public class EresseaMovementEvaluatorTest extends MagellanTestWithResources {
     troll.clearCache();
     assertEquals(4 * 1080 + 3 * 10000 + 4 * 2000, movement.getPayloadOnFoot(troll));
 
+    builder.addItem(data, troll, "Pferd", 4);
+    builder.addItem(data, troll, "Wagen", 2);
+    builder.addItem(data, troll, "Katapult", 1);
+    troll.clearCache();
+    assertEquals(4 * 1080 + 2 * 10000 + 4 * 2000, movement.getPayloadOnFoot(troll));
+
     // Trolls may use horses *and* pull carts at the same time
     builder.addItem(data, troll, "Pferd", 4);
     builder.addItem(data, troll, "Wagen", 4);
+    builder.addItem(data, troll, "Katapult", 0);
     troll.clearCache();
     assertEquals(4 * 1080 + 3 * 10000 + 4 * 2000 - 4000, movement.getPayloadOnFoot(troll));
 

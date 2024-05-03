@@ -1748,16 +1748,16 @@ ITEM "Kräuter"
 1;makeskilllevel
 "resources";category
 
-ITEM "Same"
-"Same";name
+ITEM "Samen"
+"Samen";name
 0.1;weight
 "Kräuterkunde";makeskill
 3;makeskilllevel
 "resources";category
 1;storeinbonw
 
-ITEM "Mallornsame"
-"Mallornsame";name
+ITEM "Mallornsamen"
+"Mallornsamen";name
 0.1;weight
 "Kräuterkunde";makeskill
 4;makeskilllevel

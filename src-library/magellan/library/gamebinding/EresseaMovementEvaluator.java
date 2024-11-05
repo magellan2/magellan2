@@ -80,10 +80,10 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
 
   /**
-   * Returns the maximum payload in GE 100 of this unit when it travels by horse. Horses, carts and
+   * Returns the maximum payload in GE 100 of this unit when it travels by horse. Horses, carts, catapults and
    * persons are taken into account for this calculation. If the unit has a sufficient skill in
-   * horse riding but there are too many carts for the horses, the weight of the additional carts
-   * are also already considered.
+   * horse riding but there are too many carts and/or catapults for the horses, the weight of the additional carts
+   * and/or catapults are also already considered.
    *
    * @return the payload in GE 100, CAP_NO_HORSES if the unit does not possess horses or
    *         CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
@@ -99,11 +99,18 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       return MovementEvaluator.CAP_UNSKILLED;
 
     int carts = getCarts(unit);
-
     int towedCarts = Math.min(carts, horses / 2);
+    int freeHorses = horses - towedCarts * 2;
+
+    int catapults = getCatapults(unit);
+    int towedCatapults = Math.min(catapults, freeHorses / 2);
+
     int capacity =
-        ((towedCarts * 100) + (horses * 20) - (carts - towedCarts) * 40) * 100
-            - (getRaceWeight(unit) * unit.getModifiedPersons());
+        ((towedCarts * 100) + (towedCatapults * 0) // capacity of carts and catapults
+            + (horses * 20) // capacity of horses
+            - (carts - towedCarts) * 40 - (catapults - towedCatapults) * 100) * 100 // weight of untowed carts and
+                                                                                    // catapults
+            - (getRaceWeight(unit) * unit.getModifiedPersons()); // weight of unit
 
     // Fiete 20070421 (Runde 519)
     // GOTS not active when riding! (tested)
@@ -113,6 +120,14 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
   private int getCarts(Unit unit) {
     Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
+
+    if (i != null)
+      return i.getAmount();
+    return 0;
+  }
+
+  private int getCatapults(Unit unit) {
+    Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CATAPULT, true));
 
     if (i != null)
       return i.getAmount();
@@ -156,25 +171,35 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       // too many horses
       return MovementEvaluator.CAP_UNSKILLED;
 
-    int carts = 0;
-    Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
-
-    if (i != null) {
-      carts = Math.max(0, i.getAmount());
-    }
-
+    int carts = getCarts(unit);
     int pulledCarts = Math.min(carts, horses / 2);
 
     Race race = unit.getRace();
 
+    int trollPulledCarts = 0;
     if (race != null && race.getID().equals(EresseaConstants.R_TROLLE)) {
-      pulledCarts = Math.min(carts, pulledCarts + unit.getModifiedPersons() / 4);
+      trollPulledCarts = Math.min(carts - pulledCarts, unit.getModifiedPersons() / 4);
     }
 
-    capacity = (pulledCarts * 100 +
-        horses * 20 -
-        (carts - pulledCarts) * 40) * 100
-        + (race == null ? 540 : (int) (race.getCapacity() * 100)) * unit.getModifiedPersons();
+    int freeHorses = trollPulledCarts == 0 ? horses - pulledCarts * 2 : 0;
+
+    int catapults = getCatapults(unit);
+    int pulledCatapults = Math.min(catapults, freeHorses / 2);
+
+    int trollPulledCatapults = 0;
+    if (race != null && race.getID().equals(EresseaConstants.R_TROLLE)) {
+      int freeTrolls = unit.getModifiedPersons() - trollPulledCarts * 4;
+      trollPulledCatapults = Math.min(catapults - pulledCatapults, freeTrolls / 4);
+    }
+
+    pulledCarts += trollPulledCarts;
+    pulledCatapults += trollPulledCatapults;
+
+    capacity = ((pulledCarts * 100) + (pulledCatapults * 0)
+        + horses * 20
+        - ((carts - pulledCarts) * 40) - ((catapults - pulledCatapults) * 100)) * 100 // weight of not pulled carts and
+                                                                                      // catapults
+        + (race == null ? 540 : (int) (race.getCapacity() * 100)) * unit.getModifiedPersons(); // capacity of unit
 
     return respectGOTS(unit, capacity);
   }

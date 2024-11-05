@@ -995,6 +995,9 @@ public class EresseaConstants extends GameConstants {
   /** Item cart */
   public static final StringID I_CART = StringID.create("Wagen");
 
+  /** Item catapult */
+  public static final StringID I_CATAPULT = StringID.create("Katapult");
+
   /** Item belt of troll strength */
   public static final StringID I_GOTS = StringID.create("Gürtel der Trollstärke");
 

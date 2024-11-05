@@ -1,3 +1,8 @@
+2024-11-05 / Build 792 - trickert (thoralf@m84.de)
+    * fix issue with seeds #42, thanks to https://github.com/Nugman
+    * fix issue with catapults #39, thanks to https://github.com/Nugman
+    * moving homepage to new location #46
+    
 2023-08-24 / Build 789 - stm (stm2@users.sourceforge.net)
     * fixed some order execution priorities
     * show max capacity of overloaded units

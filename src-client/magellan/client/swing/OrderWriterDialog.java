@@ -2043,6 +2043,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         HTTPClient client = new HTTPClient(localSettings);
         OrderWriterDialog.log.info("sending...");
         client.setAuthentication(faction.getID().toString(), faction.getPassword(), uri.getHost(), -1, null, null);
+        client.setTimeOut(PropertiesHelper.getInteger(localSettings, PropertiesHelper.ORDERWRITER_SERVER_TIMEOUT, 30));
 
         Part[] parts = {
             new FilePart("input", orderFile)

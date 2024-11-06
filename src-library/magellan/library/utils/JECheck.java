@@ -288,12 +288,7 @@ public class JECheck extends Reader {
     Collection<ECheckMessage> msgs = new LinkedList<ECheckMessage>();
     BufferedReader in = new LineNumberReader(echeckOutput);
     String line = null;
-    String version = null;
-    String faction = null;
-    int errors = -1;
-    int warnings = -1;
 
-    boolean error = false;
     String fakeMessage = "-" + JECheck.FIELD_SEP + "-1" + JECheck.FIELD_SEP + String.valueOf(ECheckMessage.MESSAGE)
         + JECheck.FIELD_SEP;
 
@@ -307,11 +302,14 @@ public class JECheck extends Reader {
       // for echeck <= 4.1.4, the first line looked like
       // <filename>|<version>|<date><filename>:<faction>:<factionid>
       // That is ok for the code below.
-      // In newer versions, the first two lines look like
+      // In versions > 4.1.4 and < 4.6.1, the first two lines look like
       // <filename>|<version>|<date>
       // <filename>:<faction>:<factionid>
-      // To fake the old behaviour we simulate the "first"-line of echeck <= 4.1.4
-      //
+
+      // 2024.04.22 gvd
+      // Since echeck 4.6.1 faction, version, number of errors and number of warnings
+      // not included in echeck output anymore. So don't set related (and unused)
+      // variables anymore
 
       // 2006.08.30 fiete: echeck may produce error messages....
       // we will try to just skip these messages
@@ -338,11 +336,7 @@ public class JECheck extends Reader {
             msgs.add(new ECheckMessage(fakeMessage + "Error in ECheck output: " + line));
             line = JECheck.getLine(in);
           } else if (line.indexOf(":faction:") >= 0) {
-            // ignore faction line
-            if (faction != null) {
-              msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.multiplefactions.text", 0)));
-            }
-            faction = line.split(":", -1)[2];
+            JECheck.log.info("Found faction " + line.split(":", -1)[3]);
             line = JECheck.getLine(in);
           } else {
             tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
@@ -351,17 +345,10 @@ public class JECheck extends Reader {
               tokenizer.nextToken();
 
               if (tokenizer.nextToken().equalsIgnoreCase("version")) {
-                if (version != null) {
-                  JECheck.log.warn("More than one version line");
-                }
                 // parse version
-                version = tokenizer.nextToken();
+                JECheck.log.info("Found echeck version " + tokenizer.nextToken());
                 line = JECheck.getLine(in);
               } else {
-                /* check for error in header */
-                if (version == null) {
-                  JECheck.log.info("Version line missing or corrupt: " + line);
-                }
                 ECheckMessage msg = new ECheckMessage(line);
                 msgs.add(msg);
                 line = JECheck.getLine(in);
@@ -376,44 +363,6 @@ public class JECheck extends Reader {
           }
         }
 
-        if (line == null) {
-          if (msgs.size() > 0) {
-            msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.badfooter.text", 0)));
-          }
-        } else {
-          /* parse footer */
-          if (tokenizer != null && tokenizer.countTokens() == 3) {
-            tokenizer.nextToken();
-
-            if (tokenizer.nextToken().equalsIgnoreCase("warnings")) {
-              warnings = Integer.parseInt(tokenizer.nextToken());
-            } else {
-              error = true;
-            }
-
-            line = JECheck.getLine(in);
-
-            if (line != null) {
-              tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
-
-              if (tokenizer.countTokens() == 3) {
-                tokenizer.nextToken();
-
-                if (tokenizer.nextToken().equalsIgnoreCase("errors")) {
-                  errors = Integer.parseInt(tokenizer.nextToken());
-                } else {
-                  error = true;
-                }
-              } else {
-                error = true;
-              }
-            } else {
-              error = true;
-            }
-          } else {
-            error = true;
-          }
-        }
       }
     } finally {
       in.close();
@@ -429,31 +378,13 @@ public class JECheck extends Reader {
         warningsFound++;
       }
     }
+    if (warningsFound > 0) {
+      msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.numberwarnings.text", warningsFound)));
+    }
+    if (errorsFound > 0) {
+      msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.numbererrors.text", errorsFound)));
+    }
 
-    if (error) {
-      if (msgs.size() > 0) {
-        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.badfooter.text", line)));
-      } else
-        throw new java.text.ParseException(Resources.get("echeckpanel.msg.badfooter.text", line), 0);
-    } else if ((errors == -1) || (warnings == -1)) {
-      if (msgs.size() > 0) {
-        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nowarnings.text")));
-      } else
-        throw new java.text.ParseException(Resources.get("echeckpanel.msg.nowarnings.text"), 0);
-    } else if (errorsFound != errors) {
-      if (msgs.size() > 0) {
-        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.noerrormatch.text")));
-      } else
-        throw new java.text.ParseException(Resources.get("echeckpanel.msg.noerrormatch.text"), 0);
-    } else if (warningsFound != warnings) {
-      if (msgs.size() > 0) {
-        msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nowarningmatch.text")));
-      } else
-        throw new java.text.ParseException(Resources.get("echeckpanel.msg.nowarningmatch.text"), 0);
-    }
-    if (faction == null) {
-      msgs.add(new ECheckMessage(fakeMessage + Resources.get("echeckpanel.msg.nofactionline.text")));
-    }
     return msgs;
   }
 
@@ -499,7 +430,6 @@ public class JECheck extends Reader {
           "JECheck.getAffectedObject(): invalid msgs argument specified.");
 
     String line = null;
-    LineNumberReader lnr = null;
     List<String> orders = new LinkedList<String>();
 
     String unitOrder = null, regionOrder = null;
@@ -517,13 +447,12 @@ public class JECheck extends Reader {
     /*
      * first read in all the orders into a list to access them quickly later
      */
-    lnr = new LineNumberReader(new FileReader(orderFile));
+    try (LineNumberReader lnr = new LineNumberReader(new FileReader(orderFile))) {
 
-    for (line = lnr.readLine(); (line != null); line = lnr.readLine()) {
-      orders.add(line);
+      for (line = lnr.readLine(); (line != null); line = lnr.readLine()) {
+        orders.add(line);
+      }
     }
-
-    lnr.close();
 
     /*
      * now walk all messages and determine the affected object by looking at the line referenced.

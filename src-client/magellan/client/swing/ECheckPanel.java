@@ -77,7 +77,6 @@ import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.JECheck;
 import magellan.library.utils.JECheck.ECheckMessage;
-import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TrustLevels;
@@ -368,25 +367,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-    /* check version */
-    try {
-      if (!JECheck.checkVersion(exeFile, settings)) {
-        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
-        JOptionPane.showMessageDialog(getRootPane(), Resources
-            .get("echeckpanel.msg.wrongversion.text", JECheck.getRequiredVersion()), Resources
-                .get("echeckpanel.msg.wrongversion.title"), JOptionPane.ERROR_MESSAGE);
-
-        return;
-      }
-    } catch (IOException e) {
-      setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-      if (JOptionPane.showConfirmDialog(getRootPane(), Resources
-          .get("echeckpanel.msg.versionretrievalerror.text"), Resources
-              .get("echeckpanel.msg.versionretrievalerror.title"),
-          JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
-        return;
-    }
+    /* skip version check, because it doesn't work with echeck version > 4.6.1 */
+    /* and if anybody still uses a echeck version < 4.1.2, we can't help anymore. */
 
     // save orders
     if (orderFile != null) {
@@ -874,9 +856,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       ECheckMessageRenderer.selectedBackground = Color.WHITE;
       ECheckMessageRenderer.selectedBackground = (Color) defaults.get("Tree.selectionBackground");
 
-      // pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
+      // gvd: 2024.04.22: replace deprecated class
       ECheckMessageRenderer.focusedBorder =
-          new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
+          new MatteBorder(1, 1, 1, 1, (Color) UIManager.getDefaults().get("Tree.selectionBorderColor"));
       ECheckMessageRenderer.selectedBorder =
           new MatteBorder(1, 1, 1, 1, ECheckMessageRenderer.selectedBackground);
       ECheckMessageRenderer.plainBorder = new EmptyBorder(1, 1, 1, 1);

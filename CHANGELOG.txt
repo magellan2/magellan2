@@ -1,6 +1,7 @@
-2024-11-05 / Build 792 - trickert (thoralf@m84.de)
+2024-11-05 / Build 793 - trickert (thoralf@m84.de)
     * fix issue with seeds #42, thanks to https://github.com/Nugman
     * fix issue with catapults #39, thanks to https://github.com/Nugman
+    * fix issue with echeck version, thanks to https://github.com/gvd-eressea
     * moving homepage to new location #46
     
 2023-08-24 / Build 789 - stm (stm2@users.sourceforge.net)
@@ -63,7 +64,7 @@
 
 2021-08-22 / Build 752 - stm (stm2@users.sourceforge.net)
     * new installer with install4j
-    * order parser: allow BETRETE/BENNEN/BESCHREIBE GEBÄUDE
+    * order parser: allow BETRETE/BENNEN/BESCHREIBE GEB?DE
     * searchable shortcut preferences
 
 2021-07-15 / Build 748 - stm (stm2@users.sourceforge.net)
@@ -105,7 +106,7 @@
 
 2020-09-10 / Build 728 - stm (stm2@users.sourceforge.net)
     * new ECheck version
-    * rule changes for ZÜCHTE, LERNE AUTO, KONTAKTIERE EINHEIT
+    * rule changes for Z?HTE, LERNE AUTO, KONTAKTIERE EINHEIT
     * missing MESSAGETYPES and sections in new CR format
 
 2020-08-13 / Build 726 - stm (stm2@users.sourceforge.net)
@@ -167,7 +168,7 @@
     * BugFix in EresseaMovementEvaluator.getPayLoadOnFood for Trolls with units with 0 persons
 
 2018-08-17 / Build 681 - Fiete (sf@fietefietz.de)
-    * http://eressea.dracones.de/magellanbugs/view.php?id=402 | Kapitänswechsel
+    * http://eressea.dracones.de/magellanbugs/view.php?id=402 | Kapit?swechsel
 
 2018-08-17 / Build 680 - Fiete (sf@fietefietz.de)
     * http://eressea.dracones.de/magellanbugs/view.php?id=405 | Temp-Button mehrfach benutzen
@@ -461,7 +462,7 @@
     * deprecated Unit.addOrder(..., refreshRelations)
     * order parsing is now not always done after every single unit order change, but automatically after a batch of order changes
     * introduced UnitChangeListener to react to changes
-    * HELFE KÄMPFE  no longer accepted by E3OrderParser
+    * HELFE K?PFE  no longer accepted by E3OrderParser
     * created test for E3AOrderParser
 
 2012-06-06 / Build 505 - stm (stm2@users.sourceforge.net)
@@ -565,7 +566,7 @@
     * changes to order processing/relations/tree updates
     * improvements to box finding in wrapping worlds
     * improved saving and processing of ExtCmds
-    * re-added completion for KÄMPFE HINTEN
+    * re-added completion for K?PFE HINTEN
     * enable deletion of multiple regions (MapEdit)
     * fixed Trac bug #26
     * fixed some warnings
@@ -578,7 +579,7 @@
     * tweaked positioning of the various dialogs
 
 2010-11-22 / Build 444 - stm (stm2@users.sourceforge.net)
-    * fixed herb display ("keine Kräuter")
+    * fixed herb display ("keine Kr?ter")
     * added misc relations node to EMapDetails (KONTAKTIERE, SPIONIERE etc.)
     * added coast display to unit ship info
     * faction sorting in AlchemyDialog
@@ -810,7 +811,7 @@
 
 2009-07-16 / Build 336 - stm (stm2@users.sourceforge.net)
     * changed completion of spells (without quotes now possible again)
-    * BENENNE GEBÄUDE etc. now legal
+    * BENENNE GEB?DE etc. now legal
 
 2009-07-15 / Build 335 - stm (stm2@users.sourceforge.net)
     * fixed NPE in E3APostProcessor
@@ -996,7 +997,7 @@
     * fixed #338 (Floating Window changes Size between Saves and Loads)
     * fixed #348 (senseless error msg when adding a order file to an CR)
     * fixed #336 (UpdateCheck verursacht Fehler)
-    * fixed #346 (Dateiname beim Hinzufügen)
+    * fixed #346 (Dateiname beim Hinzuf?en)
     * added infos to eressea.cr #181
     * added some icons for menouthis
     * added OrderFileStartingString to Rules (#341) (defaults to ERESSEA)
@@ -1010,7 +1011,7 @@
     * added some Allanon specific resource keys
 
 2008-11-17 / Build 247 - stm (stm2@users.sourceforge.net)
-    * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
+    * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollst?dig wenn Schiff ohne Besitzer vorhanden
     * fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE
 
 2008-10-19 / Build 246 - Fiete  <Fiete@users.sourceforge.net>
@@ -1920,7 +1921,7 @@
     * updated 3 more icons (Khadar)
 
 2007-07-30 stm (stm2@users.sourceforge.net)
-    * minor errors in eressea.cr: rusty items, Samen, Nestwürme
+    * minor errors in eressea.cr: rusty items, Samen, Nestw?me
     * new item category "silver"
     * minor bug in FactionStatsPanel
 

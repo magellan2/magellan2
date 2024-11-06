@@ -379,8 +379,10 @@ public class HTTPClient {
    * Setzt den Timeout des Clients auf einen sinnvollen Wert.
    */
   public void setTimeOut(int seconds) {
-    client.getHttpConnectionManager().getParams().setConnectionTimeout(seconds * 1000);
-    client.getHttpConnectionManager().getParams().setSoTimeout(seconds * 1000);
+    if (seconds > 0) {
+      client.getHttpConnectionManager().getParams().setConnectionTimeout(seconds * 1000);
+      client.getHttpConnectionManager().getParams().setSoTimeout(seconds * 1000);
+    }
   }
 
   /**

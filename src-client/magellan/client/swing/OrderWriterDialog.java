@@ -208,6 +208,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   // upload to server
   private JComboBox<String> cmbServerURLs;
+  private JCheckBox chkSaveFile;
 
   // file
   private JComboBox<String> cmbOutputFiles;
@@ -725,7 +726,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       JButton saveButton = new JButton(Resources.get("orderwriterdialog.btn.save.caption"));
       saveButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          saveToFile();
+          saveToFile(null);
         }
       });
 
@@ -942,6 +943,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     cmbServerURLs = new JComboBox<String>(list == null ? new String[0] : list);
     cmbServerURLs.setEditable(true);
 
+    Faction faction = getFaction();
+    String suffix = getSuffix(faction, SERVER_PANEL);
+
     JPanel pnlFile = new JPanel(new BorderLayout());
     pnlFile.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get(
         "orderwriterdialog.border.output2server")));
@@ -956,6 +960,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }
       }
     });
+    JPanel pnl2 = new JPanel(new BorderLayout());
+    pnl2.add(chkSaveFile = createCheckBox("chkSaveFile", PropertiesHelper.ORDERWRITER_SERVER_SAVE_FILE, suffix,
+        false), BorderLayout.WEST);
+    pnlFile.add(pnl2, BorderLayout.SOUTH);
 
     return pnlFile;
   }
@@ -1702,6 +1710,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (type == SERVER_PANEL) {
       PropertiesHelper.setList(pSettings, PropertiesHelper.ORDERWRITER_SERVER_URL + suffix, getNewOutputFiles(
           cmbServerURLs));
+      pSettings.setProperty(PropertiesHelper.ORDERWRITER_SERVER_SAVE_FILE + suffix, String.valueOf(
+          chkSaveFile.isSelected()));
     }
   }
 
@@ -2069,6 +2079,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
               parameters[0], parameters[1], parameters[2], answer));
           progress.showMessageDialog(Resources.get("orderwriterdialog.msg.writtenunits.text.server",
               parameters[0], parameters[1], parameters[2], answer));
+          // gvd, 13.04.2025: if the option "chkSaveFile" is set, create a file with the sent orders
+          if (chkSaveFile.isSelected()) {
+            saveToFileForServerTransmission(answer);
+          }
         }
 
       } catch (Exception e) {
@@ -2081,6 +2095,37 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     }).start();
 
+  }
+
+  private void saveToFileForServerTransmission(String answer) {
+    try {
+      // gvd: get the transaction identifier from the answer of the server
+      String transactionId = getTransactionId(answer);
+      log.info("TransactionId for sending order was: " + transactionId);
+      String factionId = getFaction().getID().toString();
+      String round = String.valueOf(super.getData().getDate().getDate());
+      String fileName = "Zug-" + factionId + "-" + round + "-" + transactionId + ".zug";
+      init(FILE_PANEL);
+      saveToFile(fileName);
+    } catch (Exception e) {
+      // catch any exception, because this method should not break the sending of orders
+    }
+  }
+
+  private String getTransactionId(String answer) {
+    String lastToken = "dummy";
+    try {
+      String[] tokens = answer.split(" ");
+      lastToken = tokens[tokens.length - 1];
+      tokens = lastToken.split("/");
+      lastToken = tokens[tokens.length - 1];
+      tokens = lastToken.split("-");
+      lastToken = tokens[tokens.length - 1];
+      lastToken = lastToken.substring(0, lastToken.length() - 1);
+    } catch (Exception e) {
+      // catch any exception, because this method should not break the sending of orders
+    }
+    return lastToken;
   }
 
   /**
@@ -2334,7 +2379,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    */
   public boolean runSave() {
     init(FILE_PANEL);
-    return saveToFile();
+    return saveToFile(null);
   }
 
   protected boolean saveAll() {
@@ -2377,14 +2422,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     return txtOutputFileGenerated.getText();
   }
 
-  protected boolean saveToFile() {
+  protected boolean saveToFile(String fileName) {
     Faction faction = getFaction();
     if (faction == null)
       return false;
     if (!checkPassword(faction))
       return false;
 
-    File outputFile = new File(getOutputFileName());
+    File outputFile = new File(fileName == null ? getOutputFileName() : fileName);
     Writer stream = null;
 
     try {

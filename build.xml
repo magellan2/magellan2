@@ -685,6 +685,9 @@
 		</delete>
 	</target>
 
+  <!-- *************************************************************** -->
+  <!-- *     INSTALL4J                                               * -->
+  <!-- *************************************************************** -->
 	<taskdef name="install4j"
              classname="com.install4j.Install4JTask"
              classpath="${install4j}/install4j9.0.4/bin/ant.jar" />

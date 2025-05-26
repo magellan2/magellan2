@@ -1,56 +1,102 @@
-name: Run Tests and Build with Ant
+name: "Run tests and build with Ant on any branch"
 
 on:
   push
 
+
+
 jobs:
   build-ubuntu:
-    name: Build on ubuntu
+    name: "Test and Build"
     runs-on: ubuntu-latest
     env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: false
       INSTALL4J_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY_1 }}
     continue-on-error: false
 
     steps:
-    - uses: actions/checkout@v4
+    - name: "Checkout repository"
+      uses: actions/checkout@v4
+      with:
+        fetch-tags: true
+        fetch-depth: 0
     
-    - name: Generate version string
+    - name: "Generate version string"
       id: get-version
       run: |
         VERSION=$(ant -q -S print_version)
         SHORT=$(echo "${VERSION}" | cut -d. -f-2)
         BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
-        env
-        echo "::set-env name=BUILD::$BUILD"
-        echo "::set-env name=SHORT::$SHORT"
-        echo "::set-env name=VERSION::$VERSION"
-        echo "::set-env name=TAG::$(echo "v${SHORT}-latest")"
-    
+        echo "BUILD=${BUILD}" >> $GITHUB_OUTPUT
+        echo "SHORT=${SHORT}" >> $GITHUB_OUTPUT
+        echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+        echo "TAG=v${VERSION}" >> $GITHUB_OUTPUT
 
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
+    - name: "Set up JDK 11"
+      uses: actions/setup-java@v3
       with:
-        distribution: temurin
+        distribution: 'temurin'
         java-version: 11
 
-    - name: Test with ant
+    - name: "Sanity check"
+      id: sanity_check
+      run: |
+        # env
+        BUILD=${{ steps.get-version.outputs.BUILD }}
+        SHORT=${{ steps.get-version.outputs.SHORT }}
+        VERSION=${{ steps.get-version.outputs.VERSION }}
+        TAG=${{ steps.get-version.outputs.TAG }}
+
+        # version is v1.2.3
+        if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*$ ]]; then
+          echo "Version $VERSION is okay"
+        else
+          echo "Version format $VERSION is not okay!"
+          exit 1
+        fi
+
+        # tag is v1.2.3
+        if [[ "${TAG}" =~ ^v[0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*$ ]]; then
+          echo "Tag $TAG okay"
+        else
+          echo "Tag $TAG is not okay for version $VERSION!"
+          exit 1
+        fi
+
+        # most recent tag has older build number
+        LASTTAG=$(git tag -l "v*" --sort='-committerdate' | head -1)
+        OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
+        if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
+          if (( BUILD == OLDBUILD )); then
+            echo "build.number $BUILD has not changed since most recent tag ${LASTTAG}, please update by running ant build locally!"
+            exit 1
+          fi
+        else
+          echo "bad tag or build $LASTTAG - $OLDBUILD"
+        fi
+
+    - name: "Test with ant"
       run: |
          ant -noinput -buildfile build.xml run_tests
          fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
          if [ -n "$fails" ]; then
-           echo Errors in $fails
+           echo "Errors in $fails"
            cat $fails
            exit 1
+         fi
+         skips=$(grep -L  "Skipped: 0" test/junit/TEST-*)
+         if [ -n "$skips" ]; then
+           echo "Skipped tests: "
+           echo $skips
          fi
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
 
-    - name: Build installer with ant
+    - name: "Build izpack with ant"
       run: |
         ant -noinput -buildfile build.xml distribute
 
-    - name: Upload binaries artifact
+    - name: "Upload izpack binary artifacts"
       uses: actions/upload-artifact@v4
       with:
         name: binaries.izpack
@@ -58,13 +104,25 @@ jobs:
           magellan_v*.jar
           magellan_v*.zip
 
-    - name: Build installer4j with ant
+    - name: "Build install4j with ant"
       run: ant -noinput -buildfile build.xml
 
-    - name: Upload binaries artifact
+    - name: "Upload install4j binary artifacts"
       uses: actions/upload-artifact@v4
       with:
         name: binaries.install4j
         path: |
           Magellan_installer_*.exe
+          Magellan_installer_*.sh
+          Magellan_installer_*.dmg
+
+    - name: "Read RELEASENOTES and CHANGELOG"
+      id: changelog
+      run: |
+        cat RELEASENOTES.txt | iconv -f ISO-8859-1 > RELEASE.txt
+        echo '' >> RELEASE.txt
+        echo '## Excerpt from CHANGELOG' >> RELEASE.txt
+        echo '' >> RELEASE.txt
+        head -20 CHANGELOG.txt | iconv -f ISO-8859-1 >> RELEASE.txt
+        echo '...' >> RELEASE.txt
 

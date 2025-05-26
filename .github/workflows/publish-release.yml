@@ -2,9 +2,10 @@ name: Create versioned release
 # Test, build, and publish a release draft on new vX.Y.Z tag
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_dispatch
+#  push:
+#    tags:
+#      - "v*"
 
 jobs:
   build:

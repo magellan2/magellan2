@@ -21,9 +21,37 @@ Then open a terminal and run the following command to run the integrated unit te
 
     ant -noinput -buildfile build.xml run_tests
 
+There are several interestng ant targets, like
+
+- distribute - build a new version based on Izpack (requires Java11 SDK)
+- quick_build - only compiles code and creates new jars
+- distribute_install4j - is the default target and uses the Install4J tool to create native installer. Be aware to set INSTALL4J_KEY with the license key to create your products.
+
+## How To Run
+
+When using the source code here in this repository and compiled the client with `ant build_client_jar` you can just run it with
+
+    java -jar magallan-client.jar
+
+## How To Release
+
+We are currently in a process of switching from Izpack to Install4j to allow native installer for Windows, Linux and MacOS even when our Magallan client as a Java program can run on any platform that supports Java11. The process of new creating a new release is currently a bit difficulty.
+
+- we protect the default branch, so it's not possible to commit anything to it without a merge request. When you develop a new feature or a fix a bug, you should create at least one branch. Every changes must be done there. We have created a Github action that runs on your branch to test, if the application can be compiled.
+- then you need to manually update `build.xml` and update the properties `VERSION.MAJOR`, `VERSION.MINOR` and `VERSION.SUB` as the Semantic versioning says. `VERSION.SUB` should increase for any bugfix release, `VERSION.MINOR` should be increased for any feature release and `VERSION.MAJOR` should be increased on major changes.
+- we have also a build number in the hidden file `.build.number`, that increases during the build process once, but the build process pipeline doesnt commit it back to the branch, so please also increase it manually
+- validate, if also the installer/izpack-install.template.xml is up2date with the new version number etc.
+- please also update `RELASENOTES.txt` and `CHANGELOG.txt` to document your changes
+- commit and push everything into your branch
+- create a pull request
+- when the PR is approved, the build pipeline should run again and should create a `latest` release, see `.github/workflow/publish-latest.yml`. This is our "nightly" build, which is actually wrong named and we'll also remove this step in the future, when the semantic commit/semantic versioning process is completely implemented (see bugs #49, #50)
+- for stable releases (our new default) create a tag on the default branch named like v0.0.0. Then a pipeline process runs automatically to publish the release and artifacts and updates  the homepage), see `.github/workflow/publish_release.yml` together with `.github/workflow/release-published.yml`.
 
 
-## How Tu Run
+## Other links
+
+- most devs are using Eressea to "validate" the client. See https://www.eressea.de/
+- we use Install4J now to create installers for Windows, Linux and MacOS. See https://www.ej-technologies.com/install4j
 
 ## License(s)
 

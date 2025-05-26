@@ -8,3 +8,5 @@ test/junit
 /cacerts
 /classes
 /extendedcommands.xml
+/magellan-src.jar
+/release

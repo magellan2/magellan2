@@ -7,10 +7,26 @@ jobs:
   build-ubuntu:
     name: Build on ubuntu
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      INSTALL4J_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY_1 }}
     continue-on-error: false
 
     steps:
     - uses: actions/checkout@v4
+    
+    - name: Generate version string
+      id: get-version
+      run: |
+        VERSION=$(ant -q -S print_version)
+        SHORT=$(echo "${VERSION}" | cut -d. -f-2)
+        BUILD=$(cat .build.number | grep build.number | cut -f2 -d"=")
+        env
+        echo "::set-env name=BUILD::$BUILD"
+        echo "::set-env name=SHORT::$SHORT"
+        echo "::set-env name=VERSION::$VERSION"
+        echo "::set-env name=TAG::$(echo "v${SHORT}-latest")"
+    
 
     - name: Set up JDK 11
       uses: actions/setup-java@v2

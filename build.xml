@@ -710,14 +710,14 @@
              classpath="${install4j}/install4j9.0.4/bin/ant.jar" />
 
 	<target name="checkinstall4j" >
-		<fail unless:set="env.INSTALL4J_KEY" message="INSTALL4J_KEY not set; run export INSTALL4J_KEY=L..."/>
+		<fail unless:set="env.INSTALL4J_LICENSE_KEY_1" message="INSTALL4J_LICENSE_KEY_1 not set; run export INSTALL4J_LICENSE_KEY_1=L..."/>
 		<fail unless:set="build.number" message="build.number not defined"/>
 	</target>
 
 	<target name="installer4j" depends="prepare_build, checkinstall4j">
 		<install4j projectFile="${install4j}/magellan2.install4j"
 		           buildIds="28,29,30"
-		           license="${env.INSTALL4J_KEY}">
+		           license="${env.INSTALL4J_LICENSE_KEY_1}">
 			<variable name="version.major" value="${VERSION.MAJOR}" />
 			<variable name="version.minor" value="${VERSION.MINOR}" />
 			<variable name="version.sub" value="${VERSION.SUB}" />

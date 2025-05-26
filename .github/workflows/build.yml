@@ -7,7 +7,7 @@ jobs:
   build-ubuntu:
     name: Build on ubuntu
     runs-on: ubuntu-latest
-    continue-on-error: true
+    continue-on-error: false
 
     steps:
     - uses: actions/checkout@v4
@@ -41,16 +41,10 @@ jobs:
           magellan_v*.jar
           magellan_v*.zip
 
-    - name: Upload test artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: test.ubuntu
-        path: test/junit
-
   build-win:
     name: Build on Windows
     runs-on: windows-latest
-    continue-on-error: true
+    continue-on-error: false
 
     steps:
     - uses: actions/checkout@v2
@@ -62,7 +56,6 @@ jobs:
         java-version: 11
 
     - name: Build with ant
-      continue-on-error: true
       run: ant -noinput -buildfile build.xml
 
     - name: Upload binaries artifact
@@ -72,18 +65,11 @@ jobs:
         path: |
           magellan_v*.jar
           magellan_v*.zip
-      continue-on-error: true
-
-    - name: Upload test artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: test.windows
-        path: test/junit
 
   build-macos:
     name: Build on MacOS
     runs-on: macos-latest
-    continue-on-error: true
+    continue-on-error: false
 
     steps:
     - uses: actions/checkout@v4
@@ -95,7 +81,6 @@ jobs:
         java-version: 11
 
     - name: Build with ant
-      continue-on-error: true
       run: ant -noinput -buildfile build.xml
 
     - name: Upload binaries artifact
@@ -105,10 +90,4 @@ jobs:
         path: |
           magellan_v*.jar
           magellan_v*.zip
-      continue-on-error: true
 
-    - name: Upload test artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: test.mac
-        path: test/junit

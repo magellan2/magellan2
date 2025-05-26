@@ -46,8 +46,17 @@ jobs:
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
 
-    - name: Build izpack installer with ant
-      run: ant -noinput -buildfile build.xml distribute
+    - name: Build installer with ant
+      run: |
+        ant -noinput -buildfile build.xml distribute
+
+    - name: Upload binaries artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: binaries.izpack
+        path: |
+          magellan_v*.jar
+          magellan_v*.zip
 
     - name: Build installer4j with ant
       run: ant -noinput -buildfile build.xml
@@ -55,11 +64,7 @@ jobs:
     - name: Upload binaries artifact
       uses: actions/upload-artifact@v4
       with:
-        name: binaries.ubuntu
+        name: binaries.install4j
         path: |
-          magellan_v*.jar
-          magellan_v*.zip
-          Magellan_installer_windows-x64_v${{ steps.get-version.outputs.VERSION }}.exe
-          Magellan_installer_unix_v${{ steps.get-version.outputs.VERSION }}.sh
-          Magellan_installer_macos_v${{ steps.get-version.outputs.VERSION }}.dmg
+          Magellan_installer_*.exe
 

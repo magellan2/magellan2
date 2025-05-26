@@ -224,6 +224,8 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_SERVER_URL = "OrderWriter.serverLocation";
 
+  public static final String ORDERWRITER_SERVER_SAVE_FILE = "OrderWriter.serverSafeFile";
+
   public static final String ORDERWRITER_SERVER_TIMEOUT = "OrderWriter.serverTimeout";
 
   public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";

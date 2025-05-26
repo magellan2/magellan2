@@ -49,20 +49,23 @@ public class VersionInfo {
 
   /**
    * Gets the Version of this Instance.
+   *
+   * @deprecated replaced by {@link #getSemanticVersion(File)}
    */
+  @Deprecated
   public static String getVersion(File magellanDirectory) {
-    return getVersion(magellanDirectory, PRE_2_1);
+    return getVersion(magellanDirectory, false);
   }
 
+  /**
+   * Returns the current version of this instance.
+   */
   public static String getSemanticVersion(File magellanDirectory) {
-    return getVersion(magellanDirectory, POST_2_1);
+    return getVersion(magellanDirectory, true);
   }
 
-  public static int PRE_2_1 = 0;
-  public static int POST_2_1 = 1;
-
-  public static String getVersion(File magellanDirectory, int versionVersion) {
-    if (versionVersion == PRE_2_1)
+  protected static String getVersion(File magellanDirectory, boolean useSemanticVersion) {
+    if (!useSemanticVersion)
       return getVersion(magellanDirectory, "VERSION");
     else
       return getVersion(magellanDirectory, "SEMANTIC_VERSION");

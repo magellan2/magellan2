@@ -5,3 +5,6 @@ VERSION
 help/en/JavaHelpSearch
 help/de/JavaHelpSearch
 test/junit
+/cacerts
+/classes
+/extendedcommands.xml

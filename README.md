@@ -10,13 +10,14 @@ Actually the Magellan Client is very old. It was originally designed to run with
 
 With (f.e.) Eclipse IDE it is very easy to import this repository as a project. Also running the project with newer JDKs is not an issue. It works out of the box
 
-- checkout the sources
-- in Eclipse open the project from file system..
+- checkout the sources from https://github.com/magellan2/magellan2
+- in Eclipse or your prefered Java IDE open the project from file system..
 - maybe add your current JRE system library to the Eclipse project. 
 
-I've tested with Eclipse Temurin JDK 17.0.1 and OpenJDK 23.0.3. and both where compiling the sources and could run the Magellan Client `src-client/magellan.client.Client`
+I've tested with Eclipse Temurin JDK 17.0.1 and OpenJDK 23.0.3. and both where compiling the sources and could run the Magellan Client `src-client/magellan.client.Client`. The build process also runs IZPack, which requires JDK 11 because of some deprecated classes.
 
-To build a complete new release, we are still using Apache Ant. To install Ant follow the instructions on https://ant.apache.org/. I'm using Homebrew with `brew install ant`. Worked as expected.
+To build a complete new release, we are still using Apache Ant and Java 11. To install Ant follow the instructions on https://ant.apache.org/. I'm using Homebrew with `brew install ant`. Worked as expected. But it's also included in this repository
+
 Then open a terminal and run the following command to run the integrated unit tests, which shows helpful informations about any kind of compile issues in the future.
 
     ant -noinput -buildfile build.xml run_tests
@@ -44,8 +45,7 @@ We are currently in a process of switching from Izpack to Install4j to allow nat
 - please also update `RELASENOTES.txt` and `CHANGELOG.txt` to document your changes
 - commit and push everything into your branch
 - create a pull request
-- when the PR is approved, the build pipeline should run again and should create a `latest` release, see `.github/workflow/publish-latest.yml`. This is our "nightly" build, which is actually wrong named and we'll also remove this step in the future, when the semantic commit/semantic versioning process is completely implemented (see bugs #49, #50)
-- for stable releases (our new default) create a tag on the default branch named like v0.0.0. Then a pipeline process runs automatically to publish the release and artifacts and updates  the homepage), see `.github/workflow/publish_release.yml` together with `.github/workflow/release-published.yml`.
+- when the PR is approved, the build pipeline should run again and should create a `latest` and `stable` release, see `.github/workflow/publish.yml`. This is our "nightly" build, which is actually wrong named and we'll also remove this step in the future, when the semantic commit/semantic versioning process is completely implemented (see bugs #49, #50). Then a pipeline process runs automatically to publish the release and artifacts and updates the homepage.
 
 
 ## Other links

@@ -486,6 +486,7 @@
 				<filter token="USER" value="${user.name}" />
 			</filterset>
 		</copy>
+
 		<!-- izpack 4.3.5 -->
 		<java jar="${installer}/izpack/standalone-compiler.jar"
 		      fork="true"
@@ -506,27 +507,6 @@
 			</classpath>
 		</java>
 
-		<!-- izpack 5.1
-		<java classname="com.izforge.izpack.compiler.bootstrap.CompilerLauncher" maxmemory="512M" fork="true" failonerror="true">
-            <jvmarg value="-Dizpack.home=${installer}/IzPack-5.1" />
-			<arg value="-b" />
-			<arg value="." />
-			<arg value="-o" />
-			<arg value="magellan_v${VERSION.FULL}.jar" />
-			<arg value="-k" />
-			<arg value="standard" />
-			<arg value="-h" />
-			<arg value="${installer}/IzPack-5.1" />
-            <arg value="${installer}/izpack-install-5.1.xml" />
-
-			<classpath>
-				<pathelement path="${java.class.path}/" />
-				<fileset dir="${installer}/IzPack-5.1/lib">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</java>
--->
 		<antcall target="zip_release" />
 
 		<echo message="Creating MacOS Distribution" />

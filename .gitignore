@@ -1,5 +1,6 @@
 /bin/
 VERSION
+.DS_Store
 /installer/izpack-install.xml
 /doc/api
 help/en/JavaHelpSearch
@@ -10,3 +11,5 @@ test/junit
 /extendedcommands.xml
 /magellan-src.jar
 /release
+/magellan_v*.jar
+/magellan_v*.zip

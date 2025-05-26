@@ -46,7 +46,10 @@ jobs:
       # do not exit before all commands are executed
       shell: bash --noprofile --norc -o pipefail {0}
 
-    - name: Build with ant
+    - name: Build izpack installer with ant
+      run: ant -noinput -buildfile build.xml distribute
+
+    - name: Build installer4j with ant
       run: ant -noinput -buildfile build.xml
 
     - name: Upload binaries artifact
@@ -56,54 +59,7 @@ jobs:
         path: |
           magellan_v*.jar
           magellan_v*.zip
-
-  build-win:
-    name: Build on Windows
-    runs-on: windows-latest
-    continue-on-error: false
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: temurin
-        java-version: 11
-
-    - name: Build with ant
-      run: ant -noinput -buildfile build.xml
-
-    - name: Upload binaries artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: binaries.windows
-        path: |
-          magellan_v*.jar
-          magellan_v*.zip
-
-  build-macos:
-    name: Build on MacOS
-    runs-on: macos-latest
-    continue-on-error: false
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        distribution: temurin
-        java-version: 11
-
-    - name: Build with ant
-      run: ant -noinput -buildfile build.xml
-
-    - name: Upload binaries artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: binaries.mac
-        path: |
-          magellan_v*.jar
-          magellan_v*.zip
+          Magellan_installer_windows-x64_v${{ steps.get-version.outputs.VERSION }}.exe
+          Magellan_installer_unix_v${{ steps.get-version.outputs.VERSION }}.sh
+          Magellan_installer_macos_v${{ steps.get-version.outputs.VERSION }}.dmg
 

@@ -126,3 +126,30 @@ jobs:
         head -20 CHANGELOG.txt | iconv -f ISO-8859-1 >> RELEASE.txt
         echo '...' >> RELEASE.txt
 
+
+    - name: "Trigger meta test action to inform homepage"
+      run: |
+        curl -sS -o meta.log \
+          -X POST https://api.github.com/repos/${{ github.repository_owner }}/magellan2.github.io/dispatches \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: token ${{ secrets.META_REPO_ACCESS }}' \
+          --data '{
+            "event_type": "actions-release-trigger",
+            "client_payload": {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}",
+              "caller_repository": "${{ github.repository }}",
+              "meta_repository": "${{ github.repository_owner }}/magellan2.github.io",
+              "tag": "${{ steps.get-version.outputs.TAG }}",
+              "version": "${{ steps.get-version.outputs.VERSION }}",
+              "build": "${{ steps.get-version.outputs.BUILD }}",
+              "action": "test",
+              "type": "stable" }}'
+        if [ -s meta.log ]; then
+          cat meta.log
+          rm meta.log
+          exit -1
+        else
+          echo "meta action apparently successful"
+          rm meta.log
+        fi

@@ -4,7 +4,7 @@ Eine ganze Menge eher kleinerer, aber merkbarer Änderungen macht diese Version a
 
 Die wichtigsten Änderungen:
 
-  * Magellan braucht jetzt mindestens Java 11. Der Installer bringt jetzt aber eine eigene Javaversion mit, sodass sich die meisten Anwender darum nicht mehr kümmern müssen. Neue Versionen können jetzt automatisch heruntergeladen werden.
+  * Magellan braucht jetzt mindestens Java 11. Der Installer bringt jetzt aber eine eigene Javaversion mit, sodass sich die meisten Anwender darum nicht mehr kümmern müssen. Neue Versionen können jetzt automatisch heruntergeladen werden. Wir unterscheiden nun auch nicht mehr zwischen Release und Nightly.
   * Verbesserte MacOS-Kompatibilität 
   * Die ARR und ATR-Eigenschaften wurden poliert. Eine aktualisierte Erklärung zum ATR und ARR gibt es in der Hilfe.
   * Die Befehlserkennung und -verarbeitung wurde in vielen Punkten verbessert. ECheck ist praktisch überflüssig und durch "Offene Probleme" ersetzt.

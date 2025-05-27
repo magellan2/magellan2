@@ -23,7 +23,7 @@
       <variable name="java.version.min" value="11" />
       <variable name="java.version.max" value="99" />
       <variable name="magellan.launcher" value="magellan_launcher" />
-      <variable name="magellan.update_url" value="https://github.com/magellan2/magellan2/releases/download/v2.1-latest/updates.xml" />
+      <variable name="magellan.update_url" value="https://github.com/magellan2/magellan2/releases/download/v2.1.0/updates.xml" />
     </variables>
     <jreBundles jdkProviderId="AdoptOpenJDK" release="11/latest" />
   </application>

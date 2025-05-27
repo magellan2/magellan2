@@ -1,3 +1,9 @@
+2025-05-26 / Build 794 - trickert (thoralf@m84.de)
+    * Reparing build process
+    * switching to new global homepage https://magellan2.github.io/
+    * reenabling IZPack pure Java installer in addition to Install4J installer
+    * merge https://github.com/magellan2/magellan2/pull/48, thanks to https://github.com/gvd-eressea
+
 2024-11-05 / Build 793 - trickert (thoralf@m84.de)
     * fix issue with seeds #42, thanks to https://github.com/Nugman
     * fix issue with catapults #39, thanks to https://github.com/Nugman

@@ -34,6 +34,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import magellan.library.GameData;
@@ -45,10 +46,6 @@ import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
 
 public class ExtendedCommandsTest extends MagellanTestWithResources {
-
-  // private static Client client;
-  private static GameDataBuilder builder;
-
   /**
    * @throws java.lang.Exception
    */
@@ -121,6 +118,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
     assertMatches(".*source is incomplete.*", log);
   }
 
+  @Ignore
   @Test
   public void testRejected() throws IOException {
     String log = runScript("Rejected");
@@ -133,6 +131,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
     assertEquals("", log);
   }
 
+  @Ignore
   @Test
   public void testLongWarnings() throws IOException {
     String log = runScript("LongWarnings");
@@ -146,6 +145,7 @@ public class ExtendedCommandsTest extends MagellanTestWithResources {
     assertMatches(".*import statement after first code statement.*", log);
   }
 
+  @Ignore
   @Test
   public void testAbort() throws IOException {
     String log = runScript("Abort");

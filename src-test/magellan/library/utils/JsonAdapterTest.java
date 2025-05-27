@@ -67,10 +67,9 @@ public class JsonAdapterTest {
     String locations = "{\n" +
         "\"www.root\" : \"http://magellan2.github.io\",\n" +
         "\"www.bugtracker\" : \"http://magellan2.github.io/bugs/\",\n" +
-        "\"www.homepage.alt\" : \"http://magellan.narabi.de\",\n" +
-        "\"www.download\" : \"http://magellan.narabi.de/download_en.php\",\n" +
-        "\"www.download.de\" : \"http://magellan.narabi.de/download_de.php\",\n" +
-        "\"www.download.en\" : \"http://magellan.narabi.de/download_en.php\",\n" +
+        "\"www.download\" : \"https://magellan2.github.io/de/download/\",\n" +
+        "\"www.download.de\" : \"https://magellan2.github.io/de/download/\",\n" +
+        "\"www.download.en\" : \"https://magellan2.github.io/en/download/\",\n" +
         "\"www.files\" : \"http://sourceforge.net/projects/magellan-client/files/\",\n" +
         "\"www.fernando\" : \"http://en.wikipedia.org/wiki/Ferdinand_Magellan\",\n" +
         "\"version.release\" : \"http://magellan2.github.io/release/VERSION\",\n" +

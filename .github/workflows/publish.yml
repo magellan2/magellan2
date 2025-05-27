@@ -10,7 +10,6 @@ jobs:
     name: "Test, Build and Create pre-release"
     runs-on: ubuntu-latest
     env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       INSTALL4J_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY_1 }}
     continue-on-error: false
 
@@ -80,7 +79,7 @@ jobs:
          ant -noinput -buildfile build.xml run_tests
          fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
          if [ -n "$fails" ]; then
-           echo Errors in $fails
+           echo "Errors in $fails"
            cat $fails
            exit 1
          fi
@@ -124,6 +123,7 @@ jobs:
         echo '## Excerpt from CHANGELOG' >> RELEASE.md
         echo '' >> RELEASE.md
         head -20 CHANGELOG.txt | iconv -f ISO-8859-1 >> RELEASE.md
+        echo '...' >> RELEASE.md
 
     - name: "Publish git tag vX.Y.Z"
       env:

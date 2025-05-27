@@ -6,11 +6,10 @@ on:
 
 
 jobs:
-  build-ubuntu:
+  build:
     name: "Test and Build"
     runs-on: ubuntu-latest
     env:
-      ACTIONS_ALLOW_UNSECURE_COMMANDS: false
       INSTALL4J_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY_1 }}
     continue-on-error: false
 
@@ -119,13 +118,12 @@ jobs:
     - name: "Read RELEASENOTES and CHANGELOG"
       id: changelog
       run: |
-        cat RELEASENOTES.txt | iconv -f ISO-8859-1 > RELEASE.txt
-        echo '' >> RELEASE.txt
-        echo '## Excerpt from CHANGELOG' >> RELEASE.txt
-        echo '' >> RELEASE.txt
-        head -20 CHANGELOG.txt | iconv -f ISO-8859-1 >> RELEASE.txt
-        echo '...' >> RELEASE.txt
-
+        cat RELEASENOTES.txt | iconv -f ISO-8859-1 > RELEASE.md
+        echo '' >> RELEASE.md
+        echo '## Excerpt from CHANGELOG' >> RELEASE.md
+        echo '' >> RELEASE.md
+        head -20 CHANGELOG.txt | iconv -f ISO-8859-1 >> RELEASE.md
+        echo '...' >> RELEASE.md
 
     - name: "Trigger meta test action to inform homepage"
       run: |

@@ -48,7 +48,7 @@
 	<property name="MAGELLAN.SHORTNAME"  value="Magellan" />
 	<property name="MAGELLAN.DEVELOPER"  value="Magellan Development Team" />
 	<property name="MAGELLAN.WEBSITE"  value="https://magellan2.github.io" />
-	<property name="MAGELLAN.UPDATE_URL"  value="https://github.com/magellan2/magellan2/releases/download/v2.1-latest/updates.xml" />
+	<property name="MAGELLAN.UPDATE_URL"  value="https://github.com/magellan2/magellan2/releases/download/v${VERSION.POINTED}/updates.xml" />
 	<property name="MAGELLAN.LAUNCHER"  value="magellan_launcher" />
 
 	<property name="junit.output.dir" value="${basedir}/test/junit" />

@@ -154,11 +154,11 @@ jobs:
           CHANGELOG.txt
           VERSION
           installer/install4j/updates.xml
-          magellan_v${{ steps.get-version.outputs.VERSION }}.zip
-          magellan_v${{ steps.get-version.outputs.VERSION }}.jar
-          Magellan_installer_windows-x64_v${{ steps.get-version.outputs.VERSION }}.exe
-          Magellan_installer_unix_v${{ steps.get-version.outputs.VERSION }}.sh
-          Magellan_installer_macos_v${{ steps.get-version.outputs.VERSION }}.dmg
+          magellan_v*.zip
+          magellan_v*.jar
+          Magellan_installer_*.exe
+          Magellan_installer_*.sh
+          Magellan_installer_*.dmg
 
     - name: "Trigger meta action to inform homepage"
       run: |

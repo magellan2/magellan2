@@ -1512,11 +1512,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (i4.isActive()) {
         checkVersion = false;
         if (i4.isSetByInstaller()) {
-          Boolean nightly = i4.isNightlyCheck();
-          if (nightly != null) {
-            log.fine("updated nightly check to " + nightly);
-            PropertiesHelper.setBoolean(c.getProperties(), VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, nightly);
-          }
           String schedule = i4.getUpdateSchedule();
           if (schedule != null) {
             boolean check = !schedule.equals(Install4J.CHECK_NEVER);

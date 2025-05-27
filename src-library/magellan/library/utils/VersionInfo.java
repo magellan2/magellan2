@@ -39,8 +39,6 @@ public class VersionInfo {
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
   /** ResourceKey to show that the update process failed */
   public static final String RESOURCE_KEY_NOUPDATE_AVAIL = "versioninfo.infodlg.updatefailed";
-  /** ResourceKey to show that the nightly update check failed */
-  public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
 
   private static final String DEFAULT_VERSION_URL = "https://magellan2.github.io/api/versions";
 
@@ -113,9 +111,6 @@ public class VersionInfo {
     boolean check =
         Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String
             .valueOf(true)));
-    boolean checkNightly =
-        Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
-            String.valueOf(false)));
 
     MagellanUrl.retrieveLocations(properties);
     String versionsUrl = MagellanUrl.getMagellanUrl(MagellanUrl.VERSIONS);
@@ -148,10 +143,8 @@ public class VersionInfo {
         HTTPClient client = new HTTPClient(properties);
         HTTPResult result = client.get(versionsUrl);
         if (result != null && result.getStatus() == 200) {
-          String type = checkNightly ? "latest" : "stable";
-
           Properties props = JsonAdapter.parsePropertiesMap(result.getResult(), true);
-          newestVersion = props.getProperty("versions." + type + ".raw");
+          newestVersion = props.getProperty("versions.stable.raw");
           if (!Utils.isEmpty(newestVersion) && newestVersion.charAt(0) == 'v') {
             newestVersion = newestVersion.substring(1);
           }

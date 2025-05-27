@@ -38,15 +38,18 @@ When using the source code here in this repository and compiled the client with 
 
 We are currently in a process of switching from Izpack to Install4j to allow native installer for Windows, Linux and MacOS even when our Magallan client as a Java program can run on any platform that supports Java11. The process of new creating a new release is currently a bit difficulty.
 
-- we protect the default branch, so it's not possible to commit anything to it without a merge request. When you develop a new feature or a fix a bug, you should create at least one branch. Every changes must be done there. We have created a Github action that runs on your branch to test, if the application can be compiled.
+- we protect the default branch, so it's not possible to commit anything to it without a merge request. When you develop a new feature or a fix a bug, you should create at least one new branch (like `develop`). Every changes must be done there. We have created a Github action that runs on your branch to test, if the application can be compiled.
 - then you need to manually update `build.xml` and update the properties `VERSION.MAJOR`, `VERSION.MINOR` and `VERSION.SUB` as the Semantic versioning says. `VERSION.SUB` should increase for any bugfix release, `VERSION.MINOR` should be increased for any feature release and `VERSION.MAJOR` should be increased on major changes.
-- we have also a build number in the hidden file `.build.number`, that increases during the build process once, but the build process pipeline doesnt commit it back to the branch, so please also increase it manually
+- we have also a build number in the hidden file `.build.number`, that increases during the build process once, but the build process pipeline doesnt commit it back to the branch, so please also increase it manually and commit it
 - validate, if also the installer/izpack-install.template.xml is up2date with the new version number etc.
 - please also update `RELASENOTES.txt` and `CHANGELOG.txt` to document your changes
 - commit and push everything into your branch
 - create a pull request
-- when the PR is approved, the build pipeline should run again and should create a `latest` and `stable` release, see `.github/workflow/publish.yml`. This is our "nightly" build, which is actually wrong named and we'll also remove this step in the future, when the semantic commit/semantic versioning process is completely implemented (see bugs #49, #50). Then a pipeline process runs automatically to publish the release and artifacts and updates the homepage.
+- when the PR is approved, the build pipeline should run again and should create a `stable` release, see `.github/workflow/publish.yml`. It contains installer for Java, Windows, Unix, MacOS. It also updates the home page and informs users about a new release.
 
+## How to Distribute
+
+Please feel free to distribute your ideas. Just create a Pull-Request like described above. Update `build.xml`, `.build.number`, `CHANGELOG.txt` and `RELEASENOTES.txt`. 
 
 ## Other links
 

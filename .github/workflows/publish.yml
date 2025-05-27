@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    name: "Test, Build and Create pre-release"
+    name: "Test, Build and Create Release"
     runs-on: ubuntu-latest
     env:
       INSTALL4J_KEY: ${{ secrets.INSTALL4J_LICENSE_KEY_1 }}

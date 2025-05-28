@@ -45,6 +45,7 @@ jobs:
         SHORT=${{ steps.get-version.outputs.SHORT }}
         VERSION=${{ steps.get-version.outputs.VERSION }}
         TAG=${{ steps.get-version.outputs.TAG }}
+        LASTTAG=$(git tag -l "v*" --sort='-committerdate' | head -1)
 
         # version is v1.2.3
         if [[ "${VERSION}" =~ ^[0-9][0-9]*[.][0-9][0-9]*[.][0-9][0-9]*$ ]]; then
@@ -62,8 +63,15 @@ jobs:
           exit 1
         fi
 
+        # new vesion defined
+        if [[ "$LASTTAG" == "$TAG" ]]; then
+          echo "Version not incremented, please update build.xml"
+          exit 1
+        else
+          echo "Version updated."
+        fi
+
         # most recent tag has older build number
-        LASTTAG=$(git tag -l "v*" --sort='-committerdate' | head -1)
         OLDBUILD=$(git show ${LASTTAG}:.build.number | grep build.number | cut -f2 -d"=")
         if [[ "$OLDBUILD" =~ ^[0-9][0-9]*$ ]]; then
           if (( BUILD == OLDBUILD )); then

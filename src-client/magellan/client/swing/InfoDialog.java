@@ -126,7 +126,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
   }
 
   private String getVersionString() {
-    String versionInfo = VersionInfo.getSemanticVersion(null);
+    String versionInfo = VersionInfo.getVersion(null);
     if (versionInfo == null) {
       versionInfo = "not available";
     }

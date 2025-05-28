@@ -421,8 +421,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
     if (VersionInfo.getVersion(resourceDir) != null) {
-      settings.setProperty(PropertiesHelper.VERSION, VersionInfo.getVersion(resourceDir));
-      settings.setProperty(PropertiesHelper.SEMANTIC_VERSION, VersionInfo.getSemanticVersion(resourceDir));
+      settings.setProperty(PropertiesHelper.SEMANTIC_VERSION, VersionInfo.getVersion(resourceDir));
     }
     if (lastSavedVersion != null) {
       settings.setProperty(PropertiesHelper.LAST_VERSION, lastSavedVersion);
@@ -1523,7 +1522,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         log.info("Install4J configuration not found");
       }
 
-      String currentVersion = VersionInfo.getSemanticVersion(tResourceDir);
+      String currentVersion = VersionInfo.getVersion(tResourceDir);
       if (checkVersion) {
         String newestVersion = VersionInfo.getNewestVersion(c.getProperties(), checkVersion ? null
             : Client.startWindow);
@@ -1598,7 +1597,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Client.log.info("resource directory: " + parameters.resourceDir);
     Client.log.info("settings directory: " + parameters.settingsDir);
 
-    String version = VersionInfo.getSemanticVersion(parameters.binDir);
+    String version = VersionInfo.getVersion(parameters.binDir);
     if (version == null) {
       version = VersionInfo.getVersion(parameters.resourceDir);
     }
@@ -2450,9 +2449,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       StringBuilder title2 = new StringBuilder();
       StringBuilder title3 = new StringBuilder();
 
-      String version = VersionInfo.getSemanticVersion(Client.getBinaryDirectory());
+      String version = VersionInfo.getVersion(Client.getBinaryDirectory());
       if (version == null) {
-        version = VersionInfo.getSemanticVersion(Client.getResourceDirectory());
+        version = VersionInfo.getVersion(Client.getResourceDirectory());
       }
 
       if (version != null) {

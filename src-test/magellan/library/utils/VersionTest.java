@@ -34,36 +34,23 @@ import org.junit.Test;
  */
 public class VersionTest {
 
-  @SuppressWarnings("deprecation")
   @Test
   public void testVersionInteger() {
-    Version v;
-    assertExceptionInteger("2");
-    assertExceptionInteger("2.1");
-    assertExceptionInteger("2.3.0.4");
-    assertExceptionInteger("2.3.4-bla");
-    assertExceptionInteger("2.3.x");
+    Version v = new Version("2");
+    assertEquals("2", v.getMajor());
+    assertEquals("0", v.getMinor());
+    assertEquals("0", v.getRevision());
 
-    v = new Version("2.3.4", ".", true);
+    v = new Version("2.3.4");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
     assertEquals("4", v.getRevision());
   }
 
-  @SuppressWarnings({ "deprecation", "unused" })
+  @SuppressWarnings("unused")
   private void assertExceptionInteger(String version) {
     try {
-      new Version(version, ".", true);
-      fail();
-    } catch (Exception e) {
-      // expected
-    }
-  }
-
-  @SuppressWarnings({ "deprecation", "unused" })
-  private void assertExceptionDeprecated(String version) {
-    try {
-      new Version(version, ".", false);
+      new Version(version);
       fail();
     } catch (Exception e) {
       // expected
@@ -71,6 +58,15 @@ public class VersionTest {
   }
 
   @SuppressWarnings("unused")
+  private void assertExceptionDeprecated(String version) {
+    try {
+      new Version(version);
+      fail();
+    } catch (Exception e) {
+      // expected
+    }
+  }
+
   private void assertExceptionSemantic(String version) {
     Version v = new Version(version);
     if (!v.isError()) {
@@ -123,30 +119,26 @@ public class VersionTest {
     assertEquals("789", v.getBuild());
   }
 
-  @SuppressWarnings("deprecation")
   @Test
   public void testVersionDeprecated() {
-    assertExceptionDeprecated("2");
-    assertExceptionDeprecated("2.1");
-    assertExceptionDeprecated("2.3.0.4");
-
-    Version v = new Version("2.3.4", ".", false);
+    Version v = new Version("2.3.4");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
     assertEquals("4", v.getRevision());
 
     // this is not a valid semantic version, but we allow it for historic reasons
-    v = new Version("2.3.x", ".", false);
+    v = new Version("2.3.x");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("x", v.getRevision());
+    assertEquals("0", v.getRevision());
 
-    v = new Version("2.3.4-bla", ".", false);
+    v = new Version("2.3.4-bla");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
-    assertEquals("4-bla", v.getRevision());
+    assertEquals("4", v.getRevision());
+    assertEquals("bla", v.getIdentifiers());
 
-    v = new Version("2.3.4 (build 789)", ".", false);
+    v = new Version("2.3.4 (build 789)");
     assertEquals("2", v.getMajor());
     assertEquals("3", v.getMinor());
     assertEquals("4", v.getRevision());

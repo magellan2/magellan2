@@ -63,7 +63,7 @@ jobs:
           exit 1
         fi
         
-        // new vesion defined
+        # new vesion defined
         if [[ "$LASTTAG" == "$TAG" ]]; then
           echo "Version not incremented, please update build.xml"
           exit 1

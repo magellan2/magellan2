@@ -32,25 +32,11 @@ import org.junit.Test;
 import magellan.test.MagellanTestWithResources;
 
 public class VersionInfoTest extends MagellanTestWithResources {
-
-  @SuppressWarnings("deprecation")
-  @Test
-  public void testIsNewerDeprecated() {
-    File rDir = new File(".");
-    System.out.println(rDir.getAbsolutePath());
-    String currentVersion = VersionInfo.getVersion(Resources.getResourceDirectory());
-    String newVersion = "2.1.0";
-    Version a = new Version(currentVersion, ".", false);
-    Version b = new Version(newVersion, ".", false);
-    assertTrue(a.isNewer(b));
-    assertTrue(VersionInfo.isNewer(currentVersion, newVersion));
-  }
-
   @Test
   public void testIsNewer() {
     File rDir = new File(".");
     System.out.println(rDir.getAbsolutePath());
-    String currentVersion = VersionInfo.getVersion(Resources.getResourceDirectory(), true);
+    String currentVersion = VersionInfo.getVersion(Resources.getResourceDirectory());
     String newVersion = "2.1.0-0.beta";
     Version a = new Version(currentVersion);
     Version b = new Version(newVersion);

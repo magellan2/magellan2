@@ -13,8 +13,6 @@
 
 package magellan.library.utils;
 
-import java.util.StringTokenizer;
-
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -37,61 +35,10 @@ public class Version implements Comparable<Object> {
   private int iRevision;
   private int iBuild;
 
-  private boolean isNumber = false;
   private String identifiers = "";
   private boolean error;
 
   private String delim;
-
-  /**
-   * Creates a new Version object with numeric parts.
-   * 
-   * @throws NumberFormatException If the given String cannot be parsed into a version number
-   * @deprecated Use {@link #Version(String)} with semantic version.
-   */
-  @Deprecated
-  public Version(String str, String delim) throws NumberFormatException {
-    this(str, delim, true);
-  }
-
-  /**
-   * If checkInteger is true, parses a simple version string like 1.2.3 with exactly three numeric parts separated by
-   * dots. Otherwise a number with major, minor, and build version.
-   * 
-   * @throws NumberFormatException If the given String cannot be parsed into a version number
-   * @deprecated use {@link #Version(String)} and semantic version.
-   */
-  @Deprecated
-  public Version(String str, String delim, boolean checkInteger) throws NumberFormatException {
-    this.delim = delim;
-    StringTokenizer st = new StringTokenizer(str, delim);
-    isNumber = checkInteger;
-
-    if (st.countTokens() == 3) {
-      if (isNumber) {
-        major = Integer.toString(iMajor = Integer.parseInt(st.nextToken()));
-        minor = Integer.toString(iMinor = Integer.parseInt(st.nextToken()));
-        revision = Integer.toString(iRevision = Integer.parseInt(st.nextToken()));
-      } else {
-        major = st.nextToken();
-        minor = st.nextToken();
-        revision = st.nextToken();
-        iMajor = Integer.parseInt(major);
-        iMinor = Integer.parseInt(minor);
-        try {
-          iRevision = Integer.parseInt(revision);
-        } catch (NumberFormatException e) {
-          iRevision = 0;
-        }
-        if (revision.indexOf(" (build ") > 0) {
-          devel = revision.substring(revision.indexOf(" (build ") + 8, revision.length() - 1);
-          revision = revision.substring(0, revision.indexOf(" (")).trim();
-        }
-      }
-    } else
-      throw new NumberFormatException("Unable to parse the specified version string \"" + str
-          + "\" with the delimiter \"" + delim + "\"");
-  }
 
   /**
    * Parses a semantic version (or, more precisely, a subset of those) consisting of a major, minor, and build version,
@@ -121,7 +68,6 @@ public class Version implements Comparable<Object> {
     String add = splitSpace.length > 1 ? splitSpace[1] : "";
 
     String[] splitDot = main.split("[.]");
-    isNumber = false;
 
     if (splitDot.length > 2) {
       iRevision = parseInt(splitDot[2]);
@@ -184,10 +130,10 @@ public class Version implements Comparable<Object> {
       return -1;
   }
 
-  private void error(String str, String delim) {
+  private void error(String str, String aDelim) {
     if (!error) {
       log.warn("Unable to parse the specified version string \"" + str
-          + "\" with the delimiter \"" + delim + "\"");
+          + "\" with the delimiter \"" + aDelim + "\"");
     }
     error = true;
   }
@@ -245,8 +191,8 @@ public class Version implements Comparable<Object> {
   /**
    * Returns the version number in the Form Major.Minor.Build
    */
-  public String toString(String delim) {
-    return major + delim + minor + delim + revision;
+  public String toString(String aDelim) {
+    return major + aDelim + minor + aDelim + revision;
   }
 
   /**

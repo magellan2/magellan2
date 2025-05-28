@@ -57,8 +57,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private static final Logger log = Logger.getInstance(ClientPreferences.class);
   Properties settings = null;
   Client source = null;
-  private javax.swing.JComboBox cmbGUILocale = null;
-  private javax.swing.JComboBox cmbOrderLocale = null;
+  private JComboBox<LocaleWrapper> cmbGUILocale = null;
+  private JComboBox<LocaleWrapper> cmbOrderLocale = null;
 
   // The initial value for GameData.curTempID
 
@@ -79,14 +79,12 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   private JCheckBox showProgress;
   private JCheckBox createVoidRegions;
   private JCheckBox checkForUpdates;
-  private JCheckBox checkForNightlyUpdates;
   private JCheckBox loadlastreport;
   protected List<PreferencesAdapter> subAdapters;
   private JComboBox<String> logLevel;
   private JLabel stableLabel;
-  private JLabel nightlyLabel;
   private JLabel install4JLabel;
-  private JTextField xmx;
+  private JTextField xmxLabel;
   private JLabel xmxUnit;
 
   /**
@@ -199,8 +197,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
       panel.add(new JLabel(Resources.get("clientpreferences.xmx.caption")), c);
       ++c.gridx;
       c.weightx = 1.0;
-      xmx = new JTextField("");
-      xmx.setInputVerifier(new InputVerifier() {
+      xmxLabel = new JTextField("");
+      xmxLabel.setInputVerifier(new InputVerifier() {
         @Override
         public boolean verify(JComponent input) {
           try {
@@ -212,7 +210,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
           }
         }
       });
-      panel.add(xmx, c);
+      panel.add(xmxLabel, c);
       xmxUnit = new JLabel("MB");
       c.weightx = 0.0;
       ++c.gridx;
@@ -263,31 +261,9 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     stableLabel.setEnabled(false);
 
     panel.add(stableLabel, c);
-    line++;
-    // check for nightly updates
-    c.gridx = 0;
-    c.gridy = line;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.WEST;
-    c.weightx = 0.0;
-    checkForNightlyUpdates = new JCheckBox(Resources.get("clientpreferences.misc.checkfornightlyupdates.caption"));
-
-    checkForNightlyUpdates.setHorizontalAlignment(SwingConstants.LEFT);
-    panel.add(checkForNightlyUpdates, c);
-
-    c.gridx = 2;
-    c.gridy = line;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    nightlyLabel = new JLabel("1.2.4");
-    nightlyLabel.setEnabled(false);
-    panel.add(nightlyLabel, c);
 
     line++;
 
-    checkForNightlyUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK);
-    checkForNightlyUpdates.addActionListener(this);
     checkForUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK);
     checkForUpdates.addActionListener(this);
 
@@ -380,12 +356,12 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
    * Creates a panel containing the GUI elements for setting the locales.
    */
   private Component getLocalesPanel() {
-    Object availLocales[] = { new LocaleWrapper(Locale.GERMAN), new LocaleWrapper(Locale.ENGLISH) };
+    LocaleWrapper availLocales[] = { new LocaleWrapper(Locale.GERMAN), new LocaleWrapper(Locale.ENGLISH) };
 
     JPanel pnlLocales =
         addPanel(Resources.get("clientpreferences.border.locales"), new GridBagLayout());
 
-    cmbGUILocale = new JComboBox(availLocales);
+    cmbGUILocale = new JComboBox<>(availLocales);
     cmbGUILocale.setSelectedItem(new LocaleWrapper(Locales.getGUILocale()));
 
     JLabel lblGUILocale = new JLabel(Resources.get("clientpreferences.lbl.guilocale.caption"));
@@ -393,7 +369,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
         .charAt(0));
     lblGUILocale.setLabelFor(cmbGUILocale);
 
-    cmbOrderLocale = new JComboBox(availLocales);
+    cmbOrderLocale = new JComboBox<>(availLocales);
     cmbOrderLocale.setSelectedItem(new LocaleWrapper(Locales.getOrderLocale()));
 
     JLabel lblOrderLocale = new JLabel(Resources.get("clientpreferences.lbl.orderlocale.caption"));
@@ -444,7 +420,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     initVersion();
     if (getInstall4J().isActive()) {
       ClientMemory cm = new ClientMemory(Client.getBinaryDirectory(), Client.getSettingsDirectory());
-      xmx.setText("" + cm.getXmX());
+      xmxLabel.setText("" + cm.getXmX());
       xmxUnit.setText(cm.getXmXUnit());
     }
   }
@@ -454,27 +430,17 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
 
     install4JLabel.setVisible(i4.isActive());
     boolean check = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, true);
-    boolean nightly = PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false);
 
     checkForUpdates.setSelected(check);
-    checkForNightlyUpdates.setSelected(nightly);
-    checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
 
     Properties sCopy = new Properties(settings);
     sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, "true");
-    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, "true");
-    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, "0");
-    String nightlyVersion = VersionInfo.getNewestVersion(sCopy, null);
-    sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, "false");
     sCopy.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, "0");
     String stableVersion = VersionInfo.getNewestVersion(sCopy, null);
     String version = settings.getProperty(PropertiesHelper.SEMANTIC_VERSION);
     stableLabel.setText(version != null && version.equals(stableVersion) ? (version + " = " + stableVersion) : (version
         + " \u2260 "
         + stableVersion));
-    nightlyLabel.setText(version != null && version.equals(nightlyVersion) ? (version + " = " + nightlyVersion)
-        : (version + " \u2260 "
-            + nightlyVersion));
   }
 
   private Install4J getInstall4J() {
@@ -558,25 +524,21 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     if (getInstall4J().isActive()) {
       ClientMemory cm = new ClientMemory(Client.getBinaryDirectory(), Client.getSettingsDirectory());
       try {
-        int newXmx = Integer.parseInt(xmx.getText());
+        int newXmx = Integer.parseInt(xmxLabel.getText());
         cm.setXmX(newXmx, xmxUnit.getText());
       } catch (NumberFormatException e) {
-        log.fine("invalid number format '" + xmx.getText() + "'");
+        log.fine("invalid number format '" + xmxLabel.getText() + "'");
       }
     }
 
-    boolean nightly = checkForNightlyUpdates.isSelected();
     Install4J i4 = getInstall4J();
     if (i4.isActive()) {
       i4.setCheckEveryStart(checkForUpdates.isSelected());
-      i4.setNightlyCheck(nightly);
+      i4.setNightlyCheck(false);
       i4.setSetByMagellan();
     }
     settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String.valueOf(checkForUpdates
         .isSelected()));
-    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, String
-        .valueOf(nightly));
-
   }
 
   /**
@@ -643,15 +605,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   }
 
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equals(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK)) {
-      checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
-      if (!checkForUpdates.isSelected()) {
-        checkForNightlyUpdates.setSelected(false);
-      }
-    } else if (e.getActionCommand().equals(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK)) {
-      // nothing
-    }
-
+    // nothing to do yet.
   }
 
 }

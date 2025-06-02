@@ -298,6 +298,12 @@ public class PropertiesHelper {
   /** Property type list (of strings) **/
   public static final String HISTORY_ACCESSORY_DIRECTORY_HISTORY = "HistoryAccessory.directoryHistory";
 
+  /** Property type boolean: */
+  public static final String ADD_CR_ACCESSORY_SORT = "AddCRAccessory.sort";
+
+  /** Property type boolean: */
+  public static final String ADD_CR_ACCESSORY_INTERACTIVE = "AddCRAccessory.interactive";
+
   /**
    * Property type list of names
    *

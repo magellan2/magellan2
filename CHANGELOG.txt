@@ -1,3 +1,8 @@
+2025-06-02 / trickert (thoralf@m84.de)
+    * fixed a NPE within preferences dialog
+    * removed nightly build informations (only stable is available) #50
+    * added Lemuria ruleset (#55) from https://codeberg.org/lemuria-pbem/renderer-magellan/src/branch/master/rules/lemuria.cr
+
 2025-05-26 / Build 794 - trickert (thoralf@m84.de)
     * Reparing build process
     * switching to new global homepage https://magellan2.github.io/

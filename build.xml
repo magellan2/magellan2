@@ -724,7 +724,7 @@
 
 	<target name="distribute_install4j"
 	        description=" This target compiles, tests and packs the whole magellan application."
-	        depends="prepare_build, checkinstall4j, run_tests, doc, build_library_jar, build_client_jar, build_plugins_jar, build_help, copy_release_data, installer4j, zip_release">
+	        depends="prepare_build, checkinstall4j, run_tests, doc, build_jar_and_distribute, installer4j, zip_release">
 		<antcall target="clear-all"/>
 	</target>
 </project>

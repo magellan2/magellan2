@@ -280,6 +280,10 @@ public class Install4J {
     return install4jProps.getProperty(key);
   }
 
+  protected boolean hasVariable(String key) {
+    return install4jProps.containsKey(key);
+  }
+
   protected String setVariable(String key, String value) {
     String old = install4jProps.getProperty(key);
     install4jProps.setProperty(key, value);
@@ -356,14 +360,22 @@ public class Install4J {
    * Return true if the last modification was made by the installer.
    */
   public boolean isSetByInstaller() {
-    return getLong(SET_BY_INSTALLER_KEY) >= getLong(SET_BY_MAGELLAN_KEY);
+    if (hasVariable(SET_BY_INSTALLER_KEY) && hasVariable(SET_BY_MAGELLAN_KEY))
+      return getLong(SET_BY_INSTALLER_KEY) >= getLong(SET_BY_MAGELLAN_KEY);
+    else if (hasVariable(SET_BY_INSTALLER_KEY))
+      return true;
+    return false;
   }
 
   /**
    * Return true if the last modification was made by the Magellan.
    */
   public boolean isSetByMagellan() {
-    return getLong(SET_BY_INSTALLER_KEY) <= getLong(SET_BY_MAGELLAN_KEY);
+    if (hasVariable(SET_BY_INSTALLER_KEY) && hasVariable(SET_BY_MAGELLAN_KEY))
+      return getLong(SET_BY_INSTALLER_KEY) < getLong(SET_BY_MAGELLAN_KEY);
+    else if (hasVariable(SET_BY_INSTALLER_KEY))
+      return false;
+    return true;
   }
 
   /**

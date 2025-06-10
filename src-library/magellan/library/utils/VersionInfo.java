@@ -39,44 +39,19 @@ public class VersionInfo {
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
   /** ResourceKey to show that the update process failed */
   public static final String RESOURCE_KEY_NOUPDATE_AVAIL = "versioninfo.infodlg.updatefailed";
-  /** ResourceKey to show that the nightly update check failed */
-  public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
-
+  /** Default path to the latest version info */
   private static final String DEFAULT_VERSION_URL = "https://magellan2.github.io/api/versions";
-
-  private static String Version;
-  private static String lastKey;
+  /** if not null, then we have already read the value */
+  private static String Version = null;
 
   /**
    * Gets the Version of this Instance.
-   *
-   * @deprecated replaced by {@link #getSemanticVersion(File)}
    */
-  @Deprecated
   public static String getVersion(File magellanDirectory) {
-    return getVersion(magellanDirectory, false);
-  }
-
-  /**
-   * Returns the current version of this instance.
-   */
-  public static String getSemanticVersion(File magellanDirectory) {
-    return getVersion(magellanDirectory, true);
-  }
-
-  protected static String getVersion(File magellanDirectory, boolean useSemanticVersion) {
-    if (!useSemanticVersion)
-      return getVersion(magellanDirectory, "VERSION");
-    else
-      return getVersion(magellanDirectory, "SEMANTIC_VERSION");
-  }
-
-  protected static String getVersion(File magellanDirectory, String key) {
-    if (key.equals(VersionInfo.lastKey))
+    if (VersionInfo.Version != null)
       return VersionInfo.Version;
     if (magellanDirectory == null)
       return null;
-    VersionInfo.lastKey = key;
     try {
       File versionFile = new File(magellanDirectory, "etc/VERSION");
       if (!versionFile.exists()) {
@@ -92,7 +67,7 @@ public class VersionInfo {
       }
 
       ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream(versionFile));
-      VersionInfo.Version = bundle.getString(key);
+      VersionInfo.Version = bundle.getString("SEMANTIC_VERSION");
       return VersionInfo.Version;
     } catch (IOException e) {
       // do nothing, not important
@@ -113,9 +88,6 @@ public class VersionInfo {
     boolean check =
         Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, String
             .valueOf(true)));
-    boolean checkNightly =
-        Boolean.valueOf(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,
-            String.valueOf(false)));
 
     MagellanUrl.retrieveLocations(properties);
     String versionsUrl = MagellanUrl.getMagellanUrl(MagellanUrl.VERSIONS);
@@ -148,12 +120,15 @@ public class VersionInfo {
         HTTPClient client = new HTTPClient(properties);
         HTTPResult result = client.get(versionsUrl);
         if (result != null && result.getStatus() == 200) {
-          String type = checkNightly ? "latest" : "stable";
-
           Properties props = JsonAdapter.parsePropertiesMap(result.getResult(), true);
-          newestVersion = props.getProperty("versions." + type + ".raw");
+          newestVersion = props.getProperty("versions.stable.raw");
+          // we ignore any v in v2.1.0
           if (!Utils.isEmpty(newestVersion) && newestVersion.charAt(0) == 'v') {
             newestVersion = newestVersion.substring(1);
+          }
+          // we ignore any build number after 2.1.0
+          if (!Utils.isEmpty(newestVersion) && newestVersion.indexOf('-') > 0) {
+            newestVersion = newestVersion.substring(0, newestVersion.indexOf('-'));
           }
         }
         if (client.isConnectionFailed() && !(parent == null)) {

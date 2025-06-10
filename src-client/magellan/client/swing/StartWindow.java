@@ -82,22 +82,22 @@ public class StartWindow extends JFrame {
     init(icons, steps);
   }
 
-  protected void init(Icon icon, int steps) {
+  protected void init(Icon icon, int numberOfSteps) {
     Collection<Icon> icons = new ArrayList<Icon>(1);
 
     if (icon != null) {
       icons.add(icon);
     }
 
-    init(icons, steps);
+    init(icons, numberOfSteps);
   }
 
-  protected void init(Collection<Icon> icons, int steps) {
+  protected void init(Collection<Icon> icons, int numberOfSteps) {
     setUndecorated(true);
     setResizable(false);
 
     images = icons;
-    this.steps = steps;
+    steps = numberOfSteps;
 
     Image iconImage = Client.getApplicationIcon();
 
@@ -158,6 +158,7 @@ public class StartWindow extends JFrame {
       styled.insertString(0, names, set);
       styled.insertString(styled.getLength(), descr, set2);
     } catch (Exception exc) {
+      // ignore this
     }
 
     text = new JTextPane(styled);
@@ -170,7 +171,7 @@ public class StartWindow extends JFrame {
     cont.add(text);
 
     // Fiete 20060911: trying to add Version info to start screen (bottom)
-    String version = VersionInfo.getSemanticVersion(magellanDir);
+    String version = VersionInfo.getVersion(magellanDir);
 
     if (version == null) {
       version = "version not available";
@@ -185,6 +186,7 @@ public class StartWindow extends JFrame {
     try {
       styledVersion.insertString(0, version, setVersion);
     } catch (Exception exc) {
+      // ignore this error
     }
     versionText = new JTextPane(styledVersion);
 
@@ -220,6 +222,7 @@ public class StartWindow extends JFrame {
         prefDim.height = rect.y + rect.height;
         text.setPreferredSize(prefDim);
       } catch (Exception exc) {
+        // ignore this error
       }
     }
 
@@ -236,6 +239,7 @@ public class StartWindow extends JFrame {
         prefDim.height = rect.y + rect.height;
         versionText.setPreferredSize(prefDim);
       } catch (Exception exc) {
+        // ignore this error
       }
     }
 
@@ -343,6 +347,7 @@ public class StartWindow extends JFrame {
      * DOCUMENT-ME
      */
     public void addLayoutComponent(java.lang.String str, java.awt.Component component) {
+      // nothing to do
     }
 
     /**
@@ -356,6 +361,7 @@ public class StartWindow extends JFrame {
      * DOCUMENT-ME
      */
     public void removeLayoutComponent(java.awt.Component component) {
+      // nothing to do
     }
   }
 }

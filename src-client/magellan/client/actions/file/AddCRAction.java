@@ -112,8 +112,8 @@ public class AddCRAction extends MenuAction implements GameDataListener {
     }
 
     AddCRAccessory acc = new AddCRAccessory(settings, fc);
-    acc.setSort(false);
-    acc.setInteractive(true);
+    acc.setSort(PropertiesHelper.getBoolean(settings, PropertiesHelper.ADD_CR_ACCESSORY_SORT, false));
+    acc.setInteractive(PropertiesHelper.getBoolean(settings, PropertiesHelper.ADD_CR_ACCESSORY_INTERACTIVE, true));
 
     fc.setAccessory(acc);
     fc.setDialogTitle(Resources.get("actions.addcraction.title"));
@@ -126,6 +126,8 @@ public class AddCRAction extends MenuAction implements GameDataListener {
         i++;
       }
 
+      settings.setProperty(PropertiesHelper.ADD_CR_ACCESSORY_SORT, acc.getSort() ? "true" : "false");
+      settings.setProperty(PropertiesHelper.ADD_CR_ACCESSORY_INTERACTIVE, acc.getInteractive() ? "true" : "false");
       settings.setProperty(PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, String
           .valueOf(i));
 

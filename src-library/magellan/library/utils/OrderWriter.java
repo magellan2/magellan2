@@ -199,7 +199,7 @@ public abstract class OrderWriter implements GameSpecificOrderWriter {
     if (writeTimeStamp) {
       writeCommentLine(stream, "TIMESTAMP " + getTimeStamp());
     }
-    writeCommentLine(stream, "Magellan Version " + VersionInfo.getSemanticVersion(null));
+    writeCommentLine(stream, "Magellan Version " + VersionInfo.getVersion(null));
 
     if (useChecker()) {
       if (addECheckComments) {

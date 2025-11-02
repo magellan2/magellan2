@@ -11,16 +11,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import magellan.library.Addeable;
 import magellan.library.Alliance;
@@ -71,6 +68,7 @@ import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.logging.Logger;
+import net.infonode.util.collection.Collection;
 
 /**
  * A class for writing game data, or parts of it, to a stream in the computer report format.
@@ -1453,7 +1451,7 @@ public class CRWriter extends BufferedWriter {
     if (getIncludeUnitDetails() && unit.getDisguiseRace() != null) {
       write("\"" + unit.getDisguiseRace().getID().toString() + "\";Typ");
       newLine();
-      write("\"" + unit.getRace() + "\";wahrerTyp");
+      write("\"" + unit.getRace().getID().toString() + "\";wahrerTyp");
       newLine();
     } else {
       write("\"" + unit.getRace().getID().toString() + "\";Typ");

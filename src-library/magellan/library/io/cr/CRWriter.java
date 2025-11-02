@@ -1453,7 +1453,7 @@ public class CRWriter extends BufferedWriter {
     if (getIncludeUnitDetails() && unit.getDisguiseRace() != null) {
       write("\"" + unit.getDisguiseRace().getID().toString() + "\";Typ");
       newLine();
-      write("\"" + unit.getRace() + "\";wahrerTyp");
+      write("\"" + unit.getRace().getID().toString() + "\";wahrerTyp");
       newLine();
     } else {
       write("\"" + unit.getRace().getID().toString() + "\";Typ");

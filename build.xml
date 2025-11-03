@@ -18,7 +18,7 @@
 
 	<property name="VERSION.MAJOR" value="2" />
 	<property name="VERSION.MINOR" value="1" />
-	<property name="VERSION.SUB" value="0" />
+	<property name="VERSION.SUB" value="1" />
 	<!-- optional alternative post values for the version number like stable, rc, beta. For releases it must be empty -->
 	<property name="VERSION.POST" value="" />
 

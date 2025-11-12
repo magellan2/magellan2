@@ -42,8 +42,10 @@ import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Rules;
 import magellan.library.Unit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanMessageImpl;
 import magellan.library.rules.MessageType;
+import magellan.library.utils.TranslationType;
 import magellan.test.GameDataBuilder;
 
 public class CRWriterTest {
@@ -161,6 +163,34 @@ public class CRWriterTest {
     Unit unit2 = data2.getUnits().iterator().next();
     assertEquals(unit.getID(), unit2.getID());
     assertEquals(order, unit2.getOrders2().get(1).toString());
+  }
+
+  @Test
+  public void testTrueTypeSerialization() throws Exception {
+    GameDataBuilder localBuilder = new GameDataBuilder();
+    GameData localData = localBuilder.createSimpleGameData();
+    // Add English translations for races
+    localData.addTranslation("Dämonen", "Demons", TranslationType.sourceMagellan);
+    localData.addTranslation("Katzen", "Cats", TranslationType.sourceMagellan);
+
+    Unit unit = localData.getUnits().iterator().next();
+    unit.setRace(localData.getRules().getRace(EresseaConstants.R_KATZEN));
+    unit.setRealRace(localData.getRules().getRace(EresseaConstants.R_DAEMONEN));
+
+    StringWriter myStrWriter = new StringWriter();
+    CRWriter myWriter = new CRWriter(localData, null, myStrWriter);
+    myWriter.writeSynchronously();
+    myWriter.close();
+
+    String writtenCr = myStrWriter.toString();
+    System.out.println(writtenCr);
+
+    GameData newGameData = new CRParser(null).read(new StringReader(writtenCr), new CompleteData(localBuilder
+        .createSimpleGameData().getRules()));
+    Unit unit2 = newGameData.getUnits().iterator().next();
+
+    // Ensure the deserialization did work.
+    assertEquals(unit2.getRace().getID(), EresseaConstants.R_DAEMONEN);
   }
 
 }

@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.LineNumberReader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.function.Function;
 
 import org.junit.Test;
@@ -41,10 +42,12 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.GameDataMerger;
+import magellan.library.IntegerID;
 import magellan.library.Region;
 import magellan.library.Region.Visibility;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.MessageType;
 import magellan.library.utils.MagellanFactory;
 import magellan.test.GameDataBuilder;
 import magellan.test.MagellanTestWithResources;
@@ -362,6 +365,29 @@ public class GameDataMergerTest extends MagellanTestWithResources {
         assertEquals(r2.getName() + " too visible", Visibility.NULL, r2.getVisibility());
       }
     }
+  }
+
+  @Test
+  public void mergeTwoNewReportsWithDifferentLocales() throws Exception {
+    builder = new GameDataBuilder();
+    GameData gd1 = builder.createSimpleGameData(2, false);
+    GameData gd2 = builder.createSimpleGameData(2, true);
+    gd1.setLocale(EN_LOCALE);
+    gd2.setLocale(DE_LOCALE);
+
+    Unit u1 = gd2.getUnits().iterator().next();
+    String expectedText = "Noch da?";
+    u1.setUnitMessages(Arrays.asList(MagellanFactory.createMessage(expectedText)));
+    MessageType msgType = new MessageType(IntegerID.create("1234"));
+    MagellanFactory.createMessage(IntegerID.create("5678"), msgType, null);
+    gd2.addMsgType(msgType);
+
+    GameData merged = GameDataMerger.merge(gd1, gd2);
+
+    assertEquals(1, merged.getUnits().size());
+    Unit mergedUnit = merged.getUnit(u1.getID());
+    assertTrue(mergedUnit != null);
+    assertEquals(mergedUnit.getUnitMessages().iterator().next().getText(), expectedText);
   }
 
   @Test

@@ -1,3 +1,6 @@
+2026-03-18 / Build 799 - awa-22-22 (alexanderwanner@web.de)
+    * fixed issue #106
+
 2025-14-11 / Build 798 - awa-22-22 (alexanderwanner@web.de)
 	* fixed persistence of wahrerTyp - race id instead of race name - in CR files writer
 

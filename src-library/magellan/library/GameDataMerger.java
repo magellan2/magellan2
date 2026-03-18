@@ -1389,27 +1389,8 @@ public class GameDataMerger {
     }
 
     if (curMsg.getText() != null) {
-      // TODO save the locale of the message. If msg.locale matches the
-      // newGD.locale then we can use the text
-      // currently we check the GameData as the msg locale is not implemented.
-      if (curGD.getLocale().equals(newGD.getLocale())) {
-        // we can only copy the text if it matches the locale
-        newMsg.setText(originTranslate(transformer, curMsg.getText()));
-      } else {
-        if (curMsg.getMessageType() == null) {
-          // if the message has no message type (e.g. DURCHSCHIFFUNG,
-          // DURCHREISE), the best thing we can do is to copy the text anyway...
-          newMsg.setText(originTranslate(transformer, curMsg.getText()));
-        }
-        // FIXME type could be !=null and still have no rendered
-
-        // otherwise we can render the text from the probably localized
-        // messagetype
-        /*
-         * we dont render it here as the new GameData is not fully initialized. as the text is null,
-         * it will be rendered on the first usage. newMsg.render(newGD);
-         */
-      }
+      // the best thing we can do is to copy the text anyway...
+      newMsg.setText(originTranslate(transformer, curMsg.getText()));
     }
 
     newMsg.setAcknowledged(curMsg.isAcknowledged());

@@ -10,9 +10,10 @@ echo "If you need to use vm options like -Xmx1000m, edit the file magellan_launc
 echo "------------------------------------------------------"
 echo
 
-./magellan_launcher
+# The magellan_launcher is not included in the release ZIP.
+#./magellan_launcher
+#exit
 
-exit
-
+# Running Magellan with the java command works perfectly.
 cd "$(dirname "$0")"
 java -Xmx1200m -jar "magellan-client.jar" "$@"

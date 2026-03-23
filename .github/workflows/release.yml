@@ -52,7 +52,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: "Lint the Commit message"
-      uses: wagoid/commitlint-github-action@v5
+      uses: wagoid/commitlint-github-action@v6
 
     - name: "Set up JDK 11"
       uses: actions/setup-java@v3

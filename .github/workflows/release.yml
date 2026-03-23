@@ -1,4 +1,4 @@
-name: "Run tests, build artifacts, publish on default branch"
+name: "Publish Magellan2 Release"
 
 on:
   push:

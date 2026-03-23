@@ -20,9 +20,6 @@ jobs:
       pull-requests: write
 
     steps:
-    - name: "Lint the Commit message"
-      uses: wagoid/commitlint-github-action@v5
-
     - name: "Checkout repository"
       uses: actions/checkout@v4
       with:
@@ -30,10 +27,13 @@ jobs:
         fetch-depth: 0
 
     - name: "Install Node.js"
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
 
     - name: "Install Node.js Dependencies"
       run: npm ci
+
+    - name: "Lint the Commit message"
+      uses: wagoid/commitlint-github-action@v5
 
     - name: "Define semantic version number"
       id: version

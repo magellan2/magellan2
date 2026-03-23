@@ -13,3 +13,4 @@ test/junit
 /release
 /magellan_v*.jar
 /magellan_v*.zip
+/node_modules

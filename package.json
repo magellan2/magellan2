@@ -1,0 +1,28 @@
+{
+  "name": "magellan2",
+  "version": "2.1.0",
+  "description": "Magellan is a full-featured client tool for the play-by-e-mail game Eressea. It displays a map of your part of the Eressea world, supports you in writing orders, performs many complex calculations for you and is available completely in English.",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "ant -noinput -buildfile build.xml run_tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL2",
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.6",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "semantic-release": "^24.2.9",
+    "semantic-release-cli": "^5.4.6"
+  }
+}

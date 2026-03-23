@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="9.0.7" transformSequenceNumber="9">
   <directoryPresets config=".." />
-  <application name="${compiler:magellan.name}" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" compression="9" lzmaCompression="true" commonExternalFiles="true" shortName="${compiler:magellan.shortname}" publisher="${compiler:magellan.developer}" publisherWeb="${compiler:magellan.website}" version="${compiler:version.major}.${compiler:version.minor}.${compiler:version.sub}-${compiler:version.build}${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="${compiler:java.version.min}">
+  <application name="${compiler:magellan.name}" applicationId="0258-9418-8171-8808" mediaDir="." mediaFilePattern="${compiler:sys.shortName}_installer_${compiler:sys.platform}_v${compiler:sys.version}" compression="9" lzmaCompression="true" commonExternalFiles="true" shortName="${compiler:magellan.shortname}" publisher="${compiler:magellan.developer}" publisherWeb="${compiler:magellan.website}" version="${compiler:version.pointed}-${compiler:version.build}${compiler:version.post}" allPathsRelative="true" backupOnSave="true" convertDotsToUnderscores="false" macVolumeId="136621b5bfb1a4fc" javaMinVersion="${compiler:java.version.min}">
     <languages>
       <principalLanguage id="en" customLocalizationFile="./magellan2.utf8" />
       <additionalLanguages>
@@ -11,6 +11,7 @@
       </additionalLanguages>
     </languages>
     <variables>
+      <variable name="version.pointed" value="2.1.0" />
       <variable name="version.major" value="2" />
       <variable name="version.minor" value="1" />
       <variable name="version.sub" value="0" />

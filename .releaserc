@@ -1,0 +1,26 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator", [
+      "@semantic-release/changelog", {
+        "changelogFile": "CHANGELOG.txt"
+      }
+    ],[
+      "@semantic-release/git", {
+        "assets": ["CHANGELOG.txt", "RELEASENOTES.txt"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],[
+      "@semantic-release/github", {
+        "assets": [
+          { "path": "magellan_v*.jar" },
+          { "path": "magellan_v*.zip" },
+          { "path": "Magellan_installer_*.exe" },
+          { "path": "Magellan_installer_*.sh" },
+          { "path": "Magellan_installer_*.dmg" }
+        ]
+      }
+    ]
+  ]
+}

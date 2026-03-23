@@ -107,7 +107,7 @@ jobs:
 
     - name: "Test with ant"
       run: |
-         ant -noinput -buildfile build.xml run_tests
+         ant -noinput -DVERSION.POINTED=${{ steps.version.outputs.VERSION }} -buildfile build.xml run_tests
          fails=$(grep -L  "Failures: 0, Errors: 0" test/junit/TEST-*)
          if [ -n "$fails" ]; then
            echo "Errors in $fails"

@@ -1821,7 +1821,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     ArrayList<String> icons = new ArrayList<String>();
     icons.add(icon);
 
-    // Aktualitï¿½tsinfo
+    // Aktualitätsinfo
 
     if (res.getDate() != null && res.getDate().getDate() > -1) {
       if (res.getDate().equals(getGameData().getDate())) {
@@ -4088,8 +4088,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         n.add(m);
       }
 
-      // maxGrï¿½ï¿½e (bzw bei Burgen Min-Max)
-      // Bei Zitadelle: keine max oder min Grï¿½ï¿½enangabe..(kein maxSize verfï¿½gbar)
+      // maxGrösse (bzw bei Burgen Min-Max)
+      // Bei Zitadelle: keine max oder min Grössenenangabe..(kein maxSize verfügbar)
       if (maxSize >= 0) {
         if (minSize >= 0) {
           m =
@@ -4572,7 +4572,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
     parent.add(n);
 
-    // Bei Konvois: Anzahl der Personen beim Kapitï¿½n >= Anzahl der Schiffe
+    // Bei Konvois: Anzahl der Personen beim Kapitän >= Anzahl der Schiffe
     if (s.getAmount() > 1) {
       int captainPersons = magellan.library.utils.Units.getCaptainPersons(s), modCaptainPersons =
           magellan.library.utils.Units.getModifiedCaptainPersons(s);

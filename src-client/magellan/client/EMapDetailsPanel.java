@@ -81,6 +81,9 @@ import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
+import magellan.client.emapoverviewpanel.util.SilverBalanceUtil;
+import magellan.client.emapoverviewpanel.util.SilverBalanceUtil.RegionFactionFinances;
+import magellan.client.emapoverviewpanel.util.SilverBalanceUtil.RegionFinances;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -294,7 +297,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private final StringID rtreesID = EresseaConstants.I_TREES; // StringID.create("Baeume");
   private final StringID rmallornID = EresseaConstants.I_RMALLORN; // StringID.create("Mallorn");
   private final StringID rsproutsID = EresseaConstants.I_SPROUTS; // StringID.create("Schoesslinge");
-  private final StringID rmallornSproutsID = EresseaConstants.I_MALLORNSPROUTS; // StringID.create("Mallornschösslinge");
+  private final StringID rmallornSproutsID = EresseaConstants.I_MALLORNSPROUTS; // StringID.create("MallornschÃ¶sslinge");
   private final StringID rstonesID = EresseaConstants.I_RSTONES; // StringID.create("Steine");
   private final StringID rhorsesID = EresseaConstants.I_RHORSES; // StringID.create("Pferde");
   private final StringID rsilverID = EresseaConstants.I_RSILVER; // StringID.create("Silber");
@@ -994,6 +997,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // luxuries
     appendRegionLuxuriesInfo(r, parent, expandableNodes);
 
+    // finances
+    addFinancesNode(r, parent, expandableNodes);
+
     // schemes
     appendRegionSchemes(r, parent, expandableNodes);
 
@@ -1087,6 +1093,81 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       luxuriesNode.add(createSimpleNode(p.getItemType().getName() + ": "
           + getDiffString(p.getPrice(), oldPrice), "items/" + p.getItemType().getIcon()));
+    }
+  }
+
+  private void addFinancesNode(Region r, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+
+    try {
+      // Calculate all financial data using the new utility method
+      RegionFinances finances = SilverBalanceUtil.calculateRegionFinances(r);
+
+      DefaultMutableTreeNode financesNode = createSimpleNode(Resources.get("emapdetailspanel.node.finances",
+          finances.overallSum),
+          "items/silber");
+      parent.add(financesNode);
+
+      for (Entry<Faction, RegionFactionFinances> factionData : finances.factionFinances.entrySet()) {
+        RegionFactionFinances fin = factionData.getValue();
+
+        String raceIcon = factionData.getKey().getRace() != null ? factionData.getKey().getRace().getIcon()
+            : "items/silber";
+        DefaultMutableTreeNode factionNode = createSimpleNode(String.format("%1$s: %2$d", factionData.getKey(),
+            fin.netFinances),
+            raceIcon);
+        financesNode.add(factionNode);
+
+        if (fin.totalUnitsSilver > 0) {
+          factionNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.unitsowned.silver",
+              fin.totalUnitsSilver),
+              "items/silber"));
+        }
+
+        if (fin.incomeSum > 0) {
+          DefaultMutableTreeNode incomeNode = createSimpleNode(Resources.get("emapdetailspanel.node.income",
+              fin.incomeSum),
+              "items/silber");
+          factionNode.add(incomeNode);
+
+          if (fin.potentialEntertainingIncome > 0) {
+            incomeNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.entertainment.potential",
+                fin.potentialEntertainingIncome),
+                getGameData().getRules().getSkillType(EresseaConstants.S_UNTERHALTUNG).getIcon()));
+          }
+          if (fin.potentialTaxationIncome > 0) {
+            incomeNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.taxation.potential",
+                fin.potentialTaxationIncome),
+                getGameData().getRules().getSkillType(EresseaConstants.S_STEUEREINTREIBEN).getIcon()));
+          }
+          if (fin.totalTradePotential > 0) {
+            incomeNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.trade.luxury",
+                fin.totalTradePotential),
+                getGameData().getRules().getSkillType(EresseaConstants.S_HANDELN).getIcon()));
+          }
+        }
+
+        if (fin.expensesSum > 0) {
+          DefaultMutableTreeNode expensesNode = createSimpleNode(Resources.get("emapdetailspanel.node.expenses",
+              fin.expensesSum), "items/silber");
+          factionNode.add(expensesNode);
+          if (fin.costsOfBuildings > 0) {
+            expensesNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.buildings.upkeep",
+                fin.costsOfBuildings),
+                "items/silber"));
+          }
+
+          if (fin.costsOfPersonal > 0) {
+            expensesNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.units.upkeep", fin.costsOfPersonal),
+                "items/silber"));
+          }
+        }
+
+      }
+
+      expandableNodes.add(new NodeWrapper(financesNode, "EMapDetailsPanel.RegionFinancesExpanded"));
+    } catch (Exception e) {
+      log.error(e, e);
     }
   }
 
@@ -1233,6 +1314,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode resourceNode =
         createSimpleNode(Resources.get("emapdetailspanel.node.resources"), "ressourcen");
+
     String icon = null;
     if (!r.resources().isEmpty()) {
       // resources of region
@@ -4006,8 +4088,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         n.add(m);
       }
 
-      // maxGröße (bzw bei Burgen Min-Max)
-      // Bei Zitadelle: keine max oder min Größenangabe..(kein maxSize verfügbar)
+      // maxGrösse (bzw bei Burgen Min-Max)
+      // Bei Zitadelle: keine max oder min Grössenenangabe..(kein maxSize verfügbar)
       if (maxSize >= 0) {
         if (minSize >= 0) {
           m =
@@ -4048,9 +4130,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         String text = i.getName();
 
         DefaultMutableTreeNode m;
-        if (text.endsWith(" pro Größenpunkt")) {
+        if (text.endsWith(" pro GrÃ¶ÃŸenpunkt")) {
           int amount = b.getSize() * i.getAmount();
-          String newText = text.substring(0, text.indexOf(" pro Größenpunkt"));
+          String newText = text.substring(0, text.indexOf(" pro GrÃ¶ÃŸenpunkt"));
           m =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(amount + " "
                   + newText, "items/" + getGameData().getRules().getItemType(newText)));
